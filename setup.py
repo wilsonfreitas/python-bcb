@@ -1,11 +1,11 @@
 
-from setuptools import setup
+import setuptools
 
 with open('README.md', 'r') as fh:
     long_description = fh.read()
 
-setup(
-    name='bcb-wilson',
+setuptools.setup(
+    name='python-bcb',
     version='0.1.0',
     packages=setuptools.find_packages(),
     author='Wilson Freitas',
