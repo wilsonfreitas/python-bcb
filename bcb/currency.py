@@ -10,6 +10,7 @@ from lxml import html
 import pandas as pd
 import numpy as np
 
+
 def currency_url(currency_id, start_date, end_date):
     url = 'https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?'
     'method=gerarCSVFechamentoMoedaNoPeriodo&'
