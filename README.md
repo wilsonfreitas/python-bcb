@@ -5,7 +5,7 @@ This package interfaces the [Brazilian Central Bank web services](https://www3.b
 
 **bcb** is avalilable at PyPI, so it is pip instalable.
 
-	pip install bcb
+	pip install python-bcb
 
 ## Using
 
