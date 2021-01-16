@@ -2,7 +2,7 @@
 import re
 import warnings
 from io import BytesIO, StringIO
-from datetime import date, timedelta
+from datetime import datetime, date, timedelta
 
 import requests
 from lxml import html
@@ -12,10 +12,12 @@ import numpy as np
 
 
 def currency_url(currency_id, start_date, end_date):
-    url = 'https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?'
-    'method=gerarCSVFechamentoMoedaNoPeriodo&'
-    'ChkMoeda={}&DATAINI={:%d/%m/%Y}&DATAFIM={:%d/%m/%Y}'
-    return url.format(currency_id, start_date, end_date)
+    start_date = Date(start_date)
+    end_date = Date(end_date)
+    url = ('https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?'
+           'method=gerarCSVFechamentoMoedaNoPeriodo&'
+           'ChkMoeda={}&DATAINI={:%d/%m/%Y}&DATAFIM={:%d/%m/%Y}')
+    return url.format(currency_id, start_date.date, end_date.date)
 
 
 CACHE = dict()
@@ -27,7 +29,6 @@ def currency_id_list():
     else:
         url1 = ('https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?'
                 'method=exibeFormularioConsultaBoletim')
-        print(url1)
         res = requests.get(url1)
         if res.status_code != 200:
             msg = f'BCB API Request error, status code = {res.status_code}'
@@ -91,16 +92,17 @@ def get_symbol(symbol, start_date, end_date):
         x = re.sub(r'\W+$', '', x)
         msg = "BCB API returned error: {} - {}".format(x, symbol)
         warnings.warn(msg)
+        return None
 
-    columns = ['date', 'aa', 'bb', 'cc', 'bid', 'ask', 'dd', 'ee']
+    columns = ['Date', 'aa', 'bb', 'cc', 'bid', 'ask', 'dd', 'ee']
     df = pd.read_csv(StringIO(res.text), delimiter=';', header=None,
                      names=columns, dtype=str)
     df = df.assign(
-        date=lambda x: pd.to_datetime(x['date'], format='%d%m%Y'),
+        Date=lambda x: pd.to_datetime(x['Date'], format='%d%m%Y'),
         bid=lambda x: x['bid'].str.replace(',', '.').astype(np.float64),
         ask=lambda x: x['ask'].str.replace(',', '.').astype(np.float64),
     )
-    df1 = df.set_index('date')
+    df1 = df.set_index('Date')
     n = ['bid', 'ask']
     df1 = df1[n]
     tuples = list(zip([symbol]*len(n), n))
@@ -109,8 +111,53 @@ def get_symbol(symbol, start_date, end_date):
 
 
 def get(symbols, start_date, end_date):
+    if isinstance(symbols, str):
+        symbols = [symbols]
     dss = []
     for symbol in symbols:
         df1 = get_symbol(symbol, start_date, end_date)
-        dss.append(df1)
-    return pd.concat(dss, axis=1)
+        if df1 is not None:
+            dss.append(df1)
+    if len(dss) > 0:
+        return pd.concat(dss, axis=1)
+    else:
+        return None
+
+
+class Date(object):
+    def __init__(self, d=None, format='%Y-%m-%d'):
+        d = d if d else date.today()
+        if isinstance(d, str):
+            d = datetime.strptime(d, format).date()
+        elif isinstance(d, datetime):
+            d = d.date()
+        elif isinstance(d, Date):
+            d = d.date
+        elif isinstance(d, date):
+            pass
+        else:
+            raise ValueError()
+        self.date = d
+
+    def format(self, fmts='%Y-%m-%d'):
+        return datetime.strftime(self.date, fmts)
+
+    def __gt__(self, other):
+        return self.date > other.date
+
+    def __ge__(self, other):
+        return self.date >= other.date
+
+    def __lt__(self, other):
+        return self.date < other.date
+
+    def __le__(self, other):
+        return self.date <= other.date
+
+    def __eq__(self, other):
+        return self.date == other.date
+
+    def __repr__(self):
+        return self.format()
+
+    __str__ = __repr__
