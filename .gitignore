@@ -4,3 +4,6 @@ __pycache__
 .vscode
 .pytest_cache
 *.code-workspace
+*.egg-info
+build
+dist
