@@ -6,7 +6,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='python-bcb',
-    version='0.1.0',
+    version='0.1.1',
     packages=setuptools.find_packages(),
     author='Wilson Freitas',
     author_email='wilson.freitas@gmail.com',
