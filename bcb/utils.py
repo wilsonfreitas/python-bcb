@@ -1,12 +1,15 @@
 
-from datetime import datetime
+from datetime import datetime, date
 
 
 class Date:
-    def __init__(self, d=None, format='%Y-%m-%d'):
-        d = d if d else date.today()
+    def __init__(self, d=None, format='%Y-%m-%d', mindate=date(1900, 1, 1)):
+        d = d if d else mindate
         if isinstance(d, str):
-            d = datetime.strptime(d, format).date()
+            if d == 'now' or d == 'today':
+                d = date.today()
+            else:
+                d = datetime.strptime(d, format).date()
         elif isinstance(d, datetime):
             d = d.date()
         elif isinstance(d, Date):
