@@ -107,7 +107,7 @@ def get_symbol(symbol, start_date, end_date):
     df1 = df.set_index('Date')
     n = ['bid', 'ask']
     df1 = df1[n]
-    tuples = list(zip([symbol]*len(n), n))
+    tuples = list(zip([symbol] * len(n), n))
     df1.columns = pd.MultiIndex.from_tuples(tuples)
     return df1
 
