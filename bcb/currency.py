@@ -10,7 +10,7 @@ from lxml import html
 import pandas as pd
 import numpy as np
 
-from util import Date
+from utils import Date
 
 
 def currency_url(currency_id, start_date, end_date):
