@@ -45,21 +45,25 @@ def currency_id_list():
         return df
 
 
-def get_valid_currency_list(_date=date.today()):
-    url2 = 'http://www4.bcb.gov.br/Download/fechamento/M{}.csv'
-    url2 = url2.format(_date.strftime('%Y%m%d'))
-    res = requests.get(url2)
+def get_valid_currency_list(_date, n=0):
+    url2 = f'http://www4.bcb.gov.br/Download/fechamento/M{_date:%Y%m%d}.csv'
+    try:
+        res = requests.get(url2)
+    except requests.exceptions.ConnectionError as ex:
+        if n >= 3:
+            raise ex
+        return get_valid_currency_list(_date, n + 1)
     if res.status_code == 200:
         return res
     else:
-        return get_valid_currency_list(_date - timedelta(1))
+        return get_valid_currency_list(_date - timedelta(1), 0)
 
 
 def get_currency_list():
     if CACHE.get('TEMP_FILE_CURRENCY_LIST') is not None:
         return CACHE.get('TEMP_FILE_CURRENCY_LIST')
     else:
-        res = get_valid_currency_list()
+        res = get_valid_currency_list(date.today())
         df = pd.read_csv(StringIO(res.text), delimiter=';')
         df.columns = ['code', 'name', 'symbol', 'country_code', 'country_name',
                       'type', 'exclusion_date']
