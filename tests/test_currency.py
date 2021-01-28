@@ -1,7 +1,7 @@
 
 import sys
 sys.path.append('.')
-from datetime import datetime
+from datetime import datetime, date
 import pandas as pd
 from bcb import currency
 
@@ -23,3 +23,8 @@ def test_currency_get_symbol():
     assert x is None
     x = currency.get(['ZAR', 'ZZ1'], start_date, end_date)
     assert x is None
+
+
+def test_get_valid_currency_list():
+    x = currency.get_valid_currency_list(date.today())
+    assert x is not None
