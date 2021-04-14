@@ -1,6 +1,12 @@
 
 # Changelog
 
+## [0.1.3] - 2021-04-14
+- BUG fix in get_valid_currency_list: recurrent ConnectionError
+- Added side and group_by arguments to currency.get function
+- New notebooks with examples
+- Added join argument to sgs.get function
+
 ## [0.1.2] - 2021-01-25
 - New sgs module downloads time series from SGS BACEN's site
 - Notebooks created to show a few examples
