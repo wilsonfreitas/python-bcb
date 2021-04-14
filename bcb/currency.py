@@ -116,7 +116,7 @@ def get_symbol(symbol, start_date, end_date):
     return df1
 
 
-def get(symbols, start_date, end_date, side='ask'):
+def get(symbols, start_date, end_date, side='ask', group_by='symbol'):
     if isinstance(symbols, str):
         symbols = [symbols]
     dss = []
@@ -125,14 +125,15 @@ def get(symbols, start_date, end_date, side='ask'):
         if df1 is not None:
             dss.append(df1)
     if len(dss) > 0:
+        df = pd.concat(dss, axis=1)
         if side in ('bid', 'ask'):
-            df = pd.concat(dss, axis=1)
-            ix = pd.IndexSlice
-            dx = df.loc[:, ix[:, side]]
-            dx.columns = [c[0] for c in dx.columns]
-            return dx
+            dx = df.reorder_levels([1, 0], axis=1).sort_index(axis=1)
+            return dx[side]
         elif side == 'both':
-            return pd.concat(dss, axis=1)
+            if group_by == 'symbol':
+                return df
+            elif group_by == 'side':
+                return df.reorder_levels([1, 0], axis=1).sort_index(axis=1)
         else:
             raise Exception(f'Unknown side value, use: bid, ask, both')
     else:
