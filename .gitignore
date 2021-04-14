@@ -7,4 +7,4 @@ __pycache__
 *.egg-info
 build
 dist
-notebooks/.ipynb_checkpoints/sgs get series-checkpoint.ipynb
+*checkpoint.ipynb
