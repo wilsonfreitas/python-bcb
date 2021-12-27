@@ -1,23 +1,34 @@
-**bcb** is an interface to structure the information provided by the [Brazilian Central Bank](https://www.bcb.gov.br).
-This package interfaces the [Brazilian Central Bank web services](https://www3.bcb.gov.br/sgspub) to provide data already formatted into pandas's data structures and download currency data from [Brazilian Centra Bank](https://www.bcb.gov.br) web site.
+# python-bcb
 
-## Install
+**python-bcb** é uma interface em Python estruturada para obter informações
+da API de dados abertos do [Banco Central do Brasil](https://www.bcb.gov.br).
 
-**python-bcb** is avalilable at PyPI, so it is pip instalable.
+[![image](https://img.shields.io/pypi/v/python-bcb.svg)](https://pypi.python.org/pypi/python-bcb/)
+![Sphinx workflow](https://github.com/wilsonfreitas/python-bcb/actions/workflows/sphinx.yml/badge.svg)
 
-	pip install python-bcb
 
-## Using
+O projeto de [Dados Abertos do Banco Central do Brasil](https://dadosabertos.bcb.gov.br/)
+disponibiliza diversas APIs provendo acesso direto a dados de:
 
-Getting currency rates data.
+* Moedas
+* Taxas de Juros
+* Índices de preços
+* Informações de Instituições Financeiras
+* Expectativas do Mercado (Expectativas do Boletim FOCUS)
+* E muito outros ...
 
-```python
-from bcb  import currency
-from datetime import date
+# Instalação
 
-currency.get('USD', start=date(2020, 12, 1), end=date(2020, 12, 31))
+**python-bcb** está disponível no [Python Package Index](https://pypi.org/project/python-bcb/) e pode ser instalado via `pip` usando.
+
+```shell
+pip install python-bcb
 ```
 
-The rates are quoted in BRL.
+# Módulos
 
+`sgs`
+:	Utiliza o webservice do SGS ([Sistema Gerenciador de Séries Temporais](https://www3.bcb.gov.br/sgspub/)). Diversas séries estão disponíveis no SGS: taxas de juros, índices de preços, indicadores econômicos, ....
 
+`currency`
+:	Implementado no módulo `currency` que obtem dados de séries temporais de moedas do site <https://www.bcb.gov.br/conversao> via webscraping.
