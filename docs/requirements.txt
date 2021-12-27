@@ -3,3 +3,5 @@ pydata-sphinx-theme
 myst-parser
 sphinx
 pandas
+lxml
+numpy
