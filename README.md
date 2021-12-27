@@ -3,7 +3,7 @@ This package interfaces the [Brazilian Central Bank web services](https://www3.b
 
 ## Install
 
-**bcb** is avalilable at PyPI, so it is pip instalable.
+**python-bcb** is avalilable at PyPI, so it is pip instalable.
 
 	pip install python-bcb
 
@@ -15,7 +15,7 @@ Getting currency rates data.
 from bcb  import currency
 from datetime import date
 
-currency.get('USD', start_date=date(2020, 12, 1), end_date=date(2020, 12, 31))
+currency.get('USD', start=date(2020, 12, 1), end=date(2020, 12, 31))
 ```
 
 The rates are quoted in BRL.
