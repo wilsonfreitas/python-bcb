@@ -52,12 +52,12 @@ def _get_url_and_payload(code, start_date, end_date, last):
 
 
 def format_df(df, code):
-    cns = {'data': 'Date', 'valor': code.name, 'datafim': 'end_date'}
+    cns = {'data': 'Date', 'valor': code.name, 'datafim': 'enddate'}
     df = df.rename(columns=cns)
     if 'Date' in df:
         df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y')
-    if 'end_date' in df:
-        df['end_date'] = pd.to_datetime(df['end_date'], format='%d/%m/%Y')
+    if 'enddate' in df:
+        df['enddate'] = pd.to_datetime(df['enddate'], format='%d/%m/%Y')
     df = df.set_index('Date')
     return df
 
