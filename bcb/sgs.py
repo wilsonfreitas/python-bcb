@@ -63,6 +63,48 @@ def format_df(df, code):
 
 
 def get(codes, start=None, end=None, last=0, multi=True):
+    '''
+    Retorna um DataFrame pandas com séries temporais obtidas do SGS.
+
+    Parameters
+    ----------
+
+    ``symbols`` : {int, List[int], List[str], Dict[str:int]}
+        Este argumento pode ser uma das opções:
+
+        ``int`` : código da série temporal
+
+        ``list`` ou ``tuple`` : lista ou tupla com pares ``('nome', código)``
+
+        ``dict`` : dicionário com pares ``{'nome': código}``
+
+        Com códigos numéricos é interessante utilizar os nomes com os códigos
+        para definir os nomes nas colunas das séries temporais.
+    ``start`` : str, int, date, datetime, Timestamp
+        Data de início da série.
+        Interpreta diferentes tipos e formatos de datas.
+    ``end`` : string, int, date, datetime, Timestamp
+        Data de início da série.
+        Interpreta diferentes tipos e formatos de datas.
+    ``last`` : int
+        Retorna os últimos ``last`` elementos disponíveis da série temporal
+        solicitada. Se ``last`` for maior que 0 (zero) os argumentos ``start``
+        e ``end`` são ignorados.
+    ``multi`` : bool
+        Define se, quando mais de 1 série for solicitada, a função retorna uma
+        série multivariada ou uma lista com séries univariadas.
+
+    Returns
+    -------
+
+    ``DataFrame`` :
+        série temporal univariada ou multivariada,
+        quando solicitado mais de uma série.
+
+    ``list`` :
+        lista com séries temporais univariadas,
+        quando solicitado mais de uma série.
+    '''
     dfs = []
     for code in _codes(codes):
         urd = _get_url_and_payload(code.value, start, end, last)

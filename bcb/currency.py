@@ -12,6 +12,11 @@ import numpy as np
 
 from .utils import Date
 
+'''
+Module currency
+===============
+'''
+
 
 def currency_url(currency_id, start_date, end_date):
     start_date = Date(start_date)
@@ -116,7 +121,36 @@ def get_symbol(symbol, start_date, end_date):
     return df1
 
 
-def get(symbols, start, end, side='ask', group_by='symbol'):
+def get(symbols, start, end, side='ask', groupby='symbol'):
+    '''
+    Retorna um DataFrame pandas com séries temporais obtidas do SGS.
+
+    Parameters
+    ----------
+
+    symbols : str, List[str]
+        Códigos das moedas padrão ISO. O código de uma única moeda que
+        retorna uma série temporal univariada e uma lista de códigos
+        retorna uma série temporal multivariada.
+    start : str, int, date, datetime, Timestamp
+        Data de início da série.
+        Interpreta diferentes tipos e formatos de datas.
+    end : string, int, date, datetime, Timestamp
+        Data de início da série.
+        Interpreta diferentes tipos e formatos de datas.
+    side : str
+        Define se a série retornada vem com os ``ask`` prices,
+        ``bid`` prices ou ``both`` para ambos.
+    groupby : str
+        Define se os índices de coluna são agrupados por ``symbol`` ou
+        por ``side``.
+
+    Returns
+    -------
+
+    DataFrame :
+        série temporal.
+    '''
     if isinstance(symbols, str):
         symbols = [symbols]
     dss = []
@@ -130,9 +164,9 @@ def get(symbols, start, end, side='ask', group_by='symbol'):
             dx = df.reorder_levels([1, 0], axis=1).sort_index(axis=1)
             return dx[side]
         elif side == 'both':
-            if group_by == 'symbol':
+            if groupby == 'symbol':
                 return df
-            elif group_by == 'side':
+            elif groupby == 'side':
                 return df.reorder_levels([1, 0], axis=1).sort_index(axis=1)
         else:
             raise Exception(f'Unknown side value, use: bid, ask, both')
