@@ -1,6 +1,4 @@
 
-from datetime import datetime
-import warnings
 from io import StringIO
 
 import requests
