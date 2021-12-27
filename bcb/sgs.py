@@ -62,7 +62,7 @@ def format_df(df, code):
     return df
 
 
-def get(codes, start=None, end=None, last=0, join=False):
+def get(codes, start=None, end=None, last=0, multi=True):
     dfs = []
     for code in _codes(codes):
         urd = _get_url_and_payload(code.value, start, end, last)
@@ -75,7 +75,7 @@ def get(codes, start=None, end=None, last=0, join=False):
     if len(dfs) == 1:
         return dfs[0]
     else:
-        if join:
+        if multi:
             return pd.concat(dfs, axis=1)
         else:
             return dfs
