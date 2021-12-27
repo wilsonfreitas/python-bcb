@@ -1,6 +1,9 @@
 
 # Changelog
 
+## [0.1.4] - 2021-12-27
+- Changed arguments start_date and end_date to start and end to bring conformity with commom python data libraries like Quandl and pandas-datareader, for example.
+
 ## [0.1.3] - 2021-04-14
 - BUG fix in get_valid_currency_list: recurrent ConnectionError
 - Added side and group_by arguments to currency.get function

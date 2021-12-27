@@ -116,12 +116,12 @@ def get_symbol(symbol, start_date, end_date):
     return df1
 
 
-def get(symbols, start_date, end_date, side='ask', group_by='symbol'):
+def get(symbols, start, end, side='ask', group_by='symbol'):
     if isinstance(symbols, str):
         symbols = [symbols]
     dss = []
     for symbol in symbols:
-        df1 = get_symbol(symbol, start_date, end_date)
+        df1 = get_symbol(symbol, start, end)
         if df1 is not None:
             dss.append(df1)
     if len(dss) > 0:

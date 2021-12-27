@@ -64,10 +64,10 @@ def format_df(df, code):
     return df
 
 
-def get(codes, start_date=None, end_date=None, last=0, join=False):
+def get(codes, start=None, end=None, last=0, join=False):
     dfs = []
     for code in _codes(codes):
-        urd = _get_url_and_payload(code.value, start_date, end_date, last)
+        urd = _get_url_and_payload(code.value, start, end, last)
         res = requests.get(urd['url'], params=urd['payload'])
         if res.status_code != 200:
             raise Exception('Download error: code = {}'.format(code.value))
