@@ -2,7 +2,7 @@
 import re
 import warnings
 from io import BytesIO, StringIO
-from datetime import datetime, date, timedelta
+from datetime import date, timedelta
 
 import requests
 from lxml import html
