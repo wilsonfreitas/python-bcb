@@ -84,7 +84,7 @@ def test_get_series():
     assert x.columns == ['USDBRL']
     assert len(x) == 5
 
-    x = sgs.get({'USDBRL': 1}, start_date='2021-01-18', end_date='2021-01-22')
+    x = sgs.get({'USDBRL': 1}, start='2021-01-18', end='2021-01-22')
     assert isinstance(x, pd.DataFrame)
     assert x.columns == ['USDBRL']
     assert len(x) == 5
