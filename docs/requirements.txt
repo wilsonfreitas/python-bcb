@@ -2,3 +2,4 @@ ipython
 pydata-sphinx-theme
 myst-parser
 sphinx
+pandas
