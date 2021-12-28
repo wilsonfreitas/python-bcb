@@ -8,6 +8,9 @@ python-bcb
 
 **python-bcb** é uma interface em Python estruturada para obter informações
 da API de dados abertos do `Banco Central do Brasil <https://www.bcb.gov.br>`_.
+
+.. image:: _static/images/ipca12m-acumulado.png
+
 O projeto de `Dados Abertos do Banco Central do Brasil <https://dadosabertos.bcb.gov.br/>`_
 disponibiliza diversas APIs provendo acesso direto a dados de:
 
