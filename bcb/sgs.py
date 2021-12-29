@@ -51,7 +51,7 @@ def _get_url_and_payload(code, start_date, end_date, last):
     }
 
 
-def _format_df(df, code):
+def _format_df(df, code, freq):
     cns = {'data': 'Date', 'valor': code.name, 'datafim': 'enddate'}
     df = df.rename(columns=cns)
     if 'Date' in df:
@@ -59,10 +59,12 @@ def _format_df(df, code):
     if 'enddate' in df:
         df['enddate'] = pd.to_datetime(df['enddate'], format='%d/%m/%Y')
     df = df.set_index('Date')
+    if freq:
+        df.index = df.index.to_period(freq)
     return df
 
 
-def get(codes, start=None, end=None, last=0, multi=True):
+def get(codes, start=None, end=None, last=0, multi=True, freq=None):
     '''
     Retorna um DataFrame pandas com séries temporais obtidas do SGS.
 
@@ -112,7 +114,7 @@ def get(codes, start=None, end=None, last=0, multi=True):
         if res.status_code != 200:
             raise Exception('Download error: code = {}'.format(code.value))
         df = pd.read_json(StringIO(res.text))
-        df = _format_df(df, code)
+        df = _format_df(df, code, freq)
         dfs.append(df)
     if len(dfs) == 1:
         return dfs[0]
