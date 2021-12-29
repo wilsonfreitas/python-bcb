@@ -12,13 +12,8 @@ import numpy as np
 
 from .utils import Date
 
-'''
-Module currency
-===============
-'''
 
-
-def currency_url(currency_id, start_date, end_date):
+def _currency_url(currency_id, start_date, end_date):
     start_date = Date(start_date)
     end_date = Date(end_date)
     url = ('https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?'
@@ -30,7 +25,7 @@ def currency_url(currency_id, start_date, end_date):
 CACHE = dict()
 
 
-def currency_id_list():
+def _currency_id_list():
     if CACHE.get('TEMP_CURRENCY_ID_LIST') is not None:
         return CACHE.get('TEMP_CURRENCY_ID_LIST')
     else:
@@ -50,25 +45,31 @@ def currency_id_list():
         return df
 
 
-def get_valid_currency_list(_date, n=0):
+def _get_valid_currency_list(_date, n=0):
     url2 = f'http://www4.bcb.gov.br/Download/fechamento/M{_date:%Y%m%d}.csv'
     try:
         res = requests.get(url2)
     except requests.exceptions.ConnectionError as ex:
         if n >= 3:
             raise ex
-        return get_valid_currency_list(_date, n + 1)
+        return _get_valid_currency_list(_date, n + 1)
     if res.status_code == 200:
         return res
     else:
-        return get_valid_currency_list(_date - timedelta(1), 0)
+        return _get_valid_currency_list(_date - timedelta(1), 0)
 
 
 def get_currency_list():
+    '''
+    Return a DataFrame with information of all available currencies.
+
+    :return: DataFrame
+    :rtype: pandas.DataFrame
+    '''
     if CACHE.get('TEMP_FILE_CURRENCY_LIST') is not None:
         return CACHE.get('TEMP_FILE_CURRENCY_LIST')
     else:
-        res = get_valid_currency_list(date.today())
+        res = _get_valid_currency_list(date.today())
         df = pd.read_csv(StringIO(res.text), delimiter=';')
         df.columns = ['code', 'name', 'symbol', 'country_code', 'country_name',
                       'type', 'exclusion_date']
@@ -82,16 +83,16 @@ def get_currency_list():
         return df
 
 
-def get_currency_id(symbol):
-    id_list = currency_id_list()
+def _get_currency_id(symbol):
+    id_list = _currency_id_list()
     all_currencies = get_currency_list()
     x = pd.merge(id_list, all_currencies, on=['name'])
     return np.max(x.loc[x['symbol'] == symbol, 'id'])
 
 
-def get_symbol(symbol, start_date, end_date):
-    cid = get_currency_id(symbol)
-    url = currency_url(cid, start_date, end_date)
+def _get_symbol(symbol, start_date, end_date):
+    cid = _get_currency_id(symbol)
+    url = _currency_url(cid, start_date, end_date)
     res = requests.get(url)
 
     if res.headers['Content-Type'].startswith('text/html'):
@@ -155,7 +156,7 @@ def get(symbols, start, end, side='ask', groupby='symbol'):
         symbols = [symbols]
     dss = []
     for symbol in symbols:
-        df1 = get_symbol(symbol, start, end)
+        df1 = _get_symbol(symbol, start, end)
         if df1 is not None:
             dss.append(df1)
     if len(dss) > 0:
