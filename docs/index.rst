@@ -49,7 +49,7 @@ Módulos
 Uso
 ===
 
-.. ipython::python
+.. ipython:: python
 
    from bcb import sgs
    sgs.get(('IPCA', 433), last=12)
@@ -62,7 +62,7 @@ Uso
 
    sgs.md
    currency.rst
-   examples.rst
+   api.rst
 
 
 Índices e tabelas
@@ -70,4 +70,3 @@ Uso
 
 * :ref:`genindex`
 * :ref:`modindex`
-* :ref:`search`
