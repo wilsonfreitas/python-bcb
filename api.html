@@ -1,12 +1,12 @@
 
 <!DOCTYPE html>
 
-<html lang="pt-br">
+<html lang="pt_br">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Exemplos &#8212; python-bcb 0.1.4 documentation</title>
+    <title>API &#8212; documentação python-bcb 0.1.4</title>
     
   <link href="_static/css/theme.css" rel="stylesheet">
   <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -25,6 +25,7 @@
     
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/css/blank.css" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     
   <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
 
@@ -32,11 +33,12 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Buscar" href="search.html" />
+    <link rel="next" title="bcb.sgs" href="generated/bcb.sgs.html" />
     <link rel="prev" title="Moedas" href="currency.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="pt-br">
+    <meta name="docsearch:language" content="pt_br">
     
 
     <!-- Google Analytics -->
@@ -83,7 +85,7 @@
 
 <li class="toctree-l1 current active nav-item">
  <a class="current reference internal nav-link" href="#">
-  Exemplos
+  API
  </a>
 </li>
 
@@ -122,7 +124,19 @@
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
   <div class="bd-toc-item active">
-    
+    <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="generated/bcb.sgs.html">
+   bcb.sgs
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="generated/bcb.currency.html">
+   bcb.currency
+  </a>
+ </li>
+</ul>
+
   </div>
 </nav>
             </div>
@@ -157,33 +171,22 @@
               
               <div>
                 
-  <section id="exemplos">
-<h1>Exemplos<a class="headerlink" href="#exemplos" title="Permalink to this headline">¶</a></h1>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-
-<span class="gp">In [2]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">currency</span>
-
-<span class="gp">In [3]: </span><span class="n">df</span> <span class="o">=</span> <span class="n">currency</span><span class="o">.</span><span class="n">get</span><span class="p">([</span><span class="s1">&#39;USD&#39;</span><span class="p">,</span> <span class="s1">&#39;EUR&#39;</span><span class="p">,</span> <span class="s1">&#39;GBP&#39;</span><span class="p">,</span> <span class="s1">&#39;CHF&#39;</span><span class="p">,</span> <span class="s1">&#39;CAD&#39;</span><span class="p">],</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2000-01-01&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2021-01-01&#39;</span><span class="p">)</span>
-
-<span class="gp">In [4]: </span><span class="n">df</span>
-<span class="gh">Out[4]: </span><span class="go"></span>
-<span class="go">                CAD      CHF      EUR      GBP     USD</span>
-<span class="go">Date                                                  </span>
-<span class="go">2000-01-03  1.24507  1.15173  1.85047  2.95132  1.8011</span>
-<span class="go">2000-01-04  1.26282  1.17755  1.89150  3.00455  1.8337</span>
-<span class="go">2000-01-05  1.28033  1.19222  1.91582  3.04904  1.8544</span>
-<span class="go">2000-01-06  1.26552  1.18711  1.90761  3.04721  1.8461</span>
-<span class="go">2000-01-07  1.25619  1.16817  1.88241  2.99885  1.8281</span>
-<span class="go">...             ...      ...      ...      ...     ...</span>
-<span class="go">2020-12-24  4.03580  5.81830  6.31440  7.03960  5.1800</span>
-<span class="go">2020-12-28  4.07170  5.89180  6.40000  7.04800  5.2390</span>
-<span class="go">2020-12-29  4.05860  5.87250  6.36080  7.00800  5.1942</span>
-<span class="go">2020-12-30  4.07360  5.88730  6.39350  7.07270  5.1967</span>
-<span class="go">2020-12-31  4.07710  5.90400  6.37790  7.10080  5.1967</span>
-
-<span class="go">[5275 rows x 5 columns]</span>
-</pre></div>
-</div>
+  <section id="module-bcb">
+<span id="api"></span><h1>API<a class="headerlink" href="#module-bcb" title="Link permanente para este título">¶</a></h1>
+<table class="longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/bcb.sgs.html#module-bcb.sgs" title="bcb.sgs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bcb.sgs</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/bcb.currency.html#module-bcb.currency" title="bcb.currency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bcb.currency</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
 </section>
 
 
@@ -192,12 +195,19 @@
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="currency.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="currency.html" title="anterior página">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-subtitle">anterior</p>
             <p class="prev-next-title">Moedas</p>
         </div>
+    </a>
+    <a class='right-next' id="next-link" href="generated/bcb.sgs.html" title="próximo página">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">próximo</p>
+        <p class="prev-next-title">bcb.sgs</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
     </a>
 </div>
               

@@ -1,12 +1,12 @@
 
 <!DOCTYPE html>
 
-<html lang="pt-br">
+<html lang="pt_br">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>SGS &#8212; python-bcb 0.1.4 documentation</title>
+    <title>SGS &#8212; documentação python-bcb 0.1.4</title>
     
   <link href="_static/css/theme.css" rel="stylesheet">
   <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
@@ -25,6 +25,7 @@
     
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/css/blank.css" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     
   <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
 
@@ -32,12 +33,12 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Buscar" href="search.html" />
     <link rel="next" title="Moedas" href="currency.html" />
     <link rel="prev" title="python-bcb" href="index.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="pt-br">
+    <meta name="docsearch:language" content="pt_br">
     
 
     <!-- Google Analytics -->
@@ -83,8 +84,8 @@
 </li>
 
 <li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="examples.html">
-  Exemplos
+ <a class="reference internal nav-link" href="api.html">
+  API
  </a>
 </li>
 
@@ -159,14 +160,14 @@
               <div>
                 
   <section id="sgs">
-<h1>SGS<a class="headerlink" href="#sgs" title="Permalink to this headline">¶</a></h1>
+<h1>SGS<a class="headerlink" href="#sgs" title="Link permanente para este título">¶</a></h1>
 <p>O módulo <code class="docutils literal notranslate"><span class="pre">sgs</span></code> obtem os dados do webservice do Banco Central.</p>
-<span class="target" id="module-bcb.sgs"></span><dl class="py data">
+<dl class="py function">
 <dt class="sig sig-object py" id="bcb.sgs.get">
-<span class="sig-prename descclassname"><span class="pre">bcb.sgs.</span></span><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">codes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;function</span> <span class="pre">get&gt;</span></em><a class="headerlink" href="#bcb.sgs.get" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">bcb.sgs.</span></span><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">codes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.sgs.get" title="Link permanente para esta definição">¶</a></dt>
 <dd><p>Retorna um DataFrame pandas com séries temporais obtidas do SGS.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parâmetros</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>symbols</strong> (<em>{int</em><em>, </em><em>List</em><em>[</em><em>int</em><em>]</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>Dict</em><em>[</em><em>str:int</em><em>]</em><em>}</em>) – <p>Este argumento pode ser uma das opções:</p>
 <p><code class="docutils literal notranslate"><span class="pre">int</span></code> : código da série temporal</p>
@@ -186,7 +187,7 @@ e <code class="docutils literal notranslate"><span class="pre">end</span></code>
 série multivariada ou uma lista com séries univariadas.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Retorna</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> – série temporal univariada ou multivariada,
 quando solicitado mais de uma série.</p></li>
@@ -198,6 +199,66 @@ quando solicitado mais de uma série.</p></li>
 </dl>
 </dd></dl>
 
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">sgs</span>
+
+<span class="gp">In [2]: </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="gp">In [3]: </span><span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+
+<span class="gp">In [4]: </span><span class="n">mpl</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;bmh&#39;</span><span class="p">)</span>
+
+<span class="gp">In [5]: </span><span class="n">df</span> <span class="o">=</span> <span class="n">sgs</span><span class="o">.</span><span class="n">get</span><span class="p">({</span><span class="s1">&#39;IPCA&#39;</span><span class="p">:</span> <span class="mi">433</span><span class="p">},</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2002-02-01&#39;</span><span class="p">)</span>
+
+<span class="gp">In [6]: </span><span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_period</span><span class="p">(</span><span class="s1">&#39;M&#39;</span><span class="p">)</span>
+
+<span class="gp">In [7]: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gh">Out[7]: </span><span class="go"></span>
+<span class="go">         IPCA</span>
+<span class="go">Date         </span>
+<span class="go">2002-02  0.36</span>
+<span class="go">2002-03  0.60</span>
+<span class="go">2002-04  0.80</span>
+<span class="go">2002-05  0.21</span>
+<span class="go">2002-06  0.42</span>
+</pre></div>
+</div>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [8]: </span><span class="n">dfr</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+
+<span class="gp">In [9]: </span><span class="n">i12</span> <span class="o">=</span> <span class="n">dfr</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">x</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">prod</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span>
+
+<span class="gp">In [10]: </span><span class="n">i12</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gh">Out[10]: </span><span class="go"></span>
+<span class="go">              IPCA</span>
+<span class="go">Date              </span>
+<span class="go">2003-01  14.467041</span>
+<span class="go">2003-02  15.847124</span>
+<span class="go">2003-03  16.572608</span>
+<span class="go">2003-04  16.769209</span>
+<span class="go">2003-05  17.235307</span>
+</pre></div>
+</div>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [11]: </span><span class="n">i12</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="gh">Out[11]: </span><span class="go">&lt;AxesSubplot:xlabel=&#39;Date&#39;&gt;</span>
+
+<span class="gp">In [12]: </span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Fonte: https://dadosabertos.bcb.gov.br&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="gh">Out[12]: </span><span class="go">Text(0.5, 1.0, &#39;Fonte: https://dadosabertos.bcb.gov.br&#39;)</span>
+
+<span class="gp">In [13]: </span><span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;IPCA acumulado 12 meses - Janela Móvel&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+<span class="gh">Out[13]: </span><span class="go">Text(0.5, 0.98, &#39;IPCA acumulado 12 meses - Janela Móvel&#39;)</span>
+
+<span class="gp">In [14]: </span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Data&#39;</span><span class="p">)</span>
+<span class="gh">Out[14]: </span><span class="go">Text(0.5, 0, &#39;Data&#39;)</span>
+
+<span class="gp">In [15]: </span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;%&#39;</span><span class="p">)</span>
+<span class="gh">Out[15]: </span><span class="go">Text(0, 0.5, &#39;%&#39;)</span>
+
+<span class="gp">In [16]: </span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="./plots/sgs1.py">Source code</a>, <a class="reference external" href="./plots/sgs1.png">png</a>, <a class="reference external" href="./plots/sgs1.hires.png">hires.png</a>, <a class="reference external" href="./plots/sgs1.pdf">pdf</a>)</p>
+<figure class="align-default">
+<img alt="_images/sgs1.png" class="plot-directive" src="_images/sgs1.png" />
+</figure>
 </section>
 
 
@@ -206,16 +267,16 @@ quando solicitado mais de uma série.</p></li>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="index.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="index.html" title="anterior página">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-subtitle">anterior</p>
             <p class="prev-next-title">python-bcb</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="currency.html" title="next page">
+    <a class='right-next' id="next-link" href="currency.html" title="próximo página">
     <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-subtitle">próximo</p>
         <p class="prev-next-title">Moedas</p>
     </div>
     <i class="fas fa-angle-right"></i>
