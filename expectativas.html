@@ -1,0 +1,363 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt_br">
+  <head>
+    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Expectativas &#8212; documentação python-bcb 0.1.4</title>
+    
+    <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  
+    
+    <link rel="stylesheet"
+      href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+    
+      
+  
+    
+    <link rel="stylesheet" href="_static/styles/pydata-sphinx-theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    
+    <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Buscar" href="search.html" />
+    <link rel="next" title="APIs OData" href="odata.html" />
+    <link rel="prev" title="Moedas" href="currency.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="pt_br">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="index.html">
+<p class="title">python-bcb</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="sgs.html">
+  SGS
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="currency.html">
+  Moedas
+ </a>
+</li>
+
+<li class="toctree-l1 current active nav-item">
+ <a class="current reference internal nav-link" href="#">
+  Expectativas
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="odata.html">
+  APIs OData
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="api.html">
+  API
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/wilsonfreitas/python-bcb" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+
+<nav id="bd-toc-nav">
+    
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <section id="expectativas">
+<h1>Expectativas<a class="headerlink" href="#expectativas" title="Link permanente para este título">¶</a></h1>
+<p>A API de expectativas divulgadas no boletim FOCUS pode ser acessada através da classe
+<code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.Expectativas</span></code>.</p>
+<p>Os dados são obtidos a partir da <a class="reference external" href="https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/documentacao">API de Expectativas</a>.</p>
+<p>Integração com API de expectativas de mercado de cerca de 130
+instituições do mercado financeiro participantes do
+Sistema de Expectativas de Mercado para diversas variáveis
+macroeconômicas.</p>
+<p>Os dados são publicados no primeiro dia útil de cada semana.</p>
+<p>Para períodos para os quais não haja estatísticas serão omitidos
+na consulta.</p>
+<p>São publicadas as expectativas informadas pelas instituições que
+autorizaram a divulgação. As expectativas divulgadas possuem
+defasagem de 1 ano.</p>
+<p>Essa API tem sete <em>endpoints</em></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ExpectativasMercadoTop5Anuais</span></code>: Expectativas de mercado anuais para
+os indicadores do Top 5</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ExpectativasMercadoInstituicoes</span></code>: Expectativas de mercado informadas
+pelas instituições credenciadas</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ExpectativaMercadoMensais</span></code>: Expectativas de Mercado Mensais</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ExpectativasMercadoInflacao12Meses</span></code>: Expectativas de mercado para
+inflação nos próximos 12 meses</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ExpectativasMercadoTop5Mensais</span></code>: Expectativas de mercado mensais para
+os indicadores do Top 5</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ExpectativasMercadoTrimestrais</span></code>: Expectativas de Mercado Trimestrais</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ExpectativasMercadoAnuais</span></code>: Expectativas de Mercado Anuais</p></li>
+</ul>
+<p>Ao instanciar a classe <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.Expectativas</span></code> diversas informações
+são obtidas e a melhor maneira de interagir com a API é
+através do método <code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.Expectativas.describe()</span></code>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">Expectativas</span>
+
+<span class="gp">In [2]: </span><span class="n">em</span> <span class="o">=</span> <span class="n">Expectativas</span><span class="p">()</span>
+
+<span class="gp">In [3]: </span><span class="n">em</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+<span class="go">EntitySets:</span>
+<span class="go">  ExpectativasMercadoTop5Anuais</span>
+<span class="go">  ExpectativasMercadoInstituicoes</span>
+<span class="go">  ExpectativaMercadoMensais</span>
+<span class="go">  ExpectativasMercadoInflacao12Meses</span>
+<span class="go">  ExpectativasMercadoTop5Mensais</span>
+<span class="go">  ExpectativasMercadoTrimestrais</span>
+<span class="go">  ExpectativasMercadoAnuais</span>
+</pre></div>
+</div>
+<p>O método <code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.Expectativas.describe()</span></code> também recebe o nomes dos
+<em>endpoints</em> e apresenta uma descrição do <em>endpoint</em> trazendo o seu tipo
+<cite>EntityType</cite> e as propriedades retornadas <cite>Properties</cite> e os seus respectivos
+tipos.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [4]: </span><span class="n">em</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s1">&#39;ExpectativasMercadoTop5Anuais&#39;</span><span class="p">)</span>
+
+<span class="go">EntitySet (Endpoint): ExpectativasMercadoTop5Anuais</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual</span>
+<span class="go">Properties: Indicador&lt;str&gt;, Data&lt;str&gt;, DataReferencia&lt;str&gt;, tipoCalculo&lt;str&gt;, Media&lt;float&gt;, Mediana&lt;float&gt;, DesvioPadrao&lt;float&gt;, Minimo&lt;float&gt;, Maximo&lt;float&gt;</span>
+</pre></div>
+</div>
+<p>Esse <em>endpoint</em> retorna as colunas:</p>
+<ul class="simple">
+<li><p>Indicador</p></li>
+<li><p>Data</p></li>
+<li><p>DataReferencia</p></li>
+<li><p>tipoCalculo</p></li>
+<li><p>Media</p></li>
+<li><p>Mediana</p></li>
+<li><p>DesvioPadrao</p></li>
+<li><p>Minimo</p></li>
+<li><p>Maximo</p></li>
+</ul>
+<p>Para obter os dados de um <em>endpoint</em> é necessário obtê-lo através do
+método <code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.Expectativas.get_endpoint()</span></code> que retorna uma classe
+<code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.Endpoint</span></code>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [5]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">em</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s1">&#39;ExpectativasMercadoTop5Anuais&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A partir desse <em>endpoint</em> executar uma consulta com o método <code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.Endpoint.query()</span></code>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [6]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<span class="gh">Out[6]: </span><span class="go"></span>
+<span class="go">  Indicador        Data DataReferencia  ... DesvioPadrao  Minimo  Maximo</span>
+<span class="go">0    IGP-DI  2001-11-06           2001  ...         None    None    None</span>
+<span class="go">1    IGP-DI  2001-11-06           2002  ...         None    None    None</span>
+<span class="go">2    IGP-DI  2001-11-06           2003  ...         None    None    None</span>
+<span class="go">3    IGP-DI  2001-11-06           2004  ...         None    None    None</span>
+<span class="go">4    IGP-DI  2001-11-06           2005  ...         None    None    None</span>
+<span class="go">5    IGP-DI  2001-11-06           2001  ...         None    None    None</span>
+<span class="go">6    IGP-DI  2001-11-06           2002  ...         None    None    None</span>
+<span class="go">7    IGP-DI  2001-11-06           2003  ...         None    None    None</span>
+<span class="go">8    IGP-DI  2001-11-06           2004  ...         None    None    None</span>
+<span class="go">9    IGP-DI  2001-11-06           2005  ...         None    None    None</span>
+
+<span class="go">[10 rows x 9 columns]</span>
+</pre></div>
+</div>
+<p>O método <code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.Endpoint.query()</span></code> retorna um objeto da classe
+<code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.ODataQuery</span></code> que possui diversas características
+para a realização de consultas mais elaboradas.</p>
+<p>Note que no exemplo acima foi utilizado o método <code class="docutils literal notranslate"><span class="pre">limit</span></code> que limita
+a quantidade de resultados retornados, neste caso, em 10.</p>
+<p>É possível realizar consultas mais elaboradas, por exemplo, filtrando pelo
+indicador para que traga apenas informações do IPCA.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [7]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Indicador</span> <span class="o">==</span> <span class="s1">&#39;IPCA&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<span class="gh">Out[7]: </span><span class="go"></span>
+<span class="go">  Indicador        Data DataReferencia  ... DesvioPadrao  Minimo  Maximo</span>
+<span class="go">0      IPCA  2001-11-06           2001  ...         None    None    None</span>
+<span class="go">1      IPCA  2001-11-06           2002  ...         None    None    None</span>
+<span class="go">2      IPCA  2001-11-06           2003  ...         None    None    None</span>
+<span class="go">3      IPCA  2001-11-06           2004  ...         None    None    None</span>
+<span class="go">4      IPCA  2001-11-06           2005  ...         None    None    None</span>
+<span class="go">5      IPCA  2001-11-06           2001  ...         None    None    None</span>
+<span class="go">6      IPCA  2001-11-06           2002  ...         None    None    None</span>
+<span class="go">7      IPCA  2001-11-06           2003  ...         None    None    None</span>
+<span class="go">8      IPCA  2001-11-06           2004  ...         None    None    None</span>
+<span class="go">9      IPCA  2001-11-06           2005  ...         None    None    None</span>
+
+<span class="go">[10 rows x 9 columns]</span>
+</pre></div>
+</div>
+<p>As consultas podem ficar ainda mais elaboradas, com diversos filtros,
+ordenando colunas e selecionando as colunas na saída.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [8]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<span class="gp">   ...: </span> <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Indicador</span> <span class="o">==</span> <span class="s1">&#39;IPCA&#39;</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">DataReferencia</span> <span class="o">==</span> <span class="mi">2023</span><span class="p">)</span>
+<span class="gp">   ...: </span> <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span> <span class="o">&gt;=</span> <span class="s1">&#39;2022-01-01&#39;</span><span class="p">)</span>
+<span class="gp">   ...: </span> <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">tipoCalculo</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span>
+<span class="gp">   ...: </span> <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">Media</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">Mediana</span><span class="p">)</span>
+<span class="gp">   ...: </span> <span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
+<span class="gp">   ...: </span> <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">   ...: </span> <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[8]: </span><span class="go"></span>
+<span class="go">         Data   Media  Mediana</span>
+<span class="go">0  2022-01-07  3.3583   3.3302</span>
+<span class="go">1  2022-01-06  3.1761   3.3000</span>
+<span class="go">2  2022-01-05  3.1761   3.3000</span>
+<span class="go">3  2022-01-04  3.1761   3.3000</span>
+<span class="go">4  2022-01-03  3.1761   3.3000</span>
+</pre></div>
+</div>
+</section>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="currency.html" title="anterior página">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">anterior</p>
+            <p class="prev-next-title">Moedas</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="odata.html" title="próximo página">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">próximo</p>
+        <p class="prev-next-title">APIs OData</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+    <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2021, Wilson Freitas.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Criado usando <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

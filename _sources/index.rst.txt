@@ -21,6 +21,10 @@ disponibiliza diversas APIs provendo acesso direto a dados de:
 * Expectativas do Mercado (Expectativas do Boletim FOCUS)
 * E muito outros ...
 
+O pacote ``python-bcb`` implementa interfaces para algumas APIs
+disponibilizadas pelo Banco Central de forma que o resultado
+das consultas, na maioria dos casos, é um ``DataFrame`` pandas
+formatado com os dados.
 
 Instalação
 ==========
@@ -32,18 +36,35 @@ Instalação
    pip install python-bcb
 
 
-Módulos
-=======
+APIs implementadas
+==================
 
 ``sgs``
    Utiliza o webservice do SGS
-   (`Sistema Gerenciador de Séries Temporais <https://www3.bcb.gov.br/sgspub/>`_).
+   (`Sistema Gerenciador de Séries Temporais <https://www3.bcb.gov.br/sgspub/>`_)
+   para obter os dados.
    Diversas séries estão disponíveis no SGS: taxas de juros, índices de preços,
-   indicadores econômicos, ....
-
-``currency``
-   Implementado no módulo ``currency`` que obtem dados de séries temporais de moedas do site
-   <https://www.bcb.gov.br/conversao> via webscraping.
+   indicadores econômicos, ..., e com um simples chamado da função
+   :py:func:`bcb.sgs.get` é possível tê-las
+   em um ``DataFrame`` pandas.
+``Conversor de Moedas``
+   Implementado no módulo ``currency``, um conjunto de funções que realiza webscraping
+   no site do `Conversos de Moedas <https://www.bcb.gov.br/conversao>`_
+   do Banco Central, possível obter séries temporais de frequência diária
+   de diversas moedas.
+``Moedas OData``
+   O Banco Central disponibiliza diversas informações em APIs que
+   seguem o padrão `OData <https://odata.org>`.
+   A classe :py:class:`bcb.PTAX` implementa uma API OData que
+   entrega os boletins diários de taxas de câmbio do Banco Central.
+   Esta API entrega mais informações do que o que é obtido no
+   ``Conversor de Moedas``.
+``Expectativas``
+   A API de Expectativas de Mercado traz todas as estatísticas das variáveis
+   macroeconômicas fornecidos por um conjuto de instituições do mercado
+   financeiro.
+   A classe :py:class:`bcb.Expectativas` implementa essa interface no
+   padrão OData.
 
 
 Uso
@@ -60,9 +81,11 @@ Uso
    :maxdepth: 2
    :caption: Conteúdo:
 
-   sgs.md
-   currency.rst
-   api.rst
+   sgs
+   currency
+   expectativas
+   odata
+   api
 
 
 Índices e tabelas

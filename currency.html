@@ -1,41 +1,41 @@
 
 <!DOCTYPE html>
 
-<html lang="pt_br">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt_br">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Moedas &#8212; documentação python-bcb 0.1.4</title>
     
-  <link href="_static/css/theme.css" rel="stylesheet">
-  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
-
+    <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  
     
-  <link rel="stylesheet"
-    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-
+    <link rel="stylesheet"
+      href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
     
       
-
+  
     
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/css/blank.css" />
+    <link rel="stylesheet" href="_static/styles/pydata-sphinx-theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     
-  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
-
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Buscar" href="search.html" />
-    <link rel="next" title="API" href="api.html" />
+    <link rel="next" title="Expectativas" href="expectativas.html" />
     <link rel="prev" title="SGS" href="sgs.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="pt_br">
@@ -84,6 +84,18 @@
 </li>
 
 <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="expectativas.html">
+  Expectativas
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="odata.html">
+  APIs OData
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="api.html">
   API
  </a>
@@ -100,10 +112,8 @@
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
         <li class="nav-item">
-          <a class="nav-link" href="https://github.com/wilsonfreitas/python-bcb" rel="noopener" target="_blank" title="GitHub">
-            <span><i class="fab fa-github-square"></i></span>
-            <label class="sr-only">GitHub</label>
-          </a>
+          <a class="nav-link" href="https://github.com/wilsonfreitas/python-bcb" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
         </li>
       </ul>
       </div>
@@ -119,7 +129,8 @@
           
             
             <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -127,6 +138,9 @@
     
   </div>
 </nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
             </div>
             
           
@@ -137,9 +151,24 @@
               
               <div class="toc-item">
                 
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
 
 <nav id="bd-toc-nav">
-    
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#conversor-de-moedas">
+   Conversor de Moedas
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#api-odata">
+   API OData
+  </a>
+ </li>
+</ul>
+
 </nav>
               </div>
               
@@ -161,36 +190,14 @@
                 
   <section id="moedas">
 <h1>Moedas<a class="headerlink" href="#moedas" title="Link permanente para este título">¶</a></h1>
-<p>O módulo <code class="docutils literal notranslate"><span class="pre">currency</span></code> obtem dados de moedas do conversor de moedas do Banco Central através de webscraping.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="bcb.currency.get">
-<span class="sig-prename descclassname"><span class="pre">bcb.currency.</span></span><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ask'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupby</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'symbol'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.currency.get" title="Link permanente para esta definição">¶</a></dt>
-<dd><p>Retorna um DataFrame pandas com séries temporais obtidas do SGS.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parâmetros</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>symbols</strong> (<em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em>) – Códigos das moedas padrão ISO. O código de uma única moeda que
-retorna uma série temporal univariada e uma lista de códigos
-retorna uma série temporal multivariada.</p></li>
-<li><p><strong>start</strong> (<em>str</em><em>, </em><em>int</em><em>, </em><em>date</em><em>, </em><em>datetime</em><em>, </em><em>Timestamp</em>) – Data de início da série.
-Interpreta diferentes tipos e formatos de datas.</p></li>
-<li><p><strong>end</strong> (<em>string</em><em>, </em><em>int</em><em>, </em><em>date</em><em>, </em><em>datetime</em><em>, </em><em>Timestamp</em>) – Data de início da série.
-Interpreta diferentes tipos e formatos de datas.</p></li>
-<li><p><strong>side</strong> (<em>str</em>) – Define se a série retornada vem com os <code class="docutils literal notranslate"><span class="pre">ask</span></code> prices,
-<code class="docutils literal notranslate"><span class="pre">bid</span></code> prices ou <code class="docutils literal notranslate"><span class="pre">both</span></code> para ambos.</p></li>
-<li><p><strong>groupby</strong> (<em>str</em>) – Define se os índices de coluna são agrupados por <code class="docutils literal notranslate"><span class="pre">symbol</span></code> ou
-por <code class="docutils literal notranslate"><span class="pre">side</span></code>.</p></li>
+<p>O pacote tem 2 APIs que dão acesso a informações de moedas.</p>
+<ul class="simple">
+<li><p>Webscraping no <a class="reference internal" href="#conversor-de-moedas"><span class="std std-ref">Conversor de Moedas</span></a></p></li>
+<li><p><a class="reference internal" href="#api-odata"><span class="std std-ref">API OData</span></a> com cotações de taxas de câmbio</p></li>
 </ul>
-</dd>
-<dt class="field-even">Retorna</dt>
-<dd class="field-even"><p>série temporal.</p>
-</dd>
-<dt class="field-odd">Tipo de retorno</dt>
-<dd class="field-odd"><p>DataFrame</p>
-</dd>
-</dl>
-</dd></dl>
-
+<section id="conversor-de-moedas">
+<h2>Conversor de Moedas<a class="headerlink" href="#conversor-de-moedas" title="Link permanente para este título">¶</a></h2>
+<p>O módulo <code class="docutils literal notranslate"><span class="pre">currency</span></code> obtem dados de moedas do conversor de moedas do Banco Central através de webscraping.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">currency</span>
 
 <span class="gp">In [2]: </span><span class="n">df</span> <span class="o">=</span> <span class="n">currency</span><span class="o">.</span><span class="n">get</span><span class="p">([</span><span class="s1">&#39;USD&#39;</span><span class="p">,</span> <span class="s1">&#39;EUR&#39;</span><span class="p">],</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2000-01-01&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2021-01-01&#39;</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s1">&#39;ask&#39;</span><span class="p">)</span>
@@ -213,20 +220,6 @@ por <code class="docutils literal notranslate"><span class="pre">side</span></co
 <figure class="align-default">
 <img alt="_images/currency1.png" class="plot-directive" src="_images/currency1.png" />
 </figure>
-<dl class="py function">
-<dt class="sig sig-object py" id="bcb.currency.get_currency_list">
-<span class="sig-prename descclassname"><span class="pre">bcb.currency.</span></span><span class="sig-name descname"><span class="pre">get_currency_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bcb.currency.get_currency_list" title="Link permanente para esta definição">¶</a></dt>
-<dd><p>Return a DataFrame with information of all available currencies.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Retorna</dt>
-<dd class="field-odd"><p>DataFrame</p>
-</dd>
-<dt class="field-even">Tipo de retorno</dt>
-<dd class="field-even"><p>pandas.DataFrame</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [5]: </span><span class="n">currency</span><span class="o">.</span><span class="n">get_currency_list</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 <span class="gh">Out[5]: </span><span class="go"></span>
 <span class="go">   code               name  ... type  exclusion_date</span>
@@ -240,13 +233,60 @@ por <code class="docutils literal notranslate"><span class="pre">side</span></co
 </pre></div>
 </div>
 </section>
+<section id="api-odata">
+<h2>API OData<a class="headerlink" href="#api-odata" title="Link permanente para este título">¶</a></h2>
+<p>Diferente da interface <span class="target" id="currency">currency</span></p>
+<p>Os dados são obtidos a partir da <a class="reference external" href="https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/documentacao">API de Moedas</a>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [6]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">PTAX</span>
+
+<span class="gp">In [7]: </span><span class="n">ptax</span> <span class="o">=</span> <span class="n">PTAX</span><span class="p">()</span>
+
+<span class="gp">In [8]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+<span class="go">EntitySets:</span>
+<span class="go">  Moedas</span>
+<span class="go">FunctionImports:</span>
+<span class="go">  CotacaoMoedaPeriodoFechamento</span>
+<span class="go">  CotacaoMoedaAberturaOuIntermediario</span>
+<span class="go">  CotacaoMoedaDia</span>
+<span class="go">  CotacaoMoedaPeriodo</span>
+<span class="go">  CotacaoDolarDia</span>
+<span class="go">  CotacaoDolarPeriodo</span>
+</pre></div>
+</div>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [9]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s1">&#39;Moedas&#39;</span><span class="p">)</span>
+
+<span class="go">EntitySet (Endpoint): Moedas</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.PTAX.TipoMoeda</span>
+<span class="go">Properties: simbolo&lt;str&gt;, nomeFormatado&lt;str&gt;, tipoMoeda&lt;str&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [10]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s1">&#39;CotacaoMoedaPeriodoFechamento&#39;</span><span class="p">)</span>
+
+<span class="go">Function: CotacaoMoedaPeriodoFechamento</span>
+<span class="go">Parameters: codigoMoeda &lt;str&gt;, dataInicialCotacao &lt;str&gt;, dataFinalCotacao &lt;str&gt;</span>
+<span class="go">EntitySet: _CotacaoMoedaPeriodoFechamento</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.PTAX.TipoCotacaoDolarAberturaOuIntermediario</span>
+<span class="go">Properties: cotacaoCompra &lt;float&gt;, cotacaoVenda &lt;float&gt;, dataHoraCotacao &lt;str&gt;, tipoBoletim &lt;str&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [11]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s1">&#39;CotacaoMoedaPeriodo&#39;</span><span class="p">)</span>
+
+<span class="go">Function: CotacaoMoedaPeriodo</span>
+<span class="go">Parameters: moeda &lt;str&gt;, dataInicial &lt;str&gt;, dataFinalCotacao &lt;str&gt;</span>
+<span class="go">EntitySet: _CotacaoMoedaPeriodo</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.PTAX.TipoCotacaoMoeda</span>
+<span class="go">Properties: paridadeCompra &lt;float&gt;, paridadeVenda &lt;float&gt;, cotacaoCompra &lt;float&gt;, cotacaoVenda &lt;float&gt;, dataHoraCotacao &lt;str&gt;, tipoBoletim &lt;str&gt;</span>
+</pre></div>
+</div>
+</section>
+</section>
 
 
               </div>
               
               
               <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
+<div class='prev-next-area'>
     <a class='left-prev' id="prev-link" href="sgs.html" title="anterior página">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
@@ -254,10 +294,10 @@ por <code class="docutils literal notranslate"><span class="pre">side</span></co
             <p class="prev-next-title">SGS</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="api.html" title="próximo página">
+    <a class='right-next' id="next-link" href="expectativas.html" title="próximo página">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">próximo</p>
-        <p class="prev-next-title">API</p>
+        <p class="prev-next-title">Expectativas</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>
@@ -269,8 +309,8 @@ por <code class="docutils literal notranslate"><span class="pre">side</span></co
       </div>
     </div>
   
-  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
-<footer class="footer mt-5 mt-md-0">
+    <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">
@@ -281,7 +321,7 @@ por <code class="docutils literal notranslate"><span class="pre">side</span></co
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.2.<br>
+Criado usando <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.<br>
 </p>
     </div>
     

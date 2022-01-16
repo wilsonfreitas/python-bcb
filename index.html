@@ -1,38 +1,38 @@
 
 <!DOCTYPE html>
 
-<html lang="pt_br">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt_br">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>python-bcb &#8212; documentação python-bcb 0.1.4</title>
     
-  <link href="_static/css/theme.css" rel="stylesheet">
-  <link href="_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
-
+    <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  
     
-  <link rel="stylesheet"
-    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-
+    <link rel="stylesheet"
+      href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
     
       
-
+  
     
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/css/blank.css" />
+    <link rel="stylesheet" href="_static/styles/pydata-sphinx-theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     
-  <link rel="preload" as="script" href="_static/js/index.be7d3bbb2ef33a8344ce.js">
-
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
+    <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Buscar" href="search.html" />
     <link rel="next" title="SGS" href="sgs.html" />
@@ -83,6 +83,18 @@
 </li>
 
 <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="expectativas.html">
+  Expectativas
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="odata.html">
+  APIs OData
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
  <a class="reference internal nav-link" href="api.html">
   API
  </a>
@@ -99,10 +111,8 @@
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
         <li class="nav-item">
-          <a class="nav-link" href="https://github.com/wilsonfreitas/python-bcb" rel="noopener" target="_blank" title="GitHub">
-            <span><i class="fab fa-github-square"></i></span>
-            <label class="sr-only">GitHub</label>
-          </a>
+          <a class="nav-link" href="https://github.com/wilsonfreitas/python-bcb" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
         </li>
       </ul>
       </div>
@@ -118,7 +128,8 @@
           
             
             <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
   <i class="icon fas fa-search"></i>
   <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
 </form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
@@ -126,6 +137,9 @@
     
   </div>
 </nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
             </div>
             
           
@@ -153,8 +167,8 @@
   </a>
  </li>
  <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#modulos">
-   Módulos
+  <a class="reference internal nav-link" href="#apis-implementadas">
+   APIs implementadas
   </a>
  </li>
  <li class="toc-h1 nav-item toc-entry">
@@ -203,6 +217,10 @@ disponibiliza diversas APIs provendo acesso direto a dados de:</p>
 <li><p>Expectativas do Mercado (Expectativas do Boletim FOCUS)</p></li>
 <li><p>E muito outros …</p></li>
 </ul>
+<p>O pacote <code class="docutils literal notranslate"><span class="pre">python-bcb</span></code> implementa interfaces para algumas APIs
+disponibilizadas pelo Banco Central de forma que o resultado
+das consultas, na maioria dos casos, é um <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> pandas
+formatado com os dados.</p>
 </section>
 <section id="instalacao">
 <h1>Instalação<a class="headerlink" href="#instalacao" title="Link permanente para este título">¶</a></h1>
@@ -211,16 +229,34 @@ disponibiliza diversas APIs provendo acesso direto a dados de:</p>
 </pre></div>
 </div>
 </section>
-<section id="modulos">
-<h1>Módulos<a class="headerlink" href="#modulos" title="Link permanente para este título">¶</a></h1>
+<section id="apis-implementadas">
+<h1>APIs implementadas<a class="headerlink" href="#apis-implementadas" title="Link permanente para este título">¶</a></h1>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">sgs</span></code></dt><dd><p>Utiliza o webservice do SGS
-(<a class="reference external" href="https://www3.bcb.gov.br/sgspub/">Sistema Gerenciador de Séries Temporais</a>).
+(<a class="reference external" href="https://www3.bcb.gov.br/sgspub/">Sistema Gerenciador de Séries Temporais</a>)
+para obter os dados.
 Diversas séries estão disponíveis no SGS: taxas de juros, índices de preços,
-indicadores econômicos, ….</p>
+indicadores econômicos, …, e com um simples chamado da função
+<code class="xref py py-func docutils literal notranslate"><span class="pre">bcb.sgs.get()</span></code> é possível tê-las
+em um <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> pandas.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">currency</span></code></dt><dd><p>Implementado no módulo <code class="docutils literal notranslate"><span class="pre">currency</span></code> que obtem dados de séries temporais de moedas do site
-&lt;<a class="reference external" href="https://www.bcb.gov.br/conversao">https://www.bcb.gov.br/conversao</a>&gt; via webscraping.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">Conversor</span> <span class="pre">de</span> <span class="pre">Moedas</span></code></dt><dd><p>Implementado no módulo <code class="docutils literal notranslate"><span class="pre">currency</span></code>, um conjunto de funções que realiza webscraping
+no site do <a class="reference external" href="https://www.bcb.gov.br/conversao">Conversos de Moedas</a>
+do Banco Central, possível obter séries temporais de frequência diária
+de diversas moedas.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">Moedas</span> <span class="pre">OData</span></code></dt><dd><p>O Banco Central disponibiliza diversas informações em APIs que
+seguem o padrão <cite>OData &lt;https://odata.org&gt;</cite>.
+A classe <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.PTAX</span></code> implementa uma API OData que
+entrega os boletins diários de taxas de câmbio do Banco Central.
+Esta API entrega mais informações do que o que é obtido no
+<code class="docutils literal notranslate"><span class="pre">Conversor</span> <span class="pre">de</span> <span class="pre">Moedas</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">Expectativas</span></code></dt><dd><p>A API de Expectativas de Mercado traz todas as estatísticas das variáveis
+macroeconômicas fornecidos por um conjuto de instituições do mercado
+financeiro.
+A classe <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.Expectativas</span></code> implementa essa interface no
+padrão OData.</p>
 </dd>
 </dl>
 </section>
@@ -232,7 +268,6 @@ indicadores econômicos, ….</p>
 <span class="gh">Out[2]: </span><span class="go"></span>
 <span class="go">            IPCA</span>
 <span class="go">Date            </span>
-<span class="go">2020-12-01  1.35</span>
 <span class="go">2021-01-01  0.25</span>
 <span class="go">2021-02-01  0.86</span>
 <span class="go">2021-03-01  0.93</span>
@@ -244,16 +279,32 @@ indicadores econômicos, ….</p>
 <span class="go">2021-09-01  1.16</span>
 <span class="go">2021-10-01  1.25</span>
 <span class="go">2021-11-01  0.95</span>
+<span class="go">2021-12-01  0.73</span>
 </pre></div>
 </div>
 <div class="toctree-wrapper compound">
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Conteúdo:</span></p>
+<p><span class="caption-text">Conteúdo:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="sgs.html">SGS</a></li>
-<li class="toctree-l1"><a class="reference internal" href="currency.html">Moedas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="currency.html">Moedas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="currency.html#conversor-de-moedas">Conversor de Moedas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="currency.html#api-odata">API OData</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="expectativas.html">Expectativas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="odata.html">APIs OData</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="odata.html#bcb-baseodataapi"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.BaseODataAPI</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="odata.html#bcb-endpoints"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.Endpoints</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="odata.html#bcb-odata-odataquery"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.ODataQuery</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="odata.html#aplicacao-expectativas">Aplicação - Expectativas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="odata.html#aplicacao-moedas">Aplicação - Moedas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="odata.html#conclusao">Conclusão</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="generated/bcb.sgs.html">bcb.sgs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="generated/bcb.currency.html">bcb.currency</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#modulo-bcb-sgs">Módulo <span class="xref std std-ref">bcb.sgs</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#modulo-bcb-currency">Módulo <span class="xref std std-ref">bcb.currency</span></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#apis-odata">APIs OData</a></li>
 </ul>
 </li>
 </ul>
@@ -288,8 +339,8 @@ indicadores econômicos, ….</p>
       </div>
     </div>
   
-  <script src="_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
-<footer class="footer mt-5 mt-md-0">
+    <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">
@@ -300,7 +351,7 @@ indicadores econômicos, ….</p>
     
     <div class="footer-item">
       <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.3.2.<br>
+Criado usando <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.<br>
 </p>
     </div>
     
