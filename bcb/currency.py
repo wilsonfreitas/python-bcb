@@ -124,7 +124,7 @@ def _get_symbol(symbol, start_date, end_date):
 
 def get(symbols, start, end, side='ask', groupby='symbol'):
     '''
-    Retorna um DataFrame pandas com séries temporais obtidas do SGS.
+    Retorna um DataFrame pandas com séries temporais com taxas de câmbio.
 
     Parameters
     ----------
