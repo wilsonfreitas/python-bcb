@@ -1,6 +1,12 @@
 
 # Changelog
 
+## [0.1.6] - 2022-01-16
+- Updated README
+- Updated requirements files including `httpx`
+- Added `autosummary_generate` to sphinx conf.py
+
+
 ## [0.1.5] - 2022-01-16
 - Implemented the definetive wraper for OData APIs.
   - A few APIs have been unlocked: Expectativas, PTAX, taxaJuros, MercadoImobiliario, SPI
