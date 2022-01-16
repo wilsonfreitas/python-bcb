@@ -1,6 +1,11 @@
 
 # Changelog
 
+## [0.1.5] - 2022-01-16
+- Implemented the definetive wraper for OData APIs.
+  - A few APIs have been unlocked: Expectativas, PTAX, taxaJuros, MercadoImobiliario, SPI
+- Updated documentation
+
 ## [0.1.4] - 2021-12-27
 - Changed arguments start_date and end_date to start and end to bring conformity with commom python data libraries like Quandl and pandas-datareader, for example.
 - bcb.currency.get multi argument, which refers to multivariate time series returned (defaults to True)

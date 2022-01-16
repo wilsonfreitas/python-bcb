@@ -4,6 +4,8 @@ requires = [
     "wheel",
     "lxml",
     "pandas",
-    "numpy"
+    "numpy",
+    "requests",
+    "httpx"
 ]
 build-backend = "setuptools.build_meta"
