@@ -1,8 +1,9 @@
 ipython
 pydata-sphinx-theme
-myst-parser
 sphinx
 pandas
 lxml
 numpy
 matplotlib
+httpx
+requests
