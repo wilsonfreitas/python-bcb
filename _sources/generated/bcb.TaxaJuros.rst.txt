@@ -1,0 +1,30 @@
+bcb.TaxaJuros
+=============
+
+.. currentmodule:: bcb
+
+.. autoclass:: TaxaJuros
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~TaxaJuros.__init__
+      ~TaxaJuros.describe
+      ~TaxaJuros.get_endpoint
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~TaxaJuros.BASE_URL
+   
+   

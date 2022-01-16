@@ -1,0 +1,24 @@
+bcb.Endpoint
+============
+
+.. currentmodule:: bcb
+
+.. autoclass:: Endpoint
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Endpoint.__init__
+      ~Endpoint.get
+      ~Endpoint.query
+   
+   
+
+   
+   
+   

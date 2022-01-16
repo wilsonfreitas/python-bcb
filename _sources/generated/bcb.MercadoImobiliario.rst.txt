@@ -1,0 +1,30 @@
+bcb.MercadoImobiliario
+======================
+
+.. currentmodule:: bcb
+
+.. autoclass:: MercadoImobiliario
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MercadoImobiliario.__init__
+      ~MercadoImobiliario.describe
+      ~MercadoImobiliario.get_endpoint
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MercadoImobiliario.BASE_URL
+   
+   

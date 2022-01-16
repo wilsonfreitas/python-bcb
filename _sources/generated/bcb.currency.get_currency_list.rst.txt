@@ -1,0 +1,6 @@
+bcb.currency.get\_currency\_list
+================================
+
+.. currentmodule:: bcb.currency
+
+.. autofunction:: get_currency_list

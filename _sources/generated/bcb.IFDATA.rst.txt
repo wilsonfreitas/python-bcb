@@ -1,0 +1,30 @@
+bcb.IFDATA
+==========
+
+.. currentmodule:: bcb
+
+.. autoclass:: IFDATA
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~IFDATA.__init__
+      ~IFDATA.describe
+      ~IFDATA.get_endpoint
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~IFDATA.BASE_URL
+   
+   

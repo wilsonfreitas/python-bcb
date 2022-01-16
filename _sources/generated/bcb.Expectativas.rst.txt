@@ -1,0 +1,30 @@
+bcb.Expectativas
+================
+
+.. currentmodule:: bcb
+
+.. autoclass:: Expectativas
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Expectativas.__init__
+      ~Expectativas.describe
+      ~Expectativas.get_endpoint
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Expectativas.BASE_URL
+   
+   

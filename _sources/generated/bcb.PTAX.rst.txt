@@ -1,0 +1,30 @@
+bcb.PTAX
+========
+
+.. currentmodule:: bcb
+
+.. autoclass:: PTAX
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~PTAX.__init__
+      ~PTAX.describe
+      ~PTAX.get_endpoint
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PTAX.BASE_URL
+   
+   

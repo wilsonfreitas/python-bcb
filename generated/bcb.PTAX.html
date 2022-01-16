@@ -1,0 +1,349 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt_br">
+  <head>
+    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>bcb.PTAX &#8212; documentação python-bcb 0.1.4</title>
+    
+    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  
+    
+    <link rel="stylesheet"
+      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+    
+      
+  
+    
+    <link rel="stylesheet" href="../_static/styles/pydata-sphinx-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
+    
+    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Índice" href="../genindex.html" />
+    <link rel="search" title="Buscar" href="../search.html" />
+    <link rel="next" title="bcb.IFDATA" href="bcb.IFDATA.html" />
+    <link rel="prev" title="bcb.Expectativas" href="bcb.Expectativas.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="pt_br">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../index.html">
+<p class="title">python-bcb</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../sgs.html">
+  SGS
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../currency.html">
+  Moedas
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../expectativas.html">
+  Expectativas
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../odata.html">
+  APIs OData
+ </a>
+</li>
+
+<li class="toctree-l1 current active nav-item">
+ <a class="reference internal nav-link" href="../api.html">
+  API
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/wilsonfreitas/python-bcb" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="bcb.sgs.get.html">
+   bcb.sgs.get
+  </a>
+ </li>
+</ul>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="bcb.currency.get.html">
+   bcb.currency.get
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="bcb.currency.get_currency_list.html">
+   bcb.currency.get_currency_list
+  </a>
+ </li>
+</ul>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="bcb.Endpoint.html">
+   bcb.Endpoint
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="bcb.BaseODataAPI.html">
+   bcb.BaseODataAPI
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="bcb.Expectativas.html">
+   bcb.Expectativas
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   bcb.PTAX
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="bcb.IFDATA.html">
+   bcb.IFDATA
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="bcb.TaxaJuros.html">
+   bcb.TaxaJuros
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="bcb.MercadoImobiliario.html">
+   bcb.MercadoImobiliario
+  </a>
+ </li>
+</ul>
+
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+
+<nav id="bd-toc-nav">
+    
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <section id="bcb-ptax">
+<h1>bcb.PTAX<a class="headerlink" href="#bcb-ptax" title="Link permanente para este título">¶</a></h1>
+<dl class="class">
+<dt id="bcb.PTAX">
+<em class="property">class </em><code class="sig-prename descclassname">bcb.</code><code class="sig-name descname">PTAX</code><a class="headerlink" href="#bcb.PTAX" title="Link permanente para esta definição">¶</a></dt>
+<dd><p>Integração com API OData de cotações diárias de taxas de câmbio.</p>
+<p>Essa API possui os seguintes <em>endpoints</em>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Moedas</span></code>: Retorna a lista de moedas que podem ser usadas</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CotacaoMoedaPeriodoFechamento</span></code>: Retorna os boletins diários com a
+Paridade de Compra e a Paridade de Venda no Fechamento.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CotacaoMoedaAberturaOuIntermediario</span></code>: Retorna os boletins diários
+com a Paridade de Compra e a Paridade de Venda na abertura e
+para instantes ao longo do dia (intermediários).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CotacaoMoedaDia</span></code>: Consulta dos boletins por dia para moeda
+especificada.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CotacaoMoedaPeriodo</span></code>: Consulta dos boletins por período para
+moeda especificada.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CotacaoDolarDia</span></code>: Consulta dos boletins de dólar por dia.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CotacaoDolarPeriodo</span></code>: Consulta dos boletins de dólar por período.</p></li>
+</ul>
+<p>Os boletins diários são divulgados diariamente e trazem 5 cotações
+para cada data: uma de abertura, três intermediários e uma de fechamento.</p>
+<p>Estes dados estão disponíveis desde 1984-11-28 e são referentes às taxas
+administradas, até março de 1990, e às taxas livres, a partir de então
+(Resolução 1690, de 18.3.1990).
+As taxas administradas são aquelas fixadas pelo Banco Central,
+a partir de março de 1992, essa taxa recebeu a denominação de taxa
+PTAX (fechamento).
+Até 30 de junho de 2011, as taxas livres correspondiam à média das taxas
+efetivas de operações no mercado interbancário, ponderada pelo volume de
+transações do dia.
+A partir de 1 de julho de 2011 (Circular 3506, de 2010-09-23), a Ptax
+passou a corresponder à média aritmética das taxas obtidas em quatro
+consultas diárias aos dealers de câmbio e refletem a taxa negociada no
+momento de abertura da janela de consulta.
+O boletim de fechamento PTAX corresponde à média aritmética das taxas dos
+boletins do dia.</p>
+<dl class="method">
+<dt id="bcb.PTAX.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bcb.PTAX.__init__" title="Link permanente para esta definição">¶</a></dt>
+<dd><p>BaseODataAPI construtor</p>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bcb.PTAX.__init__" title="bcb.PTAX.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>()</p></td>
+<td><p>BaseODataAPI construtor</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">describe</span></code>([endpoint])</p></td>
+<td><p>Mostra a descrição de uma API ou de um <em>endpoint</em> específico.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_endpoint</span></code>(endpoint)</p></td>
+<td><p>Obtem o <em>endpoint</em></p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">BASE_URL</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</section>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="bcb.Expectativas.html" title="anterior página">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">anterior</p>
+            <p class="prev-next-title">bcb.Expectativas</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="bcb.IFDATA.html" title="próximo página">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">próximo</p>
+        <p class="prev-next-title">bcb.IFDATA</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2021, Wilson Freitas.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Criado usando <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

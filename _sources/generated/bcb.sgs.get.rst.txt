@@ -1,0 +1,6 @@
+bcb.sgs.get
+===========
+
+.. currentmodule:: bcb.sgs
+
+.. autofunction:: get
