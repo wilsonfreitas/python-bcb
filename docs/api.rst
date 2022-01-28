@@ -38,4 +38,5 @@ APIs OData
    bcb.PTAX
    bcb.IFDATA
    bcb.TaxaJuros
+   bcb.SPI
    bcb.MercadoImobiliario
