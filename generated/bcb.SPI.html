@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>bcb.PTAX &#8212; documentação python-bcb 0.1.4</title>
+    <title>bcb.SPI &#8212; documentação python-bcb 0.1.4</title>
     
     <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -35,8 +35,8 @@
     <script type="text/javascript" src="../_static/language_data.js"></script>
     <link rel="index" title="Índice" href="../genindex.html" />
     <link rel="search" title="Buscar" href="../search.html" />
-    <link rel="next" title="bcb.IFDATA" href="bcb.IFDATA.html" />
-    <link rel="prev" title="bcb.Expectativas" href="bcb.Expectativas.html" />
+    <link rel="next" title="bcb.MercadoImobiliario" href="bcb.MercadoImobiliario.html" />
+    <link rel="prev" title="bcb.TaxaJuros" href="bcb.TaxaJuros.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="pt_br">
     
@@ -170,8 +170,8 @@
    bcb.Expectativas
   </a>
  </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
+ <li class="toctree-l1">
+  <a class="reference internal" href="bcb.PTAX.html">
    bcb.PTAX
   </a>
  </li>
@@ -185,8 +185,8 @@
    bcb.TaxaJuros
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="bcb.SPI.html">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
    bcb.SPI
   </a>
  </li>
@@ -234,54 +234,21 @@
               
               <div>
                 
-  <section id="bcb-ptax">
-<h1>bcb.PTAX<a class="headerlink" href="#bcb-ptax" title="Link permanente para este título">¶</a></h1>
+  <section id="bcb-spi">
+<h1>bcb.SPI<a class="headerlink" href="#bcb-spi" title="Link permanente para este título">¶</a></h1>
 <dl class="class">
-<dt id="bcb.PTAX">
-<em class="property">class </em><code class="sig-prename descclassname">bcb.</code><code class="sig-name descname">PTAX</code><a class="headerlink" href="#bcb.PTAX" title="Link permanente para esta definição">¶</a></dt>
-<dd><p>Integração com API OData de cotações diárias de taxas de câmbio.</p>
-<p>Essa API possui os seguintes <em>endpoints</em>:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">Moedas</span></code>: Retorna a lista de moedas que podem ser usadas</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">CotacaoMoedaPeriodoFechamento</span></code>: Retorna os boletins diários com a
-Paridade de Compra e a Paridade de Venda no Fechamento.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">CotacaoMoedaAberturaOuIntermediario</span></code>: Retorna os boletins diários
-com a Paridade de Compra e a Paridade de Venda na abertura e
-para instantes ao longo do dia (intermediários).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">CotacaoMoedaDia</span></code>: Consulta dos boletins por dia para moeda
-especificada.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">CotacaoMoedaPeriodo</span></code>: Consulta dos boletins por período para
-moeda especificada.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">CotacaoDolarDia</span></code>: Consulta dos boletins de dólar por dia.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">CotacaoDolarPeriodo</span></code>: Consulta dos boletins de dólar por período.</p></li>
-</ul>
-<p>Os boletins diários são divulgados diariamente e trazem 5 cotações
-para cada data: uma de abertura, três intermediários e uma de fechamento.</p>
-<p>Estes dados estão disponíveis desde 1984-11-28 e são referentes às taxas
-administradas, até março de 1990, e às taxas livres, a partir de então
-(Resolução 1690, de 18.3.1990).
-As taxas administradas são aquelas fixadas pelo Banco Central,
-a partir de março de 1992, essa taxa recebeu a denominação de taxa
-PTAX (fechamento).
-Até 30 de junho de 2011, as taxas livres correspondiam à média das taxas
-efetivas de operações no mercado interbancário, ponderada pelo volume de
-transações do dia.
-A partir de 1 de julho de 2011 (Circular 3506, de 2010-09-23), a Ptax
-passou a corresponder à média aritmética das taxas obtidas em quatro
-consultas diárias aos dealers de câmbio e refletem a taxa negociada no
-momento de abertura da janela de consulta.
-O boletim de fechamento PTAX corresponde à média aritmética das taxas dos
-boletins do dia.</p>
-<dl class="method">
-<dt id="bcb.PTAX.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bcb.PTAX.__init__" title="Link permanente para esta definição">¶</a></dt>
+<dt id="bcb.SPI">
+<em class="property">class </em><code class="sig-prename descclassname">bcb.</code><code class="sig-name descname">SPI</code><a class="headerlink" href="#bcb.SPI" title="Link permanente para esta definição">¶</a></dt>
+<dd><dl class="method">
+<dt id="bcb.SPI.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bcb.SPI.__init__" title="Link permanente para esta definição">¶</a></dt>
 <dd><p>BaseODataAPI construtor</p>
 </dd></dl>
 
 <p class="rubric">Methods</p>
 <table class="longtable table autosummary">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#bcb.PTAX.__init__" title="bcb.PTAX.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bcb.SPI.__init__" title="bcb.SPI.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>()</p></td>
 <td><p>BaseODataAPI construtor</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">describe</span></code>([endpoint])</p></td>
@@ -310,17 +277,17 @@ boletins do dia.</p>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="bcb.Expectativas.html" title="anterior página">
+    <a class='left-prev' id="prev-link" href="bcb.TaxaJuros.html" title="anterior página">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">anterior</p>
-            <p class="prev-next-title">bcb.Expectativas</p>
+            <p class="prev-next-title">bcb.TaxaJuros</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="bcb.IFDATA.html" title="próximo página">
+    <a class='right-next' id="next-link" href="bcb.MercadoImobiliario.html" title="próximo página">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">próximo</p>
-        <p class="prev-next-title">bcb.IFDATA</p>
+        <p class="prev-next-title">bcb.MercadoImobiliario</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

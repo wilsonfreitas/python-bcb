@@ -1,0 +1,30 @@
+bcb.SPI
+=======
+
+.. currentmodule:: bcb
+
+.. autoclass:: SPI
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SPI.__init__
+      ~SPI.describe
+      ~SPI.get_endpoint
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~SPI.BASE_URL
+   
+   
