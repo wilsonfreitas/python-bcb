@@ -1,6 +1,11 @@
 
 # Changelog
 
+## [0.1.7] - 
+- Added httpx to install_requirements
+- Updated docs
+- sgs.TaxaJuros upgraded to v2
+
 ## [0.1.6] - 2022-01-16
 - Updated README
 - Updated requirements files including `httpx`
