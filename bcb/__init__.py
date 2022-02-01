@@ -252,7 +252,7 @@ class IFDATA(BaseODataAPI):
 
 
 class TaxaJuros(BaseODataAPI):
-    BASE_URL = f'{OLINDA_BASE_URL}/taxaJuros/versao/v1/odata/'
+    BASE_URL = f'{OLINDA_BASE_URL}/taxaJuros/versao/v2/odata/'
 
 
 class MercadoImobiliario(BaseODataAPI):
