@@ -3,6 +3,7 @@
 **python-bcb** é uma interface em Python estruturada para obter informações
 da API de dados abertos do [Banco Central do Brasil](https://www.bcb.gov.br).
 
+[![Downloads](https://img.shields.io/pypi/dm/python-bcb.svg)](https://pypi.python.org/pypi/python-bcb/)
 [![image](https://img.shields.io/pypi/v/python-bcb.svg?color=green)](https://pypi.python.org/pypi/python-bcb/)
 ![Sphinx workflow](https://github.com/wilsonfreitas/python-bcb/actions/workflows/sphinx.yml/badge.svg)
 
