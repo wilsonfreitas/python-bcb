@@ -1,4 +1,4 @@
-bcb.currency.get\_currency\_list
+﻿bcb.currency.get\_currency\_list
 ================================
 
 .. currentmodule:: bcb.currency

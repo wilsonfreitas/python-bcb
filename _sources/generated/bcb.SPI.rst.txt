@@ -1,4 +1,4 @@
-bcb.SPI
+﻿bcb.SPI
 =======
 
 .. currentmodule:: bcb

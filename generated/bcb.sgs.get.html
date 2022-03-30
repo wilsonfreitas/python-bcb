@@ -1,38 +1,35 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="pt_br">
+<html lang="pt_br">
   <head>
-    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>bcb.sgs.get &#8212; documentação python-bcb 0.1.4</title>
     
-    <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-  
+
     
-    <link rel="stylesheet"
-      href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-  
-    
-      
-  
-    
-    <link rel="stylesheet" href="../_static/styles/pydata-sphinx-theme.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/plot_directive.css" />
     
-    <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-  
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
     <link rel="index" title="Índice" href="../genindex.html" />
     <link rel="search" title="Buscar" href="../search.html" />
     <link rel="next" title="bcb.currency.get" href="bcb.currency.get.html" />
@@ -44,7 +41,7 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -235,13 +232,13 @@
               <div>
                 
   <section id="bcb-sgs-get">
-<h1>bcb.sgs.get<a class="headerlink" href="#bcb-sgs-get" title="Link permanente para este título">¶</a></h1>
-<dl class="function">
-<dt id="bcb.sgs.get">
-<code class="sig-prename descclassname">bcb.sgs.</code><code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param">codes</em>, <em class="sig-param">start=None</em>, <em class="sig-param">end=None</em>, <em class="sig-param">last=0</em>, <em class="sig-param">multi=True</em>, <em class="sig-param">freq=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.sgs.get" title="Link permanente para esta definição">¶</a></dt>
+<h1>bcb.sgs.get<a class="headerlink" href="#bcb-sgs-get" title="Link permanente para este título">#</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="bcb.sgs.get">
+<span class="sig-prename descclassname"><span class="pre">bcb.sgs.</span></span><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">codes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.sgs.get" title="Link permanente para esta definição">#</a></dt>
 <dd><p>Retorna um DataFrame pandas com séries temporais obtidas do SGS.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dt class="field-odd">Parâmetros</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>symbols</strong> (<em>{int</em><em>, </em><em>List</em><em>[</em><em>int</em><em>]</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>Dict</em><em>[</em><em>str:int</em><em>]</em><em>}</em>) – <p>Este argumento pode ser uma das opções:</p>
 <p><code class="docutils literal notranslate"><span class="pre">int</span></code> : código da série temporal</p>
@@ -262,7 +259,7 @@ série multivariada ou uma lista com séries univariadas.</p></li>
 <li><p><strong>freq</strong> (<em>str</em>) – Define a frequência a ser utilizada na série temporal</p></li>
 </ul>
 </dd>
-<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dt class="field-even">Retorna</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> – série temporal univariada ou multivariada,
 quando solicitado mais de uma série.</p></li>
@@ -304,8 +301,9 @@ quando solicitado mais de uma série.</p></li>
       </div>
     </div>
   
-    <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">
@@ -316,7 +314,7 @@ quando solicitado mais de uma série.</p></li>
     
     <div class="footer-item">
       <p class="sphinx-version">
-Criado usando <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
 </p>
     </div>
     

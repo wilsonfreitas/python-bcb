@@ -1,4 +1,4 @@
-bcb.Endpoint
+﻿bcb.Endpoint
 ============
 
 .. currentmodule:: bcb

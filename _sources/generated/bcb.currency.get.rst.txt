@@ -1,4 +1,4 @@
-bcb.currency.get
+﻿bcb.currency.get
 ================
 
 .. currentmodule:: bcb.currency

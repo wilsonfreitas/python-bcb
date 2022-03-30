@@ -1,4 +1,4 @@
-bcb.sgs.get
+﻿bcb.sgs.get
 ===========
 
 .. currentmodule:: bcb.sgs

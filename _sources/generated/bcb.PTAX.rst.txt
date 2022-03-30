@@ -1,4 +1,4 @@
-bcb.PTAX
+﻿bcb.PTAX
 ========
 
 .. currentmodule:: bcb

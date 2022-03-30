@@ -1,4 +1,4 @@
-bcb.IFDATA
+﻿bcb.IFDATA
 ==========
 
 .. currentmodule:: bcb

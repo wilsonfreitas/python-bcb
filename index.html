@@ -1,38 +1,35 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml" lang="pt_br">
+<html lang="pt_br">
   <head>
-    <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>python-bcb &#8212; documentação python-bcb 0.1.4</title>
     
-    <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
 <link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-  
+
     
-    <link rel="stylesheet"
-      href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
-  
-    
-      
-  
-    
-    <link rel="stylesheet" href="_static/styles/pydata-sphinx-theme.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     
-    <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
-  
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Buscar" href="search.html" />
     <link rel="next" title="SGS" href="sgs.html" />
@@ -43,7 +40,7 @@
     <!-- Google Analytics -->
     
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
     
     <div class="container-fluid" id="banner"></div>
 
@@ -150,7 +147,7 @@
               
               <div class="toc-item">
                 
-<div class="tocsection onthispage pt-5 pb-3">
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
     <i class="fas fa-list"></i> On this page
 </div>
 
@@ -203,7 +200,7 @@
               <div>
                 
   <section id="python-bcb">
-<h1>python-bcb<a class="headerlink" href="#python-bcb" title="Link permanente para este título">¶</a></h1>
+<h1>python-bcb<a class="headerlink" href="#python-bcb" title="Link permanente para este título">#</a></h1>
 <p><strong>python-bcb</strong> é uma interface em Python estruturada para obter informações
 da API de dados abertos do <a class="reference external" href="https://www.bcb.gov.br">Banco Central do Brasil</a>.</p>
 <img alt="_images/ipca12m-acumulado.png" src="_images/ipca12m-acumulado.png" />
@@ -223,14 +220,14 @@ das consultas, na maioria dos casos, é um <code class="docutils literal notrans
 formatado com os dados.</p>
 </section>
 <section id="instalacao">
-<h1>Instalação<a class="headerlink" href="#instalacao" title="Link permanente para este título">¶</a></h1>
+<h1>Instalação<a class="headerlink" href="#instalacao" title="Link permanente para este título">#</a></h1>
 <p><strong>python-bcb</strong> está disponível no <a class="reference external" href="https://pypi.org/project/python-bcb/">Python Package Index</a> e pode ser instalado via <code class="docutils literal notranslate"><span class="pre">pip</span></code> usando.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install python-bcb
 </pre></div>
 </div>
 </section>
 <section id="apis-implementadas">
-<h1>APIs implementadas<a class="headerlink" href="#apis-implementadas" title="Link permanente para este título">¶</a></h1>
+<h1>APIs implementadas<a class="headerlink" href="#apis-implementadas" title="Link permanente para este título">#</a></h1>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">sgs</span></code></dt><dd><p>Utiliza o webservice do SGS
 (<a class="reference external" href="https://www3.bcb.gov.br/sgspub/">Sistema Gerenciador de Séries Temporais</a>)
@@ -261,7 +258,7 @@ padrão OData.</p>
 </dl>
 </section>
 <section id="uso">
-<h1>Uso<a class="headerlink" href="#uso" title="Link permanente para este título">¶</a></h1>
+<h1>Uso<a class="headerlink" href="#uso" title="Link permanente para este título">#</a></h1>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">sgs</span>
 
 <span class="gp">In [2]: </span><span class="n">sgs</span><span class="o">.</span><span class="n">get</span><span class="p">((</span><span class="s1">&#39;IPCA&#39;</span><span class="p">,</span> <span class="mi">433</span><span class="p">),</span> <span class="n">last</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
@@ -283,7 +280,7 @@ padrão OData.</p>
 </pre></div>
 </div>
 <div class="toctree-wrapper compound">
-<p><span class="caption-text">Conteúdo:</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Conteúdo:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="sgs.html">SGS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="currency.html">Moedas</a><ul>
@@ -311,7 +308,7 @@ padrão OData.</p>
 </div>
 </section>
 <section id="indices-e-tabelas">
-<h1>Índices e tabelas<a class="headerlink" href="#indices-e-tabelas" title="Link permanente para este título">¶</a></h1>
+<h1>Índices e tabelas<a class="headerlink" href="#indices-e-tabelas" title="Link permanente para este título">#</a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Índice</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Índice do Módulo</span></a></p></li>
@@ -339,8 +336,9 @@ padrão OData.</p>
       </div>
     </div>
   
-    <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-  <footer class="footer mt-5 mt-md-0">
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
   <div class="container">
     
     <div class="footer-item">
@@ -351,7 +349,7 @@ padrão OData.</p>
     
     <div class="footer-item">
       <p class="sphinx-version">
-Criado usando <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.<br>
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
 </p>
     </div>
     

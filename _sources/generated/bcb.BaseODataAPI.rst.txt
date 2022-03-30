@@ -1,4 +1,4 @@
-bcb.BaseODataAPI
+﻿bcb.BaseODataAPI
 ================
 
 .. currentmodule:: bcb

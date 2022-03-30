@@ -1,4 +1,4 @@
-bcb.TaxaJuros
+﻿bcb.TaxaJuros
 =============
 
 .. currentmodule:: bcb
