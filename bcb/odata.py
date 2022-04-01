@@ -460,7 +460,7 @@ class ODataQuery:
         return self
 
     def _build_parameters(self):
-        params = {}
+        params = {'$format': 'json'}
         if len(self._filter):
             _filter = ' and '.join(str(f) for f in self._filter)
             params['$filter'] = _filter
