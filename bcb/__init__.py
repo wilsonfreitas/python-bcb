@@ -263,6 +263,36 @@ class SPI(BaseODataAPI):
     BASE_URL = f'{OLINDA_BASE_URL}/SPI/versao/v1/odata/'
 
 
+class TarifasBancariasPorInstituicaoFinanceira(BaseODataAPI):
+    K = 'Informes_ListaTarifasPorInstituicaoFinanceira'
+    BASE_URL = f'{OLINDA_BASE_URL}/{K}/versao/v1/odata/'
+
+
+class TarifasBancariasPorServico(BaseODataAPI):
+    K = 'Informes_ListaValoresDeServicoBancario'
+    BASE_URL = f'{OLINDA_BASE_URL}/{K}/versao/v1/odata/'
+
+
+class PostosAtendimentoEletronicoPorInstituicaoFinanceira(BaseODataAPI):
+    K = 'Informes_PostosDeAtendimentoEletronico'
+    BASE_URL = f'{OLINDA_BASE_URL}/{K}/versao/v1/odata/'
+
+
+class PostosAtendimentoCorrespondentesPorInstituicaoFinanceira(BaseODataAPI):
+    K = 'Informes_Correspondentes'
+    BASE_URL = f'{OLINDA_BASE_URL}/{K}/versao/v1/odata/'
+
+
+class EstatisticasSTR(BaseODataAPI):
+    K = 'STR'
+    BASE_URL = f'{OLINDA_BASE_URL}/{K}/versao/v1/odata/'
+
+
+class DinheiroCirculacao(BaseODataAPI):
+    K = 'mecir_dinheiro_em_circulacao'
+    BASE_URL = f'{OLINDA_BASE_URL}/{K}/versao/v1/odata/'
+
+
 # /Informes_Ouvidorias/versao/v1/odata/
 # /RankingOuvidorias/versao/v1/odata/
 # /Informes_ListaTarifasPorInstituicaoFinanceira/versao/v1/odata/
