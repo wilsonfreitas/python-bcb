@@ -4,7 +4,7 @@ version = "0.1.8"
 description = ""
 authors = ["wilsonfreitas <wilson.freitas@gmail.com>"]
 readme = "README.md"
-packages = [{include = "python_bcb"}]
+packages = [{include = "bcb"}]
 
 [tool.poetry.dependencies]
 python = "^3.8"
