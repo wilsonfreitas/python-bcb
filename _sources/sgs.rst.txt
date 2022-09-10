@@ -5,6 +5,14 @@ O módulo ``sgs`` obtem os dados do webservice do Banco Central,
 interface json do serviço BCData/SGS - 
 `Sistema Gerenciador de Séries Temporais (SGS) <https://www3.bcb.gov.br/sgspub/localizarseries/localizarSeries.do?method=prepararTelaLocalizarSeries>`_.
 
+.. automodule:: bcb.sgs
+
+Função :ref:`bcb.sgs.get`
+-------------------------
+
+.. currentmodule:: bcb.sgs
+
+.. autofunction:: get
 
 .. ipython:: python
 

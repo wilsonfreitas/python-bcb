@@ -13,6 +13,11 @@ Conversor de Moedas
 
 O módulo ``currency`` obtem dados de moedas do conversor de moedas do Banco Central através de webscraping.
 
+.. currentmodule:: bcb.currency
+
+
+.. autofunction:: get
+
 
 .. ipython:: python
 
@@ -27,6 +32,9 @@ O módulo ``currency`` obtem dados de moedas do conversor de moedas do Banco Cen
 .. plot:: plots/currency1.py
 
 
+.. autofunction:: get_currency_list
+
+
 .. ipython:: python
 
     currency.get_currency_list().head()
@@ -34,13 +42,17 @@ O módulo ``currency`` obtem dados de moedas do conversor de moedas do Banco Cen
 API OData
 ---------
 
-Diferente da interface _`currency`
 
 .. _documentacao: https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/documentacao
 
 __ documentacao_
 
-Os dados são obtidos a partir da `API de Moedas`__.
+Diferente da interface _`currency`, os dados são obtidos a partir da `API de Moedas`__.
+
+.. currentmodule:: bcb
+
+
+.. autoclass:: PTAX
 
 
 .. ipython:: python

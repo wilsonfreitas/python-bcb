@@ -1,6 +1,0 @@
-﻿bcb.currency.get
-================
-
-.. currentmodule:: bcb.currency
-
-.. autofunction:: get

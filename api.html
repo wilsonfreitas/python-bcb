@@ -1,115 +1,178 @@
 
 <!DOCTYPE html>
 
-<html lang="pt_br">
+<html lang="pt-br">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>API &#8212; documentação python-bcb 0.1.4</title>
-    
+    <title>API &#8212; documentação python-bcb </title>
+  <script>
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="_static/styles/theme.css?digest=9b1a4fa89bdd0e95b23b" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=9b1a4fa89bdd0e95b23b" rel="stylesheet">
 
-    
+  
   <link rel="stylesheet"
-    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+    href="_static/vendor/fontawesome/6.1.2/css/all.min.css">
   <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+    href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2">
   <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+    href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2">
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
-    
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=9b1a4fa89bdd0e95b23b">
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api';</script>
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Buscar" href="search.html" />
-    <link rel="next" title="bcb.sgs.get" href="generated/bcb.sgs.get.html" />
     <link rel="prev" title="APIs OData" href="odata.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="pt_br">
-    
-
-    <!-- Google Analytics -->
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="docsearch:language" content="pt-br">
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-    
-    <div class="container-fluid" id="banner"></div>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
 
-    
-    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+  
+  <input type="checkbox" class="sidebar-toggle" name="__primary" id="__primary">
+  <label class="overlay overlay-primary" for="__primary"></label>
 
+  
+  <input type="checkbox" class="sidebar-toggle" name="__secondary" id="__secondary">
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+      
+<form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+    </div>
+  </div>
+
+  
+  <nav class="bd-header navbar navbar-expand-lg bd-navbar" id="navbar-main"><div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+      <span class="fas fa-bars"></span>
+  </label>
   <div id="navbar-start">
     
     
-<a class="navbar-brand" href="index.html">
-<p class="title">python-bcb</p>
-</a>
+  
 
+
+<a class="navbar-brand logo" href="index.html">
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+  
+    <p class="title logo__title">documentação python-bcb </p>
+  
+</a>
     
   </div>
 
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
   
-  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+  <div class="col-lg-9 navbar-header-items">
     <div id="navbar-center" class="mr-auto">
       
       <div class="navbar-center-item">
-        <ul id="navbar-main-elements" class="navbar-nav">
-    <li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="sgs.html">
-  SGS
- </a>
-</li>
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                <li class="nav-item">
+                    <a class="nav-link" href="sgs.html">
+                        SGS
+                    </a>
+                </li>
+                
 
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="currency.html">
-  Moedas
- </a>
-</li>
+                <li class="nav-item">
+                    <a class="nav-link" href="currency.html">
+                        Moedas
+                    </a>
+                </li>
+                
 
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="expectativas.html">
-  Expectativas
- </a>
-</li>
+                <li class="nav-item">
+                    <a class="nav-link" href="expectativas.html">
+                        Expectativas
+                    </a>
+                </li>
+                
 
-<li class="toctree-l1 nav-item">
- <a class="reference internal nav-link" href="odata.html">
-  APIs OData
- </a>
-</li>
+                <li class="nav-item">
+                    <a class="nav-link" href="odata.html">
+                        APIs OData
+                    </a>
+                </li>
+                
 
-<li class="toctree-l1 current active nav-item">
- <a class="current reference internal nav-link" href="#">
-  API
- </a>
-</li>
-
-    
-</ul>
+                <li class="nav-item current active">
+                    <a class="nav-link" href="#">
+                        API
+                    </a>
+                </li>
+                
+    </ul>
+</nav>
       </div>
       
     </div>
 
     <div id="navbar-end">
+      <div class="navbar-end-item navbar-end__search-button-container">
+        
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Buscar">
+  <i class="fas fa-search"></i>
+</button>
+      </div>
+      
+      <div class="navbar-end-item">
+        <span class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
       
       <div class="navbar-end-item">
         <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
         <li class="nav-item">
-          <a class="nav-link" href="https://github.com/wilsonfreitas/python-bcb" rel="noopener" target="_blank" title="GitHub"><span><i class="fab fa-github-square"></i></span>
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/wilsonfreitas/python-bcb" title="GitHub" class="nav-link" rel="noopener" target="_blank"><span><i class="fab fa-github-square"></i></span>
             <label class="sr-only">GitHub</label></a>
         </li>
       </ul>
@@ -117,103 +180,243 @@
       
     </div>
   </div>
+
+
+  
+  <div class="search-button-container--mobile">
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Buscar">
+  <i class="fas fa-search"></i>
+</button>
+  </div>
+
+  
+  <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fas fa-outdent"></span>
+  </label>
+  
+
 </div>
-    </nav>
+  </nav>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                <li class="nav-item">
+                    <a class="nav-link" href="sgs.html">
+                        SGS
+                    </a>
+                </li>
+                
+
+                <li class="nav-item">
+                    <a class="nav-link" href="currency.html">
+                        Moedas
+                    </a>
+                </li>
+                
+
+                <li class="nav-item">
+                    <a class="nav-link" href="expectativas.html">
+                        Expectativas
+                    </a>
+                </li>
+                
+
+                <li class="nav-item">
+                    <a class="nav-link" href="odata.html">
+                        APIs OData
+                    </a>
+                </li>
+                
+
+                <li class="nav-item current active">
+                    <a class="nav-link" href="#">
+                        API
+                    </a>
+                </li>
+                
+    </ul>
+</nav>
+      </div>
+      
+      </div>
     
 
-    <div class="container-xl">
-      <div class="row">
+    
+    
+    <div class="sidebar-header-items__end">
+      
+      <div class="navbar-end-item">
+        <span class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
           
-            
-            <!-- Only show if we have sidebars configured, else just a small margin  -->
-            <div class="col-12 col-md-3 bd-sidebar">
-              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-  <div class="bd-toc-item active">
-    <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="generated/bcb.sgs.get.html">
-   bcb.sgs.get
-  </a>
- </li>
-</ul>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="generated/bcb.currency.get.html">
-   bcb.currency.get
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="generated/bcb.currency.get_currency_list.html">
-   bcb.currency.get_currency_list
-  </a>
- </li>
-</ul>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="generated/bcb.Endpoint.html">
-   bcb.Endpoint
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="generated/bcb.BaseODataAPI.html">
-   bcb.BaseODataAPI
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="generated/bcb.Expectativas.html">
-   bcb.Expectativas
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="generated/bcb.PTAX.html">
-   bcb.PTAX
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="generated/bcb.IFDATA.html">
-   bcb.IFDATA
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="generated/bcb.TaxaJuros.html">
-   bcb.TaxaJuros
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="generated/bcb.SPI.html">
-   bcb.SPI
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="generated/bcb.MercadoImobiliario.html">
-   bcb.MercadoImobiliario
-  </a>
- </li>
-</ul>
-
+          
+          
+          
+          
+          
+          <a href="https://github.com/wilsonfreitas/python-bcb" title="GitHub" class="nav-link" rel="noopener" target="_blank"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+    
   </div>
-</nav>
-              </div>
-              <div class="sidebar-end-items">
-              </div>
+
+  
+
+  
+  <div class="sidebar-end-items sidebar-primary__section">
+    <div class="sidebar-end-items__item">
+    </div>
+  </div>
+
+      </div>
+      <main class="bd-main">
+        
+        
+        <div class="bd-content">
+          <div class="bd-article-container">
+            
+            <div class="bd-header-article">
+                
             </div>
             
-          
-
-          
-          <div class="d-none d-xl-block col-xl-2 bd-toc">
             
+            <article class="bd-article" role="main">
               
-              <div class="toc-item">
-                
-<div class="tocsection onthispage mt-5 pt-1 pb-3">
+  <section id="api">
+<h1>API<a class="headerlink" href="#api" title="Link permanente para este cabeçalho">#</a></h1>
+<section id="modulo-bcb-sgs">
+<h2>Módulo <span class="xref std std-ref">bcb.sgs</span><a class="headerlink" href="#modulo-bcb-sgs" title="Link permanente para este cabeçalho">#</a></h2>
+<table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="sgs.html#bcb.sgs.get" title="bcb.sgs.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></a>(codes[, start, end, last, multi, freq])</p></td>
+<td><p>Retorna um DataFrame pandas com séries temporais obtidas do SGS.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="modulo-bcb-currency">
+<h2>Módulo <span class="xref std std-ref">bcb.currency</span><a class="headerlink" href="#modulo-bcb-currency" title="Link permanente para este cabeçalho">#</a></h2>
+<table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="currency.html#bcb.currency.get" title="bcb.currency.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></a>(symbols, start, end[, side, groupby])</p></td>
+<td><p>Retorna um DataFrame pandas com séries temporais com taxas de câmbio.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="currency.html#bcb.currency.get_currency_list" title="bcb.currency.get_currency_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_currency_list</span></code></a>()</p></td>
+<td><p>Return a DataFrame with information of all available currencies.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="apis-odata">
+<h2>APIs OData<a class="headerlink" href="#apis-odata" title="Link permanente para este cabeçalho">#</a></h2>
+<table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Endpoint</span></code>(*args)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseODataAPI</span></code>()</p></td>
+<td><p>Classe que abstrai qualquer API OData</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="expectativas.html#bcb.Expectativas" title="bcb.Expectativas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Expectativas</span></code></a>()</p></td>
+<td><p>Integração com API OData de Expectativas de Mercado.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="currency.html#bcb.PTAX" title="bcb.PTAX"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PTAX</span></code></a>()</p></td>
+<td><p>Integração com API OData de cotações diárias de taxas de câmbio.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">IFDATA</span></code>()</p></td>
+<td><p>Integração com API OData para dados selecionados de instituições financeiras</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaxaJuros</span></code>()</p></td>
+<td><p>Taxas de juros de operações de crédito por instituição financeira – Médias dos últimos 5 dias</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">SPI</span></code>()</p></td>
+<td><p>Estatísticas do SPI - Sistema de Pagamentos Instantâneos</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">MercadoImobiliario</span></code>()</p></td>
+<td><p>Informações do Mercado Imobiliário</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">TarifasBancariasPorInstituicaoFinanceira</span></code>()</p></td>
+<td><p>Tarifas Bancárias - por Segmento e por Instituição</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">TarifasBancariasPorServico</span></code>()</p></td>
+<td><p>Tarifas Bancárias - valores mínimos, máximos e médios por serviço</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">PostosAtendimentoEletronicoPorInstituicaoFinanceira</span></code>()</p></td>
+<td><p>Postos de Atendimento Eletrônico de Instituições Supervisionadas pelo Bacen</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">PostosAtendimentoCorrespondentesPorInstituicaoFinanceira</span></code>()</p></td>
+<td><p>Correspondentes no país</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">EstatisticasSTR</span></code>()</p></td>
+<td><p>Estatísticas do STR - Sistema de Transferência de Reservas</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DinheiroCirculacao</span></code>()</p></td>
+<td><p>Dinheiro em Circulação</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+            </article>
+            
+            
+            
+            <footer class="bd-footer-article">
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+  <a class='left-prev' id="prev-link" href="odata.html" title="anterior página">
+      <i class="fas fa-angle-left"></i>
+      <div class="prev-next-info">
+          <p class="prev-next-subtitle">anterior</p>
+          <p class="prev-next-title">APIs OData</p>
+      </div>
+  </a>
+</div>
+            </footer>
+            
+          </div>
+          
+          
+          
+            <div class="bd-sidebar-secondary bd-toc">
+              
+<div class="toc-item">
+  
+<div class="tocsection onthispage">
     <i class="fas fa-list"></i> On this page
 </div>
-
-<nav id="bd-toc-nav">
+<nav id="bd-toc-nav" class="page-toc">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#modulo-bcb-sgs">
@@ -239,140 +442,62 @@
 </ul>
 
 </nav>
-              </div>
-              
-              <div class="toc-item">
-                
-              </div>
-              
-            
-          </div>
-          
+</div>
 
-          
-          
-            
-          
-          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
-              
-              <div>
-                
-  <section id="api">
-<h1>API<a class="headerlink" href="#api" title="Link permanente para este título">#</a></h1>
-<section id="modulo-bcb-sgs">
-<h2>Módulo <span class="xref std std-ref">bcb.sgs</span><a class="headerlink" href="#modulo-bcb-sgs" title="Link permanente para este título">#</a></h2>
-<table class="autosummary longtable table autosummary">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/bcb.sgs.get.html#bcb.sgs.get" title="bcb.sgs.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bcb.sgs.get</span></code></a>(codes[, start, end, last, ...])</p></td>
-<td><p>Retorna um DataFrame pandas com séries temporais obtidas do SGS.</p></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="modulo-bcb-currency">
-<h2>Módulo <span class="xref std std-ref">bcb.currency</span><a class="headerlink" href="#modulo-bcb-currency" title="Link permanente para este título">#</a></h2>
-<table class="autosummary longtable table autosummary">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/bcb.currency.get.html#bcb.currency.get" title="bcb.currency.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bcb.currency.get</span></code></a>(symbols, start, end[, ...])</p></td>
-<td><p>Retorna um DataFrame pandas com séries temporais com taxas de câmbio.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/bcb.currency.get_currency_list.html#bcb.currency.get_currency_list" title="bcb.currency.get_currency_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bcb.currency.get_currency_list</span></code></a>()</p></td>
-<td><p>Return a DataFrame with information of all available currencies.</p></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="apis-odata">
-<h2>APIs OData<a class="headerlink" href="#apis-odata" title="Link permanente para este título">#</a></h2>
-<table class="autosummary longtable table autosummary">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/bcb.Endpoint.html#bcb.Endpoint" title="bcb.Endpoint"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bcb.Endpoint</span></code></a>(*args)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/bcb.BaseODataAPI.html#bcb.BaseODataAPI" title="bcb.BaseODataAPI"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bcb.BaseODataAPI</span></code></a>()</p></td>
-<td><p>Classe que abstrai qualquer API OData</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/bcb.Expectativas.html#bcb.Expectativas" title="bcb.Expectativas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bcb.Expectativas</span></code></a>()</p></td>
-<td><p>Integração com API OData de Expectativas de Mercado.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/bcb.PTAX.html#bcb.PTAX" title="bcb.PTAX"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bcb.PTAX</span></code></a>()</p></td>
-<td><p>Integração com API OData de cotações diárias de taxas de câmbio.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/bcb.IFDATA.html#bcb.IFDATA" title="bcb.IFDATA"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bcb.IFDATA</span></code></a>()</p></td>
-<td><p>Integração com API OData para dados selecionados de instituições financeiras</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/bcb.TaxaJuros.html#bcb.TaxaJuros" title="bcb.TaxaJuros"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bcb.TaxaJuros</span></code></a>()</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="generated/bcb.SPI.html#bcb.SPI" title="bcb.SPI"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bcb.SPI</span></code></a>()</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="generated/bcb.MercadoImobiliario.html#bcb.MercadoImobiliario" title="bcb.MercadoImobiliario"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bcb.MercadoImobiliario</span></code></a>()</p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
+<div class="toc-item">
+  
+</div>
 
-
-              </div>
-              
-              
-              <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="odata.html" title="anterior página">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">anterior</p>
-            <p class="prev-next-title">APIs OData</p>
-        </div>
-    </a>
-    <a class='right-next' id="next-link" href="generated/bcb.sgs.get.html" title="próximo página">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">próximo</p>
-        <p class="prev-next-title">bcb.sgs.get</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
+<div class="toc-item">
+  
+<div class="tocsection sourcelink">
+    <a href="_sources/api.rst.txt">
+        <i class="fas fa-file-alt"></i> Exibir Fonte
     </a>
 </div>
-              
-          </main>
-          
 
-      </div>
+</div>
+
+            </div>
+          
+          
+        </div>
+        <footer class="bd-footer-content">
+          <div class="bd-footer-content__inner">
+            
+          </div>
+        </footer>
+        
+      </main>
     </div>
-  
-  <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
-<footer class="footer mt-5 mt-md-0">
-  <div class="container">
-    
-    <div class="footer-item">
-      <p class="copyright">
-    &copy; Copyright 2021, Wilson Freitas.<br>
-</p>
-    </div>
-    
-    <div class="footer-item">
-      <p class="sphinx-version">
-Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
-</p>
-    </div>
-    
   </div>
-</footer>
+
+  
+    
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=9b1a4fa89bdd0e95b23b"></script>
+
+  <footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    
+<p class="copyright">
+
+    &copy; Copyright 2021, Wilson Freitas.<br>
+
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+<p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br>
+</p>
+
+  </div>
+  
+</div>
+  </footer>
   </body>
 </html>
