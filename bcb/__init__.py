@@ -1,11 +1,16 @@
-
-from .odata import ODataEntitySet, ODataFunctionImport, ODataQuery, \
-    ODataPropertyFilter, ODataPropertyOrderBy, \
-    ODataProperty, ODataService
+from .odata import (
+    ODataEntitySet,
+    ODataFunctionImport,
+    ODataQuery,
+    ODataPropertyFilter,
+    ODataPropertyOrderBy,
+    ODataProperty,
+    ODataService,
+)
 import pandas as pd
 
 
-OLINDA_BASE_URL = 'https://olinda.bcb.gov.br/olinda/servico'
+OLINDA_BASE_URL = "https://olinda.bcb.gov.br/olinda/servico"
 
 
 class EndpointMeta(type):
@@ -27,7 +32,7 @@ class EndpointMeta(type):
 class EndpointQuery(ODataQuery):
     def collect(self):
         data = super().collect()
-        return pd.DataFrame(data['value'])
+        return pd.DataFrame(data["value"])
 
 
 class Endpoint(metaclass=EndpointMeta):
@@ -46,40 +51,41 @@ class Endpoint(metaclass=EndpointMeta):
                 _query.select(arg)
         verbose = False
         for k, val in kwargs.items():
-            if k == 'limit':
+            if k == "limit":
                 _query.limit(val)
-            elif k == 'skip':
+            elif k == "skip":
                 _query.skip(val)
-            elif k == 'verbose':
+            elif k == "verbose":
                 verbose = val
             else:
                 _query.parameters(**{k: val})
-        _query.format('application/json')
+        _query.format("application/json")
 
         if verbose:
             _query.show()
         data = _query.collect()
         _query.reset()
-        return pd.DataFrame(data['value'])
+        return pd.DataFrame(data["value"])
 
     def query(self):
         return EndpointQuery(self._entity, self._url)
 
 
 class BaseODataAPI:
-    '''
+    """
     Classe que abstrai qualquer API OData
 
     Essa classe não deve ser acessada diretamente.
-    '''
+    """
+
     def __init__(self):
-        '''
+        """
         BaseODataAPI construtor
-        '''
+        """
         self.service = ODataService(self.BASE_URL)
 
     def describe(self, endpoint=None):
-        '''
+        """
         Mostra a descrição de uma API ou de um *endpoint*
         específico.
 
@@ -94,14 +100,14 @@ class BaseODataAPI:
 
         Não retorna variável e imprime na tela uma descrição da API
         ou do *endpoint*.
-        '''
+        """
         if endpoint:
             self.service[endpoint].describe()
         else:
             self.service.describe()
 
     def get_endpoint(self, endpoint):
-        '''
+        """
         Obtem o *endpoint*
 
         Parameters
@@ -119,12 +125,12 @@ class BaseODataAPI:
         ------
         ValueError
             Se o *endpoint* fornecido é errado.
-        '''
+        """
         return Endpoint(self.service[endpoint], self.service.url)
 
 
 class GenericODataAPI(BaseODataAPI):
-    '''
+    """
     Classe que abstrai qualquer API OData
 
     Essa classe pode ser acessada diretamente passando
@@ -132,9 +138,10 @@ class GenericODataAPI(BaseODataAPI):
 
     Uma boa alternativa para acessar APIs que ainda
     não possuem implementação específica.
-    '''
+    """
+
     def __init__(self, url):
-        '''
+        """
         GenericODataAPI construtor
 
         Parameters
@@ -151,12 +158,12 @@ class GenericODataAPI(BaseODataAPI):
 
             - Expectativas
             - PTAX
-        '''
+        """
         self.service = ODataService(url)
 
 
 class Expectativas(BaseODataAPI):
-    '''
+    """
     Integração com API OData de Expectativas de Mercado.
 
     Cerca de 130
@@ -189,12 +196,13 @@ class Expectativas(BaseODataAPI):
       os indicadores do Top 5
     - ``ExpectativasMercadoTrimestrais``: Expectativas de Mercado Trimestrais
     - ``ExpectativasMercadoAnuais``: Expectativas de Mercado Anuais
-    '''
-    BASE_URL = f'{OLINDA_BASE_URL}/Expectativas/versao/v1/odata/'
+    """
+
+    BASE_URL = f"{OLINDA_BASE_URL}/Expectativas/versao/v1/odata/"
 
 
 class PTAX(BaseODataAPI):
-    '''
+    """
     Integração com API OData de cotações diárias de taxas de câmbio.
 
     Essa API possui os seguintes *endpoints*:
@@ -230,12 +238,13 @@ class PTAX(BaseODataAPI):
     momento de abertura da janela de consulta.
     O boletim de fechamento PTAX corresponde à média aritmética das taxas dos
     boletins do dia.
-    '''
-    BASE_URL = f'{OLINDA_BASE_URL}/PTAX/versao/v1/odata/'
+    """
+
+    BASE_URL = f"{OLINDA_BASE_URL}/PTAX/versao/v1/odata/"
 
 
 class IFDATA(BaseODataAPI):
-    '''
+    """
     Integração com API OData para dados selecionados de instituições
     financeiras
 
@@ -247,50 +256,172 @@ class IFDATA(BaseODataAPI):
     Os relatórios trimestrais são disponibilizados 60 dias após o fechamento
     das datas-bases março, junho e setembro, e 90 dias após o
     fechamento da data-base dezembro.
-    '''
-    BASE_URL = f'{OLINDA_BASE_URL}/IFDATA/versao/v1/odata/'
+    """
+
+    BASE_URL = f"{OLINDA_BASE_URL}/IFDATA/versao/v1/odata/"
 
 
 class TaxaJuros(BaseODataAPI):
-    BASE_URL = f'{OLINDA_BASE_URL}/taxaJuros/versao/v2/odata/'
+    """
+    Taxas de juros de operações de crédito por instituição financeira – Médias
+    dos últimos 5 dias
+
+    As taxas de juros por instituição financeira apresentadas nesse conjunto de
+    tabelas representam médias aritméticas das taxas de juros pactuadas nas
+    operações realizadas nos cinco dias úteis referidos em cada publicação,
+    ponderadas pelos respectivos valores contratados.
+
+    Essas taxas de juros representam o custo efetivo médio das operações de
+    crédito para os clientes, composto pelas taxas de juros efetivamente
+    praticadas pelas instituições financeiras em suas operações de crédito,
+    acrescidas dos encargos fiscais e operacionais incidentes sobre as
+    operações.
+
+    As taxas de juros apresentadas correspondem à média das taxas praticadas
+    nas diversas operações realizadas pelas instituições financeiras em cada
+    modalidade de crédito. Em uma mesma modalidade, as taxas de juros diferem
+    entre clientes de uma mesma instituição financeira e variam de acordo com
+    diversos fatores de risco envolvidos nas operações, tais como o valor e a
+    qualidade das garantias apresentadas na contratação do crédito, o valor do
+    pagamento dado como entrada da operação, o histórico e a situação cadastral
+    de cada cliente, o prazo da operação, entre outros.
+
+    Eventualmente algumas instituições financeiras não aparecem relacionadas
+    nas tabelas em razão de não terem realizado operações de crédito nas
+    respectivas modalidades nos períodos referidos ou por não terem prestado
+    as informações requeridas pelo Banco Central do Brasil no prazo previsto
+    pela legislação em vigor.
+
+    A partir de abril de 2017, as taxas médias das operações de cartão de
+    crédito rotativo passaram a ser publicadas de forma desagregada nas
+    modalidades cartão de crédito rotativo regular - que compreende os
+    financiamentos dos saldos remanescentes das faturas de cartão de crédito
+    nos quais os clientes efetuam o pagamento mínimo requerido pela legislação
+    em vigor - e cartão de crédito não regular , que compreende os
+    financiamentos dos saldos remanescentes das faturas de cartão de crédito
+    nos quais os clientes não efetuam o pagamento mínimo, sendo considerados
+    em atraso.
+
+    O Banco Central do Brasil não assume nenhuma responsabilidade por
+    defasagem, erro ou outra deficiência em informações prestadas para fins de
+    apuração das taxas médias apresentadas nesse conjunto de tabelas, cujas
+    fontes sejam externas a esta instituição, bem como por quaisquer perdas ou
+    danos decorrentes de seu uso.
+    """
+
+    BASE_URL = f"{OLINDA_BASE_URL}/taxaJuros/versao/v2/odata/"
 
 
 class MercadoImobiliario(BaseODataAPI):
-    BASE_URL = f'{OLINDA_BASE_URL}/MercadoImobiliario/versao/v1/odata/'
+    """
+    Informações do Mercado Imobiliário
+
+    O Banco Central do Brasil divulga mensalmente informações sobre o mercado
+    imobiliário. Os relatórios são atualizados no último dia útil do mês,
+    disponibilizando os dados após 60 dias do fechamento de cada período.
+    A publicação é o resultado da análise das informações recebidas através do
+    Sistema de Informações de Créditos – SCR, Sistema de Informações
+    Contábeis – Cosif, Direcionamento dos Depósitos de Poupança - RCO e das
+    entidades de depósito e registro de ativos. Distribuídas em 6 seções,
+    possuem informações sobre as fontes de recursos, direcionamento dos
+    recursos da caderneta de poupança, valores contábeis, operações de crédito,
+    detalhes dos imóveis financiados e índices relacionados com o setor.
+    O relatório disponibiliza mais de 4.000 séries mensais em formato de dados
+    abertos. As seções Crédito e Imóveis possuem detalhamentos por estados.
+    """
+
+    BASE_URL = f"{OLINDA_BASE_URL}/MercadoImobiliario/versao/v1/odata/"
 
 
 class SPI(BaseODataAPI):
-    BASE_URL = f'{OLINDA_BASE_URL}/SPI/versao/v1/odata/'
+    """
+    Estatísticas do SPI - Sistema de Pagamentos Instantâneos
+
+    Estatísticas das movimentações financeiras transitadas no SPI (Sistema de
+    Pagamentos Instantâneos) processadas por meio de lançamentos nas contas PI
+    mantidas pelos participantes no Banco Central.
+    """
+
+    BASE_URL = f"{OLINDA_BASE_URL}/SPI/versao/v1/odata/"
 
 
 class TarifasBancariasPorInstituicaoFinanceira(BaseODataAPI):
-    K = 'Informes_ListaTarifasPorInstituicaoFinanceira'
-    BASE_URL = f'{OLINDA_BASE_URL}/{K}/versao/v1/odata/'
+    """
+    Tarifas Bancárias - por Segmento e por Instituição
+
+    Esta API disponibiliza as informações mais recentes sobre as tarifas
+    cobradas por instituições financeiras, por Segmento e por Instituição.
+    """
+
+    K = "Informes_ListaTarifasPorInstituicaoFinanceira"
+    BASE_URL = f"{OLINDA_BASE_URL}/{K}/versao/v1/odata/"
 
 
 class TarifasBancariasPorServico(BaseODataAPI):
-    K = 'Informes_ListaValoresDeServicoBancario'
-    BASE_URL = f'{OLINDA_BASE_URL}/{K}/versao/v1/odata/'
+    """
+    Tarifas Bancárias - valores mínimos, máximos e médios por serviço
+
+    Esta API disponibiliza as informações mais recentes sobre as tarifas
+    cobradas por instituições financeiras, valores mínimos, máximos e médios
+    por serviço.
+    """
+
+    K = "Informes_ListaValoresDeServicoBancario"
+    BASE_URL = f"{OLINDA_BASE_URL}/{K}/versao/v1/odata/"
 
 
 class PostosAtendimentoEletronicoPorInstituicaoFinanceira(BaseODataAPI):
-    K = 'Informes_PostosDeAtendimentoEletronico'
-    BASE_URL = f'{OLINDA_BASE_URL}/{K}/versao/v1/odata/'
+    """
+    Postos de Atendimento Eletrônico de Instituições Supervisionadas pelo Bacen
+
+    Os arquivos disponíveis para transferência apresentam as informações mais
+    atuais dos postos de atendimento eletrônico de Instituições Supervisionadas
+    pelo Banco Central.
+    """
+
+    K = "Informes_PostosDeAtendimentoEletronico"
+    BASE_URL = f"{OLINDA_BASE_URL}/{K}/versao/v1/odata/"
 
 
 class PostosAtendimentoCorrespondentesPorInstituicaoFinanceira(BaseODataAPI):
-    K = 'Informes_Correspondentes'
-    BASE_URL = f'{OLINDA_BASE_URL}/{K}/versao/v1/odata/'
+    """
+    Correspondentes no país
+
+    O arquivo disponibilizado apresenta os dados mais atuais dos pontos de
+    atendimento dos correspondentes, por instituição financeira e por
+    município, com a identificação dos tipos de serviços prestados, conforme
+    descrito na Resolução 3.954.
+    """
+
+    K = "Informes_Correspondentes"
+    BASE_URL = f"{OLINDA_BASE_URL}/{K}/versao/v1/odata/"
 
 
 class EstatisticasSTR(BaseODataAPI):
-    K = 'STR'
-    BASE_URL = f'{OLINDA_BASE_URL}/{K}/versao/v1/odata/'
+    """
+    Estatísticas do STR - Sistema de Transferência de Reservas
+
+    Estatísticas das movimentações financeiras transitadas no STR (Sistema de
+    Transferência de Reservas) processadas por meio de lançamentos nas contas
+    mantidas pelos participantes no Banco Central.
+    """
+
+    K = "STR"
+    BASE_URL = f"{OLINDA_BASE_URL}/{K}/versao/v1/odata/"
 
 
 class DinheiroCirculacao(BaseODataAPI):
-    K = 'mecir_dinheiro_em_circulacao'
-    BASE_URL = f'{OLINDA_BASE_URL}/{K}/versao/v1/odata/'
+    """
+    Dinheiro em Circulação
+
+    Registros diários das quantidades de cédulas e moedas em circulação (não
+    estão incluídas as moedas comemorativas). As informações estão separadas
+    para cada espécie (cédula ou moeda), família (categoria) e denominação do
+    Real (símbolos : R$, BRL).
+    """
+
+    K = "mecir_dinheiro_em_circulacao"
+    BASE_URL = f"{OLINDA_BASE_URL}/{K}/versao/v1/odata/"
 
 
 # /Informes_Ouvidorias/versao/v1/odata/
