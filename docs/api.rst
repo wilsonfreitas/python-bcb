@@ -8,9 +8,8 @@ Módulo :ref:`bcb.sgs`
 .. currentmodule:: bcb.sgs
 
 .. autosummary::
-   :toctree: generated
 
-   bcb.sgs.get
+   get
 
 Módulo :ref:`bcb.currency`
 --------------------------
@@ -18,10 +17,9 @@ Módulo :ref:`bcb.currency`
 .. currentmodule:: bcb.currency
 
 .. autosummary::
-   :toctree: generated
 
-   bcb.currency.get
-   bcb.currency.get_currency_list
+   get
+   get_currency_list
 
 
 APIs OData
@@ -30,13 +28,18 @@ APIs OData
 .. currentmodule:: bcb
 
 .. autosummary::
-   :toctree: generated
 
-   bcb.Endpoint
-   bcb.BaseODataAPI
-   bcb.Expectativas
-   bcb.PTAX
-   bcb.IFDATA
-   bcb.TaxaJuros
-   bcb.SPI
-   bcb.MercadoImobiliario
+   Endpoint
+   BaseODataAPI
+   Expectativas
+   PTAX
+   IFDATA
+   TaxaJuros
+   SPI
+   MercadoImobiliario
+   TarifasBancariasPorInstituicaoFinanceira
+   TarifasBancariasPorServico
+   PostosAtendimentoEletronicoPorInstituicaoFinanceira
+   PostosAtendimentoCorrespondentesPorInstituicaoFinanceira
+   EstatisticasSTR
+   DinheiroCirculacao

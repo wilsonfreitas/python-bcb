@@ -24,24 +24,17 @@ São publicadas as expectativas informadas pelas instituições que
 autorizaram a divulgação. As expectativas divulgadas possuem
 defasagem de 1 ano.
 
-Essa API tem sete *endpoints*
-
-- ``ExpectativasMercadoTop5Anuais``: Expectativas de mercado anuais para
-  os indicadores do Top 5
-- ``ExpectativasMercadoInstituicoes``: Expectativas de mercado informadas
-  pelas instituições credenciadas
-- ``ExpectativaMercadoMensais``: Expectativas de Mercado Mensais
-- ``ExpectativasMercadoInflacao12Meses``: Expectativas de mercado para
-  inflação nos próximos 12 meses
-- ``ExpectativasMercadoTop5Mensais``: Expectativas de mercado mensais para
-  os indicadores do Top 5
-- ``ExpectativasMercadoTrimestrais``: Expectativas de Mercado Trimestrais
-- ``ExpectativasMercadoAnuais``: Expectativas de Mercado Anuais
-
-
 Ao instanciar a classe :py:class:`bcb.Expectativas` diversas informações
 são obtidas e a melhor maneira de interagir com a API é
 através do método :py:meth:`bcb.Expectativas.describe`.
+
+.. currentmodule:: bcb
+
+
+.. autoclass:: Expectativas
+  :members:
+  :inherited-members:
+
 
 .. ipython:: python
 

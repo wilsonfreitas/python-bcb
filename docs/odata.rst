@@ -25,11 +25,11 @@ A classe :py:class:`bcb.BaseODataAPI` possui apenas 2 métodos:
 - :py:meth:`bcb.BaseODataAPI.get_endpoint`: imprime informações da API, como
   quais *endpoints* estão disponíveis.
 
-:py:class:`bcb.Endpoints`
--------------------------
+:py:class:`bcb.Endpoint`
+------------------------
 
-Os *endpoints* retornados herdam da classe :py:class:`bcb.Endpoints`,
-que possui o método :py:meth:`bcb.Endpoints.query`, através do qual é
+Os *endpoints* retornados herdam da classe :py:class:`bcb.Endpoint`,
+que possui o método :py:meth:`bcb.Endpoint.query`, através do qual é
 possível realizar as consultas estruturadas na API OData.
 
 :py:class:`bcb.odata.ODataQuery`
