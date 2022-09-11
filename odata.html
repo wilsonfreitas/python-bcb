@@ -387,8 +387,10 @@ que possui os seguintes métodos.</p>
 <li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.odata.ODataQuery.show()</span></code></p></li>
 </ul>
 </section>
-<section id="aplicacao-expectativas">
-<h2>Aplicação - Expectativas<a class="headerlink" href="#aplicacao-expectativas" title="Link permanente para este cabeçalho">#</a></h2>
+<section id="aplicacoes">
+<h2>Aplicações<a class="headerlink" href="#aplicacoes" title="Link permanente para este cabeçalho">#</a></h2>
+<section id="expectativas">
+<h3>Expectativas<a class="headerlink" href="#expectativas" title="Link permanente para este cabeçalho">#</a></h3>
 <p>Vamos ver como isso tudo funciona utilizando a API de expectativas.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">Expectativas</span>
 
@@ -408,7 +410,7 @@ que possui os seguintes métodos.</p>
 </pre></div>
 </div>
 <section id="entitysets">
-<h3><code class="docutils literal notranslate"><span class="pre">EntitySets</span></code><a class="headerlink" href="#entitysets" title="Link permanente para este cabeçalho">#</a></h3>
+<h4><code class="docutils literal notranslate"><span class="pre">EntitySets</span></code><a class="headerlink" href="#entitysets" title="Link permanente para este cabeçalho">#</a></h4>
 <p>Vemos que na API de expectativas tem uma listagem de <code class="docutils literal notranslate"><span class="pre">EntitySets</span></code>.
 <code class="docutils literal notranslate"><span class="pre">EntitySets</span></code> são <em>endpoints</em> que retornam um conjunto de dados toda vez que
 são chamados.</p>
@@ -422,7 +424,7 @@ são chamados.</p>
 </div>
 </section>
 <section id="entitytype">
-<h3><code class="docutils literal notranslate"><span class="pre">EntityType</span></code><a class="headerlink" href="#entitytype" title="Link permanente para este cabeçalho">#</a></h3>
+<h4><code class="docutils literal notranslate"><span class="pre">EntityType</span></code><a class="headerlink" href="#entitytype" title="Link permanente para este cabeçalho">#</a></h4>
 <p>Os dados retornados por um <code class="docutils literal notranslate"><span class="pre">EntitySet</span></code> tem um tipo que é o seu <code class="docutils literal notranslate"><span class="pre">EntityType</span></code>.
 Para o <em>endpoint</em> <code class="docutils literal notranslate"><span class="pre">ExpectativaMercadoMensais</span></code> o tipo retornado é
 <code class="docutils literal notranslate"><span class="pre">br.gov.bcb.olinda.servico.Expectativas.ExpectativaMercadoMensal</span></code> que retorna as
@@ -532,8 +534,8 @@ um conjunto de colunas.</p>
 </div>
 </section>
 </section>
-<section id="aplicacao-moedas">
-<h2>Aplicação - Moedas<a class="headerlink" href="#aplicacao-moedas" title="Link permanente para este cabeçalho">#</a></h2>
+<section id="moedas">
+<h3>Moedas<a class="headerlink" href="#moedas" title="Link permanente para este cabeçalho">#</a></h3>
 <p>Uma outra aplicação é com a API de Moedas que implementa a especificação OData.
 Utilizando a classe <a class="reference internal" href="currency.html#bcb.PTAX" title="bcb.PTAX"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.PTAX</span></code></a> temos:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [10]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">PTAX</span>
@@ -553,7 +555,7 @@ Utilizando a classe <a class="reference internal" href="currency.html#bcb.PTAX" 
 </pre></div>
 </div>
 <section id="functionimports">
-<h3><code class="docutils literal notranslate"><span class="pre">FunctionImports</span></code><a class="headerlink" href="#functionimports" title="Link permanente para este cabeçalho">#</a></h3>
+<h4><code class="docutils literal notranslate"><span class="pre">FunctionImports</span></code><a class="headerlink" href="#functionimports" title="Link permanente para este cabeçalho">#</a></h4>
 <p>Note que essa API tem um <code class="docutils literal notranslate"><span class="pre">EntitySet</span></code> e seis <code class="docutils literal notranslate"><span class="pre">FunctionImports</span></code>.
 A diferença entre eles é que os <code class="docutils literal notranslate"><span class="pre">FunctionImports</span></code> são funções
 e como funções recebem parâmetros que na maioria das vezes não são opicionais.</p>
@@ -612,6 +614,83 @@ Podemos filtrar apenas pelos dados de abertura.</p>
 <span class="go">5             1.0            1.0  ...  2022-01-10 10:05:20.954     Abertura</span>
 
 <span class="go">[6 rows x 6 columns]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="classe-odataapi">
+<h3>Classe ODataAPI<a class="headerlink" href="#classe-odataapi" title="Link permanente para este cabeçalho">#</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="bcb.ODataAPI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">ODataAPI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.ODataAPI" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Classe que abstrai qualquer API OData</p>
+<p>Essa classe pode ser acessada diretamente passando
+uma URL válida para uma API OData.</p>
+<p>Uma boa alternativa para acessar APIs que ainda
+não possuem implementação específica.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bcb.ODataAPI.describe">
+<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.ODataAPI.describe" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Mostra a descrição de uma API ou de um <em>endpoint</em>
+específico.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>endpoint</strong> (<em>None</em><em> (</em><em>padrão</em><em>) </em><em>ou str</em>) – nome do <em>endpoint</em></p>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>Não retorna variável e imprime na tela uma descrição da API</em></p></li>
+<li><p><em>ou do *endpoint</em>.*</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bcb.ODataAPI.get_endpoint">
+<span class="sig-name descname"><span class="pre">get_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.ODataAPI.get_endpoint" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Obtem o <em>endpoint</em></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>endpoint</strong> (<em>str</em>) – nome do endpoint</p>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>Retorna o <em>endpoint</em> referente ao nome fornecido</p>
+</dd>
+<dt class="field-odd">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bcb.Endpoint</p>
+</dd>
+<dt class="field-even">Levanta<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Se o <em>endpoint</em> fornecido é errado.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p>O portal de Dados Abertos to Banco Central apresenta diversas APIs OData, são
+dezenas de APIs disponíveis.
+A URL com metadados de cada API pode ser obtida no portal.
+A classe <code class="docutils literal notranslate"><span class="pre">ODataAPI</span></code> permite acessar qualquer API Odata de posse da sua URL.</p>
+<p>Por exemplo, a API de estatísticas de operações registradas no Selic tem a seguinte URL:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">olinda</span><span class="o">.</span><span class="n">bcb</span><span class="o">.</span><span class="n">gov</span><span class="o">.</span><span class="n">br</span><span class="o">/</span><span class="n">olinda</span><span class="o">/</span><span class="n">servico</span><span class="o">/</span><span class="n">selic_operacoes</span><span class="o">/</span><span class="n">versao</span><span class="o">/</span><span class="n">v1</span><span class="o">/</span><span class="n">odata</span><span class="o">/</span>
+</pre></div>
+</div>
+<p>que pode ser obtida no portal de dados abertos no <a class="reference external" href="https://dadosabertos.bcb.gov.br/dataset/estatisticas-selic-operacoes">link</a>.</p>
+<p>Essa API pode ser diretamente acessada através da classe <code class="docutils literal notranslate"><span class="pre">ODataAPI</span></code>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [17]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">ODataAPI</span>
+
+<span class="gp">In [18]: </span><span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://olinda.bcb.gov.br/olinda/servico/selic_operacoes/versao/v1/odata/&quot;</span>
+
+<span class="gp">In [19]: </span><span class="n">service</span> <span class="o">=</span> <span class="n">ODataAPI</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+<span class="gp">In [20]: </span><span class="n">service</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+<span class="go">EntitySets:</span>
+<span class="go">  DatasOperacoesSelic</span>
+<span class="go">FunctionImports:</span>
+<span class="go">  OperacoesEmUmAno</span>
+<span class="go">  OperacoesEmUmaData</span>
 </pre></div>
 </div>
 </section>
@@ -698,42 +777,54 @@ fornecido e o que será retornado</p></li>
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#aplicacao-expectativas">
-   Aplicação - Expectativas
+  <a class="reference internal nav-link" href="#aplicacoes">
+   Aplicações
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#entitysets">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       EntitySets
-      </span>
-     </code>
+    <a class="reference internal nav-link" href="#expectativas">
+     Expectativas
     </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#entitysets">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         EntitySets
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#entitytype">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         EntityType
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#entitytype">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       EntityType
-      </span>
-     </code>
+    <a class="reference internal nav-link" href="#moedas">
+     Moedas
     </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#functionimports">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         FunctionImports
+        </span>
+       </code>
+      </a>
+     </li>
+    </ul>
    </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#aplicacao-moedas">
-   Aplicação - Moedas
-  </a>
-  <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#functionimports">
-     <code class="docutils literal notranslate">
-      <span class="pre">
-       FunctionImports
-      </span>
-     </code>
+    <a class="reference internal nav-link" href="#classe-odataapi">
+     Classe ODataAPI
     </a>
    </li>
   </ul>

@@ -47,8 +47,11 @@ que possui os seguintes métodos.
 - :py:meth:`bcb.odata.ODataQuery.collect`
 - :py:meth:`bcb.odata.ODataQuery.show`
 
-Aplicação - Expectativas
-------------------------
+Aplicações
+----------
+
+Expectativas
+^^^^^^^^^^^^
 
 Vamos ver como isso tudo funciona utilizando a API de expectativas.
 
@@ -59,7 +62,7 @@ Vamos ver como isso tudo funciona utilizando a API de expectativas.
     em.describe()
 
 ``EntitySets``
-^^^^^^^^^^^^^^
+""""""""""""""
 
 Vemos que na API de expectativas tem uma listagem de ``EntitySets``.
 ``EntitySets`` são *endpoints* que retornam um conjunto de dados toda vez que
@@ -73,7 +76,7 @@ Inspecionando o *endpoint* ``ExpectativaMercadoMensais``
 
 
 ``EntityType``
-^^^^^^^^^^^^^^
+""""""""""""""
 
 Os dados retornados por um ``EntitySet`` tem um tipo que é o seu ``EntityType``.
 Para o *endpoint* ``ExpectativaMercadoMensais`` o tipo retornado é
@@ -149,8 +152,8 @@ um conjunto de colunas.
      .limit(10)
      .collect())
 
-Aplicação - Moedas
-------------------
+Moedas
+^^^^^^
 
 Uma outra aplicação é com a API de Moedas que implementa a especificação OData.
 Utilizando a classe :py:class:`bcb.PTAX` temos:
@@ -163,7 +166,7 @@ Utilizando a classe :py:class:`bcb.PTAX` temos:
 
 
 ``FunctionImports``
-^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""
 
 Note que essa API tem um ``EntitySet`` e seis ``FunctionImports``.
 A diferença entre eles é que os ``FunctionImports`` são funções
@@ -200,6 +203,34 @@ Podemos filtrar apenas pelos dados de abertura.
        .parameters(moeda='USD', dataInicial='01/01/2022', dataFinalCotacao='01/10/2022')
        .collect())
 
+
+Classe ODataAPI
+^^^^^^^^^^^^^^^
+
+.. currentmodule:: bcb
+
+.. autoclass:: ODataAPI
+    :inherited-members:
+
+O portal de Dados Abertos to Banco Central apresenta diversas APIs OData, são
+dezenas de APIs disponíveis.
+A URL com metadados de cada API pode ser obtida no portal.
+A classe ``ODataAPI`` permite acessar qualquer API Odata de posse da sua URL.
+
+Por exemplo, a API de estatísticas de operações registradas no Selic tem a seguinte URL::
+
+    https://olinda.bcb.gov.br/olinda/servico/selic_operacoes/versao/v1/odata/
+
+que pode ser obtida no portal de dados abertos no `link <https://dadosabertos.bcb.gov.br/dataset/estatisticas-selic-operacoes>`_.
+
+Essa API pode ser diretamente acessada através da classe ``ODataAPI``.
+
+.. ipython:: python
+
+    from bcb import ODataAPI
+    url = "https://olinda.bcb.gov.br/olinda/servico/selic_operacoes/versao/v1/odata/"
+    service = ODataAPI(url)
+    service.describe()
 
 Conclusão
 ---------
