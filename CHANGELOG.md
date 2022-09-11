@@ -1,7 +1,11 @@
 
 # Changelog
 
-## [0.1.7] - 
+## [0.1.8] - 2022-09-10
+- Updated documentation
+- Migrated to poetry
+
+## [0.1.7] - 2022-01-22
 - Added httpx to install_requirements
 - Updated docs
 - sgs.TaxaJuros upgraded to v2
