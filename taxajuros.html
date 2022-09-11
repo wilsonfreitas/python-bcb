@@ -1,0 +1,565 @@
+
+<!DOCTYPE html>
+
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Taxas de Juros &#8212; documentação python-bcb </title>
+  <script>
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=9b1a4fa89bdd0e95b23b" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=9b1a4fa89bdd0e95b23b" rel="stylesheet">
+
+  
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/6.1.2/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=9b1a4fa89bdd0e95b23b">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'taxajuros';</script>
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Buscar" href="search.html" />
+    <link rel="next" title="APIs OData" href="odata.html" />
+    <link rel="prev" title="Expectativas" href="expectativas.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="docsearch:language" content="pt-br">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+
+  
+  <input type="checkbox" class="sidebar-toggle" name="__primary" id="__primary">
+  <label class="overlay overlay-primary" for="__primary"></label>
+
+  
+  <input type="checkbox" class="sidebar-toggle" name="__secondary" id="__secondary">
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+      
+<form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+    </div>
+  </div>
+
+  
+  <nav class="bd-header navbar navbar-expand-lg bd-navbar" id="navbar-main"><div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+      <span class="fas fa-bars"></span>
+  </label>
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="index.html">
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+  
+    <p class="title logo__title">documentação python-bcb </p>
+  
+</a>
+    
+  </div>
+
+  
+  <div class="col-lg-9 navbar-header-items">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                <li class="nav-item">
+                    <a class="nav-link" href="sgs.html">
+                        SGS
+                    </a>
+                </li>
+                
+
+                <li class="nav-item">
+                    <a class="nav-link" href="currency.html">
+                        Moedas
+                    </a>
+                </li>
+                
+
+                <li class="nav-item">
+                    <a class="nav-link" href="expectativas.html">
+                        Expectativas
+                    </a>
+                </li>
+                
+
+                <li class="nav-item current active">
+                    <a class="nav-link" href="#">
+                        Taxas de Juros
+                    </a>
+                </li>
+                
+
+                <li class="nav-item">
+                    <a class="nav-link" href="odata.html">
+                        APIs OData
+                    </a>
+                </li>
+                
+            <div class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    More
+                </button>
+                <div class="dropdown-menu">
+                    
+                <li class="nav-item">
+                    <a class="nav-link" href="api.html">
+                        API
+                    </a>
+                </li>
+                
+                </div>
+            </div>
+            
+    </ul>
+</nav>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      <div class="navbar-end-item navbar-end__search-button-container">
+        
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Buscar">
+  <i class="fas fa-search"></i>
+</button>
+      </div>
+      
+      <div class="navbar-end-item">
+        <span class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/wilsonfreitas/python-bcb" title="GitHub" class="nav-link" rel="noopener" target="_blank"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+
+
+  
+  <div class="search-button-container--mobile">
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Buscar">
+  <i class="fas fa-search"></i>
+</button>
+  </div>
+
+  
+  <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fas fa-outdent"></span>
+  </label>
+  
+
+</div>
+  </nav>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                <li class="nav-item">
+                    <a class="nav-link" href="sgs.html">
+                        SGS
+                    </a>
+                </li>
+                
+
+                <li class="nav-item">
+                    <a class="nav-link" href="currency.html">
+                        Moedas
+                    </a>
+                </li>
+                
+
+                <li class="nav-item">
+                    <a class="nav-link" href="expectativas.html">
+                        Expectativas
+                    </a>
+                </li>
+                
+
+                <li class="nav-item current active">
+                    <a class="nav-link" href="#">
+                        Taxas de Juros
+                    </a>
+                </li>
+                
+
+                <li class="nav-item">
+                    <a class="nav-link" href="odata.html">
+                        APIs OData
+                    </a>
+                </li>
+                
+            <div class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    More
+                </button>
+                <div class="dropdown-menu">
+                    
+                <li class="nav-item">
+                    <a class="nav-link" href="api.html">
+                        API
+                    </a>
+                </li>
+                
+                </div>
+            </div>
+            
+    </ul>
+</nav>
+      </div>
+      
+      </div>
+    
+
+    
+    
+    <div class="sidebar-header-items__end">
+      
+      <div class="navbar-end-item">
+        <span class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle">
+    <a class="theme-switch" data-mode="light"><i class="fas fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="far fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fas fa-adjust"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/wilsonfreitas/python-bcb" title="GitHub" class="nav-link" rel="noopener" target="_blank"><span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label></a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+    
+  </div>
+
+  
+
+  
+  <div class="sidebar-end-items sidebar-primary__section">
+    <div class="sidebar-end-items__item">
+    </div>
+  </div>
+
+      </div>
+      <main class="bd-main">
+        
+        
+        <div class="bd-content">
+          <div class="bd-article-container">
+            
+            <div class="bd-header-article">
+                
+            </div>
+            
+            
+            <article class="bd-article" role="main">
+              
+  <section id="taxas-de-juros">
+<h1>Taxas de Juros<a class="headerlink" href="#taxas-de-juros" title="Link permanente para este cabeçalho">#</a></h1>
+<p>A API de taxas de juros de operações de crédito pode ser acessada através da
+classe <a class="reference internal" href="#bcb.TaxaJuros" title="bcb.TaxaJuros"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.TaxaJuros</span></code></a>.</p>
+<p>Os dados são obtidos a partir da <a class="reference external" href="https://olinda.bcb.gov.br/olinda/servico/TaxaJuros/versao/v1/documentacao">API de Taxas de Juros</a>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="bcb.TaxaJuros">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">TaxaJuros</span></span><a class="headerlink" href="#bcb.TaxaJuros" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Taxas de juros de operações de crédito por instituição financeira – Médias
+dos últimos 5 dias</p>
+<p>As taxas de juros por instituição financeira apresentadas nesse conjunto de
+tabelas representam médias aritméticas das taxas de juros pactuadas nas
+operações realizadas nos cinco dias úteis referidos em cada publicação,
+ponderadas pelos respectivos valores contratados.</p>
+<p>Essas taxas de juros representam o custo efetivo médio das operações de
+crédito para os clientes, composto pelas taxas de juros efetivamente
+praticadas pelas instituições financeiras em suas operações de crédito,
+acrescidas dos encargos fiscais e operacionais incidentes sobre as
+operações.</p>
+<p>As taxas de juros apresentadas correspondem à média das taxas praticadas
+nas diversas operações realizadas pelas instituições financeiras em cada
+modalidade de crédito. Em uma mesma modalidade, as taxas de juros diferem
+entre clientes de uma mesma instituição financeira e variam de acordo com
+diversos fatores de risco envolvidos nas operações, tais como o valor e a
+qualidade das garantias apresentadas na contratação do crédito, o valor do
+pagamento dado como entrada da operação, o histórico e a situação cadastral
+de cada cliente, o prazo da operação, entre outros.</p>
+<p>Eventualmente algumas instituições financeiras não aparecem relacionadas
+nas tabelas em razão de não terem realizado operações de crédito nas
+respectivas modalidades nos períodos referidos ou por não terem prestado
+as informações requeridas pelo Banco Central do Brasil no prazo previsto
+pela legislação em vigor.</p>
+<p>A partir de abril de 2017, as taxas médias das operações de cartão de
+crédito rotativo passaram a ser publicadas de forma desagregada nas
+modalidades cartão de crédito rotativo regular - que compreende os
+financiamentos dos saldos remanescentes das faturas de cartão de crédito
+nos quais os clientes efetuam o pagamento mínimo requerido pela legislação
+em vigor - e cartão de crédito não regular , que compreende os
+financiamentos dos saldos remanescentes das faturas de cartão de crédito
+nos quais os clientes não efetuam o pagamento mínimo, sendo considerados
+em atraso.</p>
+<p>O Banco Central do Brasil não assume nenhuma responsabilidade por
+defasagem, erro ou outra deficiência em informações prestadas para fins de
+apuração das taxas médias apresentadas nesse conjunto de tabelas, cujas
+fontes sejam externas a esta instituição, bem como por quaisquer perdas ou
+danos decorrentes de seu uso.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bcb.TaxaJuros.describe">
+<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.TaxaJuros.describe" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Mostra a descrição de uma API ou de um <em>endpoint</em>
+específico.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>endpoint</strong> (<em>None</em><em> (</em><em>padrão</em><em>) </em><em>ou str</em>) – nome do <em>endpoint</em></p>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>Não retorna variável e imprime na tela uma descrição da API</em></p></li>
+<li><p><em>ou do *endpoint</em>.*</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bcb.TaxaJuros.get_endpoint">
+<span class="sig-name descname"><span class="pre">get_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.TaxaJuros.get_endpoint" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Obtem o <em>endpoint</em></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>endpoint</strong> (<em>str</em>) – nome do endpoint</p>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>Retorna o <em>endpoint</em> referente ao nome fornecido</p>
+</dd>
+<dt class="field-odd">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bcb.Endpoint</p>
+</dd>
+<dt class="field-even">Levanta<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Se o <em>endpoint</em> fornecido é errado.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p>Esta API tem os <code class="docutils literal notranslate"><span class="pre">EntitySets</span></code>:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">TaxaJuros</span>
+
+<span class="gp">In [2]: </span><span class="n">em</span> <span class="o">=</span> <span class="n">TaxaJuros</span><span class="p">()</span>
+
+<span class="gp">In [3]: </span><span class="n">em</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+<span class="go">EntitySets:</span>
+<span class="go">  TaxasJurosMensalPorMes</span>
+<span class="go">  TaxasJurosDiariaPorInicioPeriodo</span>
+</pre></div>
+</div>
+<p>As características do <code class="docutils literal notranslate"><span class="pre">EntitySets</span></code> podem ser visualizadas por:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [4]: </span><span class="n">em</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">&quot;TaxasJurosDiariaPorInicioPeriodo&quot;</span><span class="p">)</span>
+
+<span class="go">EntitySet (Endpoint): TaxasJurosDiariaPorInicioPeriodo</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.taxaJuros.TaxaJurosDiaria</span>
+<span class="go">Properties: InicioPeriodo&lt;str&gt;, FimPeriodo&lt;str&gt;, Segmento&lt;str&gt;, Modalidade&lt;str&gt;, Posicao&lt;int&gt;, InstituicaoFinanceira&lt;str&gt;, TaxaJurosAoMes&lt;float&gt;, TaxaJurosAoAno&lt;float&gt;, cnpj8&lt;str&gt;</span>
+</pre></div>
+</div>
+<p>Vejamos um gráfico da mediana das taxas de juros do cheque especial praticada
+pelas instituições financeiras.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [5]: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="gp">In [6]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">em</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s1">&#39;TaxasJurosDiariaPorInicioPeriodo&#39;</span><span class="p">)</span>
+
+<span class="gp">In [7]: </span><span class="n">df_cheque</span> <span class="o">=</span> <span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<span class="gp">   ...: </span>               <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Segmento</span> <span class="o">==</span> <span class="s1">&#39;PESSOA FÍSICA&#39;</span><span class="p">,</span>
+<span class="gp">   ...: </span>                       <span class="n">ep</span><span class="o">.</span><span class="n">Modalidade</span> <span class="o">==</span> <span class="s1">&#39;CHEQUE ESPECIAL - PRÉ-FIXADO&#39;</span><span class="p">)</span>
+<span class="gp">   ...: </span>               <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [8]: </span><span class="n">df_cheque</span><span class="p">[</span><span class="s1">&#39;InicioPeriodo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df_cheque</span><span class="p">[</span><span class="s1">&#39;InicioPeriodo&#39;</span><span class="p">])</span>
+
+<span class="gp">In [9]: </span><span class="n">grp</span> <span class="o">=</span> <span class="n">df_cheque</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;InicioPeriodo&#39;</span><span class="p">)</span>
+
+<span class="gp">In [10]: </span><span class="n">df_mean</span> <span class="o">=</span> <span class="n">grp</span><span class="o">.</span><span class="n">agg</span><span class="p">({</span><span class="s1">&#39;TaxaJurosAoMes&#39;</span><span class="p">:</span> <span class="s1">&#39;median&#39;</span><span class="p">})</span>
+
+<span class="gp">In [11]: </span><span class="n">df_mean</span><span class="p">[</span><span class="s1">&#39;TaxaJurosAoMes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="gp">   ....: </span>                               <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Data&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Taxa&#39;</span><span class="p">,</span>
+<span class="gp">   ....: </span>                               <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Médias das Taxas de Juros de Cheque Especial - Fonte:BCB&#39;</span><span class="p">);</span>
+<span class="gp">   ....: </span>
+</pre></div>
+</div>
+<img alt="_images/taxajuros1.png" src="_images/taxajuros1.png" />
+</section>
+
+
+            </article>
+            
+            
+            
+            <footer class="bd-footer-article">
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+  <a class='left-prev' id="prev-link" href="expectativas.html" title="anterior página">
+      <i class="fas fa-angle-left"></i>
+      <div class="prev-next-info">
+          <p class="prev-next-subtitle">anterior</p>
+          <p class="prev-next-title">Expectativas</p>
+      </div>
+  </a>
+  <a class='right-next' id="next-link" href="odata.html" title="próximo página">
+  <div class="prev-next-info">
+      <p class="prev-next-subtitle">próximo</p>
+      <p class="prev-next-title">APIs OData</p>
+  </div>
+  <i class="fas fa-angle-right"></i>
+  </a>
+</div>
+            </footer>
+            
+          </div>
+          
+          
+          
+            <div class="bd-sidebar-secondary bd-toc">
+              
+<div class="toc-item">
+  
+</div>
+
+<div class="toc-item">
+  
+<div class="tocsection sourcelink">
+    <a href="_sources/taxajuros.rst.txt">
+        <i class="fas fa-file-alt"></i> Exibir Fonte
+    </a>
+</div>
+
+</div>
+
+            </div>
+          
+          
+        </div>
+        <footer class="bd-footer-content">
+          <div class="bd-footer-content__inner">
+            
+          </div>
+        </footer>
+        
+      </main>
+    </div>
+  </div>
+
+  
+    
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=9b1a4fa89bdd0e95b23b"></script>
+
+  <footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    
+<p class="copyright">
+
+    &copy; Copyright 2021, Wilson Freitas.<br>
+
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+<p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.1.1.<br>
+</p>
+
+  </div>
+  
+</div>
+  </footer>
+  </body>
+</html>
