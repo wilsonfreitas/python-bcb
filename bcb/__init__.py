@@ -129,7 +129,7 @@ class BaseODataAPI:
         return Endpoint(self.service[endpoint], self.service.url)
 
 
-class GenericODataAPI(BaseODataAPI):
+class ODataAPI(BaseODataAPI):
     """
     Classe que abstrai qualquer API OData
 
@@ -142,7 +142,7 @@ class GenericODataAPI(BaseODataAPI):
 
     def __init__(self, url):
         """
-        GenericODataAPI construtor
+        ODataAPI construtor
 
         Parameters
         ----------
