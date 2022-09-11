@@ -38,6 +38,5 @@ Função :ref:`bcb.sgs.get`
     plt.suptitle('IPCA acumulado 12 meses - Janela Móvel', fontsize=18)
     plt.xlabel('Data')
     plt.ylabel('%')
+    @savefig sgs1.png
     plt.legend().set_visible(False)
-
-.. plot:: plots/sgs1.py

@@ -27,9 +27,8 @@ O módulo ``currency`` obtem dados de moedas do conversor de moedas do Banco Cen
 
 .. ipython:: python
 
+    @savefig currency1.png
     df.plot(figsize=(12, 6));
-
-.. plot:: plots/currency1.py
 
 
 .. autofunction:: get_currency_list
