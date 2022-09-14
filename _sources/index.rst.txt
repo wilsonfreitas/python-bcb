@@ -6,17 +6,6 @@
 python-bcb 
 ==========
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Conteúdo:
-
-   sgs
-   currency
-   expectativas
-   taxajuros
-   odata
-   api
-
 **python-bcb** é uma interface em Python estruturada para obter informações
 da API de dados abertos do `Banco Central do Brasil <https://www.bcb.gov.br>`_.
 
@@ -86,6 +75,16 @@ Uso
    from bcb import sgs
    sgs.get(('IPCA', 433), last=12)
 
+
+.. toctree::
+   :maxdepth: 1
+
+   sgs
+   currency
+   expectativas
+   taxajuros
+   odata
+   api
 
 Índices e tabelas
 ==================

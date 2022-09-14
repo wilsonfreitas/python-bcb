@@ -1,5 +1,5 @@
 SGS
-###
+===
 
 O módulo ``sgs`` obtem os dados do webservice do Banco Central,
 interface json do serviço BCData/SGS - 
@@ -7,12 +7,15 @@ interface json do serviço BCData/SGS -
 
 .. automodule:: bcb.sgs
 
-Função :ref:`bcb.sgs.get`
--------------------------
+Função bcb.sgs.get
+--------------------
 
 .. currentmodule:: bcb.sgs
 
 .. autofunction:: get
+
+Exemplo
+-------
 
 .. ipython:: python
 
