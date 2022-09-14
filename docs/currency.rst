@@ -1,5 +1,5 @@
 Moedas
-######
+======
 
 O pacote tem 2 APIs que dão acesso a informações de moedas.
 
@@ -11,10 +11,11 @@ O pacote tem 2 APIs que dão acesso a informações de moedas.
 Conversor de Moedas
 -------------------
 
-O módulo ``currency`` obtem dados de moedas do conversor de moedas do Banco Central através de webscraping.
+.. automodule:: bcb.currency
+
+O módulo :py:mod:`bcb.currency` obtem dados de moedas do conversor de moedas do Banco Central através de webscraping.
 
 .. currentmodule:: bcb.currency
-
 
 .. autofunction:: get
 
@@ -22,10 +23,11 @@ O módulo ``currency`` obtem dados de moedas do conversor de moedas do Banco Cen
 .. ipython:: python
 
     from bcb import currency
-    df = currency.get(['USD', 'EUR'], start='2000-01-01', end='2021-01-01', side='ask')
+    df = currency.get(['USD', 'EUR'],
+                      start='2000-01-01',
+                      end='2021-01-01',
+                      side='ask')
     df.head()
-
-.. ipython:: python
 
     @savefig currency1.png
     df.plot(figsize=(12, 6));
@@ -46,7 +48,7 @@ API OData
 
 __ documentacao_
 
-Diferente da interface _`currency`, os dados são obtidos a partir da `API de Moedas`__.
+Diferente do módulo :py:mod:`bcb.currency`, aqui os dados são obtidos a partir da `API de Moedas`__.
 
 .. currentmodule:: bcb
 
@@ -65,10 +67,28 @@ Diferente da interface _`currency`, os dados são obtidos a partir da `API de Mo
 
     ptax.describe('Moedas')
 
+    ep = ptax.get_endpoint('Moedas')
+    ep.query().limit(10).collect()
+
 .. ipython:: python
 
-    ptax.describe('CotacaoMoedaPeriodoFechamento')
+    ptax.describe('CotacaoMoedaDia')
+
+    ep = ptax.get_endpoint('CotacaoMoedaDia')
+    (ep.query()
+       .parameters(moeda='AUD', dataCotacao='1/31/2022')
+       .collect())
+
+É importante notar que as datas estão no formato dia/mês/ano e os números não
+são preenchidos com 0 para ter 2 dígitos.
 
 .. ipython:: python
 
     ptax.describe('CotacaoMoedaPeriodo')
+    
+    ep = ptax.get_endpoint('CotacaoMoedaPeriodo')
+    (ep.query()
+       .parameters(moeda='AUD',
+                   dataInicial='1/1/2022',
+                   dataFinalCotacao='1/5/2022')
+       .collect())

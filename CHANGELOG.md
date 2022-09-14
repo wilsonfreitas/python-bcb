@@ -1,6 +1,10 @@
 
 # Changelog
 
+## [0.1.9] - 
+- Created class bcb.ODataAPI to directly wrap OData APIs
+- Updated documentation
+
 ## [0.1.8] - 2022-09-10
 - Updated documentation
 - Migrated to poetry

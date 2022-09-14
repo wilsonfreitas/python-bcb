@@ -60,11 +60,20 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "pydata_sphinx_theme"
+html_theme = "furo"
 html_theme_options = {
-    "external_links": [],
-    "github_url": "https://github.com/wilsonfreitas/python-bcb",
+    "source_repository": "https://github.com/wilsonfreitas/python-bcb/",
+    "source_branch": "main",
+    "source_directory": "docs/",
 }
+# html_theme = "alabaster"
+# html_theme_options = {
+#     "description": "Interface em Python para o portal de dados abertos do BCB",
+#     "github_user": "wilsonfreitas",
+#     "github_repo": "python-bcb",
+#     "fixed_sidebar": True,
+# }
+
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

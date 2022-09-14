@@ -2,8 +2,8 @@
 API
 ===
 
-Módulo :ref:`bcb.sgs`
----------------------
+Módulo :py:mod:`bcb.sgs`
+------------------------
 
 .. currentmodule:: bcb.sgs
 
@@ -11,8 +11,8 @@ Módulo :ref:`bcb.sgs`
 
    get
 
-Módulo :ref:`bcb.currency`
---------------------------
+Módulo :py:mod:`bcb.currency`
+-----------------------------
 
 .. currentmodule:: bcb.currency
 
@@ -22,8 +22,8 @@ Módulo :ref:`bcb.currency`
    get_currency_list
 
 
-APIs OData
-----------
+:ref:`APIs OData`
+-----------------
 
 .. currentmodule:: bcb
 
@@ -31,15 +31,10 @@ APIs OData
 
    Endpoint
    BaseODataAPI
+   ODataAPI
    Expectativas
    PTAX
    IFDATA
    TaxaJuros
    SPI
    MercadoImobiliario
-   TarifasBancariasPorInstituicaoFinanceira
-   TarifasBancariasPorServico
-   PostosAtendimentoEletronicoPorInstituicaoFinanceira
-   PostosAtendimentoCorrespondentesPorInstituicaoFinanceira
-   EstatisticasSTR
-   DinheiroCirculacao
