@@ -4,6 +4,7 @@
 ## [0.1.9] - 
 - Created class bcb.ODataAPI to directly wrap OData APIs
 - Updated documentation
+- Updated pyproject.toml
 
 ## [0.1.8] - 2022-09-10
 - Updated documentation
