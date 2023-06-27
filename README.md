@@ -37,7 +37,7 @@ para obter os dados.
 ## Conversor de Moedas
 
 Implementado no módulo `currency`, um conjunto de funções que realiza webscraping
-no site do [Conversos de Moedas](https://www.bcb.gov.br/conversao)
+no site do [Conversor de Moedas](https://www.bcb.gov.br/conversao)
 do Banco Central, possível obter séries temporais de frequência diária
 de diversas moedas.
 
