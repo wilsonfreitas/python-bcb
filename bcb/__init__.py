@@ -9,7 +9,6 @@ from .odata import (
 )
 import pandas as pd
 
-
 OLINDA_BASE_URL = "https://olinda.bcb.gov.br/olinda/servico"
 
 
@@ -30,9 +29,19 @@ class EndpointMeta(type):
 
 
 class EndpointQuery(ODataQuery):
+    _DATE_COLUMN_NAMES = {
+        "Data",
+        "DataReferencia",
+    }
+
     def collect(self):
-        data = super().collect()
-        return pd.DataFrame(data["value"])
+        raw_data = super().collect()
+        data = pd.DataFrame(raw_data["value"])
+        for col in self._DATE_COLUMN_NAMES:
+            if col not in data.columns:
+                continue
+            data[col] = pd.to_datetime(data[col])
+        return data
 
 
 class Endpoint(metaclass=EndpointMeta):
