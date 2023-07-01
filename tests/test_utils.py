@@ -1,7 +1,3 @@
-import sys
-
-sys.path.append(".")
-
 from datetime import datetime, date
 
 from bcb import utils
