@@ -2,13 +2,13 @@
 <html class="no-js" lang="pt-br">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Índice" href="genindex.html" /><link rel="search" title="Buscar" href="search.html" /><link rel="next" title="APIs OData" href="odata.html" /><link rel="prev" title="Expectativas" href="expectativas.html" />
 
-    <meta name="generator" content="sphinx-5.1.1, furo 2022.06.21"/>
+    <!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20 -->
         <title>Taxas de Juros - documentação python-bcb</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     
@@ -135,7 +135,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -150,7 +150,7 @@
   <span class="sidebar-brand-text">documentação python-bcb </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
-  <input class="sidebar-search" placeholder=Buscar name="q" aria-label="Buscar">
+  <input class="sidebar-search" placeholder="Buscar" name="q" aria-label="Buscar">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -198,7 +198,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -299,7 +299,10 @@ específico.</p>
 <span class="gp">In [3]: </span><span class="n">em</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 <span class="go">EntitySets:</span>
 <span class="go">  TaxasJurosMensalPorMes</span>
+<span class="go">  ParametrosConsulta</span>
 <span class="go">  TaxasJurosDiariaPorInicioPeriodo</span>
+<span class="go">  ConsultaUnificada</span>
+<span class="go">  ConsultaDatas</span>
 </pre></div>
 </div>
 <p>As características do <code class="docutils literal notranslate"><span class="pre">EntitySets</span></code> podem ser visualizadas por:</p>
@@ -307,7 +310,7 @@ específico.</p>
 
 <span class="go">EntitySet (Endpoint): TaxasJurosDiariaPorInicioPeriodo</span>
 <span class="go">EntityType: br.gov.bcb.olinda.servico.taxaJuros.TaxaJurosDiaria</span>
-<span class="go">Properties: InicioPeriodo&lt;str&gt;, FimPeriodo&lt;str&gt;, Segmento&lt;str&gt;, Modalidade&lt;str&gt;, Posicao&lt;int&gt;, InstituicaoFinanceira&lt;str&gt;, TaxaJurosAoMes&lt;float&gt;, TaxaJurosAoAno&lt;float&gt;, cnpj8&lt;str&gt;</span>
+<span class="go">Properties: InicioPeriodo&lt;str&gt;, FimPeriodo&lt;str&gt;, codigoSegmento&lt;str&gt;, Segmento&lt;str&gt;, codigoModalidade&lt;str&gt;, Modalidade&lt;str&gt;, Posicao&lt;int&gt;, InstituicaoFinanceira&lt;str&gt;, TaxaJurosAoMes&lt;float&gt;, TaxaJurosAoAno&lt;float&gt;, cnpj8&lt;str&gt;</span>
 </pre></div>
 </div>
 <p>Vejamos um gráfico da mediana das taxas de juros do cheque especial praticada
@@ -318,7 +321,7 @@ pelas instituições financeiras.</p>
 
 <span class="gp">In [7]: </span><span class="n">df_cheque</span> <span class="o">=</span> <span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
 <span class="gp">   ...: </span>               <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Segmento</span> <span class="o">==</span> <span class="s1">&#39;PESSOA FÍSICA&#39;</span><span class="p">,</span>
-<span class="gp">   ...: </span>                       <span class="n">ep</span><span class="o">.</span><span class="n">Modalidade</span> <span class="o">==</span> <span class="s1">&#39;CHEQUE ESPECIAL - PRÉ-FIXADO&#39;</span><span class="p">)</span>
+<span class="gp">   ...: </span>                       <span class="n">ep</span><span class="o">.</span><span class="n">Modalidade</span> <span class="o">==</span> <span class="s1">&#39;Cheque especial - Pré-fixado&#39;</span><span class="p">)</span>
 <span class="gp">   ...: </span>               <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
 <span class="gp">   ...: </span>
 
@@ -349,10 +352,10 @@ pelas instituições financeiras.</p>
                 </div>
                 <div class="title">APIs OData</div>
               </div>
-              <svg><use href="#svg-arrow-right"></use></svg>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
           <a class="prev-page" href="expectativas.html">
-              <svg><use href="#svg-arrow-right"></use></svg>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
@@ -374,25 +377,44 @@ pelas instituições financeiras.</p>
             
           </div>
           <div class="right-details">
-            <div class="icons">
-              
-            </div>
+            
           </div>
         </div>
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Taxas de Juros</a><ul>
+<li><a class="reference internal" href="#bcb.TaxaJuros"><code class="docutils literal notranslate"><span class="pre">TaxaJuros</span></code></a><ul>
+<li><a class="reference internal" href="#bcb.TaxaJuros.describe"><code class="docutils literal notranslate"><span class="pre">TaxaJuros.describe()</span></code></a></li>
+<li><a class="reference internal" href="#bcb.TaxaJuros.get_endpoint"><code class="docutils literal notranslate"><span class="pre">TaxaJuros.get_endpoint()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
   </div>
 </div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/scripts/furo.js"></script>
     </body>
 </html>

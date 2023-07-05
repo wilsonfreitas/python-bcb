@@ -2,13 +2,13 @@
 <html class="no-js" lang="pt-br">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Índice" href="genindex.html" /><link rel="search" title="Buscar" href="search.html" /><link rel="next" title="Expectativas" href="expectativas.html" /><link rel="prev" title="SGS" href="sgs.html" />
 
-    <meta name="generator" content="sphinx-5.1.1, furo 2022.06.21"/>
+    <!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20 -->
         <title>Moedas - documentação python-bcb</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     
@@ -150,7 +150,7 @@
   <span class="sidebar-brand-text">documentação python-bcb </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
-  <input class="sidebar-search" placeholder=Buscar name="q" aria-label="Buscar">
+  <input class="sidebar-search" placeholder="Buscar" name="q" aria-label="Buscar">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -252,7 +252,7 @@ por <code class="docutils literal notranslate"><span class="pre">side</span></co
 <span class="gp">   ...: </span>
 
 <span class="gp">In [3]: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-<span class="gh">Out[3]: </span><span class="go"></span>
+<span class="gh">Out[3]: </span>
 <span class="go">                EUR     USD</span>
 <span class="go">Date                       </span>
 <span class="go">2000-01-03  1.85047  1.8011</span>
@@ -280,7 +280,7 @@ por <code class="docutils literal notranslate"><span class="pre">side</span></co
 </dd></dl>
 
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [5]: </span><span class="n">currency</span><span class="o">.</span><span class="n">get_currency_list</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-<span class="gh">Out[5]: </span><span class="go"></span>
+<span class="gh">Out[5]: </span>
 <span class="go">   code               name  ... type  exclusion_date</span>
 <span class="go">0     5  AFEGANE AFEGANIST  ...    A             NaT</span>
 <span class="go">1   785  RANDE/AFRICA SUL   ...    A             NaT</span>
@@ -358,7 +358,7 @@ boletins do dia.</p>
 <span class="gp">In [10]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">ptax</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s1">&#39;Moedas&#39;</span><span class="p">)</span>
 
 <span class="gp">In [11]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
-<span class="gh">Out[11]: </span><span class="go"></span>
+<span class="gh">Out[11]: </span>
 <span class="go">  simbolo             nomeFormatado tipoMoeda</span>
 <span class="go">0     AUD         Dólar australiano         B</span>
 <span class="go">1     CAD           Dólar canadense         A</span>
@@ -386,13 +386,13 @@ boletins do dia.</p>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">moeda</span><span class="o">=</span><span class="s1">&#39;AUD&#39;</span><span class="p">,</span> <span class="n">dataCotacao</span><span class="o">=</span><span class="s1">&#39;1/31/2022&#39;</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[14]: </span><span class="go"></span>
-<span class="go">   paridadeCompra  paridadeVenda  ...          dataHoraCotacao      tipoBoletim</span>
-<span class="go">0          0.7051         0.7053  ...  2022-01-31 10:11:20.549         Abertura</span>
-<span class="go">1          0.7068         0.7070  ...  2022-01-31 11:04:17.576    Intermediário</span>
-<span class="go">2          0.7066         0.7068  ...  2022-01-31 12:02:19.723    Intermediário</span>
-<span class="go">3          0.7051         0.7052  ...    2022-01-31 13:07:02.5    Intermediário</span>
-<span class="go">4          0.7051         0.7052  ...  2022-01-31 13:07:02.511  Fechamento PTAX</span>
+<span class="gh">Out[14]: </span>
+<span class="go">   paridadeCompra  paridadeVenda  ...         dataHoraCotacao      tipoBoletim</span>
+<span class="go">0          0.7051         0.7053  ... 2022-01-31 10:11:20.549         Abertura</span>
+<span class="go">1          0.7068         0.7070  ... 2022-01-31 11:04:17.576    Intermediário</span>
+<span class="go">2          0.7066         0.7068  ... 2022-01-31 12:02:19.723    Intermediário</span>
+<span class="go">3          0.7051         0.7052  ... 2022-01-31 13:07:02.500    Intermediário</span>
+<span class="go">4          0.7051         0.7052  ... 2022-01-31 13:07:02.511  Fechamento PTAX</span>
 
 <span class="go">[5 rows x 6 columns]</span>
 </pre></div>
@@ -415,23 +415,23 @@ são preenchidos com 0 para ter 2 dígitos.</p>
 <span class="gp">   ....: </span>               <span class="n">dataFinalCotacao</span><span class="o">=</span><span class="s1">&#39;1/5/2022&#39;</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[17]: </span><span class="go"></span>
-<span class="go">    paridadeCompra  paridadeVenda  ...          dataHoraCotacao    tipoBoletim</span>
-<span class="go">0           0.7243         0.7244  ...  2022-01-03 10:04:22.186       Abertura</span>
-<span class="go">1           0.7221         0.7223  ...  2022-01-03 11:11:42.883  Intermediário</span>
-<span class="go">2           0.7197         0.7198  ...   2022-01-03 12:09:19.76  Intermediário</span>
-<span class="go">3           0.7186         0.7188  ...  2022-01-03 13:11:50.353  Intermediário</span>
-<span class="go">4           0.7186         0.7188  ...  2022-01-03 13:11:50.357     Fechamento</span>
-<span class="go">5           0.7188         0.7189  ...  2022-01-04 10:05:22.015       Abertura</span>
-<span class="go">6           0.7208         0.7209  ...  2022-01-04 11:05:20.148  Intermediário</span>
-<span class="go">7           0.7217         0.7219  ...  2022-01-04 12:10:19.466  Intermediário</span>
-<span class="go">8           0.7246         0.7248  ...  2022-01-04 13:08:59.118  Intermediário</span>
-<span class="go">9           0.7246         0.7248  ...  2022-01-04 13:08:59.123     Fechamento</span>
-<span class="go">10          0.7250         0.7251  ...  2022-01-05 10:06:19.404       Abertura</span>
-<span class="go">11          0.7258         0.7259  ...  2022-01-05 11:06:19.009  Intermediário</span>
-<span class="go">12          0.7264         0.7266  ...  2022-01-05 12:03:19.428  Intermediário</span>
-<span class="go">13          0.7270         0.7271  ...  2022-01-05 13:07:53.088  Intermediário</span>
-<span class="go">14          0.7270         0.7271  ...  2022-01-05 13:07:53.094     Fechamento</span>
+<span class="gh">Out[17]: </span>
+<span class="go">    paridadeCompra  paridadeVenda  ...         dataHoraCotacao    tipoBoletim</span>
+<span class="go">0           0.7243         0.7244  ... 2022-01-03 10:04:22.186       Abertura</span>
+<span class="go">1           0.7221         0.7223  ... 2022-01-03 11:11:42.883  Intermediário</span>
+<span class="go">2           0.7197         0.7198  ... 2022-01-03 12:09:19.760  Intermediário</span>
+<span class="go">3           0.7186         0.7188  ... 2022-01-03 13:11:50.353  Intermediário</span>
+<span class="go">4           0.7186         0.7188  ... 2022-01-03 13:11:50.357     Fechamento</span>
+<span class="go">5           0.7188         0.7189  ... 2022-01-04 10:05:22.015       Abertura</span>
+<span class="go">6           0.7208         0.7209  ... 2022-01-04 11:05:20.148  Intermediário</span>
+<span class="go">7           0.7217         0.7219  ... 2022-01-04 12:10:19.466  Intermediário</span>
+<span class="go">8           0.7246         0.7248  ... 2022-01-04 13:08:59.118  Intermediário</span>
+<span class="go">9           0.7246         0.7248  ... 2022-01-04 13:08:59.123     Fechamento</span>
+<span class="go">10          0.7250         0.7251  ... 2022-01-05 10:06:19.404       Abertura</span>
+<span class="go">11          0.7258         0.7259  ... 2022-01-05 11:06:19.009  Intermediário</span>
+<span class="go">12          0.7264         0.7266  ... 2022-01-05 12:03:19.428  Intermediário</span>
+<span class="go">13          0.7270         0.7271  ... 2022-01-05 13:07:53.088  Intermediário</span>
+<span class="go">14          0.7270         0.7271  ... 2022-01-05 13:07:53.094     Fechamento</span>
 
 <span class="go">[15 rows x 6 columns]</span>
 </pre></div>
@@ -451,10 +451,10 @@ são preenchidos com 0 para ter 2 dígitos.</p>
                 </div>
                 <div class="title">Expectativas</div>
               </div>
-              <svg><use href="#svg-arrow-right"></use></svg>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
           <a class="prev-page" href="sgs.html">
-              <svg><use href="#svg-arrow-right"></use></svg>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
@@ -476,9 +476,7 @@ são preenchidos com 0 para ter 2 dígitos.</p>
             
           </div>
           <div class="right-details">
-            <div class="icons">
-              
-            </div>
+            
           </div>
         </div>
         
@@ -490,15 +488,22 @@ são preenchidos com 0 para ter 2 dígitos.</p>
       <div class="toc-sticky toc-scroll">
         <div class="toc-title-container">
           <span class="toc-title">
-            Conteúdos
+            On this page
           </span>
         </div>
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Moedas</a><ul>
-<li><a class="reference internal" href="#module-bcb.currency">Conversor de Moedas</a></li>
-<li><a class="reference internal" href="#api-odata">API OData</a></li>
+<li><a class="reference internal" href="#module-bcb.currency">Conversor de Moedas</a><ul>
+<li><a class="reference internal" href="#bcb.currency.get"><code class="docutils literal notranslate"><span class="pre">get()</span></code></a></li>
+<li><a class="reference internal" href="#bcb.currency.get_currency_list"><code class="docutils literal notranslate"><span class="pre">get_currency_list()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#api-odata">API OData</a><ul>
+<li><a class="reference internal" href="#bcb.PTAX"><code class="docutils literal notranslate"><span class="pre">PTAX</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -511,10 +516,8 @@ são preenchidos com 0 para ter 2 dígitos.</p>
     </aside>
   </div>
 </div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/scripts/furo.js"></script>
     </body>
 </html>

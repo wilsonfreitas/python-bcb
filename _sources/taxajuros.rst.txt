@@ -42,7 +42,7 @@ pelas instituições financeiras.
     ep = em.get_endpoint('TaxasJurosDiariaPorInicioPeriodo')
     df_cheque = (ep.query()
                    .filter(ep.Segmento == 'PESSOA FÍSICA',
-                           ep.Modalidade == 'CHEQUE ESPECIAL - PRÉ-FIXADO')
+                           ep.Modalidade == 'Cheque especial - Pré-fixado')
                    .collect())
     df_cheque['InicioPeriodo'] = pd.to_datetime(df_cheque['InicioPeriodo'])
     grp = df_cheque.groupby('InicioPeriodo')

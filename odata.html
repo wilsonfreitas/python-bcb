@@ -2,13 +2,13 @@
 <html class="no-js" lang="pt-br">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Índice" href="genindex.html" /><link rel="search" title="Buscar" href="search.html" /><link rel="next" title="API" href="api.html" /><link rel="prev" title="Taxas de Juros" href="taxajuros.html" />
 
-    <meta name="generator" content="sphinx-5.1.1, furo 2022.06.21"/>
+    <!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20 -->
         <title>APIs OData - documentação python-bcb</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     
@@ -150,7 +150,7 @@
   <span class="sidebar-brand-text">documentação python-bcb </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
-  <input class="sidebar-search" placeholder=Buscar name="q" aria-label="Buscar">
+  <input class="sidebar-search" placeholder="Buscar" name="q" aria-label="Buscar">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -261,7 +261,6 @@ que possui os seguintes métodos.</p>
 <span class="gp">In [3]: </span><span class="n">em</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 <span class="go">EntitySets:</span>
 <span class="go">  ExpectativasMercadoTop5Anuais</span>
-<span class="go">  ExpectativasMercadoInstituicoes</span>
 <span class="go">  ExpectativaMercadoMensais</span>
 <span class="go">  ExpectativasMercadoInflacao12Meses</span>
 <span class="go">  ExpectativasMercadoSelic</span>
@@ -313,18 +312,18 @@ Isso é feito executando o método <a class="reference internal" href="expectati
 <p>Tendo o objeto com o <em>endpoint</em> basta executar a consulta com <code class="docutils literal notranslate"><span class="pre">query</span></code> e
 chamando <code class="docutils literal notranslate"><span class="pre">collect</span></code> ao fim para obter os dados.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [6]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
-<span class="gh">Out[6]: </span><span class="go"></span>
-<span class="go">            Indicador        Data DataReferencia  ... DesvioPadrao  Minimo  Maximo</span>
-<span class="go">0  IPCA Administrados  2022-04-08           2022  ...       0.5717  4.3792  5.7217</span>
-<span class="go">1  IPCA Administrados  2022-04-08           2023  ...       0.3802  3.6732  4.6044</span>
-<span class="go">2  IPCA Administrados  2022-04-08           2024  ...       0.6750  2.6500  4.0000</span>
-<span class="go">3  IPCA Administrados  2022-04-08           2025  ...       0.4000  3.0000  3.8000</span>
-<span class="go">4  IPCA Administrados  2022-04-08           2026  ...       0.4000  3.0000  3.8000</span>
-<span class="go">5  IPCA Administrados  2022-04-11           2022  ...       0.5717  4.3792  5.7217</span>
-<span class="go">6  IPCA Administrados  2022-04-11           2023  ...       0.3802  3.6732  4.6044</span>
-<span class="go">7  IPCA Administrados  2022-04-11           2024  ...       0.6750  2.6500  4.0000</span>
-<span class="go">8  IPCA Administrados  2022-04-11           2025  ...       0.4000  3.0000  3.8000</span>
-<span class="go">9  IPCA Administrados  2022-04-11           2026  ...       0.4000  3.0000  3.8000</span>
+<span class="gh">Out[6]: </span>
+<span class="go">   Indicador       Data DataReferencia  ... DesvioPadrao  Minimo  Maximo</span>
+<span class="go">0  PIB Total 2023-03-31     2023-01-01  ...       0.3553  0.9700    2.00</span>
+<span class="go">1  PIB Total 2023-03-31     2024-01-01  ...       0.4276  0.4585    1.45</span>
+<span class="go">2  PIB Total 2023-03-31     2025-01-01  ...       0.1546  1.4500    1.80</span>
+<span class="go">3  PIB Total 2023-03-31     2026-01-01  ...       0.1546  1.4500    1.80</span>
+<span class="go">4  PIB Total 2023-03-31     2027-01-01  ...       0.1546  1.4500    1.80</span>
+<span class="go">5  PIB Total 2023-04-03     2023-01-01  ...       0.3553  0.9700    2.00</span>
+<span class="go">6  PIB Total 2023-04-03     2024-01-01  ...       0.4276  0.4585    1.45</span>
+<span class="go">7  PIB Total 2023-04-03     2025-01-01  ...       0.1546  1.4500    1.80</span>
+<span class="go">8  PIB Total 2023-04-03     2026-01-01  ...       0.1546  1.4500    1.80</span>
+<span class="go">9  PIB Total 2023-04-03     2027-01-01  ...       0.1546  1.4500    1.80</span>
 
 <span class="go">[10 rows x 9 columns]</span>
 </pre></div>
@@ -349,18 +348,18 @@ Por essa razão é possível realizar chamadas encadeadas configurando
 a consulta.</p>
 <p>Uma consulta mais elaborada com <code class="docutils literal notranslate"><span class="pre">filter</span></code>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [8]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Indicador</span> <span class="o">==</span> <span class="s1">&#39;IPCA&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
-<span class="gh">Out[8]: </span><span class="go"></span>
-<span class="go">  Indicador        Data DataReferencia  ... DesvioPadrao  Minimo  Maximo</span>
-<span class="go">0      IPCA  2001-11-06           2001  ...         None    None    None</span>
-<span class="go">1      IPCA  2001-11-06           2002  ...         None    None    None</span>
-<span class="go">2      IPCA  2001-11-06           2003  ...         None    None    None</span>
-<span class="go">3      IPCA  2001-11-06           2004  ...         None    None    None</span>
-<span class="go">4      IPCA  2001-11-06           2005  ...         None    None    None</span>
-<span class="go">5      IPCA  2001-11-06           2001  ...         None    None    None</span>
-<span class="go">6      IPCA  2001-11-06           2002  ...         None    None    None</span>
-<span class="go">7      IPCA  2001-11-06           2003  ...         None    None    None</span>
-<span class="go">8      IPCA  2001-11-06           2004  ...         None    None    None</span>
-<span class="go">9      IPCA  2001-11-06           2005  ...         None    None    None</span>
+<span class="gh">Out[8]: </span>
+<span class="go">  Indicador       Data DataReferencia  ... DesvioPadrao  Minimo  Maximo</span>
+<span class="go">0      IPCA 2018-01-18     2019-01-01  ...         0.13    4.00    4.25</span>
+<span class="go">1      IPCA 2018-01-18     2020-01-01  ...         0.00    4.00    4.00</span>
+<span class="go">2      IPCA 2018-01-18     2021-01-01  ...         0.11    3.75    4.00</span>
+<span class="go">3      IPCA 2018-01-18     2018-01-01  ...         0.26    3.27    3.95</span>
+<span class="go">4      IPCA 2018-01-19     2019-01-01  ...         0.25    3.70    4.30</span>
+<span class="go">5      IPCA 2018-01-19     2020-01-01  ...         0.23    3.70    4.35</span>
+<span class="go">6      IPCA 2018-01-19     2021-01-01  ...         0.25    3.70    4.40</span>
+<span class="go">7      IPCA 2018-01-19     2018-01-01  ...         0.20    3.58    4.15</span>
+<span class="go">8      IPCA 2018-01-19     2022-01-01  ...         0.22    3.70    4.25</span>
+<span class="go">9      IPCA 2018-01-19     2019-01-01  ...         0.14    3.90    4.25</span>
 
 <span class="go">[10 rows x 9 columns]</span>
 </pre></div>
@@ -380,18 +379,18 @@ um conjunto de colunas.</p>
 <span class="gp">   ...: </span> <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="gp">   ...: </span> <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
 <span class="gp">   ...: </span>
-<span class="gh">Out[9]: </span><span class="go"></span>
-<span class="go">         Data DataReferencia   Media  Mediana</span>
-<span class="go">0  2022-09-09           2023  4.8964   5.0000</span>
-<span class="go">1  2022-09-09           2024  3.7300   3.6000</span>
-<span class="go">2  2022-09-09           2025  3.2750   3.3000</span>
-<span class="go">3  2022-09-09           2026  3.1667   3.0000</span>
-<span class="go">4  2022-09-08           2023  5.1835   5.1878</span>
-<span class="go">5  2022-09-08           2024  3.6000   3.3001</span>
-<span class="go">6  2022-09-08           2025  3.1150   3.0050</span>
-<span class="go">7  2022-09-08           2026  3.1250   3.0000</span>
-<span class="go">8  2022-09-06           2023  5.2039   5.1878</span>
-<span class="go">9  2022-09-06           2024  3.6000   3.3001</span>
+<span class="gh">Out[9]: </span>
+<span class="go">        Data DataReferencia   Media  Mediana</span>
+<span class="go">0 2023-06-30     2023-01-01  4.7652   4.9135</span>
+<span class="go">1 2023-06-30     2024-01-01  3.9146   4.0000</span>
+<span class="go">2 2023-06-30     2025-01-01  4.1000   4.1000</span>
+<span class="go">3 2023-06-30     2026-01-01  4.1250   4.0000</span>
+<span class="go">4 2023-06-30     2027-01-01  4.1250   4.0000</span>
+<span class="go">5 2023-06-29     2023-01-01  4.8611   4.9135</span>
+<span class="go">6 2023-06-29     2024-01-01  3.9146   4.0000</span>
+<span class="go">7 2023-06-29     2025-01-01  4.2250   4.2000</span>
+<span class="go">8 2023-06-29     2026-01-01  4.1250   4.0000</span>
+<span class="go">9 2023-06-29     2027-01-01  4.1250   4.0000</span>
 </pre></div>
 </div>
 </section>
@@ -442,18 +441,18 @@ Estes parâmetros são passados para a consulta utilizando o método
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">moeda</span><span class="o">=</span><span class="s1">&#39;USD&#39;</span><span class="p">,</span> <span class="n">dataInicial</span><span class="o">=</span><span class="s1">&#39;01/01/2022&#39;</span><span class="p">,</span> <span class="n">dataFinalCotacao</span><span class="o">=</span><span class="s1">&#39;01/10/2022&#39;</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[15]: </span><span class="go"></span>
-<span class="go">   paridadeCompra  paridadeVenda  ...          dataHoraCotacao    tipoBoletim</span>
-<span class="go">0             1.0            1.0  ...  2022-01-03 10:04:22.186       Abertura</span>
-<span class="go">1             1.0            1.0  ...  2022-01-03 11:11:42.883  Intermediário</span>
-<span class="go">2             1.0            1.0  ...   2022-01-03 12:09:19.76  Intermediário</span>
-<span class="go">3             1.0            1.0  ...  2022-01-03 13:11:50.353  Intermediário</span>
-<span class="go">4             1.0            1.0  ...  2022-01-03 13:11:50.357     Fechamento</span>
-<span class="go">5             1.0            1.0  ...  2022-01-04 10:05:22.015       Abertura</span>
-<span class="go">6             1.0            1.0  ...  2022-01-04 11:05:20.148  Intermediário</span>
-<span class="go">7             1.0            1.0  ...  2022-01-04 12:10:19.466  Intermediário</span>
-<span class="go">8             1.0            1.0  ...  2022-01-04 13:08:59.118  Intermediário</span>
-<span class="go">9             1.0            1.0  ...  2022-01-04 13:08:59.123     Fechamento</span>
+<span class="gh">Out[15]: </span>
+<span class="go">   paridadeCompra  paridadeVenda  ...         dataHoraCotacao    tipoBoletim</span>
+<span class="go">0             1.0            1.0  ... 2022-01-03 10:04:22.186       Abertura</span>
+<span class="go">1             1.0            1.0  ... 2022-01-03 11:11:42.883  Intermediário</span>
+<span class="go">2             1.0            1.0  ... 2022-01-03 12:09:19.760  Intermediário</span>
+<span class="go">3             1.0            1.0  ... 2022-01-03 13:11:50.353  Intermediário</span>
+<span class="go">4             1.0            1.0  ... 2022-01-03 13:11:50.357     Fechamento</span>
+<span class="go">5             1.0            1.0  ... 2022-01-04 10:05:22.015       Abertura</span>
+<span class="go">6             1.0            1.0  ... 2022-01-04 11:05:20.148  Intermediário</span>
+<span class="go">7             1.0            1.0  ... 2022-01-04 12:10:19.466  Intermediário</span>
+<span class="go">8             1.0            1.0  ... 2022-01-04 13:08:59.118  Intermediário</span>
+<span class="go">9             1.0            1.0  ... 2022-01-04 13:08:59.123     Fechamento</span>
 
 <span class="go">[10 rows x 6 columns]</span>
 </pre></div>
@@ -466,14 +465,14 @@ Podemos filtrar apenas pelos dados de abertura.</p>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">moeda</span><span class="o">=</span><span class="s1">&#39;USD&#39;</span><span class="p">,</span> <span class="n">dataInicial</span><span class="o">=</span><span class="s1">&#39;01/01/2022&#39;</span><span class="p">,</span> <span class="n">dataFinalCotacao</span><span class="o">=</span><span class="s1">&#39;01/10/2022&#39;</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[16]: </span><span class="go"></span>
-<span class="go">   paridadeCompra  paridadeVenda  ...          dataHoraCotacao  tipoBoletim</span>
-<span class="go">0             1.0            1.0  ...  2022-01-03 10:04:22.186     Abertura</span>
-<span class="go">1             1.0            1.0  ...  2022-01-04 10:05:22.015     Abertura</span>
-<span class="go">2             1.0            1.0  ...  2022-01-05 10:06:19.404     Abertura</span>
-<span class="go">3             1.0            1.0  ...  2022-01-06 10:08:20.059     Abertura</span>
-<span class="go">4             1.0            1.0  ...  2022-01-07 10:06:19.793     Abertura</span>
-<span class="go">5             1.0            1.0  ...  2022-01-10 10:05:20.954     Abertura</span>
+<span class="gh">Out[16]: </span>
+<span class="go">   paridadeCompra  paridadeVenda  ...         dataHoraCotacao  tipoBoletim</span>
+<span class="go">0             1.0            1.0  ... 2022-01-03 10:04:22.186     Abertura</span>
+<span class="go">1             1.0            1.0  ... 2022-01-04 10:05:22.015     Abertura</span>
+<span class="go">2             1.0            1.0  ... 2022-01-05 10:06:19.404     Abertura</span>
+<span class="go">3             1.0            1.0  ... 2022-01-06 10:08:20.059     Abertura</span>
+<span class="go">4             1.0            1.0  ... 2022-01-07 10:06:19.793     Abertura</span>
+<span class="go">5             1.0            1.0  ... 2022-01-10 10:05:20.954     Abertura</span>
 
 <span class="go">[6 rows x 6 columns]</span>
 </pre></div>
@@ -585,10 +584,10 @@ fornecido e o que será retornado</p></li>
                 </div>
                 <div class="title">API</div>
               </div>
-              <svg><use href="#svg-arrow-right"></use></svg>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
           <a class="prev-page" href="taxajuros.html">
-              <svg><use href="#svg-arrow-right"></use></svg>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
@@ -610,9 +609,7 @@ fornecido e o que será retornado</p></li>
             
           </div>
           <div class="right-details">
-            <div class="icons">
-              
-            </div>
+            
           </div>
         </div>
         
@@ -624,7 +621,7 @@ fornecido e o que será retornado</p></li>
       <div class="toc-sticky toc-scroll">
         <div class="toc-title-container">
           <span class="toc-title">
-            Conteúdos
+            On this page
           </span>
         </div>
         <div class="toc-tree-container">
@@ -644,7 +641,14 @@ fornecido e o que será retornado</p></li>
 <li><a class="reference internal" href="#functionimports"><code class="docutils literal notranslate"><span class="pre">FunctionImports</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#classe-odataapi">Classe ODataAPI</a></li>
+<li><a class="reference internal" href="#classe-odataapi">Classe ODataAPI</a><ul>
+<li><a class="reference internal" href="#bcb.ODataAPI"><code class="docutils literal notranslate"><span class="pre">ODataAPI</span></code></a><ul>
+<li><a class="reference internal" href="#bcb.ODataAPI.describe"><code class="docutils literal notranslate"><span class="pre">ODataAPI.describe()</span></code></a></li>
+<li><a class="reference internal" href="#bcb.ODataAPI.get_endpoint"><code class="docutils literal notranslate"><span class="pre">ODataAPI.get_endpoint()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#conclusao">Conclusão</a></li>
@@ -660,10 +664,8 @@ fornecido e o que será retornado</p></li>
     </aside>
   </div>
 </div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/scripts/furo.js"></script>
     </body>
 </html>
