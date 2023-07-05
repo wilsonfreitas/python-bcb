@@ -1,6 +1,3 @@
-import sys
-
-sys.path.append(".")
 from datetime import datetime
 import pandas as pd
 from bcb import sgs
