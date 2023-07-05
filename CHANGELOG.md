@@ -1,7 +1,10 @@
 
 # Changelog
 
-## [0.1.9] - 
+## [0.2.0] - 
+- Date columns of some OData API endpoints are now formated in the returned Dataframe (Issue #3)
+
+## [0.1.9] - 2023-06-26
 - Created class bcb.ODataAPI to directly wrap OData APIs
 - Updated documentation
 - Updated pyproject.toml
