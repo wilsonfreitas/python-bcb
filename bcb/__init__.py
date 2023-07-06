@@ -159,8 +159,6 @@ class ODataAPI(BaseODataAPI):
 
     def __init__(self, url):
         """
-        ODataAPI construtor
-
         Parameters
         ----------
 
@@ -280,7 +278,7 @@ class IFDATA(BaseODataAPI):
 
 class TaxaJuros(BaseODataAPI):
     """
-    Taxas de juros de operações de crédito por instituição financeira – Médias
+    Taxas de juros de operações de crédito por instituição financeira - Médias
     dos últimos 5 dias
 
     As taxas de juros por instituição financeira apresentadas nesse conjunto de

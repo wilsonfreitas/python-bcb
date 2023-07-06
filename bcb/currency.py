@@ -11,6 +11,10 @@ import numpy as np
 
 from .utils import Date
 
+"""
+O módulo :py:mod:`bcb.currency` tem como objetivo fazer consultas no site do conversor de moedas do BCB.
+"""
+
 
 def _currency_url(currency_id, start_date, end_date):
     start_date = Date(start_date)
@@ -64,10 +68,13 @@ def _get_valid_currency_list(_date, n=0):
 
 def get_currency_list():
     """
-    Return a DataFrame with information of all available currencies.
+    Listagem com todas as moedas disponíveis na API e suas configurações de paridade.
 
-    :return: DataFrame
-    :rtype: pandas.DataFrame
+    Returns
+    -------
+
+    DataFrame :
+        Tabela com a listagem de moedas disponíveis.
     """
     if CACHE.get("TEMP_FILE_CURRENCY_LIST") is not None:
         return CACHE.get("TEMP_FILE_CURRENCY_LIST")
@@ -160,7 +167,7 @@ def get(symbols, start, end, side="ask", groupby="symbol"):
     -------
 
     DataFrame :
-        série temporal.
+        Série temporal com cotações diárias das moedas solicitadas.
     """
     if isinstance(symbols, str):
         symbols = [symbols]

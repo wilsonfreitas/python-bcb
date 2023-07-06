@@ -28,13 +28,6 @@ Ao instanciar a classe :py:class:`bcb.Expectativas` diversas informações
 são obtidas e a melhor maneira de interagir com a API é
 através do método :py:meth:`bcb.Expectativas.describe`.
 
-.. currentmodule:: bcb
-
-
-.. autoclass:: Expectativas
-  :members:
-  :inherited-members:
-
 
 .. ipython:: python
 
