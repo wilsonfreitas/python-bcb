@@ -29,19 +29,26 @@ class EndpointMeta(type):
 
 
 class EndpointQuery(ODataQuery):
+    _DATE_COLUMN_NAMES_BY_ENDPOINT = {
+        "IfDataCadastro": {"Data": "%Y%m"}
+    }
     _DATE_COLUMN_NAMES = {
         "Data",
         "DataReferencia",
         "dataHoraCotacao",
+        "InicioPeriodo",
+        "FimPeriodo",
+        "DataVigencia",
     }
 
     def collect(self):
         raw_data = super().collect()
         data = pd.DataFrame(raw_data["value"])
         for col in self._DATE_COLUMN_NAMES:
-            if col not in data.columns:
-                continue
-            data[col] = pd.to_datetime(data[col])
+            if self.entity.name in self._DATE_COLUMN_NAMES_BY_ENDPOINT and col in self._DATE_COLUMN_NAMES_BY_ENDPOINT[self.entity.name]:
+                data[col] = pd.to_datetime(data[col], format=self._DATE_COLUMN_NAMES_BY_ENDPOINT[self.entity.name][col])
+            elif col in data.columns:
+                data[col] = pd.to_datetime(data[col])
         return data
 
 
@@ -75,7 +82,7 @@ class Endpoint(metaclass=EndpointMeta):
             _query.show()
         data = _query.collect()
         _query.reset()
-        return pd.DataFrame(data["value"])
+        return data  # pd.DataFrame(data["value"])
 
     def query(self):
         return EndpointQuery(self._entity, self._url)
