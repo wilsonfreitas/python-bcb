@@ -206,68 +206,388 @@
         <article role="main">
           <section id="api">
 <h1>API<a class="headerlink" href="#api" title="Link permanente para este cabeçalho">#</a></h1>
-<section id="modulo-bcb-sgs">
-<h2>Módulo <a class="reference internal" href="sgs.html#module-bcb.sgs" title="bcb.sgs"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bcb.sgs</span></code></a><a class="headerlink" href="#modulo-bcb-sgs" title="Link permanente para este cabeçalho">#</a></h2>
-<div class="table-wrapper autosummary longtable docutils container">
-<table class="autosummary longtable docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="sgs.html#bcb.sgs.get" title="bcb.sgs.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></a>(codes[, start, end, last, multi, freq])</p></td>
-<td><p>Retorna um DataFrame pandas com séries temporais obtidas do SGS.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
+<section id="module-bcb.sgs">
+<span id="modulo-bcb-sgs"></span><h2>Módulo <a class="reference internal" href="#module-bcb.sgs" title="bcb.sgs"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bcb.sgs</span></code></a><a class="headerlink" href="#module-bcb.sgs" title="Link permanente para este cabeçalho">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="bcb.sgs.get">
+<span class="sig-prename descclassname"><span class="pre">bcb.sgs.</span></span><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">codes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.sgs.get" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Retorna um DataFrame pandas com séries temporais obtidas do SGS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>codes</strong> (<em>{int</em><em>, </em><em>List</em><em>[</em><em>int</em><em>]</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>Dict</em><em>[</em><em>str:int</em><em>]</em><em>}</em>) – <p>Este argumento pode ser uma das opções:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">int</span></code> : código da série temporal</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">list</span></code> ou <code class="docutils literal notranslate"><span class="pre">tuple</span></code> : lista ou tupla com códigos</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">list</span></code> ou <code class="docutils literal notranslate"><span class="pre">tuple</span></code> : lista ou tupla com pares <code class="docutils literal notranslate"><span class="pre">('nome',</span> <span class="pre">código)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dict</span></code> : dicionário com pares <code class="docutils literal notranslate"><span class="pre">{'nome':</span> <span class="pre">código}</span></code></p></li>
+</ul>
+<p>Com códigos numéricos é interessante utilizar os nomes com os códigos
+para definir os nomes nas colunas das séries temporais.</p>
+</p></li>
+<li><p><strong>start</strong> (<em>str</em><em>, </em><em>int</em><em>, </em><em>date</em><em>, </em><em>datetime</em><em>, </em><em>Timestamp</em>) – Data de início da série.
+Interpreta diferentes tipos e formatos de datas.</p></li>
+<li><p><strong>end</strong> (<em>string</em><em>, </em><em>int</em><em>, </em><em>date</em><em>, </em><em>datetime</em><em>, </em><em>Timestamp</em>) – Data de início da série.
+Interpreta diferentes tipos e formatos de datas.</p></li>
+<li><p><strong>last</strong> (<em>int</em>) – Retorna os últimos <code class="docutils literal notranslate"><span class="pre">last</span></code> elementos disponíveis da série temporal
+solicitada. Se <code class="docutils literal notranslate"><span class="pre">last</span></code> for maior que 0 (zero) os argumentos <code class="docutils literal notranslate"><span class="pre">start</span></code>
+e <code class="docutils literal notranslate"><span class="pre">end</span></code> são ignorados.</p></li>
+<li><p><strong>multi</strong> (<em>bool</em>) – Define se, quando mais de 1 série for solicitada, a função retorna uma
+série multivariada ou uma lista com séries univariadas.</p></li>
+<li><p><strong>freq</strong> (<em>str</em>) – Define a frequência a ser utilizada na série temporal</p></li>
+</ul>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> – série temporal univariada ou multivariada,
+quando solicitado mais de uma série (parâmetro <code class="docutils literal notranslate"><span class="pre">multi=True</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">list</span></code> – lista com séries temporais univariadas,
+quando solicitado mais de uma série (parâmetro <code class="docutils literal notranslate"><span class="pre">multi=False</span></code>).</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="modulo-bcb-currency">
-<h2>Módulo <a class="reference internal" href="currency.html#module-bcb.currency" title="bcb.currency"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bcb.currency</span></code></a><a class="headerlink" href="#modulo-bcb-currency" title="Link permanente para este cabeçalho">#</a></h2>
-<div class="table-wrapper autosummary longtable docutils container">
-<table class="autosummary longtable docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="currency.html#bcb.currency.get" title="bcb.currency.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></a>(symbols, start, end[, side, groupby])</p></td>
-<td><p>Retorna um DataFrame pandas com séries temporais com taxas de câmbio.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="currency.html#bcb.currency.get_currency_list" title="bcb.currency.get_currency_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_currency_list</span></code></a>()</p></td>
-<td><p>Return a DataFrame with information of all available currencies.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
+<section id="module-bcb.currency">
+<span id="modulo-bcb-currency"></span><h2>Módulo <a class="reference internal" href="#module-bcb.currency" title="bcb.currency"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bcb.currency</span></code></a><a class="headerlink" href="#module-bcb.currency" title="Link permanente para este cabeçalho">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="bcb.currency.get">
+<span class="sig-prename descclassname"><span class="pre">bcb.currency.</span></span><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ask'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupby</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'symbol'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.currency.get" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Retorna um DataFrame pandas com séries temporais com taxas de câmbio.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>symbols</strong> (<em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em>) – Códigos das moedas padrão ISO. O código de uma única moeda que
+retorna uma série temporal univariada e uma lista de códigos
+retorna uma série temporal multivariada.</p></li>
+<li><p><strong>start</strong> (<em>str</em><em>, </em><em>int</em><em>, </em><em>date</em><em>, </em><em>datetime</em><em>, </em><em>Timestamp</em>) – Data de início da série.
+Interpreta diferentes tipos e formatos de datas.</p></li>
+<li><p><strong>end</strong> (<em>string</em><em>, </em><em>int</em><em>, </em><em>date</em><em>, </em><em>datetime</em><em>, </em><em>Timestamp</em>) – Data de início da série.
+Interpreta diferentes tipos e formatos de datas.</p></li>
+<li><p><strong>side</strong> (<em>str</em>) – Define se a série retornada vem com os <code class="docutils literal notranslate"><span class="pre">ask</span></code> prices,
+<code class="docutils literal notranslate"><span class="pre">bid</span></code> prices ou <code class="docutils literal notranslate"><span class="pre">both</span></code> para ambos.</p></li>
+<li><p><strong>groupby</strong> (<em>str</em>) – Define se os índices de coluna são agrupados por <code class="docutils literal notranslate"><span class="pre">symbol</span></code> ou
+por <code class="docutils literal notranslate"><span class="pre">side</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>Série temporal com cotações diárias das moedas solicitadas.</p>
+</dd>
+<dt class="field-odd">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bcb.currency.get_currency_list">
+<span class="sig-prename descclassname"><span class="pre">bcb.currency.</span></span><span class="sig-name descname"><span class="pre">get_currency_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bcb.currency.get_currency_list" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Listagem com todas as moedas disponíveis na API e suas configurações de paridade.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Retorna<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tabela com a listagem de moedas disponíveis.</p>
+</dd>
+<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
-<section id="apis-odata">
-<h2><a class="reference internal" href="odata.html#apis-odata"><span class="std std-ref">APIs OData</span></a><a class="headerlink" href="#apis-odata" title="Link permanente para este cabeçalho">#</a></h2>
-<div class="table-wrapper autosummary longtable docutils container">
-<table class="autosummary longtable docutils align-default">
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Endpoint</span></code>(*args)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseODataAPI</span></code>()</p></td>
-<td><p>Classe que abstrai qualquer API OData</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="odata.html#bcb.ODataAPI" title="bcb.ODataAPI"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ODataAPI</span></code></a>(url)</p></td>
-<td><p>Classe que abstrai qualquer API OData</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="expectativas.html#bcb.Expectativas" title="bcb.Expectativas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Expectativas</span></code></a>()</p></td>
-<td><p>Integração com API OData de Expectativas de Mercado.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="currency.html#bcb.PTAX" title="bcb.PTAX"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PTAX</span></code></a>()</p></td>
-<td><p>Integração com API OData de cotações diárias de taxas de câmbio.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">IFDATA</span></code>()</p></td>
-<td><p>Integração com API OData para dados selecionados de instituições financeiras</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="taxajuros.html#bcb.TaxaJuros" title="bcb.TaxaJuros"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaxaJuros</span></code></a>()</p></td>
-<td><p>Taxas de juros de operações de crédito por instituição financeira – Médias dos últimos 5 dias</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">SPI</span></code>()</p></td>
-<td><p>Estatísticas do SPI - Sistema de Pagamentos Instantâneos</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">MercadoImobiliario</span></code>()</p></td>
-<td><p>Informações do Mercado Imobiliário</p></td>
-</tr>
-</tbody>
-</table>
-</div>
+<section id="module-bcb">
+<span id="apis-odata"></span><h2><a class="reference internal" href="odata.html#apis-odata"><span class="std std-ref">APIs OData</span></a><a class="headerlink" href="#module-bcb" title="Link permanente para este cabeçalho">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="bcb.BaseODataAPI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">BaseODataAPI</span></span><a class="headerlink" href="#bcb.BaseODataAPI" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Classe que abstrai qualquer API OData</p>
+<p>Essa classe não deve ser acessada diretamente.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bcb.BaseODataAPI.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bcb.BaseODataAPI.__init__" title="Link permanente para esta definição">#</a></dt>
+<dd><p>BaseODataAPI construtor</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bcb.BaseODataAPI.describe">
+<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.BaseODataAPI.describe" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Mostra a descrição de uma API ou de um <em>endpoint</em>
+específico.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>endpoint</strong> (<em>None</em><em> (</em><em>padrão</em><em>) </em><em>ou str</em>) – nome do <em>endpoint</em></p>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>Não retorna variável e imprime na tela uma descrição da API</em></p></li>
+<li><p><em>ou do *endpoint</em>.*</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bcb.BaseODataAPI.get_endpoint">
+<span class="sig-name descname"><span class="pre">get_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.BaseODataAPI.get_endpoint" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Obtem o <em>endpoint</em></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>endpoint</strong> (<em>str</em>) – nome do endpoint</p>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>Retorna o <em>endpoint</em> referente ao nome fornecido</p>
+</dd>
+<dt class="field-odd">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bcb.Endpoint</p>
+</dd>
+<dt class="field-even">Levanta<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Se o <em>endpoint</em> fornecido é errado.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bcb.ODataAPI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">ODataAPI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.ODataAPI" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Classe que abstrai qualquer API OData</p>
+<p>Essa classe pode ser acessada diretamente passando
+uma URL válida para uma API OData.</p>
+<p>Uma boa alternativa para acessar APIs que ainda
+não possuem implementação específica.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bcb.ODataAPI.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.ODataAPI.__init__" title="Link permanente para esta definição">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>url</strong> (<em>str</em>) – <p>URL de API OData</p>
+<p>Em geral tem o padrão</p>
+<p><code class="docutils literal notranslate"><span class="pre">https://olinda.bcb.gov.br/olinda/servico/&lt;serviço&gt;/versao/v1/odata/</span></code></p>
+<p>onde &lt;serviço&gt; é a implementação desejada, por exemplo:</p>
+<ul class="simple">
+<li><p>Expectativas</p></li>
+<li><p>PTAX</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bcb.Expectativas">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">Expectativas</span></span><a class="headerlink" href="#bcb.Expectativas" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Integração com API OData de Expectativas de Mercado.</p>
+<p>Cerca de 130
+instituições do mercado financeiro participantes do
+Sistema de Expectativas de Mercado para diversas variáveis
+macroeconômicas.</p>
+<p>Os dados são publicados no primeiro dia útil de cada semana.</p>
+<p>Esta interface possibilida a realização de consultas na
+API OData utilizando diversas funcionalidades presentes
+na especificação.</p>
+<p>Para períodos para os quais não haja estatísticas serão omitidos
+na consulta.</p>
+<p>São publicadas as expectativas informadas pelas instituições que
+autorizaram a divulgação.</p>
+<p>Essa API tem sete <em>endpoints</em></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ExpectativasMercadoTop5Anuais</span></code>: Expectativas de mercado anuais para
+os indicadores do Top 5</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ExpectativasMercadoInstituicoes</span></code>: Expectativas de mercado informadas
+pelas instituições credenciadas</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ExpectativaMercadoMensais</span></code>: Expectativas de Mercado Mensais</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ExpectativasMercadoInflacao12Meses</span></code>: Expectativas de mercado para
+inflação nos próximos 12 meses</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ExpectativasMercadoTop5Mensais</span></code>: Expectativas de mercado mensais para
+os indicadores do Top 5</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ExpectativasMercadoTrimestrais</span></code>: Expectativas de Mercado Trimestrais</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ExpectativasMercadoAnuais</span></code>: Expectativas de Mercado Anuais</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bcb.PTAX">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">PTAX</span></span><a class="headerlink" href="#bcb.PTAX" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Integração com API OData de cotações diárias de taxas de câmbio.</p>
+<p>Essa API possui os seguintes <em>endpoints</em>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Moedas</span></code>: Retorna a lista de moedas que podem ser usadas</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CotacaoMoedaPeriodoFechamento</span></code>: Retorna os boletins diários com a
+Paridade de Compra e a Paridade de Venda no Fechamento.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CotacaoMoedaAberturaOuIntermediario</span></code>: Retorna os boletins diários
+com a Paridade de Compra e a Paridade de Venda na abertura e
+para instantes ao longo do dia (intermediários).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CotacaoMoedaDia</span></code>: Consulta dos boletins por dia para moeda
+especificada.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CotacaoMoedaPeriodo</span></code>: Consulta dos boletins por período para
+moeda especificada.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CotacaoDolarDia</span></code>: Consulta dos boletins de dólar por dia.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CotacaoDolarPeriodo</span></code>: Consulta dos boletins de dólar por período.</p></li>
+</ul>
+<p>Os boletins diários são divulgados diariamente e trazem 5 cotações
+para cada data: uma de abertura, três intermediários e uma de fechamento.</p>
+<p>Estes dados estão disponíveis desde 1984-11-28 e são referentes às taxas
+administradas, até março de 1990, e às taxas livres, a partir de então
+(Resolução 1690, de 18.3.1990).
+As taxas administradas são aquelas fixadas pelo Banco Central,
+a partir de março de 1992, essa taxa recebeu a denominação de taxa
+PTAX (fechamento).
+Até 30 de junho de 2011, as taxas livres correspondiam à média das taxas
+efetivas de operações no mercado interbancário, ponderada pelo volume de
+transações do dia.
+A partir de 1 de julho de 2011 (Circular 3506, de 2010-09-23), a Ptax
+passou a corresponder à média aritmética das taxas obtidas em quatro
+consultas diárias aos dealers de câmbio e refletem a taxa negociada no
+momento de abertura da janela de consulta.
+O boletim de fechamento PTAX corresponde à média aritmética das taxas dos
+boletins do dia.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bcb.IFDATA">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">IFDATA</span></span><a class="headerlink" href="#bcb.IFDATA" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Integração com API OData para dados selecionados de instituições
+financeiras</p>
+<p>Dados selecionados de instituições financeiras dos relatórios do IFData
+disponibilizados na página <a class="reference external" href="https://www3.bcb.gov.br/ifdata/">https://www3.bcb.gov.br/ifdata/</a> em formato de
+dados abertos.
+No IFData são divulgadas trimestralmente informações das instituições
+autorizadas a funcionar e que estejam em operação normal.
+Os relatórios trimestrais são disponibilizados 60 dias após o fechamento
+das datas-bases março, junho e setembro, e 90 dias após o
+fechamento da data-base dezembro.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bcb.TaxaJuros">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">TaxaJuros</span></span><a class="headerlink" href="#bcb.TaxaJuros" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Taxas de juros de operações de crédito por instituição financeira - Médias
+dos últimos 5 dias</p>
+<p>As taxas de juros por instituição financeira apresentadas nesse conjunto de
+tabelas representam médias aritméticas das taxas de juros pactuadas nas
+operações realizadas nos cinco dias úteis referidos em cada publicação,
+ponderadas pelos respectivos valores contratados.</p>
+<p>Essas taxas de juros representam o custo efetivo médio das operações de
+crédito para os clientes, composto pelas taxas de juros efetivamente
+praticadas pelas instituições financeiras em suas operações de crédito,
+acrescidas dos encargos fiscais e operacionais incidentes sobre as
+operações.</p>
+<p>As taxas de juros apresentadas correspondem à média das taxas praticadas
+nas diversas operações realizadas pelas instituições financeiras em cada
+modalidade de crédito. Em uma mesma modalidade, as taxas de juros diferem
+entre clientes de uma mesma instituição financeira e variam de acordo com
+diversos fatores de risco envolvidos nas operações, tais como o valor e a
+qualidade das garantias apresentadas na contratação do crédito, o valor do
+pagamento dado como entrada da operação, o histórico e a situação cadastral
+de cada cliente, o prazo da operação, entre outros.</p>
+<p>Eventualmente algumas instituições financeiras não aparecem relacionadas
+nas tabelas em razão de não terem realizado operações de crédito nas
+respectivas modalidades nos períodos referidos ou por não terem prestado
+as informações requeridas pelo Banco Central do Brasil no prazo previsto
+pela legislação em vigor.</p>
+<p>A partir de abril de 2017, as taxas médias das operações de cartão de
+crédito rotativo passaram a ser publicadas de forma desagregada nas
+modalidades cartão de crédito rotativo regular - que compreende os
+financiamentos dos saldos remanescentes das faturas de cartão de crédito
+nos quais os clientes efetuam o pagamento mínimo requerido pela legislação
+em vigor - e cartão de crédito não regular , que compreende os
+financiamentos dos saldos remanescentes das faturas de cartão de crédito
+nos quais os clientes não efetuam o pagamento mínimo, sendo considerados
+em atraso.</p>
+<p>O Banco Central do Brasil não assume nenhuma responsabilidade por
+defasagem, erro ou outra deficiência em informações prestadas para fins de
+apuração das taxas médias apresentadas nesse conjunto de tabelas, cujas
+fontes sejam externas a esta instituição, bem como por quaisquer perdas ou
+danos decorrentes de seu uso.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bcb.MercadoImobiliario">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">MercadoImobiliario</span></span><a class="headerlink" href="#bcb.MercadoImobiliario" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Informações do Mercado Imobiliário</p>
+<p>O Banco Central do Brasil divulga mensalmente informações sobre o mercado
+imobiliário. Os relatórios são atualizados no último dia útil do mês,
+disponibilizando os dados após 60 dias do fechamento de cada período.
+A publicação é o resultado da análise das informações recebidas através do
+Sistema de Informações de Créditos – SCR, Sistema de Informações
+Contábeis – Cosif, Direcionamento dos Depósitos de Poupança - RCO e das
+entidades de depósito e registro de ativos. Distribuídas em 6 seções,
+possuem informações sobre as fontes de recursos, direcionamento dos
+recursos da caderneta de poupança, valores contábeis, operações de crédito,
+detalhes dos imóveis financiados e índices relacionados com o setor.
+O relatório disponibiliza mais de 4.000 séries mensais em formato de dados
+abertos. As seções Crédito e Imóveis possuem detalhamentos por estados.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bcb.SPI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">SPI</span></span><a class="headerlink" href="#bcb.SPI" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Estatísticas do SPI - Sistema de Pagamentos Instantâneos</p>
+<p>Estatísticas das movimentações financeiras transitadas no SPI (Sistema de
+Pagamentos Instantâneos) processadas por meio de lançamentos nas contas PI
+mantidas pelos participantes no Banco Central.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bcb.TarifasBancariasPorInstituicaoFinanceira">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">TarifasBancariasPorInstituicaoFinanceira</span></span><a class="headerlink" href="#bcb.TarifasBancariasPorInstituicaoFinanceira" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Tarifas Bancárias - por Segmento e por Instituição</p>
+<p>Esta API disponibiliza as informações mais recentes sobre as tarifas
+cobradas por instituições financeiras, por Segmento e por Instituição.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bcb.TarifasBancariasPorServico">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">TarifasBancariasPorServico</span></span><a class="headerlink" href="#bcb.TarifasBancariasPorServico" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Tarifas Bancárias - valores mínimos, máximos e médios por serviço</p>
+<p>Esta API disponibiliza as informações mais recentes sobre as tarifas
+cobradas por instituições financeiras, valores mínimos, máximos e médios
+por serviço.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bcb.PostosAtendimentoEletronicoPorInstituicaoFinanceira">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">PostosAtendimentoEletronicoPorInstituicaoFinanceira</span></span><a class="headerlink" href="#bcb.PostosAtendimentoEletronicoPorInstituicaoFinanceira" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Postos de Atendimento Eletrônico de Instituições Supervisionadas pelo Bacen</p>
+<p>Os arquivos disponíveis para transferência apresentam as informações mais
+atuais dos postos de atendimento eletrônico de Instituições Supervisionadas
+pelo Banco Central.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bcb.PostosAtendimentoCorrespondentesPorInstituicaoFinanceira">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">PostosAtendimentoCorrespondentesPorInstituicaoFinanceira</span></span><a class="headerlink" href="#bcb.PostosAtendimentoCorrespondentesPorInstituicaoFinanceira" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Correspondentes no país</p>
+<p>O arquivo disponibilizado apresenta os dados mais atuais dos pontos de
+atendimento dos correspondentes, por instituição financeira e por
+município, com a identificação dos tipos de serviços prestados, conforme
+descrito na Resolução 3.954.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bcb.EstatisticasSTR">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">EstatisticasSTR</span></span><a class="headerlink" href="#bcb.EstatisticasSTR" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Estatísticas do STR - Sistema de Transferência de Reservas</p>
+<p>Estatísticas das movimentações financeiras transitadas no STR (Sistema de
+Transferência de Reservas) processadas por meio de lançamentos nas contas
+mantidas pelos participantes no Banco Central.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bcb.DinheiroCirculacao">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">DinheiroCirculacao</span></span><a class="headerlink" href="#bcb.DinheiroCirculacao" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Dinheiro em Circulação</p>
+<p>Registros diários das quantidades de cédulas e moedas em circulação (não
+estão incluídas as moedas comemorativas). As informações estão separadas
+para cada espécie (cédula ou moeda), família (categoria) e denominação do
+Real (símbolos : R$, BRL).</p>
+</dd></dl>
+
 </section>
 </section>
 
@@ -319,9 +639,40 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">API</a><ul>
-<li><a class="reference internal" href="#modulo-bcb-sgs">Módulo <code class="xref py py-mod docutils literal notranslate"><span class="pre">bcb.sgs</span></code></a></li>
-<li><a class="reference internal" href="#modulo-bcb-currency">Módulo <code class="xref py py-mod docutils literal notranslate"><span class="pre">bcb.currency</span></code></a></li>
-<li><a class="reference internal" href="#apis-odata"><span class="xref std std-ref">APIs OData</span></a></li>
+<li><a class="reference internal" href="#module-bcb.sgs">Módulo <code class="xref py py-mod docutils literal notranslate"><span class="pre">bcb.sgs</span></code></a><ul>
+<li><a class="reference internal" href="#bcb.sgs.get"><code class="docutils literal notranslate"><span class="pre">get()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-bcb.currency">Módulo <code class="xref py py-mod docutils literal notranslate"><span class="pre">bcb.currency</span></code></a><ul>
+<li><a class="reference internal" href="#bcb.currency.get"><code class="docutils literal notranslate"><span class="pre">get()</span></code></a></li>
+<li><a class="reference internal" href="#bcb.currency.get_currency_list"><code class="docutils literal notranslate"><span class="pre">get_currency_list()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-bcb"><span class="xref std std-ref">APIs OData</span></a><ul>
+<li><a class="reference internal" href="#bcb.BaseODataAPI"><code class="docutils literal notranslate"><span class="pre">BaseODataAPI</span></code></a><ul>
+<li><a class="reference internal" href="#bcb.BaseODataAPI.__init__"><code class="docutils literal notranslate"><span class="pre">BaseODataAPI.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#bcb.BaseODataAPI.describe"><code class="docutils literal notranslate"><span class="pre">BaseODataAPI.describe()</span></code></a></li>
+<li><a class="reference internal" href="#bcb.BaseODataAPI.get_endpoint"><code class="docutils literal notranslate"><span class="pre">BaseODataAPI.get_endpoint()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#bcb.ODataAPI"><code class="docutils literal notranslate"><span class="pre">ODataAPI</span></code></a><ul>
+<li><a class="reference internal" href="#bcb.ODataAPI.__init__"><code class="docutils literal notranslate"><span class="pre">ODataAPI.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#bcb.Expectativas"><code class="docutils literal notranslate"><span class="pre">Expectativas</span></code></a></li>
+<li><a class="reference internal" href="#bcb.PTAX"><code class="docutils literal notranslate"><span class="pre">PTAX</span></code></a></li>
+<li><a class="reference internal" href="#bcb.IFDATA"><code class="docutils literal notranslate"><span class="pre">IFDATA</span></code></a></li>
+<li><a class="reference internal" href="#bcb.TaxaJuros"><code class="docutils literal notranslate"><span class="pre">TaxaJuros</span></code></a></li>
+<li><a class="reference internal" href="#bcb.MercadoImobiliario"><code class="docutils literal notranslate"><span class="pre">MercadoImobiliario</span></code></a></li>
+<li><a class="reference internal" href="#bcb.SPI"><code class="docutils literal notranslate"><span class="pre">SPI</span></code></a></li>
+<li><a class="reference internal" href="#bcb.TarifasBancariasPorInstituicaoFinanceira"><code class="docutils literal notranslate"><span class="pre">TarifasBancariasPorInstituicaoFinanceira</span></code></a></li>
+<li><a class="reference internal" href="#bcb.TarifasBancariasPorServico"><code class="docutils literal notranslate"><span class="pre">TarifasBancariasPorServico</span></code></a></li>
+<li><a class="reference internal" href="#bcb.PostosAtendimentoEletronicoPorInstituicaoFinanceira"><code class="docutils literal notranslate"><span class="pre">PostosAtendimentoEletronicoPorInstituicaoFinanceira</span></code></a></li>
+<li><a class="reference internal" href="#bcb.PostosAtendimentoCorrespondentesPorInstituicaoFinanceira"><code class="docutils literal notranslate"><span class="pre">PostosAtendimentoCorrespondentesPorInstituicaoFinanceira</span></code></a></li>
+<li><a class="reference internal" href="#bcb.EstatisticasSTR"><code class="docutils literal notranslate"><span class="pre">EstatisticasSTR</span></code></a></li>
+<li><a class="reference internal" href="#bcb.DinheiroCirculacao"><code class="docutils literal notranslate"><span class="pre">DinheiroCirculacao</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

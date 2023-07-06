@@ -135,7 +135,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -198,7 +198,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -207,7 +207,7 @@
           <section id="expectativas">
 <h1>Expectativas<a class="headerlink" href="#expectativas" title="Link permanente para este cabeçalho">#</a></h1>
 <p>A API de expectativas divulgadas no boletim FOCUS pode ser acessada através da classe
-<a class="reference internal" href="#bcb.Expectativas" title="bcb.Expectativas"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.Expectativas</span></code></a>.</p>
+<a class="reference internal" href="api.html#bcb.Expectativas" title="bcb.Expectativas"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.Expectativas</span></code></a>.</p>
 <p>Os dados são obtidos a partir da <a class="reference external" href="https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/documentacao">API de Expectativas</a>.</p>
 <p>Integração com API de expectativas de mercado de cerca de 130
 instituições do mercado financeiro participantes do
@@ -219,80 +219,9 @@ na consulta.</p>
 <p>São publicadas as expectativas informadas pelas instituições que
 autorizaram a divulgação. As expectativas divulgadas possuem
 defasagem de 1 ano.</p>
-<p>Ao instanciar a classe <a class="reference internal" href="#bcb.Expectativas" title="bcb.Expectativas"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.Expectativas</span></code></a> diversas informações
+<p>Ao instanciar a classe <a class="reference internal" href="api.html#bcb.Expectativas" title="bcb.Expectativas"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.Expectativas</span></code></a> diversas informações
 são obtidas e a melhor maneira de interagir com a API é
-através do método <a class="reference internal" href="#bcb.Expectativas.describe" title="bcb.Expectativas.describe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.Expectativas.describe()</span></code></a>.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="bcb.Expectativas">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">Expectativas</span></span><a class="headerlink" href="#bcb.Expectativas" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Integração com API OData de Expectativas de Mercado.</p>
-<p>Cerca de 130
-instituições do mercado financeiro participantes do
-Sistema de Expectativas de Mercado para diversas variáveis
-macroeconômicas.</p>
-<p>Os dados são publicados no primeiro dia útil de cada semana.</p>
-<p>Esta interface possibilida a realização de consultas na
-API OData utilizando diversas funcionalidades presentes
-na especificação.</p>
-<p>Para períodos para os quais não haja estatísticas serão omitidos
-na consulta.</p>
-<p>São publicadas as expectativas informadas pelas instituições que
-autorizaram a divulgação.</p>
-<p>Essa API tem sete <em>endpoints</em></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">ExpectativasMercadoTop5Anuais</span></code>: Expectativas de mercado anuais para
-os indicadores do Top 5</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ExpectativasMercadoInstituicoes</span></code>: Expectativas de mercado informadas
-pelas instituições credenciadas</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ExpectativaMercadoMensais</span></code>: Expectativas de Mercado Mensais</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ExpectativasMercadoInflacao12Meses</span></code>: Expectativas de mercado para
-inflação nos próximos 12 meses</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ExpectativasMercadoTop5Mensais</span></code>: Expectativas de mercado mensais para
-os indicadores do Top 5</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ExpectativasMercadoTrimestrais</span></code>: Expectativas de Mercado Trimestrais</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ExpectativasMercadoAnuais</span></code>: Expectativas de Mercado Anuais</p></li>
-</ul>
-<dl class="py method">
-<dt class="sig sig-object py" id="bcb.Expectativas.describe">
-<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.Expectativas.describe" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Mostra a descrição de uma API ou de um <em>endpoint</em>
-específico.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>endpoint</strong> (<em>None</em><em> (</em><em>padrão</em><em>) </em><em>ou str</em>) – nome do <em>endpoint</em></p>
-</dd>
-<dt class="field-even">Retorna<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><em>Não retorna variável e imprime na tela uma descrição da API</em></p></li>
-<li><p><em>ou do *endpoint</em>.*</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="bcb.Expectativas.get_endpoint">
-<span class="sig-name descname"><span class="pre">get_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.Expectativas.get_endpoint" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Obtem o <em>endpoint</em></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>endpoint</strong> (<em>str</em>) – nome do endpoint</p>
-</dd>
-<dt class="field-even">Retorna<span class="colon">:</span></dt>
-<dd class="field-even"><p>Retorna o <em>endpoint</em> referente ao nome fornecido</p>
-</dd>
-<dt class="field-odd">Tipo de retorno<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bcb.Endpoint</p>
-</dd>
-<dt class="field-even">Levanta<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – Se o <em>endpoint</em> fornecido é errado.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+através do método <code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.Expectativas.describe()</span></code>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">Expectativas</span>
 
 <span class="gp">In [2]: </span><span class="n">em</span> <span class="o">=</span> <span class="n">Expectativas</span><span class="p">()</span>
@@ -309,7 +238,7 @@ específico.</p>
 <span class="go">  ExpectativasMercadoAnuais</span>
 </pre></div>
 </div>
-<p>O método <a class="reference internal" href="#bcb.Expectativas.describe" title="bcb.Expectativas.describe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.Expectativas.describe()</span></code></a> também recebe o nomes dos
+<p>O método <code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.Expectativas.describe()</span></code> também recebe o nomes dos
 <em>endpoints</em> e apresenta uma descrição do <em>endpoint</em> trazendo o seu tipo
 <cite>EntityType</cite> e as propriedades retornadas <cite>Properties</cite> e os seus respectivos
 tipos.</p>
@@ -333,7 +262,7 @@ tipos.</p>
 <li><p>Maximo</p></li>
 </ul>
 <p>Para obter os dados de um <em>endpoint</em> é necessário obtê-lo através do
-método <a class="reference internal" href="#bcb.Expectativas.get_endpoint" title="bcb.Expectativas.get_endpoint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.Expectativas.get_endpoint()</span></code></a> que retorna uma classe
+método <code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.Expectativas.get_endpoint()</span></code> que retorna uma classe
 <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.Endpoint</span></code>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [5]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">em</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s1">&#39;ExpectativasMercadoTop5Anuais&#39;</span><span class="p">)</span>
 </pre></div>
@@ -450,31 +379,8 @@ ordenando colunas e selecionando as colunas na saída.</p>
         
       </footer>
     </div>
-    <aside class="toc-drawer">
+    <aside class="toc-drawer no-toc">
       
-      
-      <div class="toc-sticky toc-scroll">
-        <div class="toc-title-container">
-          <span class="toc-title">
-            On this page
-          </span>
-        </div>
-        <div class="toc-tree-container">
-          <div class="toc-tree">
-            <ul>
-<li><a class="reference internal" href="#">Expectativas</a><ul>
-<li><a class="reference internal" href="#bcb.Expectativas"><code class="docutils literal notranslate"><span class="pre">Expectativas</span></code></a><ul>
-<li><a class="reference internal" href="#bcb.Expectativas.describe"><code class="docutils literal notranslate"><span class="pre">Expectativas.describe()</span></code></a></li>
-<li><a class="reference internal" href="#bcb.Expectativas.get_endpoint"><code class="docutils literal notranslate"><span class="pre">Expectativas.get_endpoint()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-          </div>
-        </div>
-      </div>
       
       
     </aside>

@@ -5,36 +5,19 @@ API
 Módulo :py:mod:`bcb.sgs`
 ------------------------
 
-.. currentmodule:: bcb.sgs
-
-.. autosummary::
-
-   get
+.. automodule:: bcb.sgs
+   :members:
 
 Módulo :py:mod:`bcb.currency`
 -----------------------------
 
-.. currentmodule:: bcb.currency
-
-.. autosummary::
-
-   get
-   get_currency_list
-
+.. automodule:: bcb.currency
+   :members:
 
 :ref:`APIs OData`
 -----------------
 
-.. currentmodule:: bcb
-
-.. autosummary::
-
-   Endpoint
-   BaseODataAPI
-   ODataAPI
-   Expectativas
-   PTAX
-   IFDATA
-   TaxaJuros
-   SPI
-   MercadoImobiliario
+.. automodule:: bcb
+   :members:
+   :member-order: bysource
+   :special-members: __init__

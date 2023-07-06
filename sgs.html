@@ -206,53 +206,9 @@
         <article role="main">
           <section id="sgs">
 <h1>SGS<a class="headerlink" href="#sgs" title="Link permanente para este cabeçalho">#</a></h1>
-<p>O módulo <code class="docutils literal notranslate"><span class="pre">sgs</span></code> obtem os dados do webservice do Banco Central,
+<p>A função <a class="reference internal" href="api.html#bcb.sgs.get" title="bcb.sgs.get"><code class="xref py py-func docutils literal notranslate"><span class="pre">bcb.sgs.get()</span></code></a> obtem os dados do webservice do Banco Central ,
 interface json do serviço BCData/SGS -
 <a class="reference external" href="https://www3.bcb.gov.br/sgspub/localizarseries/localizarSeries.do?method=prepararTelaLocalizarSeries">Sistema Gerenciador de Séries Temporais (SGS)</a>.</p>
-<span class="target" id="module-bcb.sgs"></span><section id="funcao-bcb-sgs-get">
-<h2>Função bcb.sgs.get<a class="headerlink" href="#funcao-bcb-sgs-get" title="Link permanente para este cabeçalho">#</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="bcb.sgs.get">
-<span class="sig-prename descclassname"><span class="pre">bcb.sgs.</span></span><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">codes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.sgs.get" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Retorna um DataFrame pandas com séries temporais obtidas do SGS.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>codes</strong> (<em>{int</em><em>, </em><em>List</em><em>[</em><em>int</em><em>]</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>Dict</em><em>[</em><em>str:int</em><em>]</em><em>}</em>) – <p>Este argumento pode ser uma das opções:</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">int</span></code> : código da série temporal</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">list</span></code> ou <code class="docutils literal notranslate"><span class="pre">tuple</span></code> : lista ou tupla com códigos</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">list</span></code> ou <code class="docutils literal notranslate"><span class="pre">tuple</span></code> : lista ou tupla com pares <code class="docutils literal notranslate"><span class="pre">('nome',</span> <span class="pre">código)</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">dict</span></code> : dicionário com pares <code class="docutils literal notranslate"><span class="pre">{'nome':</span> <span class="pre">código}</span></code></p></li>
-</ul>
-<p>Com códigos numéricos é interessante utilizar os nomes com os códigos
-para definir os nomes nas colunas das séries temporais.</p>
-</p></li>
-<li><p><strong>start</strong> (<em>str</em><em>, </em><em>int</em><em>, </em><em>date</em><em>, </em><em>datetime</em><em>, </em><em>Timestamp</em>) – Data de início da série.
-Interpreta diferentes tipos e formatos de datas.</p></li>
-<li><p><strong>end</strong> (<em>string</em><em>, </em><em>int</em><em>, </em><em>date</em><em>, </em><em>datetime</em><em>, </em><em>Timestamp</em>) – Data de início da série.
-Interpreta diferentes tipos e formatos de datas.</p></li>
-<li><p><strong>last</strong> (<em>int</em>) – Retorna os últimos <code class="docutils literal notranslate"><span class="pre">last</span></code> elementos disponíveis da série temporal
-solicitada. Se <code class="docutils literal notranslate"><span class="pre">last</span></code> for maior que 0 (zero) os argumentos <code class="docutils literal notranslate"><span class="pre">start</span></code>
-e <code class="docutils literal notranslate"><span class="pre">end</span></code> são ignorados.</p></li>
-<li><p><strong>multi</strong> (<em>bool</em>) – Define se, quando mais de 1 série for solicitada, a função retorna uma
-série multivariada ou uma lista com séries univariadas.</p></li>
-<li><p><strong>freq</strong> (<em>str</em>) – Define a frequência a ser utilizada na série temporal</p></li>
-</ul>
-</dd>
-<dt class="field-even">Retorna<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> – série temporal univariada ou multivariada,
-quando solicitado mais de uma série (parâmetro <code class="docutils literal notranslate"><span class="pre">multi=True</span></code>).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">list</span></code> – lista com séries temporais univariadas,
-quando solicitado mais de uma série (parâmetro <code class="docutils literal notranslate"><span class="pre">multi=False</span></code>).</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
 <section id="exemplo">
 <h2>Exemplo<a class="headerlink" href="#exemplo" title="Link permanente para este cabeçalho">#</a></h2>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">sgs</span>
@@ -371,10 +327,6 @@ quando solicitado mais de uma série (parâmetro <code class="docutils literal n
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">SGS</a><ul>
-<li><a class="reference internal" href="#funcao-bcb-sgs-get">Função bcb.sgs.get</a><ul>
-<li><a class="reference internal" href="#bcb.sgs.get"><code class="docutils literal notranslate"><span class="pre">get()</span></code></a></li>
-</ul>
-</li>
 <li><a class="reference internal" href="#exemplo">Exemplo</a></li>
 </ul>
 </li>

@@ -208,136 +208,18 @@
 <h1>Moedas<a class="headerlink" href="#moedas" title="Link permanente para este cabeçalho">#</a></h1>
 <p>O pacote tem 2 APIs que dão acesso a informações de moedas.</p>
 <ul class="simple">
-<li><p>Webscraping no <a class="reference internal" href="#module-bcb.currency"><span class="std std-ref">Conversor de Moedas</span></a></p></li>
 <li><p><a class="reference internal" href="#api-odata"><span class="std std-ref">API OData</span></a> com cotações de taxas de câmbio</p></li>
+<li><p>Webscraping no <a class="reference internal" href="#conversor-de-moedas"><span class="std std-ref">Conversor de Moedas</span></a></p></li>
 </ul>
-<section id="module-bcb.currency">
-<span id="conversor-de-moedas"></span><h2>Conversor de Moedas<a class="headerlink" href="#module-bcb.currency" title="Link permanente para este cabeçalho">#</a></h2>
-<p>O módulo <a class="reference internal" href="#module-bcb.currency" title="bcb.currency"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bcb.currency</span></code></a> obtem dados de moedas do conversor de moedas do Banco Central através de webscraping.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="bcb.currency.get">
-<span class="sig-prename descclassname"><span class="pre">bcb.currency.</span></span><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">symbols</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ask'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupby</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'symbol'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.currency.get" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Retorna um DataFrame pandas com séries temporais com taxas de câmbio.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>symbols</strong> (<em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em>) – Códigos das moedas padrão ISO. O código de uma única moeda que
-retorna uma série temporal univariada e uma lista de códigos
-retorna uma série temporal multivariada.</p></li>
-<li><p><strong>start</strong> (<em>str</em><em>, </em><em>int</em><em>, </em><em>date</em><em>, </em><em>datetime</em><em>, </em><em>Timestamp</em>) – Data de início da série.
-Interpreta diferentes tipos e formatos de datas.</p></li>
-<li><p><strong>end</strong> (<em>string</em><em>, </em><em>int</em><em>, </em><em>date</em><em>, </em><em>datetime</em><em>, </em><em>Timestamp</em>) – Data de início da série.
-Interpreta diferentes tipos e formatos de datas.</p></li>
-<li><p><strong>side</strong> (<em>str</em>) – Define se a série retornada vem com os <code class="docutils literal notranslate"><span class="pre">ask</span></code> prices,
-<code class="docutils literal notranslate"><span class="pre">bid</span></code> prices ou <code class="docutils literal notranslate"><span class="pre">both</span></code> para ambos.</p></li>
-<li><p><strong>groupby</strong> (<em>str</em>) – Define se os índices de coluna são agrupados por <code class="docutils literal notranslate"><span class="pre">symbol</span></code> ou
-por <code class="docutils literal notranslate"><span class="pre">side</span></code>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Retorna<span class="colon">:</span></dt>
-<dd class="field-even"><p>série temporal.</p>
-</dd>
-<dt class="field-odd">Tipo de retorno<span class="colon">:</span></dt>
-<dd class="field-odd"><p>DataFrame</p>
-</dd>
-</dl>
-</dd></dl>
-
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">currency</span>
-
-<span class="gp">In [2]: </span><span class="n">df</span> <span class="o">=</span> <span class="n">currency</span><span class="o">.</span><span class="n">get</span><span class="p">([</span><span class="s1">&#39;USD&#39;</span><span class="p">,</span> <span class="s1">&#39;EUR&#39;</span><span class="p">],</span>
-<span class="gp">   ...: </span>                  <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2000-01-01&#39;</span><span class="p">,</span>
-<span class="gp">   ...: </span>                  <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2021-01-01&#39;</span><span class="p">,</span>
-<span class="gp">   ...: </span>                  <span class="n">side</span><span class="o">=</span><span class="s1">&#39;ask&#39;</span><span class="p">)</span>
-<span class="gp">   ...: </span>
-
-<span class="gp">In [3]: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-<span class="gh">Out[3]: </span>
-<span class="go">                EUR     USD</span>
-<span class="go">Date                       </span>
-<span class="go">2000-01-03  1.85047  1.8011</span>
-<span class="go">2000-01-04  1.89150  1.8337</span>
-<span class="go">2000-01-05  1.91582  1.8544</span>
-<span class="go">2000-01-06  1.90761  1.8461</span>
-<span class="go">2000-01-07  1.88241  1.8281</span>
-
-<span class="gp">In [4]: </span><span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">));</span>
-</pre></div>
-</div>
-<img alt="_images/currency1.png" src="_images/currency1.png" />
-<dl class="py function">
-<dt class="sig sig-object py" id="bcb.currency.get_currency_list">
-<span class="sig-prename descclassname"><span class="pre">bcb.currency.</span></span><span class="sig-name descname"><span class="pre">get_currency_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bcb.currency.get_currency_list" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Return a DataFrame with information of all available currencies.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Retorna<span class="colon">:</span></dt>
-<dd class="field-odd"><p>DataFrame</p>
-</dd>
-<dt class="field-even">Tipo de retorno<span class="colon">:</span></dt>
-<dd class="field-even"><p>pandas.DataFrame</p>
-</dd>
-</dl>
-</dd></dl>
-
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [5]: </span><span class="n">currency</span><span class="o">.</span><span class="n">get_currency_list</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-<span class="gh">Out[5]: </span>
-<span class="go">   code               name  ... type  exclusion_date</span>
-<span class="go">0     5  AFEGANE AFEGANIST  ...    A             NaT</span>
-<span class="go">1   785  RANDE/AFRICA SUL   ...    A             NaT</span>
-<span class="go">2   490    LEK ALBANIA REP  ...    A             NaT</span>
-<span class="go">3   610  MARCO ALEMAO       ...    A      2002-01-02</span>
-<span class="go">4   978               EURO  ...    B             NaT</span>
-
-<span class="go">[5 rows x 7 columns]</span>
-</pre></div>
-</div>
-</section>
 <section id="api-odata">
 <h2>API OData<a class="headerlink" href="#api-odata" title="Link permanente para este cabeçalho">#</a></h2>
-<p>Diferente do módulo <a class="reference internal" href="#module-bcb.currency" title="bcb.currency"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bcb.currency</span></code></a>, aqui os dados são obtidos a partir da <a class="reference external" href="https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/documentacao">API de Moedas</a>.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="bcb.PTAX">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">PTAX</span></span><a class="headerlink" href="#bcb.PTAX" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Integração com API OData de cotações diárias de taxas de câmbio.</p>
-<p>Essa API possui os seguintes <em>endpoints</em>:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">Moedas</span></code>: Retorna a lista de moedas que podem ser usadas</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">CotacaoMoedaPeriodoFechamento</span></code>: Retorna os boletins diários com a
-Paridade de Compra e a Paridade de Venda no Fechamento.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">CotacaoMoedaAberturaOuIntermediario</span></code>: Retorna os boletins diários
-com a Paridade de Compra e a Paridade de Venda na abertura e
-para instantes ao longo do dia (intermediários).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">CotacaoMoedaDia</span></code>: Consulta dos boletins por dia para moeda
-especificada.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">CotacaoMoedaPeriodo</span></code>: Consulta dos boletins por período para
-moeda especificada.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">CotacaoDolarDia</span></code>: Consulta dos boletins de dólar por dia.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">CotacaoDolarPeriodo</span></code>: Consulta dos boletins de dólar por período.</p></li>
-</ul>
-<p>Os boletins diários são divulgados diariamente e trazem 5 cotações
-para cada data: uma de abertura, três intermediários e uma de fechamento.</p>
-<p>Estes dados estão disponíveis desde 1984-11-28 e são referentes às taxas
-administradas, até março de 1990, e às taxas livres, a partir de então
-(Resolução 1690, de 18.3.1990).
-As taxas administradas são aquelas fixadas pelo Banco Central,
-a partir de março de 1992, essa taxa recebeu a denominação de taxa
-PTAX (fechamento).
-Até 30 de junho de 2011, as taxas livres correspondiam à média das taxas
-efetivas de operações no mercado interbancário, ponderada pelo volume de
-transações do dia.
-A partir de 1 de julho de 2011 (Circular 3506, de 2010-09-23), a Ptax
-passou a corresponder à média aritmética das taxas obtidas em quatro
-consultas diárias aos dealers de câmbio e refletem a taxa negociada no
-momento de abertura da janela de consulta.
-O boletim de fechamento PTAX corresponde à média aritmética das taxas dos
-boletins do dia.</p>
-</dd></dl>
+<p>A classe <a class="reference internal" href="api.html#bcb.PTAX" title="bcb.PTAX"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.PTAX</span></code></a> retorna cotações de moedas os obtidas a partir da <a class="reference external" href="https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/documentacao">API de Moedas</a> do BCB.
+Esta implementação é mais estável que a do <a class="reference internal" href="#conversor-de-moedas"><span class="std std-ref">Conversor de Moedas</span></a>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">PTAX</span>
 
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [6]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">PTAX</span>
+<span class="gp">In [2]: </span><span class="n">ptax</span> <span class="o">=</span> <span class="n">PTAX</span><span class="p">()</span>
 
-<span class="gp">In [7]: </span><span class="n">ptax</span> <span class="o">=</span> <span class="n">PTAX</span><span class="p">()</span>
-
-<span class="gp">In [8]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+<span class="gp">In [3]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 <span class="go">EntitySets:</span>
 <span class="go">  Moedas</span>
 <span class="go">FunctionImports:</span>
@@ -349,16 +231,16 @@ boletins do dia.</p>
 <span class="go">  CotacaoDolarPeriodo</span>
 </pre></div>
 </div>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [9]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s1">&#39;Moedas&#39;</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [4]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s1">&#39;Moedas&#39;</span><span class="p">)</span>
 
 <span class="go">EntitySet (Endpoint): Moedas</span>
 <span class="go">EntityType: br.gov.bcb.olinda.servico.PTAX.TipoMoeda</span>
 <span class="go">Properties: simbolo&lt;str&gt;, nomeFormatado&lt;str&gt;, tipoMoeda&lt;str&gt;</span>
 
-<span class="gp">In [10]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">ptax</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s1">&#39;Moedas&#39;</span><span class="p">)</span>
+<span class="gp">In [5]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">ptax</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s1">&#39;Moedas&#39;</span><span class="p">)</span>
 
-<span class="gp">In [11]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
-<span class="gh">Out[11]: </span>
+<span class="gp">In [6]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<span class="gh">Out[6]: </span>
 <span class="go">  simbolo             nomeFormatado tipoMoeda</span>
 <span class="go">0     AUD         Dólar australiano         B</span>
 <span class="go">1     CAD           Dólar canadense         A</span>
@@ -372,7 +254,7 @@ boletins do dia.</p>
 <span class="go">9     USD  Dólar dos Estados Unidos         A</span>
 </pre></div>
 </div>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [12]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s1">&#39;CotacaoMoedaDia&#39;</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [7]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s1">&#39;CotacaoMoedaDia&#39;</span><span class="p">)</span>
 
 <span class="go">Function: CotacaoMoedaDia</span>
 <span class="go">Parameters: moeda &lt;str&gt;, dataCotacao &lt;str&gt;</span>
@@ -380,13 +262,13 @@ boletins do dia.</p>
 <span class="go">EntityType: br.gov.bcb.olinda.servico.PTAX.TipoCotacaoMoeda</span>
 <span class="go">Properties: paridadeCompra &lt;float&gt;, paridadeVenda &lt;float&gt;, cotacaoCompra &lt;float&gt;, cotacaoVenda &lt;float&gt;, dataHoraCotacao &lt;str&gt;, tipoBoletim &lt;str&gt;</span>
 
-<span class="gp">In [13]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">ptax</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s1">&#39;CotacaoMoedaDia&#39;</span><span class="p">)</span>
+<span class="gp">In [8]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">ptax</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s1">&#39;CotacaoMoedaDia&#39;</span><span class="p">)</span>
 
-<span class="gp">In [14]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
-<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">moeda</span><span class="o">=</span><span class="s1">&#39;AUD&#39;</span><span class="p">,</span> <span class="n">dataCotacao</span><span class="o">=</span><span class="s1">&#39;1/31/2022&#39;</span><span class="p">)</span>
-<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
-<span class="gp">   ....: </span>
-<span class="gh">Out[14]: </span>
+<span class="gp">In [9]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<span class="gp">   ...: </span>   <span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">moeda</span><span class="o">=</span><span class="s1">&#39;AUD&#39;</span><span class="p">,</span> <span class="n">dataCotacao</span><span class="o">=</span><span class="s1">&#39;1/31/2022&#39;</span><span class="p">)</span>
+<span class="gp">   ...: </span>   <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[9]: </span>
 <span class="go">   paridadeCompra  paridadeVenda  ...         dataHoraCotacao      tipoBoletim</span>
 <span class="go">0          0.7051         0.7053  ... 2022-01-31 10:11:20.549         Abertura</span>
 <span class="go">1          0.7068         0.7070  ... 2022-01-31 11:04:17.576    Intermediário</span>
@@ -399,7 +281,7 @@ boletins do dia.</p>
 </div>
 <p>É importante notar que as datas estão no formato dia/mês/ano e os números não
 são preenchidos com 0 para ter 2 dígitos.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [15]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s1">&#39;CotacaoMoedaPeriodo&#39;</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [10]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s1">&#39;CotacaoMoedaPeriodo&#39;</span><span class="p">)</span>
 
 <span class="go">Function: CotacaoMoedaPeriodo</span>
 <span class="go">Parameters: moeda &lt;str&gt;, dataInicial &lt;str&gt;, dataFinalCotacao &lt;str&gt;</span>
@@ -407,15 +289,15 @@ são preenchidos com 0 para ter 2 dígitos.</p>
 <span class="go">EntityType: br.gov.bcb.olinda.servico.PTAX.TipoCotacaoMoeda</span>
 <span class="go">Properties: paridadeCompra &lt;float&gt;, paridadeVenda &lt;float&gt;, cotacaoCompra &lt;float&gt;, cotacaoVenda &lt;float&gt;, dataHoraCotacao &lt;str&gt;, tipoBoletim &lt;str&gt;</span>
 
-<span class="gp">In [16]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">ptax</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s1">&#39;CotacaoMoedaPeriodo&#39;</span><span class="p">)</span>
+<span class="gp">In [11]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">ptax</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s1">&#39;CotacaoMoedaPeriodo&#39;</span><span class="p">)</span>
 
-<span class="gp">In [17]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<span class="gp">In [12]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">moeda</span><span class="o">=</span><span class="s1">&#39;AUD&#39;</span><span class="p">,</span>
 <span class="gp">   ....: </span>               <span class="n">dataInicial</span><span class="o">=</span><span class="s1">&#39;1/1/2022&#39;</span><span class="p">,</span>
 <span class="gp">   ....: </span>               <span class="n">dataFinalCotacao</span><span class="o">=</span><span class="s1">&#39;1/5/2022&#39;</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[17]: </span>
+<span class="gh">Out[12]: </span>
 <span class="go">    paridadeCompra  paridadeVenda  ...         dataHoraCotacao    tipoBoletim</span>
 <span class="go">0           0.7243         0.7244  ... 2022-01-03 10:04:22.186       Abertura</span>
 <span class="go">1           0.7221         0.7223  ... 2022-01-03 11:11:42.883  Intermediário</span>
@@ -434,6 +316,44 @@ são preenchidos com 0 para ter 2 dígitos.</p>
 <span class="go">14          0.7270         0.7271  ... 2022-01-05 13:07:53.094     Fechamento</span>
 
 <span class="go">[15 rows x 6 columns]</span>
+</pre></div>
+</div>
+</section>
+<section id="conversor-de-moedas">
+<h2>Conversor de Moedas<a class="headerlink" href="#conversor-de-moedas" title="Link permanente para este cabeçalho">#</a></h2>
+<p>O módulo <a class="reference internal" href="api.html#module-bcb.currency" title="bcb.currency"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bcb.currency</span></code></a> obtem dados de moedas do conversor de moedas do Banco Central através de webscraping.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [13]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">currency</span>
+
+<span class="gp">In [14]: </span><span class="n">df</span> <span class="o">=</span> <span class="n">currency</span><span class="o">.</span><span class="n">get</span><span class="p">([</span><span class="s1">&#39;USD&#39;</span><span class="p">,</span> <span class="s1">&#39;EUR&#39;</span><span class="p">],</span>
+<span class="gp">   ....: </span>                  <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2000-01-01&#39;</span><span class="p">,</span>
+<span class="gp">   ....: </span>                  <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2021-01-01&#39;</span><span class="p">,</span>
+<span class="gp">   ....: </span>                  <span class="n">side</span><span class="o">=</span><span class="s1">&#39;ask&#39;</span><span class="p">)</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [15]: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gh">Out[15]: </span>
+<span class="go">                EUR     USD</span>
+<span class="go">Date                       </span>
+<span class="go">2000-01-03  1.85047  1.8011</span>
+<span class="go">2000-01-04  1.89150  1.8337</span>
+<span class="go">2000-01-05  1.91582  1.8544</span>
+<span class="go">2000-01-06  1.90761  1.8461</span>
+<span class="go">2000-01-07  1.88241  1.8281</span>
+
+<span class="gp">In [16]: </span><span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">6</span><span class="p">));</span>
+</pre></div>
+</div>
+<img alt="_images/currency1.png" src="_images/currency1.png" />
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [17]: </span><span class="n">currency</span><span class="o">.</span><span class="n">get_currency_list</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gh">Out[17]: </span>
+<span class="go">   code               name  ... type  exclusion_date</span>
+<span class="go">0     5  AFEGANE AFEGANIST  ...    A             NaT</span>
+<span class="go">1   785  RANDE/AFRICA SUL   ...    A             NaT</span>
+<span class="go">2   490    LEK ALBANIA REP  ...    A             NaT</span>
+<span class="go">3   610  MARCO ALEMAO       ...    A      2002-01-02</span>
+<span class="go">4   978               EURO  ...    B             NaT</span>
+
+<span class="go">[5 rows x 7 columns]</span>
 </pre></div>
 </div>
 </section>
@@ -495,15 +415,8 @@ são preenchidos com 0 para ter 2 dígitos.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Moedas</a><ul>
-<li><a class="reference internal" href="#module-bcb.currency">Conversor de Moedas</a><ul>
-<li><a class="reference internal" href="#bcb.currency.get"><code class="docutils literal notranslate"><span class="pre">get()</span></code></a></li>
-<li><a class="reference internal" href="#bcb.currency.get_currency_list"><code class="docutils literal notranslate"><span class="pre">get_currency_list()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#api-odata">API OData</a><ul>
-<li><a class="reference internal" href="#bcb.PTAX"><code class="docutils literal notranslate"><span class="pre">PTAX</span></code></a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#api-odata">API OData</a></li>
+<li><a class="reference internal" href="#conversor-de-moedas">Conversor de Moedas</a></li>
 </ul>
 </li>
 </ul>

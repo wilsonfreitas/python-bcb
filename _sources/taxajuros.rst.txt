@@ -10,13 +10,6 @@ __ documentacao_
 
 Os dados são obtidos a partir da `API de Taxas de Juros`__.
 
-.. currentmodule:: bcb
-
-
-.. autoclass:: TaxaJuros
-  :members:
-  :inherited-members:
-
 
 Esta API tem os ``EntitySets``:
 
@@ -44,12 +37,11 @@ pelas instituições financeiras.
                    .filter(ep.Segmento == 'PESSOA FÍSICA',
                            ep.Modalidade == 'Cheque especial - Pré-fixado')
                    .collect())
-    df_cheque['InicioPeriodo'] = pd.to_datetime(df_cheque['InicioPeriodo'])
     grp = df_cheque.groupby('InicioPeriodo')
     df_mean = grp.agg({'TaxaJurosAoMes': 'median'})
 
     @savefig taxajuros1.png
     df_mean['TaxaJurosAoMes'].plot(figsize=(16,6), style='o', markersize=1,
                                    xlabel='Data', ylabel='Taxa',
-                                   title='Médias das Taxas de Juros de Cheque Especial - Fonte:BCB');
+                                   title='Mediana das Taxas de Juros de Cheque Especial - Fonte:BCB');
 

@@ -135,7 +135,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -198,7 +198,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -207,90 +207,8 @@
           <section id="taxas-de-juros">
 <h1>Taxas de Juros<a class="headerlink" href="#taxas-de-juros" title="Link permanente para este cabeçalho">#</a></h1>
 <p>A API de taxas de juros de operações de crédito pode ser acessada através da
-classe <a class="reference internal" href="#bcb.TaxaJuros" title="bcb.TaxaJuros"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.TaxaJuros</span></code></a>.</p>
+classe <a class="reference internal" href="api.html#bcb.TaxaJuros" title="bcb.TaxaJuros"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.TaxaJuros</span></code></a>.</p>
 <p>Os dados são obtidos a partir da <a class="reference external" href="https://olinda.bcb.gov.br/olinda/servico/TaxaJuros/versao/v1/documentacao">API de Taxas de Juros</a>.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="bcb.TaxaJuros">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">TaxaJuros</span></span><a class="headerlink" href="#bcb.TaxaJuros" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Taxas de juros de operações de crédito por instituição financeira – Médias
-dos últimos 5 dias</p>
-<p>As taxas de juros por instituição financeira apresentadas nesse conjunto de
-tabelas representam médias aritméticas das taxas de juros pactuadas nas
-operações realizadas nos cinco dias úteis referidos em cada publicação,
-ponderadas pelos respectivos valores contratados.</p>
-<p>Essas taxas de juros representam o custo efetivo médio das operações de
-crédito para os clientes, composto pelas taxas de juros efetivamente
-praticadas pelas instituições financeiras em suas operações de crédito,
-acrescidas dos encargos fiscais e operacionais incidentes sobre as
-operações.</p>
-<p>As taxas de juros apresentadas correspondem à média das taxas praticadas
-nas diversas operações realizadas pelas instituições financeiras em cada
-modalidade de crédito. Em uma mesma modalidade, as taxas de juros diferem
-entre clientes de uma mesma instituição financeira e variam de acordo com
-diversos fatores de risco envolvidos nas operações, tais como o valor e a
-qualidade das garantias apresentadas na contratação do crédito, o valor do
-pagamento dado como entrada da operação, o histórico e a situação cadastral
-de cada cliente, o prazo da operação, entre outros.</p>
-<p>Eventualmente algumas instituições financeiras não aparecem relacionadas
-nas tabelas em razão de não terem realizado operações de crédito nas
-respectivas modalidades nos períodos referidos ou por não terem prestado
-as informações requeridas pelo Banco Central do Brasil no prazo previsto
-pela legislação em vigor.</p>
-<p>A partir de abril de 2017, as taxas médias das operações de cartão de
-crédito rotativo passaram a ser publicadas de forma desagregada nas
-modalidades cartão de crédito rotativo regular - que compreende os
-financiamentos dos saldos remanescentes das faturas de cartão de crédito
-nos quais os clientes efetuam o pagamento mínimo requerido pela legislação
-em vigor - e cartão de crédito não regular , que compreende os
-financiamentos dos saldos remanescentes das faturas de cartão de crédito
-nos quais os clientes não efetuam o pagamento mínimo, sendo considerados
-em atraso.</p>
-<p>O Banco Central do Brasil não assume nenhuma responsabilidade por
-defasagem, erro ou outra deficiência em informações prestadas para fins de
-apuração das taxas médias apresentadas nesse conjunto de tabelas, cujas
-fontes sejam externas a esta instituição, bem como por quaisquer perdas ou
-danos decorrentes de seu uso.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="bcb.TaxaJuros.describe">
-<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.TaxaJuros.describe" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Mostra a descrição de uma API ou de um <em>endpoint</em>
-específico.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>endpoint</strong> (<em>None</em><em> (</em><em>padrão</em><em>) </em><em>ou str</em>) – nome do <em>endpoint</em></p>
-</dd>
-<dt class="field-even">Retorna<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><em>Não retorna variável e imprime na tela uma descrição da API</em></p></li>
-<li><p><em>ou do *endpoint</em>.*</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="bcb.TaxaJuros.get_endpoint">
-<span class="sig-name descname"><span class="pre">get_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.TaxaJuros.get_endpoint" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Obtem o <em>endpoint</em></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>endpoint</strong> (<em>str</em>) – nome do endpoint</p>
-</dd>
-<dt class="field-even">Retorna<span class="colon">:</span></dt>
-<dd class="field-even"><p>Retorna o <em>endpoint</em> referente ao nome fornecido</p>
-</dd>
-<dt class="field-odd">Tipo de retorno<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bcb.Endpoint</p>
-</dd>
-<dt class="field-even">Levanta<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – Se o <em>endpoint</em> fornecido é errado.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
 <p>Esta API tem os <code class="docutils literal notranslate"><span class="pre">EntitySets</span></code>:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">TaxaJuros</span>
 
@@ -325,15 +243,13 @@ pelas instituições financeiras.</p>
 <span class="gp">   ...: </span>               <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
 <span class="gp">   ...: </span>
 
-<span class="gp">In [8]: </span><span class="n">df_cheque</span><span class="p">[</span><span class="s1">&#39;InicioPeriodo&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df_cheque</span><span class="p">[</span><span class="s1">&#39;InicioPeriodo&#39;</span><span class="p">])</span>
+<span class="gp">In [8]: </span><span class="n">grp</span> <span class="o">=</span> <span class="n">df_cheque</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;InicioPeriodo&#39;</span><span class="p">)</span>
 
-<span class="gp">In [9]: </span><span class="n">grp</span> <span class="o">=</span> <span class="n">df_cheque</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;InicioPeriodo&#39;</span><span class="p">)</span>
+<span class="gp">In [9]: </span><span class="n">df_mean</span> <span class="o">=</span> <span class="n">grp</span><span class="o">.</span><span class="n">agg</span><span class="p">({</span><span class="s1">&#39;TaxaJurosAoMes&#39;</span><span class="p">:</span> <span class="s1">&#39;median&#39;</span><span class="p">})</span>
 
-<span class="gp">In [10]: </span><span class="n">df_mean</span> <span class="o">=</span> <span class="n">grp</span><span class="o">.</span><span class="n">agg</span><span class="p">({</span><span class="s1">&#39;TaxaJurosAoMes&#39;</span><span class="p">:</span> <span class="s1">&#39;median&#39;</span><span class="p">})</span>
-
-<span class="gp">In [11]: </span><span class="n">df_mean</span><span class="p">[</span><span class="s1">&#39;TaxaJurosAoMes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="gp">In [10]: </span><span class="n">df_mean</span><span class="p">[</span><span class="s1">&#39;TaxaJurosAoMes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
 <span class="gp">   ....: </span>                               <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Data&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Taxa&#39;</span><span class="p">,</span>
-<span class="gp">   ....: </span>                               <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Médias das Taxas de Juros de Cheque Especial - Fonte:BCB&#39;</span><span class="p">);</span>
+<span class="gp">   ....: </span>                               <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Mediana das Taxas de Juros de Cheque Especial - Fonte:BCB&#39;</span><span class="p">);</span>
 <span class="gp">   ....: </span>
 </pre></div>
 </div>
@@ -383,31 +299,8 @@ pelas instituições financeiras.</p>
         
       </footer>
     </div>
-    <aside class="toc-drawer">
+    <aside class="toc-drawer no-toc">
       
-      
-      <div class="toc-sticky toc-scroll">
-        <div class="toc-title-container">
-          <span class="toc-title">
-            On this page
-          </span>
-        </div>
-        <div class="toc-tree-container">
-          <div class="toc-tree">
-            <ul>
-<li><a class="reference internal" href="#">Taxas de Juros</a><ul>
-<li><a class="reference internal" href="#bcb.TaxaJuros"><code class="docutils literal notranslate"><span class="pre">TaxaJuros</span></code></a><ul>
-<li><a class="reference internal" href="#bcb.TaxaJuros.describe"><code class="docutils literal notranslate"><span class="pre">TaxaJuros.describe()</span></code></a></li>
-<li><a class="reference internal" href="#bcb.TaxaJuros.get_endpoint"><code class="docutils literal notranslate"><span class="pre">TaxaJuros.get_endpoint()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-          </div>
-        </div>
-      </div>
       
       
     </aside>

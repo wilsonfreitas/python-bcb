@@ -208,23 +208,23 @@
 <h1>APIs OData<a class="headerlink" href="#apis-odata" title="Link permanente para este cabeçalho">#</a></h1>
 <p>Diversas classes implementam a integração com APIs OData.</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="expectativas.html#bcb.Expectativas" title="bcb.Expectativas"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.Expectativas</span></code></a></p></li>
-<li><p><a class="reference internal" href="currency.html#bcb.PTAX" title="bcb.PTAX"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.PTAX</span></code></a></p></li>
-<li><p><a class="reference internal" href="taxajuros.html#bcb.TaxaJuros" title="bcb.TaxaJuros"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.TaxaJuros</span></code></a></p></li>
-<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.IFDATA</span></code></p></li>
-<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.MercadoImobiliario</span></code></p></li>
+<li><p><a class="reference internal" href="api.html#bcb.Expectativas" title="bcb.Expectativas"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.Expectativas</span></code></a></p></li>
+<li><p><a class="reference internal" href="api.html#bcb.PTAX" title="bcb.PTAX"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.PTAX</span></code></a></p></li>
+<li><p><a class="reference internal" href="api.html#bcb.TaxaJuros" title="bcb.TaxaJuros"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.TaxaJuros</span></code></a></p></li>
+<li><p><a class="reference internal" href="api.html#bcb.IFDATA" title="bcb.IFDATA"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.IFDATA</span></code></a></p></li>
+<li><p><a class="reference internal" href="api.html#bcb.MercadoImobiliario" title="bcb.MercadoImobiliario"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.MercadoImobiliario</span></code></a></p></li>
 </ul>
-<p>Todas essas classes herdam de <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.BaseODataAPI</span></code> que faz a integração
+<p>Todas essas classes herdam de <a class="reference internal" href="api.html#bcb.BaseODataAPI" title="bcb.BaseODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.BaseODataAPI</span></code></a> que faz a integração
 com as APIs OData e organiza a informação em um <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.</p>
 <section id="bcb-baseodataapi">
-<h2><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.BaseODataAPI</span></code><a class="headerlink" href="#bcb-baseodataapi" title="Link permanente para este cabeçalho">#</a></h2>
-<p>A classe <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.BaseODataAPI</span></code> possui apenas 2 métodos:</p>
+<h2><a class="reference internal" href="api.html#bcb.BaseODataAPI" title="bcb.BaseODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.BaseODataAPI</span></code></a><a class="headerlink" href="#bcb-baseodataapi" title="Link permanente para este cabeçalho">#</a></h2>
+<p>A classe <a class="reference internal" href="api.html#bcb.BaseODataAPI" title="bcb.BaseODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.BaseODataAPI</span></code></a> possui apenas 2 métodos:</p>
 <ul class="simple">
-<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.BaseODataAPI.describe()</span></code>: imprime informações da API, como
+<li><p><a class="reference internal" href="api.html#bcb.BaseODataAPI.describe" title="bcb.BaseODataAPI.describe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.BaseODataAPI.describe()</span></code></a>: imprime informações da API, como
 quais <em>endpoints</em> estão disponíveis. Passando o nome do <em>endpoint</em>
 o método imprime as informações do que é retornado pelo <em>endpoint</em> e
 o se há algum parâmetro necessário, caso seja uma função.</p></li>
-<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.BaseODataAPI.get_endpoint()</span></code>: imprime informações da API, como
+<li><p><a class="reference internal" href="api.html#bcb.BaseODataAPI.get_endpoint" title="bcb.BaseODataAPI.get_endpoint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.BaseODataAPI.get_endpoint()</span></code></a>: imprime informações da API, como
 quais <em>endpoints</em> estão disponíveis.</p></li>
 </ul>
 </section>
@@ -251,8 +251,8 @@ que possui os seguintes métodos.</p>
 </section>
 <section id="aplicacoes">
 <h2>Aplicações<a class="headerlink" href="#aplicacoes" title="Link permanente para este cabeçalho">#</a></h2>
-<section id="expectativas">
-<h3>Expectativas<a class="headerlink" href="#expectativas" title="Link permanente para este cabeçalho">#</a></h3>
+<section id="api-de-expectativas">
+<h3>API de Expectativas<a class="headerlink" href="#api-de-expectativas" title="Link permanente para este cabeçalho">#</a></h3>
 <p>Vamos ver como isso tudo funciona utilizando a API de expectativas.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">Expectativas</span>
 
@@ -305,7 +305,7 @@ seguintes colunas (com seus respectivos tipos):</p>
 <p>É muito importante conhecer as colunas caso queira realizar filtros ou ordenação nas
 consultas.</p>
 <p>Para realizar a consulta é necessário obter o objeto <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.Endpoint</span></code>.
-Isso é feito executando o método <a class="reference internal" href="expectativas.html#bcb.Expectativas.get_endpoint" title="bcb.Expectativas.get_endpoint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.Expectativas.get_endpoint()</span></code></a>.</p>
+Isso é feito executando o método <code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.Expectativas.get_endpoint()</span></code>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [5]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">em</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s1">&#39;ExpectativasMercadoTop5Anuais&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -395,10 +395,10 @@ um conjunto de colunas.</p>
 </div>
 </section>
 </section>
-<section id="moedas">
-<h3>Moedas<a class="headerlink" href="#moedas" title="Link permanente para este cabeçalho">#</a></h3>
+<section id="api-de-moedas">
+<h3>API de Moedas<a class="headerlink" href="#api-de-moedas" title="Link permanente para este cabeçalho">#</a></h3>
 <p>Uma outra aplicação é com a API de Moedas que implementa a especificação OData.
-Utilizando a classe <a class="reference internal" href="currency.html#bcb.PTAX" title="bcb.PTAX"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.PTAX</span></code></a> temos:</p>
+Utilizando a classe <a class="reference internal" href="api.html#bcb.PTAX" title="bcb.PTAX"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.PTAX</span></code></a> temos:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [10]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">PTAX</span>
 
 <span class="gp">In [11]: </span><span class="n">ptax</span> <span class="o">=</span> <span class="n">PTAX</span><span class="p">()</span>
@@ -481,55 +481,6 @@ Podemos filtrar apenas pelos dados de abertura.</p>
 </section>
 <section id="classe-odataapi">
 <h3>Classe ODataAPI<a class="headerlink" href="#classe-odataapi" title="Link permanente para este cabeçalho">#</a></h3>
-<dl class="py class">
-<dt class="sig sig-object py" id="bcb.ODataAPI">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">ODataAPI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.ODataAPI" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Classe que abstrai qualquer API OData</p>
-<p>Essa classe pode ser acessada diretamente passando
-uma URL válida para uma API OData.</p>
-<p>Uma boa alternativa para acessar APIs que ainda
-não possuem implementação específica.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="bcb.ODataAPI.describe">
-<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.ODataAPI.describe" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Mostra a descrição de uma API ou de um <em>endpoint</em>
-específico.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>endpoint</strong> (<em>None</em><em> (</em><em>padrão</em><em>) </em><em>ou str</em>) – nome do <em>endpoint</em></p>
-</dd>
-<dt class="field-even">Retorna<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><em>Não retorna variável e imprime na tela uma descrição da API</em></p></li>
-<li><p><em>ou do *endpoint</em>.*</p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="bcb.ODataAPI.get_endpoint">
-<span class="sig-name descname"><span class="pre">get_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.ODataAPI.get_endpoint" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Obtem o <em>endpoint</em></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>endpoint</strong> (<em>str</em>) – nome do endpoint</p>
-</dd>
-<dt class="field-even">Retorna<span class="colon">:</span></dt>
-<dd class="field-even"><p>Retorna o <em>endpoint</em> referente ao nome fornecido</p>
-</dd>
-<dt class="field-odd">Tipo de retorno<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bcb.Endpoint</p>
-</dd>
-<dt class="field-even">Levanta<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – Se o <em>endpoint</em> fornecido é errado.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
 <p>O portal de Dados Abertos to Banco Central apresenta diversas APIs OData, são
 dezenas de APIs disponíveis.
 A URL com metadados de cada API pode ser obtida no portal.
@@ -632,23 +583,16 @@ fornecido e o que será retornado</p></li>
 <li><a class="reference internal" href="#bcb-endpoint"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.Endpoint</span></code></a></li>
 <li><a class="reference internal" href="#bcb-odata-odataquery"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.ODataQuery</span></code></a></li>
 <li><a class="reference internal" href="#aplicacoes">Aplicações</a><ul>
-<li><a class="reference internal" href="#expectativas">Expectativas</a><ul>
+<li><a class="reference internal" href="#api-de-expectativas">API de Expectativas</a><ul>
 <li><a class="reference internal" href="#entitysets"><code class="docutils literal notranslate"><span class="pre">EntitySets</span></code></a></li>
 <li><a class="reference internal" href="#entitytype"><code class="docutils literal notranslate"><span class="pre">EntityType</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#moedas">Moedas</a><ul>
+<li><a class="reference internal" href="#api-de-moedas">API de Moedas</a><ul>
 <li><a class="reference internal" href="#functionimports"><code class="docutils literal notranslate"><span class="pre">FunctionImports</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#classe-odataapi">Classe ODataAPI</a><ul>
-<li><a class="reference internal" href="#bcb.ODataAPI"><code class="docutils literal notranslate"><span class="pre">ODataAPI</span></code></a><ul>
-<li><a class="reference internal" href="#bcb.ODataAPI.describe"><code class="docutils literal notranslate"><span class="pre">ODataAPI.describe()</span></code></a></li>
-<li><a class="reference internal" href="#bcb.ODataAPI.get_endpoint"><code class="docutils literal notranslate"><span class="pre">ODataAPI.get_endpoint()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li><a class="reference internal" href="#classe-odataapi">Classe ODataAPI</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#conclusao">Conclusão</a></li>

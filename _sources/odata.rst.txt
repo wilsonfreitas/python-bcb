@@ -50,8 +50,8 @@ que possui os seguintes métodos.
 Aplicações
 ----------
 
-Expectativas
-^^^^^^^^^^^^
+API de Expectativas
+^^^^^^^^^^^^^^^^^^^
 
 Vamos ver como isso tudo funciona utilizando a API de expectativas.
 
@@ -152,8 +152,8 @@ um conjunto de colunas.
      .limit(10)
      .collect())
 
-Moedas
-^^^^^^
+API de Moedas
+^^^^^^^^^^^^^
 
 Uma outra aplicação é com a API de Moedas que implementa a especificação OData.
 Utilizando a classe :py:class:`bcb.PTAX` temos:
@@ -206,11 +206,6 @@ Podemos filtrar apenas pelos dados de abertura.
 
 Classe ODataAPI
 ^^^^^^^^^^^^^^^
-
-.. currentmodule:: bcb
-
-.. autoclass:: ODataAPI
-    :inherited-members:
 
 O portal de Dados Abertos to Banco Central apresenta diversas APIs OData, são
 dezenas de APIs disponíveis.
