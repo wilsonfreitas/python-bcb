@@ -1,4 +1,4 @@
-from .odata.api import (
+from .api import (
     ODataAPI,
     Expectativas,
     PTAX,
