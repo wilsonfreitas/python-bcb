@@ -4,11 +4,11 @@ Moedas
 O pacote tem 2 APIs que dão acesso a informações de moedas.
 
 
-- :ref:`API OData` com cotações de taxas de câmbio
+- :ref:`API OData de Moedas` com cotações de taxas de câmbio
 - Webscraping no :ref:`Conversor de Moedas`
 
-API OData
----------
+API OData de Moedas
+-------------------
 
 
 .. _documentacao: https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/documentacao

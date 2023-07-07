@@ -1,59 +1,73 @@
 
-APIs OData
-==========
+OData
+=====
 
 Diversas classes implementam a integração com APIs OData.
 
-- :py:class:`bcb.Expectativas`
-- :py:class:`bcb.PTAX`
-- :py:class:`bcb.TaxaJuros`
-- :py:class:`bcb.IFDATA`
-- :py:class:`bcb.MercadoImobiliario`
+- :py:class:`bcb.odata.api.Expectativas`
+- :py:class:`bcb.odata.api.PTAX`
+- :py:class:`bcb.odata.api.TaxaJuros`
+- :py:class:`bcb.odata.api.IFDATA`
+- :py:class:`bcb.odata.api.MercadoImobiliario`
 
-Todas essas classes herdam de :py:class:`bcb.BaseODataAPI` que faz a integração
+Todas essas classes herdam de :py:class:`bcb.odata.api.BaseODataAPI` que faz a integração
 com as APIs OData e organiza a informação em um ``DataFrame``.
 
-:py:class:`bcb.BaseODataAPI`
-----------------------------
+Veja todas as APIs implementadas em :ref:`APIs OData`.
 
-A classe :py:class:`bcb.BaseODataAPI` possui apenas 2 métodos:
+:py:class:`bcb.odata.api.BaseODataAPI`
+--------------------------------------
 
-- :py:meth:`bcb.BaseODataAPI.describe`: imprime informações da API, como
+A classe :py:class:`bcb.odata.api.BaseODataAPI` possui apenas 2 métodos:
+
+- :py:meth:`bcb.odata.api.BaseODataAPI.describe`: imprime informações da API, como
   quais *endpoints* estão disponíveis. Passando o nome do *endpoint*
   o método imprime as informações do que é retornado pelo *endpoint* e
   o se há algum parâmetro necessário, caso seja uma função.
-- :py:meth:`bcb.BaseODataAPI.get_endpoint`: imprime informações da API, como
-  quais *endpoints* estão disponíveis.
+- :py:meth:`bcb.odata.api.BaseODataAPI.get_endpoint`: retorna um objeto
+  :py:class:`bcb.odata.api.Endpoint` referente ao nome do *endpoint* fornecido.
 
-:py:class:`bcb.Endpoint`
-------------------------
 
-Os *endpoints* retornados herdam da classe :py:class:`bcb.Endpoint`,
-que possui o método :py:meth:`bcb.Endpoint.query`, através do qual é
-possível realizar as consultas estruturadas na API OData.
+:py:class:`bcb.odata.api.Endpoint`
+----------------------------------
 
-:py:class:`bcb.odata.ODataQuery`
---------------------------------
+Os *endpoints* retornados herdam da classe :py:class:`bcb.odata.api.Endpoint`,
+que possui o método :py:meth:`bcb.odata.api.Endpoint.query`, através do qual são
+realizadas as consultas estruturadas na API OData.
 
-:py:meth:`bcb.Endpoints.query` retorna um objeto :py:class:`bcb.odata.ODataQuery`
+:py:class:`bcb.odata.framework.ODataQuery`
+------------------------------------------
+
+:py:meth:`bcb.odata.api.Endpoints.query` retorna um objeto :py:class:`bcb.odata.framework.ODataQuery`
 que possui os seguintes métodos.
 
-- :py:meth:`bcb.odata.ODataQuery.filter`
-- :py:meth:`bcb.odata.ODataQuery.select`
-- :py:meth:`bcb.odata.ODataQuery.orderby`
-- :py:meth:`bcb.odata.ODataQuery.limit`
-- :py:meth:`bcb.odata.ODataQuery.skip`
-- :py:meth:`bcb.odata.ODataQuery.parameters`
-- :py:meth:`bcb.odata.ODataQuery.collect`
-- :py:meth:`bcb.odata.ODataQuery.show`
+- :py:meth:`bcb.odata.framework.ODataQuery.filter`
+- :py:meth:`bcb.odata.framework.ODataQuery.select`
+- :py:meth:`bcb.odata.framework.ODataQuery.orderby`
+- :py:meth:`bcb.odata.framework.ODataQuery.limit`
+- :py:meth:`bcb.odata.framework.ODataQuery.skip`
+- :py:meth:`bcb.odata.framework.ODataQuery.parameters`
+- :py:meth:`bcb.odata.framework.ODataQuery.collect`
+- :py:meth:`bcb.odata.framework.ODataQuery.show`
 
 Aplicações
 ----------
 
+As APIs OData sem apresentam destas 2 maneiras:
+
+- :ref:`EntitySets`: consultas estáticas sem parâmetros que retornam dados em formato tabular disponibilizados pela API.
+  Exemplos de APIs: :ref:`Expectativas` e :ref:`Taxas de Juros`.
+- :ref:`FunctionImports`: consultas dinâmicas com parâmetros  que retornam dados em formato tabular disponibilizados pela API.
+  Um exemplo é a :ref:`API OData de Moedas`.
+
+Identifica-se a maneira pela qual a API se apresenta utilizando o método :py:meth:`bcb.odata.api.BaseODataAPI.describe`
+das classes que herdam :py:class:`bcb.odata.api.BaseODataAPI`.
+
 API de Expectativas
 ^^^^^^^^^^^^^^^^^^^
 
-Vamos ver como isso tudo funciona utilizando a API de expectativas.
+A API de Expectativas possui diversos *entity sets*.
+Utilizando o método ``describe`` visualizamos todos os *entity sets* disponibilizados pela API.
 
 .. ipython:: python
 
@@ -61,12 +75,15 @@ Vamos ver como isso tudo funciona utilizando a API de expectativas.
     em = Expectativas()
     em.describe()
 
-``EntitySets``
-""""""""""""""
+A API de Expectativas possui 8 ``EntitySets``.
+Essa listagem traz os nomes dos ``EntitySets`` e ao passar um destes nomes para o método ``describe`` obtemos a
+descrição do ``EntitySet`` que é o *endpoint* que dá acesso a API.
 
-Vemos que na API de expectativas tem uma listagem de ``EntitySets``.
-``EntitySets`` são *endpoints* que retornam um conjunto de dados toda vez que
-são chamados.
+EntitySets
+""""""""""
+
+Cada ``EntitySet`` é um *endpoint* que retorna um conjunto de dados toda vez que são chamados.
+Utilizamos os método ``describe`` para obter informações sobre o que é retornado na solicitação ao *endpoint*.
 
 Inspecionando o *endpoint* ``ExpectativaMercadoMensais``
 
@@ -75,30 +92,33 @@ Inspecionando o *endpoint* ``ExpectativaMercadoMensais``
     em.describe('ExpectativaMercadoMensais')
 
 
-``EntityType``
-""""""""""""""
+O *endpoint* ``ExpectativaMercadoMensais`` retorna um conjunto de dados
+denominado ``br.gov.bcb.olinda.servico.Expectativas.ExpectativaMercadoMensal``, que é um ``EntityType``.
+Este ``EntityType`` tem as seguintes propriedades:
 
-Os dados retornados por um ``EntitySet`` tem um tipo que é o seu ``EntityType``.
-Para o *endpoint* ``ExpectativaMercadoMensais`` o tipo retornado é
-``br.gov.bcb.olinda.servico.Expectativas.ExpectativaMercadoMensal`` que retorna as
-seguintes colunas (com seus respectivos tipos):
+- ``Indicador<str>``
+- ``Data<str>``
+- ``DataReferencia<str>``
+- ``Media<float>``
+- ``Mediana<float>``
+- ``DesvioPadrao<float>``
+- ``Minimo<float>``
+- ``Maximo<float>``
+- ``numeroRespondentes<int>``
+- ``baseCalculo<int>``
 
-- Indicador<str>
-- Data<str>
-- DataReferencia<str>
-- Media<float>
-- Mediana<float>
-- DesvioPadrao<float>
-- Minimo<float>
-- Maximo<float>
-- numeroRespondentes<int>
-- baseCalculo<int>
+Note que cada propriedade tem um tipo associado.
+As propriedades são formatadas em colunas no DataFrame retornado como resultado da consulta.
+É muito importante conhecer as colunas, pois caso se queira realizar filtros ou ordenação nas
+consultas, estes são aplicados às propriedades.
 
-É muito importante conhecer as colunas caso queira realizar filtros ou ordenação nas
-consultas.
+    A utilização de filtros e ordenação na consulta é fundamental para a realização de consultas eficientes, pois estas
+    operações são realizadas diretamente no processamento da API e isso reduz o volume de dados trafegados e,
+    consequentemente, acelera a consulta.
 
-Para realizar a consulta é necessário obter o objeto :py:class:`bcb.Endpoint`.
-Isso é feito executando o método :py:meth:`bcb.Expectativas.get_endpoint`.
+Para realizar uma consulta é necessário obter um objeto da classe :py:class:`bcb.odata.api.Endpoint`.
+Isso é feito chamando o método :py:meth:`bcb.odata.api.Expectativas.get_endpoint` com o nome do ``EntitySet`` desejado.
+Vamos utilizar o *endpoint* ``ExpectativaMercadoMensais`` como exemplo.
 
 .. ipython:: python
 
@@ -122,7 +142,7 @@ Note que como apenas o ``limit`` foi utilizado, o único
 parâmetro definido é o ``$top = 10`` indicando que apenas
 10 elementos serão retornados.
 
-Todos os métodos de :py:class:`bcb.odata.ODataQuery` retornam a própria
+Todos os métodos de :py:class:`bcb.odata.framework.ODataQuery` retornam a própria
 instância do objeto, com excessão a ``show`` e ``collect``.
 Por essa razão é possível realizar chamadas encadeadas configurando
 a consulta.
@@ -156,7 +176,7 @@ API de Moedas
 ^^^^^^^^^^^^^
 
 Uma outra aplicação é com a API de Moedas que implementa a especificação OData.
-Utilizando a classe :py:class:`bcb.PTAX` temos:
+Utilizando a classe :py:class:`bcb.odata.api.PTAX` temos:
 
 .. ipython:: python
 
@@ -165,8 +185,8 @@ Utilizando a classe :py:class:`bcb.PTAX` temos:
     ptax.describe()
 
 
-``FunctionImports``
-"""""""""""""""""""
+FunctionImports
+"""""""""""""""
 
 Note que essa API tem um ``EntitySet`` e seis ``FunctionImports``.
 A diferença entre eles é que os ``FunctionImports`` são funções
@@ -210,7 +230,7 @@ Classe ODataAPI
 O portal de Dados Abertos to Banco Central apresenta diversas APIs OData, são
 dezenas de APIs disponíveis.
 A URL com metadados de cada API pode ser obtida no portal.
-A classe ``ODataAPI`` permite acessar qualquer API Odata de posse da sua URL.
+A classe :py:class:`bcb.odata.api.ODataAPI` permite acessar qualquer API Odata de posse da sua URL.
 
 Por exemplo, a API de estatísticas de operações registradas no Selic tem a seguinte URL::
 
@@ -218,7 +238,7 @@ Por exemplo, a API de estatísticas de operações registradas no Selic tem a se
 
 que pode ser obtida no portal de dados abertos no `link <https://dadosabertos.bcb.gov.br/dataset/estatisticas-selic-operacoes>`_.
 
-Essa API pode ser diretamente acessada através da classe ``ODataAPI``.
+Essa API pode ser diretamente acessada através da classe :py:class:`bcb.odata.api.ODataAPI`.
 
 .. ipython:: python
 

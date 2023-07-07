@@ -160,7 +160,7 @@
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Moedas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="expectativas.html">Expectativas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="taxajuros.html">Taxas de Juros</a></li>
-<li class="toctree-l1"><a class="reference internal" href="odata.html">APIs OData</a></li>
+<li class="toctree-l1"><a class="reference internal" href="odata.html">OData</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 </ul>
 
@@ -208,12 +208,12 @@
 <h1>Moedas<a class="headerlink" href="#moedas" title="Link permanente para este cabeçalho">#</a></h1>
 <p>O pacote tem 2 APIs que dão acesso a informações de moedas.</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#api-odata"><span class="std std-ref">API OData</span></a> com cotações de taxas de câmbio</p></li>
+<li><p><a class="reference internal" href="#api-odata-de-moedas"><span class="std std-ref">API OData de Moedas</span></a> com cotações de taxas de câmbio</p></li>
 <li><p>Webscraping no <a class="reference internal" href="#conversor-de-moedas"><span class="std std-ref">Conversor de Moedas</span></a></p></li>
 </ul>
-<section id="api-odata">
-<h2>API OData<a class="headerlink" href="#api-odata" title="Link permanente para este cabeçalho">#</a></h2>
-<p>A classe <a class="reference internal" href="api.html#bcb.PTAX" title="bcb.PTAX"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.PTAX</span></code></a> retorna cotações de moedas os obtidas a partir da <a class="reference external" href="https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/documentacao">API de Moedas</a> do BCB.
+<section id="api-odata-de-moedas">
+<h2>API OData de Moedas<a class="headerlink" href="#api-odata-de-moedas" title="Link permanente para este cabeçalho">#</a></h2>
+<p>A classe <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.PTAX</span></code> retorna cotações de moedas os obtidas a partir da <a class="reference external" href="https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/documentacao">API de Moedas</a> do BCB.
 Esta implementação é mais estável que a do <a class="reference internal" href="#conversor-de-moedas"><span class="std std-ref">Conversor de Moedas</span></a>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">PTAX</span>
 
@@ -415,7 +415,7 @@ são preenchidos com 0 para ter 2 dígitos.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Moedas</a><ul>
-<li><a class="reference internal" href="#api-odata">API OData</a></li>
+<li><a class="reference internal" href="#api-odata-de-moedas">API OData de Moedas</a></li>
 <li><a class="reference internal" href="#conversor-de-moedas">Conversor de Moedas</a></li>
 </ul>
 </li>

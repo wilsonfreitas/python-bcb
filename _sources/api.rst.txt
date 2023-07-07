@@ -14,10 +14,11 @@ Módulo :py:mod:`bcb.currency`
 .. automodule:: bcb.currency
    :members:
 
-:ref:`APIs OData`
------------------
+APIs OData
+----------
 
-.. automodule:: bcb
+.. automodule:: bcb.odata.api
    :members:
+   :show-inheritance:
    :member-order: bysource
    :special-members: __init__

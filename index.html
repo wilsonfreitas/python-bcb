@@ -160,7 +160,7 @@
 <li class="toctree-l1"><a class="reference internal" href="currency.html">Moedas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="expectativas.html">Expectativas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="taxajuros.html">Taxas de Juros</a></li>
-<li class="toctree-l1"><a class="reference internal" href="odata.html">APIs OData</a></li>
+<li class="toctree-l1"><a class="reference internal" href="odata.html">OData</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 </ul>
 
@@ -251,7 +251,7 @@ Veja a documentação em <a class="reference internal" href="currency.html#conve
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">Moedas</span> <span class="pre">OData</span></code></dt><dd><p>O Banco Central disponibiliza diversas informações em APIs que
 seguem o padrão <cite>OData &lt;https://odata.org&gt;</cite>.
-A classe <a class="reference internal" href="api.html#bcb.PTAX" title="bcb.PTAX"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.PTAX</span></code></a> implementa uma API OData que
+A classe <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.PTAX</span></code> implementa uma API OData que
 entrega os boletins diários de taxas de câmbio do Banco Central.
 Esta API entrega mais informações do que o que é obtido no
 <code class="docutils literal notranslate"><span class="pre">Conversor</span> <span class="pre">de</span> <span class="pre">Moedas</span></code>.
@@ -260,21 +260,21 @@ Veja a documentação em <a class="reference internal" href="odata.html#api-de-m
 <dt><code class="docutils literal notranslate"><span class="pre">Expectativas</span></code></dt><dd><p>A API de Expectativas de Mercado traz todas as estatísticas das variáveis
 macroeconômicas fornecidos por um conjuto de instituições do mercado
 financeiro.
-A classe <a class="reference internal" href="api.html#bcb.Expectativas" title="bcb.Expectativas"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.Expectativas</span></code></a> implementa essa interface no
+A classe <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.Expectativas</span></code> implementa essa interface no
 padrão OData.
 Veja a documentação em <a class="reference internal" href="odata.html#api-de-expectativas"><span class="std std-ref">API de Expectativas</span></a>.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">Taxas</span> <span class="pre">de</span> <span class="pre">Juros</span></code></dt><dd><p>API que retorna as taxas de juros de operações de crédito por instituição financeira (médias dos últimos 5 dias).
-A classe <a class="reference internal" href="api.html#bcb.TaxaJuros" title="bcb.TaxaJuros"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.TaxaJuros</span></code></a> implementa essa interface.
+A classe <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.TaxaJuros</span></code> implementa essa interface.
 Veja a documentação em <a class="reference internal" href="taxajuros.html#taxas-de-juros"><span class="std std-ref">Taxas de Juros</span></a>.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">ODataAPI</span></code></dt><dd><p>O BCB disponibiliza diversas APIs que seguem a especificação OData.
-Algumas APIs mais utilizadas como as <a class="reference internal" href="api.html#bcb.PTAX" title="bcb.PTAX"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.PTAX</span></code></a> e
-<a class="reference internal" href="api.html#bcb.Expectativas" title="bcb.Expectativas"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.Expectativas</span></code></a> possuem uma classe específica, para as
-APIs menos utilizadas, é possível utilizar a classe <a class="reference internal" href="api.html#bcb.ODataAPI" title="bcb.ODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.ODataAPI</span></code></a>
+Algumas APIs mais utilizadas como as <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.PTAX</span></code> e
+<code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.Expectativas</span></code> possuem uma classe específica, para as
+APIs menos utilizadas, é possível utilizar a classe <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.ODataAPI</span></code>
 para acessar a API.
 Toda API que segue a especificação OData possui uma URL de acesso, esta URL
-é passada para a classe <a class="reference internal" href="api.html#bcb.ODataAPI" title="bcb.ODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.ODataAPI</span></code></a> e o objeto criado dá
+é passada para a classe <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.ODataAPI</span></code> e o objeto criado dá
 total acesso a API.
 Veja a documentação em <a class="reference internal" href="odata.html#classe-odataapi"><span class="std std-ref">Classe ODataAPI</span></a>.</p>
 </dd>
@@ -310,7 +310,7 @@ Veja a documentação em <a class="reference internal" href="odata.html#classe-o
 <li class="toctree-l1"><a class="reference internal" href="currency.html">Moedas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="expectativas.html">Expectativas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="taxajuros.html">Taxas de Juros</a></li>
-<li class="toctree-l1"><a class="reference internal" href="odata.html">APIs OData</a></li>
+<li class="toctree-l1"><a class="reference internal" href="odata.html">OData</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 </ul>
 </div>

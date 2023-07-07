@@ -158,7 +158,7 @@
 <li class="toctree-l1"><a class="reference internal" href="currency.html">Moedas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="expectativas.html">Expectativas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="taxajuros.html">Taxas de Juros</a></li>
-<li class="toctree-l1"><a class="reference internal" href="odata.html">APIs OData</a></li>
+<li class="toctree-l1"><a class="reference internal" href="odata.html">OData</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 </ul>
 
@@ -196,16 +196,18 @@
           
 <section class="genindex-section">
   <h1 id="index">Índice</h1>
-  <div class="genindex-jumpbox"><a href="#_"><strong>_</strong></a> | <a href="#B"><strong>B</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a></div>
+  <div class="genindex-jumpbox"><a href="#_"><strong>_</strong></a> | <a href="#B"><strong>B</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#Q"><strong>Q</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a></div>
 </section>
 <section id="_" class="genindex-section">
   <h2>_</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api.html#bcb.BaseODataAPI.__init__">__init__() (método bcb.BaseODataAPI)</a>
+        <li><a href="api.html#bcb.odata.api.BaseODataAPI.__init__">__init__() (método bcb.odata.api.BaseODataAPI)</a>
 
         <ul>
-          <li><a href="api.html#bcb.ODataAPI.__init__">(método bcb.ODataAPI)</a>
+          <li><a href="api.html#bcb.odata.api.Endpoint.__init__">(método bcb.odata.api.Endpoint)</a>
+</li>
+          <li><a href="api.html#bcb.odata.api.ODataAPI.__init__">(método bcb.odata.api.ODataAPI)</a>
 </li>
         </ul></li>
     </ul></td>
@@ -216,22 +218,22 @@
   <h2>B</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api.html#bcb.BaseODataAPI">BaseODataAPI (classe em bcb)</a>
+        <li><a href="api.html#bcb.odata.api.BaseODataAPI">BaseODataAPI (classe em bcb.odata.api)</a>
 </li>
-        <li>
-    bcb
-
-        <ul>
-          <li><a href="api.html#module-bcb">módulo</a>
-</li>
-        </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     bcb.currency
 
         <ul>
           <li><a href="api.html#module-bcb.currency">módulo</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li>
+    bcb.odata.api
+
+        <ul>
+          <li><a href="api.html#module-bcb.odata.api">módulo</a>
 </li>
         </ul></li>
         <li>
@@ -249,11 +251,11 @@
   <h2>D</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api.html#bcb.BaseODataAPI.describe">describe() (método bcb.BaseODataAPI)</a>
+        <li><a href="api.html#bcb.odata.api.BaseODataAPI.describe">describe() (método bcb.odata.api.BaseODataAPI)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api.html#bcb.DinheiroCirculacao">DinheiroCirculacao (classe em bcb)</a>
+        <li><a href="api.html#bcb.odata.api.DinheiroCirculacao">DinheiroCirculacao (classe em bcb.odata.api)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -263,11 +265,13 @@
   <h2>E</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api.html#bcb.EstatisticasSTR">EstatisticasSTR (classe em bcb)</a>
+        <li><a href="api.html#bcb.odata.api.Endpoint">Endpoint (classe em bcb.odata.api)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api.html#bcb.Expectativas">Expectativas (classe em bcb)</a>
+        <li><a href="api.html#bcb.odata.api.EstatisticasSTR">EstatisticasSTR (classe em bcb.odata.api)</a>
+</li>
+        <li><a href="api.html#bcb.odata.api.Expectativas">Expectativas (classe em bcb.odata.api)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -277,9 +281,11 @@
   <h2>G</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api.html#bcb.currency.get">get() (no módulo bcb.currency)</a>
+        <li><a href="api.html#bcb.odata.api.Endpoint.get">get() (método bcb.odata.api.Endpoint)</a>
 
         <ul>
+          <li><a href="api.html#bcb.currency.get">(no módulo bcb.currency)</a>
+</li>
           <li><a href="api.html#bcb.sgs.get">(no módulo bcb.sgs)</a>
 </li>
         </ul></li>
@@ -287,7 +293,7 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api.html#bcb.currency.get_currency_list">get_currency_list() (no módulo bcb.currency)</a>
 </li>
-        <li><a href="api.html#bcb.BaseODataAPI.get_endpoint">get_endpoint() (método bcb.BaseODataAPI)</a>
+        <li><a href="api.html#bcb.odata.api.BaseODataAPI.get_endpoint">get_endpoint() (método bcb.odata.api.BaseODataAPI)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -297,7 +303,7 @@
   <h2>I</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api.html#bcb.IFDATA">IFDATA (classe em bcb)</a>
+        <li><a href="api.html#bcb.odata.api.IFDATA">IFDATA (classe em bcb.odata.api)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -307,15 +313,15 @@
   <h2>M</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api.html#bcb.MercadoImobiliario">MercadoImobiliario (classe em bcb)</a>
+        <li><a href="api.html#bcb.odata.api.MercadoImobiliario">MercadoImobiliario (classe em bcb.odata.api)</a>
 </li>
         <li>
     módulo
 
         <ul>
-          <li><a href="api.html#module-bcb">bcb</a>
-</li>
           <li><a href="api.html#module-bcb.currency">bcb.currency</a>
+</li>
+          <li><a href="api.html#module-bcb.odata.api">bcb.odata.api</a>
 </li>
           <li><a href="api.html#module-bcb.sgs">bcb.sgs</a>
 </li>
@@ -328,7 +334,7 @@
   <h2>O</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api.html#bcb.ODataAPI">ODataAPI (classe em bcb)</a>
+        <li><a href="api.html#bcb.odata.api.ODataAPI">ODataAPI (classe em bcb.odata.api)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -338,13 +344,23 @@
   <h2>P</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api.html#bcb.PostosAtendimentoCorrespondentesPorInstituicaoFinanceira">PostosAtendimentoCorrespondentesPorInstituicaoFinanceira (classe em bcb)</a>
+        <li><a href="api.html#bcb.odata.api.PostosAtendimentoCorrespondentesPorInstituicaoFinanceira">PostosAtendimentoCorrespondentesPorInstituicaoFinanceira (classe em bcb.odata.api)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api.html#bcb.PostosAtendimentoEletronicoPorInstituicaoFinanceira">PostosAtendimentoEletronicoPorInstituicaoFinanceira (classe em bcb)</a>
+        <li><a href="api.html#bcb.odata.api.PostosAtendimentoEletronicoPorInstituicaoFinanceira">PostosAtendimentoEletronicoPorInstituicaoFinanceira (classe em bcb.odata.api)</a>
 </li>
-        <li><a href="api.html#bcb.PTAX">PTAX (classe em bcb)</a>
+        <li><a href="api.html#bcb.odata.api.PTAX">PTAX (classe em bcb.odata.api)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="Q" class="genindex-section">
+  <h2>Q</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api.html#bcb.odata.api.Endpoint.query">query() (método bcb.odata.api.Endpoint)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -354,7 +370,7 @@
   <h2>S</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api.html#bcb.SPI">SPI (classe em bcb)</a>
+        <li><a href="api.html#bcb.odata.api.SPI">SPI (classe em bcb.odata.api)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -364,13 +380,13 @@
   <h2>T</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api.html#bcb.TarifasBancariasPorInstituicaoFinanceira">TarifasBancariasPorInstituicaoFinanceira (classe em bcb)</a>
+        <li><a href="api.html#bcb.odata.api.TarifasBancariasPorInstituicaoFinanceira">TarifasBancariasPorInstituicaoFinanceira (classe em bcb.odata.api)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api.html#bcb.TarifasBancariasPorServico">TarifasBancariasPorServico (classe em bcb)</a>
+        <li><a href="api.html#bcb.odata.api.TarifasBancariasPorServico">TarifasBancariasPorServico (classe em bcb.odata.api)</a>
 </li>
-        <li><a href="api.html#bcb.TaxaJuros">TaxaJuros (classe em bcb)</a>
+        <li><a href="api.html#bcb.odata.api.TaxaJuros">TaxaJuros (classe em bcb.odata.api)</a>
 </li>
     </ul></td>
   </tr></table>

@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Índice" href="genindex.html" /><link rel="search" title="Buscar" href="search.html" /><link rel="prev" title="APIs OData" href="odata.html" />
+<link rel="index" title="Índice" href="genindex.html" /><link rel="search" title="Buscar" href="search.html" /><link rel="prev" title="OData" href="odata.html" />
 
     <!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20 -->
         <title>API - documentação python-bcb</title>
@@ -160,7 +160,7 @@
 <li class="toctree-l1"><a class="reference internal" href="currency.html">Moedas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="expectativas.html">Expectativas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="taxajuros.html">Taxas de Juros</a></li>
-<li class="toctree-l1"><a class="reference internal" href="odata.html">APIs OData</a></li>
+<li class="toctree-l1"><a class="reference internal" href="odata.html">OData</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">API</a></li>
 </ul>
 
@@ -296,22 +296,83 @@ por <code class="docutils literal notranslate"><span class="pre">side</span></co
 </dd></dl>
 
 </section>
-<section id="module-bcb">
-<span id="apis-odata"></span><h2><a class="reference internal" href="odata.html#apis-odata"><span class="std std-ref">APIs OData</span></a><a class="headerlink" href="#module-bcb" title="Link permanente para este cabeçalho">#</a></h2>
+<section id="module-bcb.odata.api">
+<span id="apis-odata"></span><h2>APIs OData<a class="headerlink" href="#module-bcb.odata.api" title="Link permanente para este cabeçalho">#</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="bcb.BaseODataAPI">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">BaseODataAPI</span></span><a class="headerlink" href="#bcb.BaseODataAPI" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Classe que abstrai qualquer API OData</p>
+<dt class="sig sig-object py" id="bcb.odata.api.Endpoint">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.odata.api.</span></span><span class="sig-name descname"><span class="pre">Endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.odata.api.Endpoint" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Classe que representa os tipos de <em>endpoints</em> de APIs OData.</p>
+<p>As APIs OData têm 2 tipos de <em>endpoints</em>: <em>entity sets</em> e <em>functions imports</em>.
+Esta classe provê todos os mecanismos para acessar tanto os <em>entity sets</em> quanto os <em>functions imports</em> e
+realizar consultas em através de suas APIs de maneira transparente.</p>
+<p>Esta classe não deveria ser instanciada diretamente.
+Objetos dessa classe são retornados pelo método
+<a class="reference internal" href="#bcb.odata.api.BaseODataAPI.get_endpoint" title="bcb.odata.api.BaseODataAPI.get_endpoint"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.odata.api.BaseODataAPI.get_endpoint()</span></code></a> das classes que herdam
+<a class="reference internal" href="#bcb.odata.api.BaseODataAPI" title="bcb.odata.api.BaseODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.BaseODataAPI</span></code></a>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bcb.odata.api.Endpoint.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.odata.api.Endpoint.__init__" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Construtor da classe Endpoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entity</strong> (<em>bcb.odata.api.ODataEntity</em>) – Objeto que representa um <em>entity set</em> ou um <em>function import</em>.
+Obtidos da classe <code class="docutils literal notranslate"><span class="pre">bcb.odata.framework.ODataService</span></code>.</p></li>
+<li><p><strong>url</strong> (<em>str</em>) – URL da API OData.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bcb.odata.api.Endpoint.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.odata.api.Endpoint.get" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Executa a consulta na API OData e retorna o resultado.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*args</strong> (<em>argumentos para a consulta</em>) – </p></li>
+<li><p><strong>**kwargs</strong> (<em>argumentos para a consulta</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>pd.DataFrame</strong></p>
+</dd>
+<dt class="field-odd">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p>resultado da consulta</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bcb.odata.api.Endpoint.query">
+<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bcb.odata.api.Endpoint.query" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Retorna uma instância de EndpointQuery através da qual se construirá a consulta na API OData.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bcb.odata.api.EndpointQuery</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bcb.odata.api.BaseODataAPI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.odata.api.</span></span><span class="sig-name descname"><span class="pre">BaseODataAPI</span></span><a class="headerlink" href="#bcb.odata.api.BaseODataAPI" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Base: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Classe que abstrai qualquer API OData</p>
 <p>Essa classe não deve ser acessada diretamente.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="bcb.BaseODataAPI.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bcb.BaseODataAPI.__init__" title="Link permanente para esta definição">#</a></dt>
+<dt class="sig sig-object py" id="bcb.odata.api.BaseODataAPI.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bcb.odata.api.BaseODataAPI.__init__" title="Link permanente para esta definição">#</a></dt>
 <dd><p>BaseODataAPI construtor</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="bcb.BaseODataAPI.describe">
-<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.BaseODataAPI.describe" title="Link permanente para esta definição">#</a></dt>
+<dt class="sig sig-object py" id="bcb.odata.api.BaseODataAPI.describe">
+<span class="sig-name descname"><span class="pre">describe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.odata.api.BaseODataAPI.describe" title="Link permanente para esta definição">#</a></dt>
 <dd><p>Mostra a descrição de uma API ou de um <em>endpoint</em>
 específico.</p>
 <dl class="field-list simple">
@@ -329,8 +390,8 @@ específico.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="bcb.BaseODataAPI.get_endpoint">
-<span class="sig-name descname"><span class="pre">get_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.BaseODataAPI.get_endpoint" title="Link permanente para esta definição">#</a></dt>
+<dt class="sig sig-object py" id="bcb.odata.api.BaseODataAPI.get_endpoint">
+<span class="sig-name descname"><span class="pre">get_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">endpoint</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.odata.api.BaseODataAPI.get_endpoint" title="Link permanente para esta definição">#</a></dt>
 <dd><p>Obtem o <em>endpoint</em></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
@@ -340,7 +401,7 @@ específico.</p>
 <dd class="field-even"><p>Retorna o <em>endpoint</em> referente ao nome fornecido</p>
 </dd>
 <dt class="field-odd">Tipo de retorno<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bcb.Endpoint</p>
+<dd class="field-odd"><p><a class="reference internal" href="#bcb.odata.api.Endpoint" title="bcb.odata.api.Endpoint">bcb.odata.api.Endpoint</a></p>
 </dd>
 <dt class="field-even">Levanta<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>ValueError</strong> – Se o <em>endpoint</em> fornecido é errado.</p>
@@ -351,16 +412,17 @@ específico.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="bcb.ODataAPI">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">ODataAPI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.ODataAPI" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Classe que abstrai qualquer API OData</p>
+<dt class="sig sig-object py" id="bcb.odata.api.ODataAPI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.odata.api.</span></span><span class="sig-name descname"><span class="pre">ODataAPI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.odata.api.ODataAPI" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Base: <a class="reference internal" href="#bcb.odata.api.BaseODataAPI" title="bcb.odata.api.BaseODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseODataAPI</span></code></a></p>
+<p>Classe que abstrai qualquer API OData</p>
 <p>Essa classe pode ser acessada diretamente passando
 uma URL válida para uma API OData.</p>
 <p>Uma boa alternativa para acessar APIs que ainda
 não possuem implementação específica.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="bcb.ODataAPI.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.ODataAPI.__init__" title="Link permanente para esta definição">#</a></dt>
+<dt class="sig sig-object py" id="bcb.odata.api.ODataAPI.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.odata.api.ODataAPI.__init__" title="Link permanente para esta definição">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>url</strong> (<em>str</em>) – <p>URL de API OData</p>
@@ -379,9 +441,10 @@ não possuem implementação específica.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="bcb.Expectativas">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">Expectativas</span></span><a class="headerlink" href="#bcb.Expectativas" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Integração com API OData de Expectativas de Mercado.</p>
+<dt class="sig sig-object py" id="bcb.odata.api.Expectativas">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.odata.api.</span></span><span class="sig-name descname"><span class="pre">Expectativas</span></span><a class="headerlink" href="#bcb.odata.api.Expectativas" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Base: <a class="reference internal" href="#bcb.odata.api.BaseODataAPI" title="bcb.odata.api.BaseODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseODataAPI</span></code></a></p>
+<p>Integração com API OData de Expectativas de Mercado.</p>
 <p>Cerca de 130
 instituições do mercado financeiro participantes do
 Sistema de Expectativas de Mercado para diversas variáveis
@@ -411,9 +474,10 @@ os indicadores do Top 5</p></li>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="bcb.PTAX">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">PTAX</span></span><a class="headerlink" href="#bcb.PTAX" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Integração com API OData de cotações diárias de taxas de câmbio.</p>
+<dt class="sig sig-object py" id="bcb.odata.api.PTAX">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.odata.api.</span></span><span class="sig-name descname"><span class="pre">PTAX</span></span><a class="headerlink" href="#bcb.odata.api.PTAX" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Base: <a class="reference internal" href="#bcb.odata.api.BaseODataAPI" title="bcb.odata.api.BaseODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseODataAPI</span></code></a></p>
+<p>Integração com API OData de cotações diárias de taxas de câmbio.</p>
 <p>Essa API possui os seguintes <em>endpoints</em>:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">Moedas</span></code>: Retorna a lista de moedas que podem ser usadas</p></li>
@@ -449,9 +513,10 @@ boletins do dia.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="bcb.IFDATA">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">IFDATA</span></span><a class="headerlink" href="#bcb.IFDATA" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Integração com API OData para dados selecionados de instituições
+<dt class="sig sig-object py" id="bcb.odata.api.IFDATA">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.odata.api.</span></span><span class="sig-name descname"><span class="pre">IFDATA</span></span><a class="headerlink" href="#bcb.odata.api.IFDATA" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Base: <a class="reference internal" href="#bcb.odata.api.BaseODataAPI" title="bcb.odata.api.BaseODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseODataAPI</span></code></a></p>
+<p>Integração com API OData para dados selecionados de instituições
 financeiras</p>
 <p>Dados selecionados de instituições financeiras dos relatórios do IFData
 disponibilizados na página <a class="reference external" href="https://www3.bcb.gov.br/ifdata/">https://www3.bcb.gov.br/ifdata/</a> em formato de
@@ -464,9 +529,10 @@ fechamento da data-base dezembro.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="bcb.TaxaJuros">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">TaxaJuros</span></span><a class="headerlink" href="#bcb.TaxaJuros" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Taxas de juros de operações de crédito por instituição financeira - Médias
+<dt class="sig sig-object py" id="bcb.odata.api.TaxaJuros">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.odata.api.</span></span><span class="sig-name descname"><span class="pre">TaxaJuros</span></span><a class="headerlink" href="#bcb.odata.api.TaxaJuros" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Base: <a class="reference internal" href="#bcb.odata.api.BaseODataAPI" title="bcb.odata.api.BaseODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseODataAPI</span></code></a></p>
+<p>Taxas de juros de operações de crédito por instituição financeira - Médias
 dos últimos 5 dias</p>
 <p>As taxas de juros por instituição financeira apresentadas nesse conjunto de
 tabelas representam médias aritméticas das taxas de juros pactuadas nas
@@ -507,9 +573,10 @@ danos decorrentes de seu uso.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="bcb.MercadoImobiliario">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">MercadoImobiliario</span></span><a class="headerlink" href="#bcb.MercadoImobiliario" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Informações do Mercado Imobiliário</p>
+<dt class="sig sig-object py" id="bcb.odata.api.MercadoImobiliario">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.odata.api.</span></span><span class="sig-name descname"><span class="pre">MercadoImobiliario</span></span><a class="headerlink" href="#bcb.odata.api.MercadoImobiliario" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Base: <a class="reference internal" href="#bcb.odata.api.BaseODataAPI" title="bcb.odata.api.BaseODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseODataAPI</span></code></a></p>
+<p>Informações do Mercado Imobiliário</p>
 <p>O Banco Central do Brasil divulga mensalmente informações sobre o mercado
 imobiliário. Os relatórios são atualizados no último dia útil do mês,
 disponibilizando os dados após 60 dias do fechamento de cada período.
@@ -525,44 +592,49 @@ abertos. As seções Crédito e Imóveis possuem detalhamentos por estados.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="bcb.SPI">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">SPI</span></span><a class="headerlink" href="#bcb.SPI" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Estatísticas do SPI - Sistema de Pagamentos Instantâneos</p>
+<dt class="sig sig-object py" id="bcb.odata.api.SPI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.odata.api.</span></span><span class="sig-name descname"><span class="pre">SPI</span></span><a class="headerlink" href="#bcb.odata.api.SPI" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Base: <a class="reference internal" href="#bcb.odata.api.BaseODataAPI" title="bcb.odata.api.BaseODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseODataAPI</span></code></a></p>
+<p>Estatísticas do SPI - Sistema de Pagamentos Instantâneos</p>
 <p>Estatísticas das movimentações financeiras transitadas no SPI (Sistema de
 Pagamentos Instantâneos) processadas por meio de lançamentos nas contas PI
 mantidas pelos participantes no Banco Central.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="bcb.TarifasBancariasPorInstituicaoFinanceira">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">TarifasBancariasPorInstituicaoFinanceira</span></span><a class="headerlink" href="#bcb.TarifasBancariasPorInstituicaoFinanceira" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Tarifas Bancárias - por Segmento e por Instituição</p>
+<dt class="sig sig-object py" id="bcb.odata.api.TarifasBancariasPorInstituicaoFinanceira">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.odata.api.</span></span><span class="sig-name descname"><span class="pre">TarifasBancariasPorInstituicaoFinanceira</span></span><a class="headerlink" href="#bcb.odata.api.TarifasBancariasPorInstituicaoFinanceira" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Base: <a class="reference internal" href="#bcb.odata.api.BaseODataAPI" title="bcb.odata.api.BaseODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseODataAPI</span></code></a></p>
+<p>Tarifas Bancárias - por Segmento e por Instituição</p>
 <p>Esta API disponibiliza as informações mais recentes sobre as tarifas
 cobradas por instituições financeiras, por Segmento e por Instituição.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="bcb.TarifasBancariasPorServico">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">TarifasBancariasPorServico</span></span><a class="headerlink" href="#bcb.TarifasBancariasPorServico" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Tarifas Bancárias - valores mínimos, máximos e médios por serviço</p>
+<dt class="sig sig-object py" id="bcb.odata.api.TarifasBancariasPorServico">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.odata.api.</span></span><span class="sig-name descname"><span class="pre">TarifasBancariasPorServico</span></span><a class="headerlink" href="#bcb.odata.api.TarifasBancariasPorServico" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Base: <a class="reference internal" href="#bcb.odata.api.BaseODataAPI" title="bcb.odata.api.BaseODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseODataAPI</span></code></a></p>
+<p>Tarifas Bancárias - valores mínimos, máximos e médios por serviço</p>
 <p>Esta API disponibiliza as informações mais recentes sobre as tarifas
 cobradas por instituições financeiras, valores mínimos, máximos e médios
 por serviço.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="bcb.PostosAtendimentoEletronicoPorInstituicaoFinanceira">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">PostosAtendimentoEletronicoPorInstituicaoFinanceira</span></span><a class="headerlink" href="#bcb.PostosAtendimentoEletronicoPorInstituicaoFinanceira" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Postos de Atendimento Eletrônico de Instituições Supervisionadas pelo Bacen</p>
+<dt class="sig sig-object py" id="bcb.odata.api.PostosAtendimentoEletronicoPorInstituicaoFinanceira">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.odata.api.</span></span><span class="sig-name descname"><span class="pre">PostosAtendimentoEletronicoPorInstituicaoFinanceira</span></span><a class="headerlink" href="#bcb.odata.api.PostosAtendimentoEletronicoPorInstituicaoFinanceira" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Base: <a class="reference internal" href="#bcb.odata.api.BaseODataAPI" title="bcb.odata.api.BaseODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseODataAPI</span></code></a></p>
+<p>Postos de Atendimento Eletrônico de Instituições Supervisionadas pelo Bacen</p>
 <p>Os arquivos disponíveis para transferência apresentam as informações mais
 atuais dos postos de atendimento eletrônico de Instituições Supervisionadas
 pelo Banco Central.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="bcb.PostosAtendimentoCorrespondentesPorInstituicaoFinanceira">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">PostosAtendimentoCorrespondentesPorInstituicaoFinanceira</span></span><a class="headerlink" href="#bcb.PostosAtendimentoCorrespondentesPorInstituicaoFinanceira" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Correspondentes no país</p>
+<dt class="sig sig-object py" id="bcb.odata.api.PostosAtendimentoCorrespondentesPorInstituicaoFinanceira">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.odata.api.</span></span><span class="sig-name descname"><span class="pre">PostosAtendimentoCorrespondentesPorInstituicaoFinanceira</span></span><a class="headerlink" href="#bcb.odata.api.PostosAtendimentoCorrespondentesPorInstituicaoFinanceira" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Base: <a class="reference internal" href="#bcb.odata.api.BaseODataAPI" title="bcb.odata.api.BaseODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseODataAPI</span></code></a></p>
+<p>Correspondentes no país</p>
 <p>O arquivo disponibilizado apresenta os dados mais atuais dos pontos de
 atendimento dos correspondentes, por instituição financeira e por
 município, com a identificação dos tipos de serviços prestados, conforme
@@ -570,18 +642,20 @@ descrito na Resolução 3.954.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="bcb.EstatisticasSTR">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">EstatisticasSTR</span></span><a class="headerlink" href="#bcb.EstatisticasSTR" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Estatísticas do STR - Sistema de Transferência de Reservas</p>
+<dt class="sig sig-object py" id="bcb.odata.api.EstatisticasSTR">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.odata.api.</span></span><span class="sig-name descname"><span class="pre">EstatisticasSTR</span></span><a class="headerlink" href="#bcb.odata.api.EstatisticasSTR" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Base: <a class="reference internal" href="#bcb.odata.api.BaseODataAPI" title="bcb.odata.api.BaseODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseODataAPI</span></code></a></p>
+<p>Estatísticas do STR - Sistema de Transferência de Reservas</p>
 <p>Estatísticas das movimentações financeiras transitadas no STR (Sistema de
 Transferência de Reservas) processadas por meio de lançamentos nas contas
 mantidas pelos participantes no Banco Central.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="bcb.DinheiroCirculacao">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.</span></span><span class="sig-name descname"><span class="pre">DinheiroCirculacao</span></span><a class="headerlink" href="#bcb.DinheiroCirculacao" title="Link permanente para esta definição">#</a></dt>
-<dd><p>Dinheiro em Circulação</p>
+<dt class="sig sig-object py" id="bcb.odata.api.DinheiroCirculacao">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bcb.odata.api.</span></span><span class="sig-name descname"><span class="pre">DinheiroCirculacao</span></span><a class="headerlink" href="#bcb.odata.api.DinheiroCirculacao" title="Link permanente para esta definição">#</a></dt>
+<dd><p>Base: <a class="reference internal" href="#bcb.odata.api.BaseODataAPI" title="bcb.odata.api.BaseODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseODataAPI</span></code></a></p>
+<p>Dinheiro em Circulação</p>
 <p>Registros diários das quantidades de cédulas e moedas em circulação (não
 estão incluídas as moedas comemorativas). As informações estão separadas
 para cada espécie (cédula ou moeda), família (categoria) e denominação do
@@ -604,7 +678,7 @@ Real (símbolos : R$, BRL).</p>
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">APIs OData</div>
+                <div class="title">OData</div>
                 
               </div>
             </a>
@@ -648,29 +722,35 @@ Real (símbolos : R$, BRL).</p>
 <li><a class="reference internal" href="#bcb.currency.get_currency_list"><code class="docutils literal notranslate"><span class="pre">get_currency_list()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-bcb"><span class="xref std std-ref">APIs OData</span></a><ul>
-<li><a class="reference internal" href="#bcb.BaseODataAPI"><code class="docutils literal notranslate"><span class="pre">BaseODataAPI</span></code></a><ul>
-<li><a class="reference internal" href="#bcb.BaseODataAPI.__init__"><code class="docutils literal notranslate"><span class="pre">BaseODataAPI.__init__()</span></code></a></li>
-<li><a class="reference internal" href="#bcb.BaseODataAPI.describe"><code class="docutils literal notranslate"><span class="pre">BaseODataAPI.describe()</span></code></a></li>
-<li><a class="reference internal" href="#bcb.BaseODataAPI.get_endpoint"><code class="docutils literal notranslate"><span class="pre">BaseODataAPI.get_endpoint()</span></code></a></li>
+<li><a class="reference internal" href="#module-bcb.odata.api">APIs OData</a><ul>
+<li><a class="reference internal" href="#bcb.odata.api.Endpoint"><code class="docutils literal notranslate"><span class="pre">Endpoint</span></code></a><ul>
+<li><a class="reference internal" href="#bcb.odata.api.Endpoint.__init__"><code class="docutils literal notranslate"><span class="pre">Endpoint.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#bcb.odata.api.Endpoint.get"><code class="docutils literal notranslate"><span class="pre">Endpoint.get()</span></code></a></li>
+<li><a class="reference internal" href="#bcb.odata.api.Endpoint.query"><code class="docutils literal notranslate"><span class="pre">Endpoint.query()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#bcb.ODataAPI"><code class="docutils literal notranslate"><span class="pre">ODataAPI</span></code></a><ul>
-<li><a class="reference internal" href="#bcb.ODataAPI.__init__"><code class="docutils literal notranslate"><span class="pre">ODataAPI.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#bcb.odata.api.BaseODataAPI"><code class="docutils literal notranslate"><span class="pre">BaseODataAPI</span></code></a><ul>
+<li><a class="reference internal" href="#bcb.odata.api.BaseODataAPI.__init__"><code class="docutils literal notranslate"><span class="pre">BaseODataAPI.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#bcb.odata.api.BaseODataAPI.describe"><code class="docutils literal notranslate"><span class="pre">BaseODataAPI.describe()</span></code></a></li>
+<li><a class="reference internal" href="#bcb.odata.api.BaseODataAPI.get_endpoint"><code class="docutils literal notranslate"><span class="pre">BaseODataAPI.get_endpoint()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#bcb.Expectativas"><code class="docutils literal notranslate"><span class="pre">Expectativas</span></code></a></li>
-<li><a class="reference internal" href="#bcb.PTAX"><code class="docutils literal notranslate"><span class="pre">PTAX</span></code></a></li>
-<li><a class="reference internal" href="#bcb.IFDATA"><code class="docutils literal notranslate"><span class="pre">IFDATA</span></code></a></li>
-<li><a class="reference internal" href="#bcb.TaxaJuros"><code class="docutils literal notranslate"><span class="pre">TaxaJuros</span></code></a></li>
-<li><a class="reference internal" href="#bcb.MercadoImobiliario"><code class="docutils literal notranslate"><span class="pre">MercadoImobiliario</span></code></a></li>
-<li><a class="reference internal" href="#bcb.SPI"><code class="docutils literal notranslate"><span class="pre">SPI</span></code></a></li>
-<li><a class="reference internal" href="#bcb.TarifasBancariasPorInstituicaoFinanceira"><code class="docutils literal notranslate"><span class="pre">TarifasBancariasPorInstituicaoFinanceira</span></code></a></li>
-<li><a class="reference internal" href="#bcb.TarifasBancariasPorServico"><code class="docutils literal notranslate"><span class="pre">TarifasBancariasPorServico</span></code></a></li>
-<li><a class="reference internal" href="#bcb.PostosAtendimentoEletronicoPorInstituicaoFinanceira"><code class="docutils literal notranslate"><span class="pre">PostosAtendimentoEletronicoPorInstituicaoFinanceira</span></code></a></li>
-<li><a class="reference internal" href="#bcb.PostosAtendimentoCorrespondentesPorInstituicaoFinanceira"><code class="docutils literal notranslate"><span class="pre">PostosAtendimentoCorrespondentesPorInstituicaoFinanceira</span></code></a></li>
-<li><a class="reference internal" href="#bcb.EstatisticasSTR"><code class="docutils literal notranslate"><span class="pre">EstatisticasSTR</span></code></a></li>
-<li><a class="reference internal" href="#bcb.DinheiroCirculacao"><code class="docutils literal notranslate"><span class="pre">DinheiroCirculacao</span></code></a></li>
+<li><a class="reference internal" href="#bcb.odata.api.ODataAPI"><code class="docutils literal notranslate"><span class="pre">ODataAPI</span></code></a><ul>
+<li><a class="reference internal" href="#bcb.odata.api.ODataAPI.__init__"><code class="docutils literal notranslate"><span class="pre">ODataAPI.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#bcb.odata.api.Expectativas"><code class="docutils literal notranslate"><span class="pre">Expectativas</span></code></a></li>
+<li><a class="reference internal" href="#bcb.odata.api.PTAX"><code class="docutils literal notranslate"><span class="pre">PTAX</span></code></a></li>
+<li><a class="reference internal" href="#bcb.odata.api.IFDATA"><code class="docutils literal notranslate"><span class="pre">IFDATA</span></code></a></li>
+<li><a class="reference internal" href="#bcb.odata.api.TaxaJuros"><code class="docutils literal notranslate"><span class="pre">TaxaJuros</span></code></a></li>
+<li><a class="reference internal" href="#bcb.odata.api.MercadoImobiliario"><code class="docutils literal notranslate"><span class="pre">MercadoImobiliario</span></code></a></li>
+<li><a class="reference internal" href="#bcb.odata.api.SPI"><code class="docutils literal notranslate"><span class="pre">SPI</span></code></a></li>
+<li><a class="reference internal" href="#bcb.odata.api.TarifasBancariasPorInstituicaoFinanceira"><code class="docutils literal notranslate"><span class="pre">TarifasBancariasPorInstituicaoFinanceira</span></code></a></li>
+<li><a class="reference internal" href="#bcb.odata.api.TarifasBancariasPorServico"><code class="docutils literal notranslate"><span class="pre">TarifasBancariasPorServico</span></code></a></li>
+<li><a class="reference internal" href="#bcb.odata.api.PostosAtendimentoEletronicoPorInstituicaoFinanceira"><code class="docutils literal notranslate"><span class="pre">PostosAtendimentoEletronicoPorInstituicaoFinanceira</span></code></a></li>
+<li><a class="reference internal" href="#bcb.odata.api.PostosAtendimentoCorrespondentesPorInstituicaoFinanceira"><code class="docutils literal notranslate"><span class="pre">PostosAtendimentoCorrespondentesPorInstituicaoFinanceira</span></code></a></li>
+<li><a class="reference internal" href="#bcb.odata.api.EstatisticasSTR"><code class="docutils literal notranslate"><span class="pre">EstatisticasSTR</span></code></a></li>
+<li><a class="reference internal" href="#bcb.odata.api.DinheiroCirculacao"><code class="docutils literal notranslate"><span class="pre">DinheiroCirculacao</span></code></a></li>
 </ul>
 </li>
 </ul>
