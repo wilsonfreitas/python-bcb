@@ -206,19 +206,85 @@
         <article role="main">
           <section id="odata">
 <h1>OData<a class="headerlink" href="#odata" title="Link permanente para este cabeçalho">#</a></h1>
-<p>Diversas classes implementam a integração com APIs OData.</p>
+<p>Diversas APIs disponíveis no <a class="reference external" href="https://dadosabertos.bcb.gov.br/">portal de dados abertos</a> do Banco Central
+implementam o protocolo <a class="reference external" href="https://www.odata.org/">OData</a>, são centenas de APIs.</p>
+<p>O <code class="docutils literal notranslate"><span class="pre">python-bcb</span></code> tem algumas classes que implementam algumas APIs OData:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="api.html#bcb.odata.api.Expectativas" title="bcb.odata.api.Expectativas"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.Expectativas</span></code></a></p></li>
-<li><p><a class="reference internal" href="api.html#bcb.odata.api.PTAX" title="bcb.odata.api.PTAX"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.PTAX</span></code></a></p></li>
-<li><p><a class="reference internal" href="api.html#bcb.odata.api.TaxaJuros" title="bcb.odata.api.TaxaJuros"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.TaxaJuros</span></code></a></p></li>
-<li><p><a class="reference internal" href="api.html#bcb.odata.api.IFDATA" title="bcb.odata.api.IFDATA"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.IFDATA</span></code></a></p></li>
-<li><p><a class="reference internal" href="api.html#bcb.odata.api.MercadoImobiliario" title="bcb.odata.api.MercadoImobiliario"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.MercadoImobiliario</span></code></a></p></li>
+<li><p><a class="reference internal" href="api.html#bcb.odata.api.Expectativas" title="bcb.odata.api.Expectativas"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.Expectativas</span></code></a>: Expectativas de mercado para os indicadores macroeconômicos da Pesquisa Focus</p></li>
+<li><p><a class="reference internal" href="api.html#bcb.odata.api.PTAX" title="bcb.odata.api.PTAX"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.PTAX</span></code></a>: Dólar comercial</p></li>
+<li><p><a class="reference internal" href="api.html#bcb.odata.api.TaxaJuros" title="bcb.odata.api.TaxaJuros"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.TaxaJuros</span></code></a>: Taxas de juros de operações de crédito por instituição financeira</p></li>
+<li><p><a class="reference internal" href="api.html#bcb.odata.api.IFDATA" title="bcb.odata.api.IFDATA"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.IFDATA</span></code></a>: Dados selecionados de instituições financeiras</p></li>
+<li><p><a class="reference internal" href="api.html#bcb.odata.api.MercadoImobiliario" title="bcb.odata.api.MercadoImobiliario"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.MercadoImobiliario</span></code></a>: Informações do Mercado Imobiliário</p></li>
+<li><p><a class="reference internal" href="api.html#bcb.odata.api.SPI" title="bcb.odata.api.SPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.SPI</span></code></a>: Estatísticas do SPI (Sistema de Pagamentos Instantâneos)</p></li>
+<li><p>Veja todas as APIs implementadas em <a class="reference internal" href="api.html#module-bcb.odata.api"><span class="std std-ref">APIs OData</span></a>.</p></li>
 </ul>
-<p>Todas essas classes herdam de <a class="reference internal" href="api.html#bcb.odata.api.BaseODataAPI" title="bcb.odata.api.BaseODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.BaseODataAPI</span></code></a> que faz a integração
-com as APIs OData e organiza a informação em um <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.</p>
-<p>Veja todas as APIs implementadas em <a class="reference internal" href="api.html#module-bcb.odata.api"><span class="std std-ref">APIs OData</span></a>.</p>
-<section id="bcb-odata-api-baseodataapi">
-<h2><a class="reference internal" href="api.html#bcb.odata.api.BaseODataAPI" title="bcb.odata.api.BaseODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.BaseODataAPI</span></code></a><a class="headerlink" href="#bcb-odata-api-baseodataapi" title="Link permanente para este cabeçalho">#</a></h2>
+<p>Estas APIs foram implementadas em classes por serem as mais populares, entretanto,
+qualquer API OData pode ser acessada através da classe <a class="reference internal" href="api.html#bcb.odata.api.ODataAPI" title="bcb.odata.api.ODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.ODataAPI</span></code></a> que abstrai o acesso
+a API a partir da URL da API que está disponível no <a class="reference external" href="https://dadosabertos.bcb.gov.br/">portal de dados abertos</a>
+do Banco Central.
+Veja mais detalhes em <a class="reference internal" href="#classe-odataapi"><span class="std std-ref">Classe ODataAPI</span></a>.</p>
+<p>Segue um exemplo de como acessar a API do PIX.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">SPI</span>
+
+<span class="gp">In [2]: </span><span class="n">pix</span> <span class="o">=</span> <span class="n">SPI</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>É necessário importar e criar um objeto da classe que implementa a API, neste caso a classe <code class="docutils literal notranslate"><span class="pre">SPI</span></code>.
+Tendo o objeto, executar o método <code class="docutils literal notranslate"><span class="pre">describe</span></code> para visualizar o <em>endpoints</em> disponíveis na API.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [3]: </span><span class="n">pix</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+<span class="go">EntitySets:</span>
+<span class="go">  PixLiquidadosAtual</span>
+<span class="go">  PixRemuneracaoContaPI</span>
+<span class="go">  PixLiquidadosIntradia</span>
+<span class="go">  PixDisponibilidadeSPI</span>
+</pre></div>
+</div>
+<p>Como vemos, a API do PIX tem 4 <em>endpoints</em> (<code class="docutils literal notranslate"><span class="pre">EntitySets</span></code>).
+Para ver as informações retornadas por cada <em>endpoint</em> é só executar o método <code class="docutils literal notranslate"><span class="pre">describe</span></code> passando como argumento
+o nome do <em>endpoint</em>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [4]: </span><span class="n">pix</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s1">&#39;PixLiquidadosAtual&#39;</span><span class="p">)</span>
+
+<span class="go">EntitySet (Endpoint): PixLiquidadosAtual</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.SPI.PixLiquidadosAtual</span>
+<span class="go">Properties: Data&lt;datetime&gt;, Quantidade&lt;int&gt;, Total&lt;float&gt;, Media&lt;float&gt;</span>
+</pre></div>
+</div>
+<p>Vemos que o <em>endpoint</em> <code class="docutils literal notranslate"><span class="pre">PixLiquidadosAtual</span></code> retorna uma tabela com 4 propriedades:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Data&lt;datetime&gt;</span></code>: data das operações</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Quantidade&lt;int&gt;</span></code>: quantidade de operações realizadas na data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Total&lt;float&gt;</span></code>: financeiro das operações realizdas na data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Media&lt;float&gt;</span></code>: média das operações realizadas na data</p></li>
+</ul>
+<p>Para acessar os dados deste <em>endpoint</em> é necessário obter um objeto com o <em>endpoint</em> e executar uma <code class="docutils literal notranslate"><span class="pre">query</span></code> nesse
+objeto.
+O método <code class="docutils literal notranslate"><span class="pre">get_endpoint</span></code> retorna um objeto da classe <a class="reference internal" href="api.html#bcb.odata.api.Endpoint" title="bcb.odata.api.Endpoint"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.Endpoint</span></code></a>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [5]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">pix</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s1">&#39;PixLiquidadosAtual&#39;</span><span class="p">)</span>
+
+<span class="gp">In [6]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<span class="gh">Out[6]: </span>
+<span class="go">        Data  Quantidade        Total   Media</span>
+<span class="go">0 2021-06-04    24945880  17229599.27  690.68</span>
+<span class="go">1 2021-09-28    28840568  17964083.35  622.88</span>
+<span class="go">2 2022-10-28    75938264  40180577.53  529.12</span>
+<span class="go">3 2022-12-01    93207145  47313669.38  507.62</span>
+<span class="go">4 2022-04-06    59981242  32855707.99  547.77</span>
+<span class="go">5 2022-09-26    60547764  37641607.80  621.68</span>
+<span class="go">6 2021-04-14    14724886  10069358.75  683.83</span>
+<span class="go">7 2021-04-12    15051225  12773852.85  848.69</span>
+<span class="go">8 2021-11-07    21922002   4083954.42  186.29</span>
+<span class="go">9 2023-03-02    86677983  41061577.42  473.73</span>
+</pre></div>
+</div>
+<p>Ao realizar a <code class="docutils literal notranslate"><span class="pre">query</span></code> no <em>endpoint</em> limitamos a consulta a retornar 10 elementos, apenas para visualizar os dados
+da consulta.
+A consulta retorna um DataFrame pandas onde as colunas são as propriedades do <em>endpoint</em>.</p>
+<p>Veremos abaixo, com mais detalhes, como realizar consultas nas APIs e quais os tipos de <em>endpoints</em> disponíveis
+(<code class="docutils literal notranslate"><span class="pre">EntitySets</span></code> e <code class="docutils literal notranslate"><span class="pre">FunctionImports</span></code>).</p>
+<section id="classe-bcb-odata-api-baseodataapi">
+<h2>Classe <a class="reference internal" href="api.html#bcb.odata.api.BaseODataAPI" title="bcb.odata.api.BaseODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.BaseODataAPI</span></code></a><a class="headerlink" href="#classe-bcb-odata-api-baseodataapi" title="Link permanente para este cabeçalho">#</a></h2>
+<p>Todas as classes que implementam um API OData herdam de <a class="reference internal" href="api.html#bcb.odata.api.BaseODataAPI" title="bcb.odata.api.BaseODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.BaseODataAPI</span></code></a>, que faz a integração
+com as APIs OData e realiza consultas na API retornando as propriedades em um <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>.</p>
 <p>A classe <a class="reference internal" href="api.html#bcb.odata.api.BaseODataAPI" title="bcb.odata.api.BaseODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.BaseODataAPI</span></code></a> possui apenas 2 métodos:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="api.html#bcb.odata.api.BaseODataAPI.describe" title="bcb.odata.api.BaseODataAPI.describe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.odata.api.BaseODataAPI.describe()</span></code></a>: imprime informações da API, como
@@ -229,14 +295,14 @@ o se há algum parâmetro necessário, caso seja uma função.</p></li>
 <a class="reference internal" href="api.html#bcb.odata.api.Endpoint" title="bcb.odata.api.Endpoint"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.Endpoint</span></code></a> referente ao nome do <em>endpoint</em> fornecido.</p></li>
 </ul>
 </section>
-<section id="bcb-odata-api-endpoint">
-<h2><a class="reference internal" href="api.html#bcb.odata.api.Endpoint" title="bcb.odata.api.Endpoint"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.Endpoint</span></code></a><a class="headerlink" href="#bcb-odata-api-endpoint" title="Link permanente para este cabeçalho">#</a></h2>
+<section id="classe-bcb-odata-api-endpoint">
+<h2>Classe <a class="reference internal" href="api.html#bcb.odata.api.Endpoint" title="bcb.odata.api.Endpoint"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.Endpoint</span></code></a><a class="headerlink" href="#classe-bcb-odata-api-endpoint" title="Link permanente para este cabeçalho">#</a></h2>
 <p>Os <em>endpoints</em> retornados herdam da classe <a class="reference internal" href="api.html#bcb.odata.api.Endpoint" title="bcb.odata.api.Endpoint"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.Endpoint</span></code></a>,
 que possui o método <a class="reference internal" href="api.html#bcb.odata.api.Endpoint.query" title="bcb.odata.api.Endpoint.query"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.odata.api.Endpoint.query()</span></code></a>, através do qual são
 realizadas as consultas estruturadas na API OData.</p>
 </section>
-<section id="bcb-odata-framework-odataquery">
-<h2><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.framework.ODataQuery</span></code><a class="headerlink" href="#bcb-odata-framework-odataquery" title="Link permanente para este cabeçalho">#</a></h2>
+<section id="classe-bcb-odata-framework-odataquery">
+<h2>Classe <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.framework.ODataQuery</span></code><a class="headerlink" href="#classe-bcb-odata-framework-odataquery" title="Link permanente para este cabeçalho">#</a></h2>
 <p><code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.odata.api.Endpoints.query()</span></code> retorna um objeto <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.framework.ODataQuery</span></code>
 que possui os seguintes métodos.</p>
 <ul class="simple">
@@ -265,11 +331,11 @@ das classes que herdam <a class="reference internal" href="api.html#bcb.odata.ap
 <h3>API de Expectativas<a class="headerlink" href="#api-de-expectativas" title="Link permanente para este cabeçalho">#</a></h3>
 <p>A API de Expectativas possui diversos <em>entity sets</em>.
 Utilizando o método <code class="docutils literal notranslate"><span class="pre">describe</span></code> visualizamos todos os <em>entity sets</em> disponibilizados pela API.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">Expectativas</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [7]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">Expectativas</span>
 
-<span class="gp">In [2]: </span><span class="n">em</span> <span class="o">=</span> <span class="n">Expectativas</span><span class="p">()</span>
+<span class="gp">In [8]: </span><span class="n">em</span> <span class="o">=</span> <span class="n">Expectativas</span><span class="p">()</span>
 
-<span class="gp">In [3]: </span><span class="n">em</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+<span class="gp">In [9]: </span><span class="n">em</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 <span class="go">EntitySets:</span>
 <span class="go">  ExpectativasMercadoTop5Anuais</span>
 <span class="go">  ExpectativaMercadoMensais</span>
@@ -289,7 +355,7 @@ descrição do <code class="docutils literal notranslate"><span class="pre">Enti
 <p>Cada <code class="docutils literal notranslate"><span class="pre">EntitySet</span></code> é um <em>endpoint</em> que retorna um conjunto de dados toda vez que são chamados.
 Utilizamos os método <code class="docutils literal notranslate"><span class="pre">describe</span></code> para obter informações sobre o que é retornado na solicitação ao <em>endpoint</em>.</p>
 <p>Inspecionando o <em>endpoint</em> <code class="docutils literal notranslate"><span class="pre">ExpectativaMercadoMensais</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [4]: </span><span class="n">em</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s1">&#39;ExpectativaMercadoMensais&#39;</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [10]: </span><span class="n">em</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s1">&#39;ExpectativaMercadoMensais&#39;</span><span class="p">)</span>
 
 <span class="go">EntitySet (Endpoint): ExpectativaMercadoMensais</span>
 <span class="go">EntityType: br.gov.bcb.olinda.servico.Expectativas.ExpectativaMercadoMensal</span>
@@ -323,13 +389,13 @@ consequentemente, acelera a consulta.</p>
 <p>Para realizar uma consulta é necessário obter um objeto da classe <a class="reference internal" href="api.html#bcb.odata.api.Endpoint" title="bcb.odata.api.Endpoint"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.Endpoint</span></code></a>.
 Isso é feito chamando o método <code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.odata.api.Expectativas.get_endpoint()</span></code> com o nome do <code class="docutils literal notranslate"><span class="pre">EntitySet</span></code> desejado.
 Vamos utilizar o <em>endpoint</em> <code class="docutils literal notranslate"><span class="pre">ExpectativaMercadoMensais</span></code> como exemplo.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [5]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">em</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s1">&#39;ExpectativasMercadoTop5Anuais&#39;</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [11]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">em</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s1">&#39;ExpectativasMercadoTop5Anuais&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Tendo o objeto com o <em>endpoint</em> basta executar a consulta com <code class="docutils literal notranslate"><span class="pre">query</span></code> e
 chamando <code class="docutils literal notranslate"><span class="pre">collect</span></code> ao fim para obter os dados.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [6]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
-<span class="gh">Out[6]: </span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [12]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<span class="gh">Out[12]: </span>
 <span class="go">   Indicador       Data DataReferencia  ... DesvioPadrao  Minimo  Maximo</span>
 <span class="go">0  PIB Total 2023-03-31     2023-01-01  ...       0.3553  0.9700    2.00</span>
 <span class="go">1  PIB Total 2023-03-31     2024-01-01  ...       0.4276  0.4585    1.45</span>
@@ -347,7 +413,7 @@ chamando <code class="docutils literal notranslate"><span class="pre">collect</s
 </div>
 <p>Note que o método <code class="docutils literal notranslate"><span class="pre">limit</span></code> limita o retorno da consulta em 10 elementos.
 Uma forma de avaliar a consulta sem executá-la é utilizando o método <code class="docutils literal notranslate"><span class="pre">show</span></code>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [7]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [13]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 <span class="go">URL:</span>
 <span class="go">  https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoTop5Anuais</span>
 <span class="go">Query Parameters:</span>
@@ -364,8 +430,8 @@ instância do objeto, com excessão a <code class="docutils literal notranslate"
 Por essa razão é possível realizar chamadas encadeadas configurando
 a consulta.</p>
 <p>Uma consulta mais elaborada com <code class="docutils literal notranslate"><span class="pre">filter</span></code>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [8]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Indicador</span> <span class="o">==</span> <span class="s1">&#39;IPCA&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
-<span class="gh">Out[8]: </span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [14]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Indicador</span> <span class="o">==</span> <span class="s1">&#39;IPCA&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<span class="gh">Out[14]: </span>
 <span class="go">  Indicador       Data DataReferencia  ... DesvioPadrao  Minimo  Maximo</span>
 <span class="go">0      IPCA 2018-01-18     2019-01-01  ...         0.13    4.00    4.25</span>
 <span class="go">1      IPCA 2018-01-18     2020-01-01  ...         0.00    4.00    4.00</span>
@@ -387,16 +453,16 @@ Todas as demais colunas podem ser acessadas através do objeto
 <code class="docutils literal notranslate"><span class="pre">ep</span></code>.</p>
 <p>Outra consulta mais elaborada com diversos filtros e ordenação e selecionando
 um conjunto de colunas.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [9]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
-<span class="gp">   ...: </span> <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Indicador</span> <span class="o">==</span> <span class="s1">&#39;IPCA&#39;</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">DataReferencia</span> <span class="o">&gt;=</span> <span class="mi">2023</span><span class="p">)</span>
-<span class="gp">   ...: </span> <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span> <span class="o">&gt;=</span> <span class="s1">&#39;2022-01-01&#39;</span><span class="p">)</span>
-<span class="gp">   ...: </span> <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">tipoCalculo</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span>
-<span class="gp">   ...: </span> <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">DataReferencia</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">Media</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">Mediana</span><span class="p">)</span>
-<span class="gp">   ...: </span> <span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">desc</span><span class="p">(),</span> <span class="n">ep</span><span class="o">.</span><span class="n">DataReferencia</span><span class="o">.</span><span class="n">asc</span><span class="p">())</span>
-<span class="gp">   ...: </span> <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="gp">   ...: </span> <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
-<span class="gp">   ...: </span>
-<span class="gh">Out[9]: </span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [15]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<span class="gp">   ....: </span> <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Indicador</span> <span class="o">==</span> <span class="s1">&#39;IPCA&#39;</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">DataReferencia</span> <span class="o">&gt;=</span> <span class="mi">2023</span><span class="p">)</span>
+<span class="gp">   ....: </span> <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span> <span class="o">&gt;=</span> <span class="s1">&#39;2022-01-01&#39;</span><span class="p">)</span>
+<span class="gp">   ....: </span> <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">tipoCalculo</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span>
+<span class="gp">   ....: </span> <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">DataReferencia</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">Media</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">Mediana</span><span class="p">)</span>
+<span class="gp">   ....: </span> <span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">desc</span><span class="p">(),</span> <span class="n">ep</span><span class="o">.</span><span class="n">DataReferencia</span><span class="o">.</span><span class="n">asc</span><span class="p">())</span>
+<span class="gp">   ....: </span> <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">   ....: </span> <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
+<span class="gp">   ....: </span>
+<span class="gh">Out[15]: </span>
 <span class="go">        Data DataReferencia   Media  Mediana</span>
 <span class="go">0 2023-06-30     2023-01-01  4.7652   4.9135</span>
 <span class="go">1 2023-06-30     2024-01-01  3.9146   4.0000</span>
@@ -416,11 +482,11 @@ um conjunto de colunas.</p>
 <h3>API de Moedas<a class="headerlink" href="#api-de-moedas" title="Link permanente para este cabeçalho">#</a></h3>
 <p>Uma outra aplicação é com a API de Moedas que implementa a especificação OData.
 Utilizando a classe <a class="reference internal" href="api.html#bcb.odata.api.PTAX" title="bcb.odata.api.PTAX"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.PTAX</span></code></a> temos:</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [10]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">PTAX</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [16]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">PTAX</span>
 
-<span class="gp">In [11]: </span><span class="n">ptax</span> <span class="o">=</span> <span class="n">PTAX</span><span class="p">()</span>
+<span class="gp">In [17]: </span><span class="n">ptax</span> <span class="o">=</span> <span class="n">PTAX</span><span class="p">()</span>
 
-<span class="gp">In [12]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+<span class="gp">In [18]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 <span class="go">EntitySets:</span>
 <span class="go">  Moedas</span>
 <span class="go">FunctionImports:</span>
@@ -438,7 +504,7 @@ Utilizando a classe <a class="reference internal" href="api.html#bcb.odata.api.P
 A diferença entre eles é que os <code class="docutils literal notranslate"><span class="pre">FunctionImports</span></code> são funções
 e como funções recebem parâmetros que na maioria das vezes não são opicionais.</p>
 <p>Executando <code class="docutils literal notranslate"><span class="pre">describe</span></code> na função <code class="docutils literal notranslate"><span class="pre">CotacaoMoedaPeriodo</span></code> temos:</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [13]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s1">&#39;CotacaoMoedaPeriodo&#39;</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [19]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s1">&#39;CotacaoMoedaPeriodo&#39;</span><span class="p">)</span>
 
 <span class="go">Function: CotacaoMoedaPeriodo</span>
 <span class="go">Parameters: moeda &lt;str&gt;, dataInicial &lt;str&gt;, dataFinalCotacao &lt;str&gt;</span>
@@ -451,14 +517,14 @@ e como funções recebem parâmetros que na maioria das vezes não são opiciona
 <code class="docutils literal notranslate"><span class="pre">dataFinalCotacao</span></code>.
 Estes parâmetros são passados para a consulta utilizando o método
 <code class="docutils literal notranslate"><span class="pre">parameters</span></code>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [14]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">ptax</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s1">&#39;CotacaoMoedaPeriodo&#39;</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [20]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">ptax</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s1">&#39;CotacaoMoedaPeriodo&#39;</span><span class="p">)</span>
 
-<span class="gp">In [15]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<span class="gp">In [21]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">moeda</span><span class="o">=</span><span class="s1">&#39;USD&#39;</span><span class="p">,</span> <span class="n">dataInicial</span><span class="o">=</span><span class="s1">&#39;01/01/2022&#39;</span><span class="p">,</span> <span class="n">dataFinalCotacao</span><span class="o">=</span><span class="s1">&#39;01/10/2022&#39;</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[15]: </span>
+<span class="gh">Out[21]: </span>
 <span class="go">   paridadeCompra  paridadeVenda  ...         dataHoraCotacao    tipoBoletim</span>
 <span class="go">0             1.0            1.0  ... 2022-01-03 10:04:22.186       Abertura</span>
 <span class="go">1             1.0            1.0  ... 2022-01-03 11:11:42.883  Intermediário</span>
@@ -476,13 +542,13 @@ Estes parâmetros são passados para a consulta utilizando o método
 </div>
 <p>Fora os parâmetros, todos os demais métodos funcionam como esperado.
 Podemos filtrar apenas pelos dados de abertura.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [16]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [22]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">tipoBoletim</span> <span class="o">==</span> <span class="s1">&#39;Abertura&#39;</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">moeda</span><span class="o">=</span><span class="s1">&#39;USD&#39;</span><span class="p">,</span> <span class="n">dataInicial</span><span class="o">=</span><span class="s1">&#39;01/01/2022&#39;</span><span class="p">,</span> <span class="n">dataFinalCotacao</span><span class="o">=</span><span class="s1">&#39;01/10/2022&#39;</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[16]: </span>
+<span class="gh">Out[22]: </span>
 <span class="go">   paridadeCompra  paridadeVenda  ...         dataHoraCotacao  tipoBoletim</span>
 <span class="go">0             1.0            1.0  ... 2022-01-03 10:04:22.186     Abertura</span>
 <span class="go">1             1.0            1.0  ... 2022-01-04 10:05:22.015     Abertura</span>
@@ -508,13 +574,13 @@ A classe <a class="reference internal" href="api.html#bcb.odata.api.ODataAPI" ti
 </div>
 <p>que pode ser obtida no portal de dados abertos no <a class="reference external" href="https://dadosabertos.bcb.gov.br/dataset/estatisticas-selic-operacoes">link</a>.</p>
 <p>Essa API pode ser diretamente acessada através da classe <a class="reference internal" href="api.html#bcb.odata.api.ODataAPI" title="bcb.odata.api.ODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.ODataAPI</span></code></a>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [17]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">ODataAPI</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [23]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">ODataAPI</span>
 
-<span class="gp">In [18]: </span><span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://olinda.bcb.gov.br/olinda/servico/selic_operacoes/versao/v1/odata/&quot;</span>
+<span class="gp">In [24]: </span><span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://olinda.bcb.gov.br/olinda/servico/selic_operacoes/versao/v1/odata/&quot;</span>
 
-<span class="gp">In [19]: </span><span class="n">service</span> <span class="o">=</span> <span class="n">ODataAPI</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="gp">In [25]: </span><span class="n">service</span> <span class="o">=</span> <span class="n">ODataAPI</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 
-<span class="gp">In [20]: </span><span class="n">service</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+<span class="gp">In [26]: </span><span class="n">service</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 <span class="go">EntitySets:</span>
 <span class="go">  DatasOperacoesSelic</span>
 <span class="go">FunctionImports:</span>
@@ -596,9 +662,9 @@ fornecido e o que será retornado</p></li>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">OData</a><ul>
-<li><a class="reference internal" href="#bcb-odata-api-baseodataapi"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.BaseODataAPI</span></code></a></li>
-<li><a class="reference internal" href="#bcb-odata-api-endpoint"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.Endpoint</span></code></a></li>
-<li><a class="reference internal" href="#bcb-odata-framework-odataquery"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.framework.ODataQuery</span></code></a></li>
+<li><a class="reference internal" href="#classe-bcb-odata-api-baseodataapi">Classe <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.BaseODataAPI</span></code></a></li>
+<li><a class="reference internal" href="#classe-bcb-odata-api-endpoint">Classe <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.Endpoint</span></code></a></li>
+<li><a class="reference internal" href="#classe-bcb-odata-framework-odataquery">Classe <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.framework.ODataQuery</span></code></a></li>
 <li><a class="reference internal" href="#aplicacoes">Aplicações</a><ul>
 <li><a class="reference internal" href="#api-de-expectativas">API de Expectativas</a><ul>
 <li><a class="reference internal" href="#entitysets">EntitySets</a></li>

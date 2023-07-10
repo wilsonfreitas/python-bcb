@@ -2,21 +2,78 @@
 OData
 =====
 
-Diversas classes implementam a integração com APIs OData.
+Diversas APIs disponíveis no `portal de dados abertos <https://dadosabertos.bcb.gov.br/>`_ do Banco Central
+implementam o protocolo `OData <https://www.odata.org/>`_, são centenas de APIs.
 
-- :py:class:`bcb.odata.api.Expectativas`
-- :py:class:`bcb.odata.api.PTAX`
-- :py:class:`bcb.odata.api.TaxaJuros`
-- :py:class:`bcb.odata.api.IFDATA`
-- :py:class:`bcb.odata.api.MercadoImobiliario`
+O ``python-bcb`` tem algumas classes que implementam algumas APIs OData:
 
-Todas essas classes herdam de :py:class:`bcb.odata.api.BaseODataAPI` que faz a integração
-com as APIs OData e organiza a informação em um ``DataFrame``.
+- :py:class:`bcb.odata.api.Expectativas`: Expectativas de mercado para os indicadores macroeconômicos da Pesquisa Focus
+- :py:class:`bcb.odata.api.PTAX`: Dólar comercial
+- :py:class:`bcb.odata.api.TaxaJuros`: Taxas de juros de operações de crédito por instituição financeira
+- :py:class:`bcb.odata.api.IFDATA`: Dados selecionados de instituições financeiras
+- :py:class:`bcb.odata.api.MercadoImobiliario`: Informações do Mercado Imobiliário
+- :py:class:`bcb.odata.api.SPI`: Estatísticas do SPI (Sistema de Pagamentos Instantâneos)
+- Veja todas as APIs implementadas em :ref:`APIs OData`.
 
-Veja todas as APIs implementadas em :ref:`APIs OData`.
+Estas APIs foram implementadas em classes por serem as mais populares, entretanto,
+qualquer API OData pode ser acessada através da classe :py:class:`bcb.odata.api.ODataAPI` que abstrai o acesso
+a API a partir da URL da API que está disponível no `portal de dados abertos <https://dadosabertos.bcb.gov.br/>`_
+do Banco Central.
+Veja mais detalhes em :ref:`Classe ODataAPI`.
 
-:py:class:`bcb.odata.api.BaseODataAPI`
---------------------------------------
+Segue um exemplo de como acessar a API do PIX.
+
+.. ipython:: python
+
+    from bcb import SPI
+    pix = SPI()
+
+É necessário importar e criar um objeto da classe que implementa a API, neste caso a classe ``SPI``.
+Tendo o objeto, executar o método ``describe`` para visualizar o *endpoints* disponíveis na API.
+
+
+.. ipython:: python
+
+    pix.describe()
+
+Como vemos, a API do PIX tem 4 *endpoints* (``EntitySets``).
+Para ver as informações retornadas por cada *endpoint* é só executar o método ``describe`` passando como argumento
+o nome do *endpoint*.
+
+.. ipython:: python
+
+    pix.describe('PixLiquidadosAtual')
+
+Vemos que o *endpoint* ``PixLiquidadosAtual`` retorna uma tabela com 4 propriedades:
+
+- ``Data<datetime>``: data das operações
+- ``Quantidade<int>``: quantidade de operações realizadas na data
+- ``Total<float>``: financeiro das operações realizdas na data
+- ``Media<float>``: média das operações realizadas na data
+
+Para acessar os dados deste *endpoint* é necessário obter um objeto com o *endpoint* e executar uma ``query`` nesse
+objeto.
+O método ``get_endpoint`` retorna um objeto da classe :py:class:`bcb.odata.api.Endpoint`.
+
+.. ipython:: python
+
+    ep = pix.get_endpoint('PixLiquidadosAtual')
+    ep.query().limit(10).collect()
+
+Ao realizar a ``query`` no *endpoint* limitamos a consulta a retornar 10 elementos, apenas para visualizar os dados
+da consulta.
+A consulta retorna um DataFrame pandas onde as colunas são as propriedades do *endpoint*.
+
+Veremos abaixo, com mais detalhes, como realizar consultas nas APIs e quais os tipos de *endpoints* disponíveis
+(``EntitySets`` e ``FunctionImports``).
+
+.. TODO: fazer uma sessão, Como Realizar Consultas
+
+Classe :py:class:`bcb.odata.api.BaseODataAPI`
+---------------------------------------------
+
+Todas as classes que implementam um API OData herdam de :py:class:`bcb.odata.api.BaseODataAPI`, que faz a integração
+com as APIs OData e realiza consultas na API retornando as propriedades em um ``DataFrame``.
 
 A classe :py:class:`bcb.odata.api.BaseODataAPI` possui apenas 2 métodos:
 
@@ -28,15 +85,15 @@ A classe :py:class:`bcb.odata.api.BaseODataAPI` possui apenas 2 métodos:
   :py:class:`bcb.odata.api.Endpoint` referente ao nome do *endpoint* fornecido.
 
 
-:py:class:`bcb.odata.api.Endpoint`
-----------------------------------
+Classe :py:class:`bcb.odata.api.Endpoint`
+-----------------------------------------
 
 Os *endpoints* retornados herdam da classe :py:class:`bcb.odata.api.Endpoint`,
 que possui o método :py:meth:`bcb.odata.api.Endpoint.query`, através do qual são
 realizadas as consultas estruturadas na API OData.
 
-:py:class:`bcb.odata.framework.ODataQuery`
-------------------------------------------
+Classe :py:class:`bcb.odata.framework.ODataQuery`
+-------------------------------------------------
 
 :py:meth:`bcb.odata.api.Endpoints.query` retorna um objeto :py:class:`bcb.odata.framework.ODataQuery`
 que possui os seguintes métodos.
