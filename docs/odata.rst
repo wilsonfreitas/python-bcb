@@ -5,7 +5,7 @@ OData
 Diversas APIs disponíveis no `portal de dados abertos <https://dadosabertos.bcb.gov.br/>`_ do Banco Central
 implementam o protocolo `OData <https://www.odata.org/>`_, são centenas de APIs.
 
-O ``python-bcb`` tem algumas classes que implementam algumas APIs OData:
+O ``python-bcb`` tem algumas classes que implementam APIs OData:
 
 - :py:class:`bcb.odata.api.Expectativas`: Expectativas de mercado para os indicadores macroeconômicos da Pesquisa Focus
 - :py:class:`bcb.odata.api.PTAX`: Dólar comercial
@@ -44,12 +44,14 @@ o nome do *endpoint*.
 
     pix.describe('PixLiquidadosAtual')
 
-Vemos que o *endpoint* ``PixLiquidadosAtual`` retorna uma tabela com 4 propriedades:
+Vemos que o *endpoint* ``PixLiquidadosAtual`` retorna 4 propriedades:
 
 - ``Data<datetime>``: data das operações
 - ``Quantidade<int>``: quantidade de operações realizadas na data
 - ``Total<float>``: financeiro das operações realizdas na data
 - ``Media<float>``: média das operações realizadas na data
+
+As propriedades são formatadas como colunas em um DataFrame.
 
 Para acessar os dados deste *endpoint* é necessário obter um objeto com o *endpoint* e executar uma ``query`` nesse
 objeto.
@@ -67,45 +69,67 @@ A consulta retorna um DataFrame pandas onde as colunas são as propriedades do *
 Veremos abaixo, com mais detalhes, como realizar consultas nas APIs e quais os tipos de *endpoints* disponíveis
 (``EntitySets`` e ``FunctionImports``).
 
-.. TODO: fazer uma sessão, Como Realizar Consultas
+Como Realizar Consultas em APIs OData
+-------------------------------------
 
-Classe :py:class:`bcb.odata.api.BaseODataAPI`
----------------------------------------------
+As consultas são realizadas através do método ``query`` da classe :py:class:`bcb.odata.api.Endpoint`.
+Este método retorna um objeto :py:class:`bcb.odata.framework.ODataQuery` que abstrai a consulta e permite executar
+algumas firulas como: filtros e ordenação.
+A classe :py:class:`bcb.odata.framework.ODataQuery` tem os seguintes métodos:
 
-Todas as classes que implementam um API OData herdam de :py:class:`bcb.odata.api.BaseODataAPI`, que faz a integração
-com as APIs OData e realiza consultas na API retornando as propriedades em um ``DataFrame``.
+- :py:meth:`bcb.odata.framework.ODataQuery.filter`: define filtros na consulta, com uma clausula ``where`` no SQL.
+- :py:meth:`bcb.odata.framework.ODataQuery.select`: seleciona as propriedades retornadas pela consulta.
+- :py:meth:`bcb.odata.framework.ODataQuery.orderby`: ordena a consulta pelas propriedades.
+- :py:meth:`bcb.odata.framework.ODataQuery.limit`: limita os resultados a ``n`` registros.
+- :py:meth:`bcb.odata.framework.ODataQuery.skip`: *pula* os ``n`` primeiros registros da consulta.
+- :py:meth:`bcb.odata.framework.ODataQuery.parameters`: *endpoints* do tipo ``FunctionImports`` possuem parâmetros que são definidos por este método.
+- :py:meth:`bcb.odata.framework.ODataQuery.collect`: o *framework* tem uma abordagem *lazy*, dessa forma, este método realiza a consulta trazendo os dados e retornando um DataFrame.
+- :py:meth:`bcb.odata.framework.ODataQuery.show`: imprime a estrutura da consulta.
 
-A classe :py:class:`bcb.odata.api.BaseODataAPI` possui apenas 2 métodos:
+Os métodos ``filter``, ``select``, ``orderby``, ``limit``, ``skip`` e ``parameters`` retornam o objeto
+:py:class:`bcb.odata.framework.ODataQuery`, e isso permite a realização de chamadas aninhadas que compõem a consulta.
 
-- :py:meth:`bcb.odata.api.BaseODataAPI.describe`: imprime informações da API, como
-  quais *endpoints* estão disponíveis. Passando o nome do *endpoint*
-  o método imprime as informações do que é retornado pelo *endpoint* e
-  o se há algum parâmetro necessário, caso seja uma função.
-- :py:meth:`bcb.odata.api.BaseODataAPI.get_endpoint`: retorna um objeto
-  :py:class:`bcb.odata.api.Endpoint` referente ao nome do *endpoint* fornecido.
+Por exemplo, na consulta do PIX, as datas não estão ordenadas, temos dias de 2021, 2022 e 2023 nos 10 registros
+retornados.
+Vamos ordernar pela propriedade ``Data`` de forma decrescente.
 
+.. ipython:: python
 
-Classe :py:class:`bcb.odata.api.Endpoint`
------------------------------------------
+    ep.query().orderby(ep.Data.desc()).limit(10).collect()
 
-Os *endpoints* retornados herdam da classe :py:class:`bcb.odata.api.Endpoint`,
-que possui o método :py:meth:`bcb.odata.api.Endpoint.query`, através do qual são
-realizadas as consultas estruturadas na API OData.
+Veja que a consulta retorna as datas mais recentes primeiro.
 
-Classe :py:class:`bcb.odata.framework.ODataQuery`
--------------------------------------------------
+Gosto de estruturar as consultas como uma *query* SQL.
+Sigamos com um exemplo:
 
-:py:meth:`bcb.odata.api.Endpoints.query` retorna um objeto :py:class:`bcb.odata.framework.ODataQuery`
-que possui os seguintes métodos.
+.. code:: SQL
 
-- :py:meth:`bcb.odata.framework.ODataQuery.filter`
-- :py:meth:`bcb.odata.framework.ODataQuery.select`
-- :py:meth:`bcb.odata.framework.ODataQuery.orderby`
-- :py:meth:`bcb.odata.framework.ODataQuery.limit`
-- :py:meth:`bcb.odata.framework.ODataQuery.skip`
-- :py:meth:`bcb.odata.framework.ODataQuery.parameters`
-- :py:meth:`bcb.odata.framework.ODataQuery.collect`
-- :py:meth:`bcb.odata.framework.ODataQuery.show`
+    select Data, Media
+    from PIX
+    where Data >= '2023-01-01'
+    order by Media desc
+    limit 10
+
+Quero obter os 10 dias em 2023 que apresentam as maiores médias transacionadas no PIX.
+
+Para executar essa query utilizo o método ``select`` passando as propriedades Data e Media,
+encadeio o método ``filter`` filtrando a propriedade Data maiores que 2023-01-01, e note
+que aqui utilizo um objeto ``datetime``, pois na descrição do *endpoint* ``PixLiquidadosAtual``
+a propriedade Data é do tipo ``datetime``.
+Sigo com o método ``orderby`` passando a propriedade média e indicando que a ordenação é decrescente e concluo com
+o método ``limit`` para obter os 10 primeiros registros.
+Na última linha executo o método ``collect`` que executa a consulta e retorna um DataFrame com os resultados.
+
+.. ipython:: python
+
+    from datetime import datetime
+    (ep.query()
+        .select(ep.Data, ep.Media)
+        .filter(ep.Data >= datetime(2023, 1, 1))
+        .orderby(ep.Media.desc())
+        .limit(10)
+        .collect())
+
 
 Aplicações
 ----------
