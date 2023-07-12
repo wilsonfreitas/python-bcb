@@ -169,6 +169,8 @@ class ODataPropertyFilter:
             return f"{self.obj.name} {self.operator} {int(self.other)}"
         elif self.obj.type == "Edm.String":
             return f"{self.obj.name} {self.operator} '{str(self.other)}'"
+        elif self.obj.type == "Edm.Date":
+            return f"{self.obj.name} {self.operator} {self.other.strftime('%Y-%m-%d')}"
         else:
             return f"{self.obj.name} {self.operator} '{self.other}'"
 
