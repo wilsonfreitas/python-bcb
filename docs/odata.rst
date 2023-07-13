@@ -42,7 +42,7 @@ o nome do *endpoint*.
 
 .. ipython:: python
 
-    pix.describe('PixLiquidadosAtual')
+    pix.describe("PixLiquidadosAtual")
 
 Vemos que o *endpoint* ``PixLiquidadosAtual`` retorna 4 propriedades:
 
@@ -51,15 +51,19 @@ Vemos que o *endpoint* ``PixLiquidadosAtual`` retorna 4 propriedades:
 - ``Total<float>``: financeiro das operações realizdas na data
 - ``Media<float>``: média das operações realizadas na data
 
-As propriedades são formatadas como colunas em um DataFrame.
-
-Para acessar os dados deste *endpoint* é necessário obter um objeto com o *endpoint* e executar uma ``query`` nesse
-objeto.
-O método ``get_endpoint`` retorna um objeto da classe :py:class:`bcb.odata.api.Endpoint`.
+As propriedades são atributos de objetos da classe :py:class:`bcb.odata.api.Endpoint`, retornados pelo método
+``get_endpoint``.
 
 .. ipython:: python
 
-    ep = pix.get_endpoint('PixLiquidadosAtual')
+    ep = pix.get_endpoint("PixLiquidadosAtual")
+    ep.Data
+    ep.Media
+
+Para acessar os dados deste *endpoint* é necessário executar uma ``query`` nesse objeto.
+
+.. ipython:: python
+
     ep.query().limit(10).collect()
 
 Ao realizar a ``query`` no *endpoint* limitamos a consulta a retornar 10 elementos, apenas para visualizar os dados
@@ -106,7 +110,7 @@ Sigamos com um exemplo:
 
     select Data, Media
     from PIX
-    where Data >= '2023-01-01'
+    where Data >= "2023-01-01"
     order by Media desc
     limit 10
 
@@ -130,6 +134,80 @@ Na última linha executo o método ``collect`` que executa a consulta e retorna 
         .limit(10)
         .collect())
 
+Visualizando a Consulta
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Algumas consultas podem ficar bastante complicadas, dependendo da quantidade de elementos que compõem a consulta.
+Para ajudar na construção e na depuração da *query*, criamos o método ``show`` imprime a query na tela,
+mas não a executa.
+
+.. ipython:: python
+
+    (ep.query()
+        .select(ep.Data, ep.Media)
+        .filter(ep.Data >= datetime(2023, 1, 1))
+        .orderby(ep.Media.desc())
+        .limit(10)
+        .show())
+
+Tipos de *endpoints*
+^^^^^^^^^^^^^^^^^^^^
+
+Como foi visto anteriormente, a API do PIX (``SPI``) possui 4 ``EntitySets`` e estes são os *endpoints* dessa API.
+Entretanto, há APIs que têm um outro tipo de *endpoint*, os ``FunctionImports``.
+A API do PTAX, por exemplo
+
+.. ipython:: python
+
+    from bcb import PTAX
+
+    ptax = PTAX()
+    ptax.describe()
+
+Esta API tem 1 ``EntitySet`` e 6 ``FunctionImports`` e também utilizamos o método ``describe`` para visualizar a
+estrutura destes *endpoints*.
+Vamos ver o *endpoint* ``CotacaoMoedaPeriodo``
+
+.. ipython:: python
+
+    ptax.describe("CotacaoMoedaPeriodo")
+
+A principal diferença entre os ``FunctionImports`` e ``EntitySets`` é que estes possuem parâmetros.
+Neste exemplo o *endpoint* tem 3 parâmetros:
+
+- codigoMoeda <str>
+- dataInicial <str>
+- dataFinalCotacao <str>
+
+Para conhecer como os parâmetros devem ser definidos é necessário ler a documentação da API.
+Eventualmente a definição dos parâmetros não é óbvia.
+Por exemplo, neste *endpoint*, os parâmetros ``dataInicialCotacao`` e ``dataFinalCotacao`` são formatados com
+mês-dia-ano (formato americano), ao invés de ano-mês-dia (formato ISO), e como o tipo dos parâmetros é ``str``,
+uma formatação incorreta não retorna um erro, apenas retorna um DataFrame vazio.
+
+Vamos realizar uma consulta para obter as cotações de dólar americano entre 2022-01-01 e 2022-01-05.
+
+.. ipython:: python
+
+    ep = ptax.get_endpoint("CotacaoMoedaPeriodo")
+    (ep.query()
+       .parameters(moeda="USD",
+                   dataInicial="1/1/2022",
+                   dataFinalCotacao="1/5/2022")
+       .collect())
+
+Note que a primeira data é 2022-01-03, pois os primeiros dias do ano não são úteis.
+Podemos aplicar filtros nessa consulta utilizando o método ``filter``, da mesma forma que realizamos na consulta ao
+``EntitySet``.
+
+.. ipython:: python
+
+    (ep.query()
+       .parameters(moeda="USD",
+                   dataInicial="1/1/2022",
+                   dataFinalCotacao="1/5/2022")
+       .filter(ep.tipoBoletim == "Fechamento")
+       .collect())
 
 Aplicações
 ----------
@@ -170,7 +248,7 @@ Inspecionando o *endpoint* ``ExpectativaMercadoMensais``
 
 .. ipython:: python
 
-    em.describe('ExpectativaMercadoMensais')
+    em.describe("ExpectativaMercadoMensais")
 
 
 O *endpoint* ``ExpectativaMercadoMensais`` retorna um conjunto de dados
@@ -203,7 +281,7 @@ Vamos utilizar o *endpoint* ``ExpectativaMercadoMensais`` como exemplo.
 
 .. ipython:: python
 
-    ep = em.get_endpoint('ExpectativasMercadoTop5Anuais')
+    ep = em.get_endpoint("ExpectativasMercadoTop5Anuais")
 
 Tendo o objeto com o *endpoint* basta executar a consulta com ``query`` e
 chamando ``collect`` ao fim para obter os dados.
@@ -232,7 +310,7 @@ Uma consulta mais elaborada com ``filter``.
 
 .. ipython:: python
 
-    ep.query().filter(ep.Indicador == 'IPCA').limit(10).collect()
+    ep.query().filter(ep.Indicador == "IPCA").limit(10).collect()
 
 Note que o *endpoint* tem como atributo ``Indicador`` que é uma
 das colunas retornadas.
@@ -245,9 +323,9 @@ um conjunto de colunas.
 .. ipython:: python
 
     (ep.query()
-     .filter(ep.Indicador == 'IPCA', ep.DataReferencia >= 2023)
-     .filter(ep.Data >= '2022-01-01')
-     .filter(ep.tipoCalculo == 'C')
+     .filter(ep.Indicador == "IPCA", ep.DataReferencia >= 2023)
+     .filter(ep.Data >= "2022-01-01")
+     .filter(ep.tipoCalculo == "C")
      .select(ep.Data, ep.DataReferencia, ep.Media, ep.Mediana)
      .orderby(ep.Data.desc(), ep.DataReferencia.asc())
      .limit(10)
@@ -277,7 +355,7 @@ Executando ``describe`` na função ``CotacaoMoedaPeriodo`` temos:
 
 .. ipython:: python
 
-    ptax.describe('CotacaoMoedaPeriodo')
+    ptax.describe("CotacaoMoedaPeriodo")
 
 Vemos que a função recebe três parâmetros: ``moeda``, ``dataInicial``,
 ``dataFinalCotacao``.
@@ -286,10 +364,10 @@ Estes parâmetros são passados para a consulta utilizando o método
 
 .. ipython:: python
 
-    ep = ptax.get_endpoint('CotacaoMoedaPeriodo')
+    ep = ptax.get_endpoint("CotacaoMoedaPeriodo")
     (ep.query()
        .limit(10)
-       .parameters(moeda='USD', dataInicial='01/01/2022', dataFinalCotacao='01/10/2022')
+       .parameters(moeda="USD", dataInicial="01/01/2022", dataFinalCotacao="01/10/2022")
        .collect())
 
 
@@ -300,8 +378,8 @@ Podemos filtrar apenas pelos dados de abertura.
 
     (ep.query()
        .limit(10)
-       .filter(ep.tipoBoletim == 'Abertura')
-       .parameters(moeda='USD', dataInicial='01/01/2022', dataFinalCotacao='01/10/2022')
+       .filter(ep.tipoBoletim == "Abertura")
+       .parameters(moeda="USD", dataInicial="01/01/2022", dataFinalCotacao="01/10/2022")
        .collect())
 
 
