@@ -150,6 +150,68 @@ mas não a executa.
         .limit(10)
         .show())
 
+
+Filtrando Dados
+^^^^^^^^^^^^^^^
+
+Os filtros são executados pelo método ``filter`` e aplicados às propriedades do *endpoint*, por isso é necessário
+conhecê-lo, o que deve ser feito com o método ``describe``.
+
+.. ipython:: python
+
+    from bcb import Expectativas
+    em = Expectativas()
+    em.describe('ExpectativasMercadoTop5Anuais')
+
+O *endpoint* ``ExpectativasMercadoTop5Anuais`` da API de Expectativas possui a propriedade ``Indicador``, do tipo
+``str``.
+Vamos filtrar os dados com a propriedade ``Indicador`` igual a ``IPCA``.
+Como o tipo dessa propriedade é ``str``, utilizamos uma string no filtro e o operador ``==``, que representa igualdade.
+
+.. ipython:: python
+
+    ep = em.get_endpoint('ExpectativasMercadoTop5Anuais')
+    query = ep.query().filter(ep.Indicador == 'IPCA').limit(10)
+    query.show()
+
+O método ``show`` apresenta os parâmetros da *query* formatados, com isso podemos visualizar como os parâmetros da
+consulta serão enviados à API.
+Note que o operador ``==`` foi convertido para ``eq``.
+Podemos utilizar todos os operadores de comparação nos filtros.
+
+.. ipython:: python
+
+    query.collect()
+
+Mais filtros podem ser adicionados ao método ``filter``, e também podemos aninhar chamadas do método ``filter``.
+
+.. ipython:: python
+
+    query = (ep.query()
+     .filter(ep.Indicador == 'IPCA', ep.DataReferencia == 2023)
+     .filter(ep.Data >= '2022-01-01')
+     .filter(ep.tipoCalculo == 'C'))
+    query.show()
+    query.collect()
+
+Todos os filtros estão no atributo ``$filter`` da consulta e são concatenados com o operador booleano ``and``.
+
+É necessário conhecer o tipo da propriedade para saber como passar o objeto para a consulta.
+Os tipos de propriedade podem ser: str, float, int e datetime.
+Por exemplo, na API do PIX, a propriedade ``Data`` é do tipo ``datetime`` e por isso é necessário passar um
+objeto ``datetime`` para o método ``filter``.
+
+.. ipython:: python
+
+    ep = pix.get_endpoint("PixLiquidadosAtual")
+    (ep.query()
+        .filter(ep.Data >= datetime(2023, 1, 1))
+        .limit(10)
+        .show())
+
+O objeto ``datetime`` é formatado como data na consulta, note que não há aspas na definição do filtro.
+
+
 Tipos de *endpoints*
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -164,16 +226,18 @@ A API do PTAX, por exemplo
     ptax = PTAX()
     ptax.describe()
 
-Esta API tem 1 ``EntitySet`` e 6 ``FunctionImports`` e também utilizamos o método ``describe`` para visualizar a
-estrutura destes *endpoints*.
+Esta API tem 1 ``EntitySet`` e 6 ``FunctionImports``.
+Assim como os ``EntitySets``, os ``FunctionImports`` também retornam dados em formato tabular.
+A principal diferença entre os ``EntitySets`` e ``FunctionImports`` é que estes possuem parâmetros, como uma função, e
+estes parâmetros devem ser definidos para que a consulta seja realizada.
+
 Vamos ver o *endpoint* ``CotacaoMoedaPeriodo``
 
 .. ipython:: python
 
     ptax.describe("CotacaoMoedaPeriodo")
 
-A principal diferença entre os ``FunctionImports`` e ``EntitySets`` é que estes possuem parâmetros.
-Neste exemplo o *endpoint* tem 3 parâmetros:
+Este *endpoint* tem 3 parâmetros:
 
 - codigoMoeda <str>
 - dataInicial <str>
@@ -181,7 +245,7 @@ Neste exemplo o *endpoint* tem 3 parâmetros:
 
 Para conhecer como os parâmetros devem ser definidos é necessário ler a documentação da API.
 Eventualmente a definição dos parâmetros não é óbvia.
-Por exemplo, neste *endpoint*, os parâmetros ``dataInicialCotacao`` e ``dataFinalCotacao`` são formatados com
+Por exemplo, neste *endpoint*, os parâmetros ``dataInicial`` e ``dataFinalCotacao`` são formatados com
 mês-dia-ano (formato americano), ao invés de ano-mês-dia (formato ISO), e como o tipo dos parâmetros é ``str``,
 uma formatação incorreta não retorna um erro, apenas retorna um DataFrame vazio.
 
