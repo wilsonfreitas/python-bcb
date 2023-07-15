@@ -61,14 +61,14 @@ APIs implementadas
    entrega os boletins diários de taxas de câmbio do Banco Central.
    Esta API entrega mais informações do que o que é obtido no
    ``Conversor de Moedas``.
-   Veja a documentação em :ref:`API de Moedas`.
+   Veja a documentação em :ref:`Moedas`.
 ``Expectativas``
    A API de Expectativas de Mercado traz todas as estatísticas das variáveis
    macroeconômicas fornecidos por um conjuto de instituições do mercado
    financeiro.
    A classe :py:class:`bcb.Expectativas` implementa essa interface no
    padrão OData.
-   Veja a documentação em :ref:`API de Expectativas`.
+   Veja a documentação em :ref:`Expectativas`.
 ``Taxas de Juros``
    API que retorna as taxas de juros de operações de crédito por instituição financeira (médias dos últimos 5 dias).
    A classe :py:class:`bcb.TaxaJuros` implementa essa interface.
