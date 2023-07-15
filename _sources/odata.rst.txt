@@ -64,7 +64,7 @@ Para acessar os dados deste *endpoint* é necessário executar uma ``query`` nes
 
 .. ipython:: python
 
-    ep.query().limit(10).collect()
+    ep.query().limit(5).collect()
 
 Ao realizar a ``query`` no *endpoint* limitamos a consulta a retornar 10 elementos, apenas para visualizar os dados
 da consulta.
@@ -85,12 +85,12 @@ A classe :py:class:`bcb.odata.framework.ODataQuery` tem os seguintes métodos:
 - :py:meth:`bcb.odata.framework.ODataQuery.select`: seleciona as propriedades retornadas pela consulta.
 - :py:meth:`bcb.odata.framework.ODataQuery.orderby`: ordena a consulta pelas propriedades.
 - :py:meth:`bcb.odata.framework.ODataQuery.limit`: limita os resultados a ``n`` registros.
-- :py:meth:`bcb.odata.framework.ODataQuery.skip`: *pula* os ``n`` primeiros registros da consulta.
 - :py:meth:`bcb.odata.framework.ODataQuery.parameters`: *endpoints* do tipo ``FunctionImports`` possuem parâmetros que são definidos por este método.
 - :py:meth:`bcb.odata.framework.ODataQuery.collect`: o *framework* tem uma abordagem *lazy*, dessa forma, este método realiza a consulta trazendo os dados e retornando um DataFrame.
+- :py:meth:`bcb.odata.framework.ODataQuery.text`: este método retorna o texto (formato json) retornado pela API.
 - :py:meth:`bcb.odata.framework.ODataQuery.show`: imprime a estrutura da consulta.
 
-Os métodos ``filter``, ``select``, ``orderby``, ``limit``, ``skip`` e ``parameters`` retornam o objeto
+Os métodos ``filter``, ``select``, ``orderby``, ``limit`` e ``parameters`` retornam o objeto
 :py:class:`bcb.odata.framework.ODataQuery`, e isso permite a realização de chamadas aninhadas que compõem a consulta.
 
 Por exemplo, na consulta do PIX, as datas não estão ordenadas, temos dias de 2021, 2022 e 2023 nos 10 registros
@@ -99,7 +99,7 @@ Vamos ordernar pela propriedade ``Data`` de forma decrescente.
 
 .. ipython:: python
 
-    ep.query().orderby(ep.Data.desc()).limit(10).collect()
+    ep.query().orderby(ep.Data.desc()).limit(5).collect()
 
 Veja que a consulta retorna as datas mais recentes primeiro.
 
@@ -131,7 +131,7 @@ Na última linha executo o método ``collect`` que executa a consulta e retorna 
         .select(ep.Data, ep.Media)
         .filter(ep.Data >= datetime(2023, 1, 1))
         .orderby(ep.Media.desc())
-        .limit(10)
+        .limit(5)
         .collect())
 
 Visualizando a Consulta
@@ -147,14 +147,14 @@ mas não a executa.
         .select(ep.Data, ep.Media)
         .filter(ep.Data >= datetime(2023, 1, 1))
         .orderby(ep.Media.desc())
-        .limit(10)
+        .limit(5)
         .show())
 
 
 Filtrando Dados
 ^^^^^^^^^^^^^^^
 
-Os filtros são executados pelo método ``filter`` e aplicados às propriedades do *endpoint*, por isso é necessário
+Os filtros são criados com o método ``filter`` e aplicados às propriedades do *endpoint*, por isso é necessário
 conhecê-lo, o que deve ser feito com o método ``describe``.
 
 .. ipython:: python
@@ -171,7 +171,7 @@ Como o tipo dessa propriedade é ``str``, utilizamos uma string no filtro e o op
 .. ipython:: python
 
     ep = em.get_endpoint('ExpectativasMercadoTop5Anuais')
-    query = ep.query().filter(ep.Indicador == 'IPCA').limit(10)
+    query = ep.query().filter(ep.Indicador == 'IPCA').limit(5)
     query.show()
 
 O método ``show`` apresenta os parâmetros da *query* formatados, com isso podemos visualizar como os parâmetros da
@@ -188,9 +188,10 @@ Mais filtros podem ser adicionados ao método ``filter``, e também podemos anin
 .. ipython:: python
 
     query = (ep.query()
-     .filter(ep.Indicador == 'IPCA', ep.DataReferencia == 2023)
-     .filter(ep.Data >= '2022-01-01')
-     .filter(ep.tipoCalculo == 'C'))
+               .filter(ep.Indicador == 'IPCA', ep.DataReferencia == 2023)
+               .filter(ep.Data >= '2022-01-01')
+               .filter(ep.tipoCalculo == 'C')
+               .limit(5))
     query.show()
     query.collect()
 
@@ -205,11 +206,88 @@ objeto ``datetime`` para o método ``filter``.
 
     ep = pix.get_endpoint("PixLiquidadosAtual")
     (ep.query()
-        .filter(ep.Data >= datetime(2023, 1, 1))
-        .limit(10)
-        .show())
+       .filter(ep.Data >= datetime(2023, 1, 1))
+       .limit(5)
+       .show())
 
-O objeto ``datetime`` é formatado como data na consulta, note que não há aspas na definição do filtro.
+O objeto ``datetime`` é formatado como data na consulta, note que não há aspas na definição da data no filtro.
+
+Ordenando os Dados
+^^^^^^^^^^^^^^^^^^
+
+A ordenação é definida no método ``orderby`` passando um objeto da classe
+:py:class:`bcb.odata.framework.ODataPropertyOrderBy` que é obtida dos métodos ``asc`` e ``desc`` da propriedade.
+
+.. ipython:: python
+
+    ep = pix.get_endpoint("PixLiquidadosAtual")
+    ep.Data.asc()
+
+Este objeto é passado para o método ``orderby`` na *tripa* na qual a *query* é construída.
+
+.. ipython:: python
+
+    query = (ep.query()
+               .orderby(ep.Data.asc())
+               .limit(5))
+    query.show()
+    query.collect()
+
+O método ``orderby`` pode receber diversas propriedades para a definição da ordenação.
+
+.. ipython:: python
+
+    ep = em.get_endpoint('ExpectativasMercadoTop5Anuais')
+    query = (ep.query()
+               .orderby(ep.Data.desc(), ep.Indicador.desc())
+               .limit(5))
+    query.show()
+
+Também podem ser realizadas chamadas aninhadas do método ``orderby``.
+
+.. ipython:: python
+
+    query = (ep.query()
+               .orderby(ep.Data.desc())
+               .orderby(ep.Indicador.desc())
+               .limit(5))
+    query.show()
+
+Vejam que a consulta é exatamente a mesma.
+
+
+Selecionando as Propriedades
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+O médoto ``select`` funciona de forma muito semelhante ao *select* de uma *query* SQL.
+
+.. ipython:: python
+
+    ep = em.get_endpoint('ExpectativasMercadoTop5Anuais')
+    (ep.query()
+       .select(ep.Indicador, ep.Data, ep.DataReferencia, ep.tipoCalculo, ep.Media)
+       .orderby(ep.Data.desc())
+       .limit(5)
+       .collect())
+
+Selecionar as colunas é importante para reduzir o volume de dados trafegado, pois a API do BCB não tem um bom
+desempenho, logo, essas configurações aceleram as consultas.
+
+
+Método ``limit``
+^^^^^^^^^^^^^^^^
+
+O método ``limit`` define a quantidade de linhas que será retornada pela consulta.
+Esse método é importante para investigar as consultas na API de forma rápida.
+
+.. ipython:: python
+
+    ep = pix.get_endpoint("PixLiquidadosAtual")
+    (ep.query()
+       .filter(ep.Data >= datetime(2023, 1, 1))
+       .limit(5)
+       .collect())
+
 
 
 Tipos de *endpoints*
@@ -273,186 +351,49 @@ Podemos aplicar filtros nessa consulta utilizando o método ``filter``, da mesma
        .filter(ep.tipoBoletim == "Fechamento")
        .collect())
 
-Aplicações
-----------
+Obtendo o Texto da API
+^^^^^^^^^^^^^^^^^^^^^^
 
-As APIs OData sem apresentam destas 2 maneiras:
+Uma alternativa ao DataFrame retornado pela consulta, via o método ``collect``, é obter o texto, em formato JSON
+(padrão) ou XML, retornado pela consulta.
 
-- :ref:`EntitySets`: consultas estáticas sem parâmetros que retornam dados em formato tabular disponibilizados pela API.
-  Exemplos de APIs: :ref:`Expectativas` e :ref:`Taxas de Juros`.
-- :ref:`FunctionImports`: consultas dinâmicas com parâmetros  que retornam dados em formato tabular disponibilizados pela API.
-  Um exemplo é a :ref:`API OData de Moedas`.
+O método ``collect`` faz o *parsing* do texto retornado na consulta e cria um DataFrame, o método ``text`` retorna
+esse texto bruto.
 
-Identifica-se a maneira pela qual a API se apresenta utilizando o método :py:meth:`bcb.odata.api.BaseODataAPI.describe`
-das classes que herdam :py:class:`bcb.odata.api.BaseODataAPI`.
+Isso é útil para fazer o armazenamento de dados da API para a construção de bancos de dados ou *data lakes*.
 
-API de Expectativas
-^^^^^^^^^^^^^^^^^^^
-
-A API de Expectativas possui diversos *entity sets*.
-Utilizando o método ``describe`` visualizamos todos os *entity sets* disponibilizados pela API.
+Para obter o conteúdo bruto, basta executar o método ``text`` ao invés do ``collect``, ao fim da cadeia da consulta.
 
 .. ipython:: python
 
-    from bcb import Expectativas
-    em = Expectativas()
-    em.describe()
-
-A API de Expectativas possui 8 ``EntitySets``.
-Essa listagem traz os nomes dos ``EntitySets`` e ao passar um destes nomes para o método ``describe`` obtemos a
-descrição do ``EntitySet`` que é o *endpoint* que dá acesso a API.
-
-EntitySets
-""""""""""
-
-Cada ``EntitySet`` é um *endpoint* que retorna um conjunto de dados toda vez que são chamados.
-Utilizamos os método ``describe`` para obter informações sobre o que é retornado na solicitação ao *endpoint*.
-
-Inspecionando o *endpoint* ``ExpectativaMercadoMensais``
-
-.. ipython:: python
-
-    em.describe("ExpectativaMercadoMensais")
-
-
-O *endpoint* ``ExpectativaMercadoMensais`` retorna um conjunto de dados
-denominado ``br.gov.bcb.olinda.servico.Expectativas.ExpectativaMercadoMensal``, que é um ``EntityType``.
-Este ``EntityType`` tem as seguintes propriedades:
-
-- ``Indicador<str>``
-- ``Data<str>``
-- ``DataReferencia<str>``
-- ``Media<float>``
-- ``Mediana<float>``
-- ``DesvioPadrao<float>``
-- ``Minimo<float>``
-- ``Maximo<float>``
-- ``numeroRespondentes<int>``
-- ``baseCalculo<int>``
-
-Note que cada propriedade tem um tipo associado.
-As propriedades são formatadas em colunas no DataFrame retornado como resultado da consulta.
-É muito importante conhecer as colunas, pois caso se queira realizar filtros ou ordenação nas
-consultas, estes são aplicados às propriedades.
-
-    A utilização de filtros e ordenação na consulta é fundamental para a realização de consultas eficientes, pois estas
-    operações são realizadas diretamente no processamento da API e isso reduz o volume de dados trafegados e,
-    consequentemente, acelera a consulta.
-
-Para realizar uma consulta é necessário obter um objeto da classe :py:class:`bcb.odata.api.Endpoint`.
-Isso é feito chamando o método :py:meth:`bcb.odata.api.Expectativas.get_endpoint` com o nome do ``EntitySet`` desejado.
-Vamos utilizar o *endpoint* ``ExpectativaMercadoMensais`` como exemplo.
-
-.. ipython:: python
-
-    ep = em.get_endpoint("ExpectativasMercadoTop5Anuais")
-
-Tendo o objeto com o *endpoint* basta executar a consulta com ``query`` e
-chamando ``collect`` ao fim para obter os dados.
-
-.. ipython:: python
-
-    ep.query().limit(10).collect()
-
-Note que o método ``limit`` limita o retorno da consulta em 10 elementos.
-Uma forma de avaliar a consulta sem executá-la é utilizando o método ``show``.
-
-.. ipython:: python
-
-    ep.query().limit(10).show()
-
-Note que como apenas o ``limit`` foi utilizado, o único
-parâmetro definido é o ``$top = 10`` indicando que apenas
-10 elementos serão retornados.
-
-Todos os métodos de :py:class:`bcb.odata.framework.ODataQuery` retornam a própria
-instância do objeto, com excessão a ``show`` e ``collect``.
-Por essa razão é possível realizar chamadas encadeadas configurando
-a consulta.
-
-Uma consulta mais elaborada com ``filter``.
-
-.. ipython:: python
-
-    ep.query().filter(ep.Indicador == "IPCA").limit(10).collect()
-
-Note que o *endpoint* tem como atributo ``Indicador`` que é uma
-das colunas retornadas.
-Todas as demais colunas podem ser acessadas através do objeto
-``ep``.
-
-Outra consulta mais elaborada com diversos filtros e ordenação e selecionando
-um conjunto de colunas.
-
-.. ipython:: python
-
+    ep = em.get_endpoint('ExpectativasMercadoTop5Anuais')
     (ep.query()
-     .filter(ep.Indicador == "IPCA", ep.DataReferencia >= 2023)
-     .filter(ep.Data >= "2022-01-01")
-     .filter(ep.tipoCalculo == "C")
-     .select(ep.Data, ep.DataReferencia, ep.Media, ep.Mediana)
-     .orderby(ep.Data.desc(), ep.DataReferencia.asc())
-     .limit(10)
-     .collect())
+       .select(ep.Indicador, ep.Data, ep.DataReferencia, ep.tipoCalculo, ep.Media)
+       .orderby(ep.Data.desc())
+       .limit(5)
+       .text())
 
-API de Moedas
-^^^^^^^^^^^^^
-
-Uma outra aplicação é com a API de Moedas que implementa a especificação OData.
-Utilizando a classe :py:class:`bcb.odata.api.PTAX` temos:
+O texto retornado está no formato JSON.
+Contudo, as APIs OData também retornam conteúdo em XML.
+Para isso incluímos o método ``format`` na cadeia da consulta e passamos como parâmetro o tipo desejado.
 
 .. ipython:: python
 
-    from bcb import PTAX
-    ptax = PTAX()
-    ptax.describe()
-
-
-FunctionImports
-"""""""""""""""
-
-Note que essa API tem um ``EntitySet`` e seis ``FunctionImports``.
-A diferença entre eles é que os ``FunctionImports`` são funções
-e como funções recebem parâmetros que na maioria das vezes não são opicionais.
-
-Executando ``describe`` na função ``CotacaoMoedaPeriodo`` temos:
-
-.. ipython:: python
-
-    ptax.describe("CotacaoMoedaPeriodo")
-
-Vemos que a função recebe três parâmetros: ``moeda``, ``dataInicial``,
-``dataFinalCotacao``.
-Estes parâmetros são passados para a consulta utilizando o método
-``parameters``.
-
-.. ipython:: python
-
-    ep = ptax.get_endpoint("CotacaoMoedaPeriodo")
+    ep = em.get_endpoint('ExpectativasMercadoTop5Anuais')
     (ep.query()
-       .limit(10)
-       .parameters(moeda="USD", dataInicial="01/01/2022", dataFinalCotacao="01/10/2022")
-       .collect())
-
-
-Fora os parâmetros, todos os demais métodos funcionam como esperado.
-Podemos filtrar apenas pelos dados de abertura.
-
-.. ipython:: python
-
-    (ep.query()
-       .limit(10)
-       .filter(ep.tipoBoletim == "Abertura")
-       .parameters(moeda="USD", dataInicial="01/01/2022", dataFinalCotacao="01/10/2022")
-       .collect())
+       .select(ep.Indicador, ep.Data, ep.DataReferencia, ep.tipoCalculo, ep.Media)
+       .orderby(ep.Data.desc())
+       .format("xml")
+       .limit(5)
+       .text())
 
 
 Classe ODataAPI
-^^^^^^^^^^^^^^^
+---------------
 
 O portal de Dados Abertos to Banco Central apresenta diversas APIs OData, são
 dezenas de APIs disponíveis.
-A URL com metadados de cada API pode ser obtida no portal.
+A URL com metadados de cada API pode ser obtida no `portal <https://dadosabertos.bcb.gov.br>`_.
 A classe :py:class:`bcb.odata.api.ODataAPI` permite acessar qualquer API Odata de posse da sua URL.
 
 Por exemplo, a API de estatísticas de operações registradas no Selic tem a seguinte URL::
@@ -469,19 +410,4 @@ Essa API pode ser diretamente acessada através da classe :py:class:`bcb.odata.a
     url = "https://olinda.bcb.gov.br/olinda/servico/selic_operacoes/versao/v1/odata/"
     service = ODataAPI(url)
     service.describe()
-
-Conclusão
----------
-
-Esta estrutura se aplica a todas as classes que fazem interface com APIs
-que implementam a especificação OData.
-
-Para conhecer a API, além de ler a documentação, basta executar os passos:
-
-- instanciar a classe
-- executar o ``describe`` para conhecer os *endpoints*
-- executar o ``describe`` para um dos *endpoints* e saber o que precisa ser
-  fornecido e o que será retornado
-- obter o *endpoint* com ``get_endpoint``
-- tendo o *endpoint* executar ``query`` e não esquecer de chamar ``collect`` ao fim
 

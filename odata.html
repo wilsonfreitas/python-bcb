@@ -261,14 +261,14 @@ o nome do <em>endpoint</em>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [5]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">pix</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s2">&quot;PixLiquidadosAtual&quot;</span><span class="p">)</span>
 
 <span class="gp">In [6]: </span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span>
-<span class="gh">Out[6]: </span><span class="go">&lt;Property Data&gt;</span>
+<span class="gh">Out[6]: </span><span class="go">&lt;Property Data&lt;datetime&gt;&gt;</span>
 
 <span class="gp">In [7]: </span><span class="n">ep</span><span class="o">.</span><span class="n">Media</span>
-<span class="gh">Out[7]: </span><span class="go">&lt;Property Media&gt;</span>
+<span class="gh">Out[7]: </span><span class="go">&lt;Property Media&lt;float&gt;&gt;</span>
 </pre></div>
 </div>
 <p>Para acessar os dados deste <em>endpoint</em> é necessário executar uma <code class="docutils literal notranslate"><span class="pre">query</span></code> nesse objeto.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [8]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [8]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
 <span class="gh">Out[8]: </span>
 <span class="go">        Data  Quantidade        Total   Media</span>
 <span class="go">0 2021-06-04    24945880  17229599.27  690.68</span>
@@ -276,11 +276,6 @@ o nome do <em>endpoint</em>.</p>
 <span class="go">2 2022-10-28    75938264  40180577.53  529.12</span>
 <span class="go">3 2022-12-01    93207145  47313669.38  507.62</span>
 <span class="go">4 2022-04-06    59981242  32855707.99  547.77</span>
-<span class="go">5 2022-09-26    60547764  37641607.80  621.68</span>
-<span class="go">6 2023-07-11   103725918  47312155.16  456.13</span>
-<span class="go">7 2021-04-12    15051225  12773852.85  848.69</span>
-<span class="go">8 2021-11-07    21922002   4083954.42  186.29</span>
-<span class="go">9 2023-03-02    86677983  41061577.42  473.73</span>
 </pre></div>
 </div>
 <p>Ao realizar a <code class="docutils literal notranslate"><span class="pre">query</span></code> no <em>endpoint</em> limitamos a consulta a retornar 10 elementos, apenas para visualizar os dados
@@ -299,29 +294,21 @@ A classe <code class="xref py py-class docutils literal notranslate"><span class
 <li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.odata.framework.ODataQuery.select()</span></code>: seleciona as propriedades retornadas pela consulta.</p></li>
 <li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.odata.framework.ODataQuery.orderby()</span></code>: ordena a consulta pelas propriedades.</p></li>
 <li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.odata.framework.ODataQuery.limit()</span></code>: limita os resultados a <code class="docutils literal notranslate"><span class="pre">n</span></code> registros.</p></li>
-<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.odata.framework.ODataQuery.skip()</span></code>: <em>pula</em> os <code class="docutils literal notranslate"><span class="pre">n</span></code> primeiros registros da consulta.</p></li>
 <li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.odata.framework.ODataQuery.parameters()</span></code>: <em>endpoints</em> do tipo <code class="docutils literal notranslate"><span class="pre">FunctionImports</span></code> possuem parâmetros que são definidos por este método.</p></li>
 <li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.odata.framework.ODataQuery.collect()</span></code>: o <em>framework</em> tem uma abordagem <em>lazy</em>, dessa forma, este método realiza a consulta trazendo os dados e retornando um DataFrame.</p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.odata.framework.ODataQuery.text()</span></code>: este método retorna o texto (formato json) retornado pela API.</p></li>
 <li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.odata.framework.ODataQuery.show()</span></code>: imprime a estrutura da consulta.</p></li>
 </ul>
-<p>Os métodos <code class="docutils literal notranslate"><span class="pre">filter</span></code>, <code class="docutils literal notranslate"><span class="pre">select</span></code>, <code class="docutils literal notranslate"><span class="pre">orderby</span></code>, <code class="docutils literal notranslate"><span class="pre">limit</span></code>, <code class="docutils literal notranslate"><span class="pre">skip</span></code> e <code class="docutils literal notranslate"><span class="pre">parameters</span></code> retornam o objeto
+<p>Os métodos <code class="docutils literal notranslate"><span class="pre">filter</span></code>, <code class="docutils literal notranslate"><span class="pre">select</span></code>, <code class="docutils literal notranslate"><span class="pre">orderby</span></code>, <code class="docutils literal notranslate"><span class="pre">limit</span></code> e <code class="docutils literal notranslate"><span class="pre">parameters</span></code> retornam o objeto
 <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.framework.ODataQuery</span></code>, e isso permite a realização de chamadas aninhadas que compõem a consulta.</p>
 <p>Por exemplo, na consulta do PIX, as datas não estão ordenadas, temos dias de 2021, 2022 e 2023 nos 10 registros
 retornados.
 Vamos ordernar pela propriedade <code class="docutils literal notranslate"><span class="pre">Data</span></code> de forma decrescente.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [9]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [9]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
 <span class="gh">Out[9]: </span>
-<span class="go">        Data  Quantidade        Total   Media</span>
-<span class="go">0 2023-07-12   100713893  42500873.95  422.00</span>
-<span class="go">1 2023-07-11   103725918  47312155.16  456.13</span>
-<span class="go">2 2023-07-10   116598174  69202307.13  593.51</span>
-<span class="go">3 2023-07-09    73589494  10131080.12  137.67</span>
-<span class="go">4 2023-07-08   109249145  18767616.78  171.79</span>
-<span class="go">5 2023-07-07   134844164  59845044.44  443.81</span>
-<span class="go">6 2023-07-06   129444492  58811530.67  454.34</span>
-<span class="go">7 2023-07-05   117904425  60753937.82  515.28</span>
-<span class="go">8 2023-07-04   103189169  49736620.79  481.99</span>
-<span class="go">9 2023-07-03   104268913  64382466.28  617.47</span>
+<span class="go">Empty DataFrame</span>
+<span class="go">Columns: []</span>
+<span class="go">Index: []</span>
 </pre></div>
 </div>
 <p>Veja que a consulta retorna as datas mais recentes primeiro.</p>
@@ -348,7 +335,7 @@ Na última linha executo o método <code class="docutils literal notranslate"><s
 <span class="gp">   ....: </span>    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">Media</span><span class="p">)</span>
 <span class="gp">   ....: </span>    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span> <span class="o">&gt;=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="gp">   ....: </span>    <span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Media</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
-<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="gp">   ....: </span>    <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
 <span class="gp">   ....: </span>
 <span class="gh">Out[11]: </span>
@@ -358,11 +345,6 @@ Na última linha executo o método <code class="docutils literal notranslate"><s
 <span class="go">2 2023-01-02  652.51</span>
 <span class="go">3 2023-01-30  642.01</span>
 <span class="go">4 2023-02-27  632.34</span>
-<span class="go">5 2023-04-03  627.14</span>
-<span class="go">6 2023-01-16  618.88</span>
-<span class="go">7 2023-07-03  617.47</span>
-<span class="go">8 2023-02-22  617.08</span>
-<span class="go">9 2023-05-15  611.98</span>
 </pre></div>
 </div>
 <section id="visualizando-a-consulta">
@@ -374,7 +356,7 @@ mas não a executa.</p>
 <span class="gp">   ....: </span>    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">Media</span><span class="p">)</span>
 <span class="gp">   ....: </span>    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span> <span class="o">&gt;=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="gp">   ....: </span>    <span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Media</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
-<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="gp">   ....: </span>    <span class="o">.</span><span class="n">show</span><span class="p">())</span>
 <span class="gp">   ....: </span>
 <span class="go">URL:</span>
@@ -384,14 +366,14 @@ mas não a executa.</p>
 <span class="go">  $filter = Data ge 2023-01-01</span>
 <span class="go">  $orderby = Media desc</span>
 <span class="go">  $select = Data,Media</span>
-<span class="go">  $top = 10</span>
+<span class="go">  $top = 5</span>
 <span class="go">Return: Data&lt;datetime&gt;, Quantidade&lt;int&gt;, Total&lt;float&gt;, Media&lt;float&gt;</span>
 </pre></div>
 </div>
 </section>
 <section id="filtrando-dados">
 <h3>Filtrando Dados<a class="headerlink" href="#filtrando-dados" title="Link permanente para este cabeçalho">#</a></h3>
-<p>Os filtros são executados pelo método <code class="docutils literal notranslate"><span class="pre">filter</span></code> e aplicados às propriedades do <em>endpoint</em>, por isso é necessário
+<p>Os filtros são criados com o método <code class="docutils literal notranslate"><span class="pre">filter</span></code> e aplicados às propriedades do <em>endpoint</em>, por isso é necessário
 conhecê-lo, o que deve ser feito com o método <code class="docutils literal notranslate"><span class="pre">describe</span></code>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [13]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">Expectativas</span>
 
@@ -410,7 +392,7 @@ Vamos filtrar os dados com a propriedade <code class="docutils literal notransla
 Como o tipo dessa propriedade é <code class="docutils literal notranslate"><span class="pre">str</span></code>, utilizamos uma string no filtro e o operador <code class="docutils literal notranslate"><span class="pre">==</span></code>, que representa igualdade.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [16]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">em</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s1">&#39;ExpectativasMercadoTop5Anuais&#39;</span><span class="p">)</span>
 
-<span class="gp">In [17]: </span><span class="n">query</span> <span class="o">=</span> <span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Indicador</span> <span class="o">==</span> <span class="s1">&#39;IPCA&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">In [17]: </span><span class="n">query</span> <span class="o">=</span> <span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Indicador</span> <span class="o">==</span> <span class="s1">&#39;IPCA&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 
 <span class="gp">In [18]: </span><span class="n">query</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 <span class="go">URL:</span>
@@ -418,7 +400,7 @@ Como o tipo dessa propriedade é <code class="docutils literal notranslate"><spa
 <span class="go">Query Parameters:</span>
 <span class="go">  $format = json</span>
 <span class="go">  $filter = Indicador eq &#39;IPCA&#39;</span>
-<span class="go">  $top = 10</span>
+<span class="go">  $top = 5</span>
 <span class="go">Return: Indicador&lt;str&gt;, Data&lt;str&gt;, DataReferencia&lt;str&gt;, tipoCalculo&lt;str&gt;, Media&lt;float&gt;, Mediana&lt;float&gt;, DesvioPadrao&lt;float&gt;, Minimo&lt;float&gt;, Maximo&lt;float&gt;</span>
 </pre></div>
 </div>
@@ -434,20 +416,16 @@ Podemos utilizar todos os operadores de comparação nos filtros.</p>
 <span class="go">2      IPCA 2018-01-18     2021-01-01  ...         0.11    3.75    4.00</span>
 <span class="go">3      IPCA 2018-01-18     2018-01-01  ...         0.26    3.27    3.95</span>
 <span class="go">4      IPCA 2018-01-19     2019-01-01  ...         0.25    3.70    4.30</span>
-<span class="go">5      IPCA 2018-01-19     2020-01-01  ...         0.23    3.70    4.35</span>
-<span class="go">6      IPCA 2018-01-19     2021-01-01  ...         0.25    3.70    4.40</span>
-<span class="go">7      IPCA 2018-01-19     2018-01-01  ...         0.20    3.58    4.15</span>
-<span class="go">8      IPCA 2018-01-19     2022-01-01  ...         0.22    3.70    4.25</span>
-<span class="go">9      IPCA 2018-01-19     2019-01-01  ...         0.14    3.90    4.25</span>
 
-<span class="go">[10 rows x 9 columns]</span>
+<span class="go">[5 rows x 9 columns]</span>
 </pre></div>
 </div>
 <p>Mais filtros podem ser adicionados ao método <code class="docutils literal notranslate"><span class="pre">filter</span></code>, e também podemos aninhar chamadas do método <code class="docutils literal notranslate"><span class="pre">filter</span></code>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [20]: </span><span class="n">query</span> <span class="o">=</span> <span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
-<span class="gp">   ....: </span> <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Indicador</span> <span class="o">==</span> <span class="s1">&#39;IPCA&#39;</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">DataReferencia</span> <span class="o">==</span> <span class="mi">2023</span><span class="p">)</span>
-<span class="gp">   ....: </span> <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span> <span class="o">&gt;=</span> <span class="s1">&#39;2022-01-01&#39;</span><span class="p">)</span>
-<span class="gp">   ....: </span> <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">tipoCalculo</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">))</span>
+<span class="gp">   ....: </span>           <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Indicador</span> <span class="o">==</span> <span class="s1">&#39;IPCA&#39;</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">DataReferencia</span> <span class="o">==</span> <span class="mi">2023</span><span class="p">)</span>
+<span class="gp">   ....: </span>           <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span> <span class="o">&gt;=</span> <span class="s1">&#39;2022-01-01&#39;</span><span class="p">)</span>
+<span class="gp">   ....: </span>           <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">tipoCalculo</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span>
+<span class="gp">   ....: </span>           <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
 <span class="gp">   ....: </span>
 
 <span class="gp">In [21]: </span><span class="n">query</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -456,24 +434,19 @@ Podemos utilizar todos os operadores de comparação nos filtros.</p>
 <span class="go">Query Parameters:</span>
 <span class="go">  $format = json</span>
 <span class="go">  $filter = Indicador eq &#39;IPCA&#39; and DataReferencia eq &#39;2023&#39; and Data ge &#39;2022-01-01&#39; and tipoCalculo eq &#39;C&#39;</span>
+<span class="go">  $top = 5</span>
 <span class="go">Return: Indicador&lt;str&gt;, Data&lt;str&gt;, DataReferencia&lt;str&gt;, tipoCalculo&lt;str&gt;, Media&lt;float&gt;, Mediana&lt;float&gt;, DesvioPadrao&lt;float&gt;, Minimo&lt;float&gt;, Maximo&lt;float&gt;</span>
 
 <span class="gp">In [22]: </span><span class="n">query</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
 <span class="gh">Out[22]: </span>
-<span class="go">    Indicador       Data DataReferencia  ... DesvioPadrao  Minimo  Maximo</span>
-<span class="go">0        IPCA 2022-01-03     2023-01-01  ...       0.4385  2.5000  3.8000</span>
-<span class="go">1        IPCA 2022-01-04     2023-01-01  ...       0.4385  2.5000  3.8000</span>
-<span class="go">2        IPCA 2022-01-05     2023-01-01  ...       0.4385  2.5000  3.8000</span>
-<span class="go">3        IPCA 2022-01-06     2023-01-01  ...       0.4385  2.5000  3.8000</span>
-<span class="go">4        IPCA 2022-01-07     2023-01-01  ...       0.5711  2.5000  4.2693</span>
-<span class="go">..        ...        ...            ...  ...          ...     ...     ...</span>
-<span class="go">375      IPCA 2023-07-03     2023-01-01  ...       0.2902  4.2009  5.0000</span>
-<span class="go">376      IPCA 2023-07-04     2023-01-01  ...       0.2902  4.2009  5.0000</span>
-<span class="go">377      IPCA 2023-07-05     2023-01-01  ...       0.2902  4.2009  5.0000</span>
-<span class="go">378      IPCA 2023-07-06     2023-01-01  ...       0.2902  4.2009  5.0000</span>
-<span class="go">379      IPCA 2023-07-07     2023-01-01  ...       0.2900  4.2009  5.0000</span>
+<span class="go">  Indicador       Data DataReferencia  ... DesvioPadrao  Minimo  Maximo</span>
+<span class="go">0      IPCA 2022-01-03     2023-01-01  ...       0.4385     2.5  3.8000</span>
+<span class="go">1      IPCA 2022-01-04     2023-01-01  ...       0.4385     2.5  3.8000</span>
+<span class="go">2      IPCA 2022-01-05     2023-01-01  ...       0.4385     2.5  3.8000</span>
+<span class="go">3      IPCA 2022-01-06     2023-01-01  ...       0.4385     2.5  3.8000</span>
+<span class="go">4      IPCA 2022-01-07     2023-01-01  ...       0.5711     2.5  4.2693</span>
 
-<span class="go">[380 rows x 9 columns]</span>
+<span class="go">[5 rows x 9 columns]</span>
 </pre></div>
 </div>
 <p>Todos os filtros estão no atributo <code class="docutils literal notranslate"><span class="pre">$filter</span></code> da consulta e são concatenados com o operador booleano <code class="docutils literal notranslate"><span class="pre">and</span></code>.</p>
@@ -484,31 +457,144 @@ objeto <code class="docutils literal notranslate"><span class="pre">datetime</sp
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [23]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">pix</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s2">&quot;PixLiquidadosAtual&quot;</span><span class="p">)</span>
 
 <span class="gp">In [24]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
-<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span> <span class="o">&gt;=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">show</span><span class="p">())</span>
+<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span> <span class="o">&gt;=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">show</span><span class="p">())</span>
 <span class="gp">   ....: </span>
 <span class="go">URL:</span>
 <span class="go">  https://olinda.bcb.gov.br/olinda/servico/SPI/versao/v1/odata/PixLiquidadosAtual</span>
 <span class="go">Query Parameters:</span>
 <span class="go">  $format = json</span>
 <span class="go">  $filter = Data ge 2023-01-01</span>
-<span class="go">  $top = 10</span>
+<span class="go">  $top = 5</span>
 <span class="go">Return: Data&lt;datetime&gt;, Quantidade&lt;int&gt;, Total&lt;float&gt;, Media&lt;float&gt;</span>
 </pre></div>
 </div>
-<p>O objeto <code class="docutils literal notranslate"><span class="pre">datetime</span></code> é formatado como data na consulta, note que não há aspas na definição do filtro.</p>
+<p>O objeto <code class="docutils literal notranslate"><span class="pre">datetime</span></code> é formatado como data na consulta, note que não há aspas na definição da data no filtro.</p>
+</section>
+<section id="ordenando-os-dados">
+<h3>Ordenando os Dados<a class="headerlink" href="#ordenando-os-dados" title="Link permanente para este cabeçalho">#</a></h3>
+<p>A ordenação é definida no método <code class="docutils literal notranslate"><span class="pre">orderby</span></code> passando um objeto da classe
+<code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.framework.ODataPropertyOrderBy</span></code> que é obtida dos métodos <code class="docutils literal notranslate"><span class="pre">asc</span></code> e <code class="docutils literal notranslate"><span class="pre">desc</span></code> da propriedade.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [25]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">pix</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s2">&quot;PixLiquidadosAtual&quot;</span><span class="p">)</span>
+
+<span class="gp">In [26]: </span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">asc</span><span class="p">()</span>
+<span class="gh">Out[26]: </span><span class="go">&lt;Data asc&gt;</span>
+</pre></div>
+</div>
+<p>Este objeto é passado para o método <code class="docutils literal notranslate"><span class="pre">orderby</span></code> na <em>tripa</em> na qual a <em>query</em> é construída.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [27]: </span><span class="n">query</span> <span class="o">=</span> <span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<span class="gp">   ....: </span>           <span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">asc</span><span class="p">())</span>
+<span class="gp">   ....: </span>           <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [28]: </span><span class="n">query</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="go">URL:</span>
+<span class="go">  https://olinda.bcb.gov.br/olinda/servico/SPI/versao/v1/odata/PixLiquidadosAtual</span>
+<span class="go">Query Parameters:</span>
+<span class="go">  $format = json</span>
+<span class="go">  $orderby = Data asc</span>
+<span class="go">  $top = 5</span>
+<span class="go">Return: Data&lt;datetime&gt;, Quantidade&lt;int&gt;, Total&lt;float&gt;, Media&lt;float&gt;</span>
+
+<span class="gp">In [29]: </span><span class="n">query</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<span class="gh">Out[29]: </span>
+<span class="go">        Data  Quantidade     Total   Media</span>
+<span class="go">0 2020-11-03        2345    210.24   89.65</span>
+<span class="go">1 2020-11-04        2629    336.37  127.94</span>
+<span class="go">2 2020-11-05       16669   2685.84  161.13</span>
+<span class="go">3 2020-11-06       57936  21133.81  364.78</span>
+<span class="go">4 2020-11-07       11089   2333.89  210.47</span>
+</pre></div>
+</div>
+<p>O método <code class="docutils literal notranslate"><span class="pre">orderby</span></code> pode receber diversas propriedades para a definição da ordenação.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [30]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">em</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s1">&#39;ExpectativasMercadoTop5Anuais&#39;</span><span class="p">)</span>
+
+<span class="gp">In [31]: </span><span class="n">query</span> <span class="o">=</span> <span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<span class="gp">   ....: </span>           <span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">desc</span><span class="p">(),</span> <span class="n">ep</span><span class="o">.</span><span class="n">Indicador</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
+<span class="gp">   ....: </span>           <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [32]: </span><span class="n">query</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="go">URL:</span>
+<span class="go">  https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoTop5Anuais</span>
+<span class="go">Query Parameters:</span>
+<span class="go">  $format = json</span>
+<span class="go">  $orderby = Data desc,Indicador desc</span>
+<span class="go">  $top = 5</span>
+<span class="go">Return: Indicador&lt;str&gt;, Data&lt;str&gt;, DataReferencia&lt;str&gt;, tipoCalculo&lt;str&gt;, Media&lt;float&gt;, Mediana&lt;float&gt;, DesvioPadrao&lt;float&gt;, Minimo&lt;float&gt;, Maximo&lt;float&gt;</span>
+</pre></div>
+</div>
+<p>Também podem ser realizadas chamadas aninhadas do método <code class="docutils literal notranslate"><span class="pre">orderby</span></code>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [33]: </span><span class="n">query</span> <span class="o">=</span> <span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<span class="gp">   ....: </span>           <span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
+<span class="gp">   ....: </span>           <span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Indicador</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
+<span class="gp">   ....: </span>           <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [34]: </span><span class="n">query</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="go">URL:</span>
+<span class="go">  https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoTop5Anuais</span>
+<span class="go">Query Parameters:</span>
+<span class="go">  $format = json</span>
+<span class="go">  $orderby = Data desc,Indicador desc</span>
+<span class="go">  $top = 5</span>
+<span class="go">Return: Indicador&lt;str&gt;, Data&lt;str&gt;, DataReferencia&lt;str&gt;, tipoCalculo&lt;str&gt;, Media&lt;float&gt;, Mediana&lt;float&gt;, DesvioPadrao&lt;float&gt;, Minimo&lt;float&gt;, Maximo&lt;float&gt;</span>
+</pre></div>
+</div>
+<p>Vejam que a consulta é exatamente a mesma.</p>
+</section>
+<section id="selecionando-as-propriedades">
+<h3>Selecionando as Propriedades<a class="headerlink" href="#selecionando-as-propriedades" title="Link permanente para este cabeçalho">#</a></h3>
+<p>O médoto <code class="docutils literal notranslate"><span class="pre">select</span></code> funciona de forma muito semelhante ao <em>select</em> de uma <em>query</em> SQL.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [35]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">em</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s1">&#39;ExpectativasMercadoTop5Anuais&#39;</span><span class="p">)</span>
+
+<span class="gp">In [36]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Indicador</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">DataReferencia</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">tipoCalculo</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">Media</span><span class="p">)</span>
+<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
+<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
+<span class="gp">   ....: </span>
+<span class="gh">Out[36]: </span>
+<span class="go">   Indicador       Data DataReferencia tipoCalculo   Media</span>
+<span class="go">0  PIB Total 2023-07-07     2023-01-01           L  2.4258</span>
+<span class="go">1  PIB Total 2023-07-07     2024-01-01           L  1.2264</span>
+<span class="go">2  PIB Total 2023-07-07     2025-01-01           L  1.7333</span>
+<span class="go">3  PIB Total 2023-07-07     2026-01-01           L  1.7333</span>
+<span class="go">4  PIB Total 2023-07-07     2027-01-01           L  1.8333</span>
+</pre></div>
+</div>
+<p>Selecionar as colunas é importante para reduzir o volume de dados trafegado, pois a API do BCB não tem um bom
+desempenho, logo, essas configurações aceleram as consultas.</p>
+</section>
+<section id="metodo-limit">
+<h3>Método <code class="docutils literal notranslate"><span class="pre">limit</span></code><a class="headerlink" href="#metodo-limit" title="Link permanente para este cabeçalho">#</a></h3>
+<p>O método <code class="docutils literal notranslate"><span class="pre">limit</span></code> define a quantidade de linhas que será retornada pela consulta.
+Esse método é importante para investigar as consultas na API de forma rápida.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [37]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">pix</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s2">&quot;PixLiquidadosAtual&quot;</span><span class="p">)</span>
+
+<span class="gp">In [38]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span> <span class="o">&gt;=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
+<span class="gp">   ....: </span>
+<span class="gh">Out[38]: </span>
+<span class="go">Empty DataFrame</span>
+<span class="go">Columns: []</span>
+<span class="go">Index: []</span>
+</pre></div>
+</div>
 </section>
 <section id="tipos-de-endpoints">
 <h3>Tipos de <em>endpoints</em><a class="headerlink" href="#tipos-de-endpoints" title="Link permanente para este cabeçalho">#</a></h3>
 <p>Como foi visto anteriormente, a API do PIX (<code class="docutils literal notranslate"><span class="pre">SPI</span></code>) possui 4 <code class="docutils literal notranslate"><span class="pre">EntitySets</span></code> e estes são os <em>endpoints</em> dessa API.
 Entretanto, há APIs que têm um outro tipo de <em>endpoint</em>, os <code class="docutils literal notranslate"><span class="pre">FunctionImports</span></code>.
 A API do PTAX, por exemplo</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [25]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">PTAX</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [39]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">PTAX</span>
 
-<span class="gp">In [26]: </span><span class="n">ptax</span> <span class="o">=</span> <span class="n">PTAX</span><span class="p">()</span>
+<span class="gp">In [40]: </span><span class="n">ptax</span> <span class="o">=</span> <span class="n">PTAX</span><span class="p">()</span>
 
-<span class="gp">In [27]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+<span class="gp">In [41]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 <span class="go">EntitySets:</span>
 <span class="go">  Moedas</span>
 <span class="go">FunctionImports:</span>
@@ -525,7 +611,7 @@ Assim como os <code class="docutils literal notranslate"><span class="pre">Entit
 A principal diferença entre os <code class="docutils literal notranslate"><span class="pre">EntitySets</span></code> e <code class="docutils literal notranslate"><span class="pre">FunctionImports</span></code> é que estes possuem parâmetros, como uma função, e
 estes parâmetros devem ser definidos para que a consulta seja realizada.</p>
 <p>Vamos ver o <em>endpoint</em> <code class="docutils literal notranslate"><span class="pre">CotacaoMoedaPeriodo</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [28]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">&quot;CotacaoMoedaPeriodo&quot;</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [42]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">&quot;CotacaoMoedaPeriodo&quot;</span><span class="p">)</span>
 
 <span class="go">Function: CotacaoMoedaPeriodo</span>
 <span class="go">Parameters: moeda &lt;str&gt;, dataInicial &lt;str&gt;, dataFinalCotacao &lt;str&gt;</span>
@@ -546,15 +632,15 @@ Por exemplo, neste <em>endpoint</em>, os parâmetros <code class="docutils liter
 mês-dia-ano (formato americano), ao invés de ano-mês-dia (formato ISO), e como o tipo dos parâmetros é <code class="docutils literal notranslate"><span class="pre">str</span></code>,
 uma formatação incorreta não retorna um erro, apenas retorna um DataFrame vazio.</p>
 <p>Vamos realizar uma consulta para obter as cotações de dólar americano entre 2022-01-01 e 2022-01-05.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [29]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">ptax</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s2">&quot;CotacaoMoedaPeriodo&quot;</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [43]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">ptax</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s2">&quot;CotacaoMoedaPeriodo&quot;</span><span class="p">)</span>
 
-<span class="gp">In [30]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<span class="gp">In [44]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">moeda</span><span class="o">=</span><span class="s2">&quot;USD&quot;</span><span class="p">,</span>
 <span class="gp">   ....: </span>               <span class="n">dataInicial</span><span class="o">=</span><span class="s2">&quot;1/1/2022&quot;</span><span class="p">,</span>
 <span class="gp">   ....: </span>               <span class="n">dataFinalCotacao</span><span class="o">=</span><span class="s2">&quot;1/5/2022&quot;</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[30]: </span>
+<span class="gh">Out[44]: </span>
 <span class="go">    paridadeCompra  paridadeVenda  ...         dataHoraCotacao    tipoBoletim</span>
 <span class="go">0              1.0            1.0  ... 2022-01-03 10:04:22.186       Abertura</span>
 <span class="go">1              1.0            1.0  ... 2022-01-03 11:11:42.883  Intermediário</span>
@@ -578,14 +664,14 @@ uma formatação incorreta não retorna um erro, apenas retorna um DataFrame vaz
 <p>Note que a primeira data é 2022-01-03, pois os primeiros dias do ano não são úteis.
 Podemos aplicar filtros nessa consulta utilizando o método <code class="docutils literal notranslate"><span class="pre">filter</span></code>, da mesma forma que realizamos na consulta ao
 <code class="docutils literal notranslate"><span class="pre">EntitySet</span></code>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [31]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [45]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">moeda</span><span class="o">=</span><span class="s2">&quot;USD&quot;</span><span class="p">,</span>
 <span class="gp">   ....: </span>               <span class="n">dataInicial</span><span class="o">=</span><span class="s2">&quot;1/1/2022&quot;</span><span class="p">,</span>
 <span class="gp">   ....: </span>               <span class="n">dataFinalCotacao</span><span class="o">=</span><span class="s2">&quot;1/5/2022&quot;</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">tipoBoletim</span> <span class="o">==</span> <span class="s2">&quot;Fechamento&quot;</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[31]: </span>
+<span class="gh">Out[45]: </span>
 <span class="go">   paridadeCompra  paridadeVenda  ...         dataHoraCotacao  tipoBoletim</span>
 <span class="go">0             1.0            1.0  ... 2022-01-03 13:11:50.357   Fechamento</span>
 <span class="go">1             1.0            1.0  ... 2022-01-04 13:08:59.123   Fechamento</span>
@@ -595,258 +681,47 @@ Podemos aplicar filtros nessa consulta utilizando o método <code class="docutil
 </pre></div>
 </div>
 </section>
-</section>
-<section id="aplicacoes">
-<h2>Aplicações<a class="headerlink" href="#aplicacoes" title="Link permanente para este cabeçalho">#</a></h2>
-<p>As APIs OData sem apresentam destas 2 maneiras:</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="#entitysets"><span class="std std-ref">EntitySets</span></a>: consultas estáticas sem parâmetros que retornam dados em formato tabular disponibilizados pela API.
-Exemplos de APIs: <a class="reference internal" href="expectativas.html#expectativas"><span class="std std-ref">Expectativas</span></a> e <a class="reference internal" href="taxajuros.html#taxas-de-juros"><span class="std std-ref">Taxas de Juros</span></a>.</p></li>
-<li><p><a class="reference internal" href="#functionimports"><span class="std std-ref">FunctionImports</span></a>: consultas dinâmicas com parâmetros  que retornam dados em formato tabular disponibilizados pela API.
-Um exemplo é a <a class="reference internal" href="currency.html#api-odata-de-moedas"><span class="std std-ref">API OData de Moedas</span></a>.</p></li>
-</ul>
-<p>Identifica-se a maneira pela qual a API se apresenta utilizando o método <a class="reference internal" href="api.html#bcb.odata.api.BaseODataAPI.describe" title="bcb.odata.api.BaseODataAPI.describe"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.odata.api.BaseODataAPI.describe()</span></code></a>
-das classes que herdam <a class="reference internal" href="api.html#bcb.odata.api.BaseODataAPI" title="bcb.odata.api.BaseODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.BaseODataAPI</span></code></a>.</p>
-<section id="api-de-expectativas">
-<h3>API de Expectativas<a class="headerlink" href="#api-de-expectativas" title="Link permanente para este cabeçalho">#</a></h3>
-<p>A API de Expectativas possui diversos <em>entity sets</em>.
-Utilizando o método <code class="docutils literal notranslate"><span class="pre">describe</span></code> visualizamos todos os <em>entity sets</em> disponibilizados pela API.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [32]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">Expectativas</span>
+<section id="obtendo-o-texto-da-api">
+<h3>Obtendo o Texto da API<a class="headerlink" href="#obtendo-o-texto-da-api" title="Link permanente para este cabeçalho">#</a></h3>
+<p>Uma alternativa ao DataFrame retornado pela consulta, via o método <code class="docutils literal notranslate"><span class="pre">collect</span></code>, é obter o texto, em formato JSON
+(padrão) ou XML, retornado pela consulta.</p>
+<p>O método <code class="docutils literal notranslate"><span class="pre">collect</span></code> faz o <em>parsing</em> do texto retornado na consulta e cria um DataFrame, o método <code class="docutils literal notranslate"><span class="pre">text</span></code> retorna
+esse texto bruto.</p>
+<p>Isso é útil para fazer o armazenamento de dados da API para a construção de bancos de dados ou <em>data lakes</em>.</p>
+<p>Para obter o conteúdo bruto, basta executar o método <code class="docutils literal notranslate"><span class="pre">text</span></code> ao invés do <code class="docutils literal notranslate"><span class="pre">collect</span></code>, ao fim da cadeia da consulta.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [46]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">em</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s1">&#39;ExpectativasMercadoTop5Anuais&#39;</span><span class="p">)</span>
 
-<span class="gp">In [33]: </span><span class="n">em</span> <span class="o">=</span> <span class="n">Expectativas</span><span class="p">()</span>
-
-<span class="gp">In [34]: </span><span class="n">em</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
-<span class="go">EntitySets:</span>
-<span class="go">  ExpectativasMercadoTop5Anuais</span>
-<span class="go">  ExpectativaMercadoMensais</span>
-<span class="go">  ExpectativasMercadoInflacao12Meses</span>
-<span class="go">  ExpectativasMercadoSelic</span>
-<span class="go">  ExpectativasMercadoTop5Selic</span>
-<span class="go">  ExpectativasMercadoTop5Mensais</span>
-<span class="go">  ExpectativasMercadoTrimestrais</span>
-<span class="go">  ExpectativasMercadoAnuais</span>
-</pre></div>
-</div>
-<p>A API de Expectativas possui 8 <code class="docutils literal notranslate"><span class="pre">EntitySets</span></code>.
-Essa listagem traz os nomes dos <code class="docutils literal notranslate"><span class="pre">EntitySets</span></code> e ao passar um destes nomes para o método <code class="docutils literal notranslate"><span class="pre">describe</span></code> obtemos a
-descrição do <code class="docutils literal notranslate"><span class="pre">EntitySet</span></code> que é o <em>endpoint</em> que dá acesso a API.</p>
-<section id="entitysets">
-<h4>EntitySets<a class="headerlink" href="#entitysets" title="Link permanente para este cabeçalho">#</a></h4>
-<p>Cada <code class="docutils literal notranslate"><span class="pre">EntitySet</span></code> é um <em>endpoint</em> que retorna um conjunto de dados toda vez que são chamados.
-Utilizamos os método <code class="docutils literal notranslate"><span class="pre">describe</span></code> para obter informações sobre o que é retornado na solicitação ao <em>endpoint</em>.</p>
-<p>Inspecionando o <em>endpoint</em> <code class="docutils literal notranslate"><span class="pre">ExpectativaMercadoMensais</span></code></p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [35]: </span><span class="n">em</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">&quot;ExpectativaMercadoMensais&quot;</span><span class="p">)</span>
-
-<span class="go">EntitySet (Endpoint): ExpectativaMercadoMensais</span>
-<span class="go">EntityType: br.gov.bcb.olinda.servico.Expectativas.ExpectativaMercadoMensal</span>
-<span class="go">Properties: Indicador&lt;str&gt;, Data&lt;str&gt;, DataReferencia&lt;str&gt;, Media&lt;float&gt;, Mediana&lt;float&gt;, DesvioPadrao&lt;float&gt;, Minimo&lt;float&gt;, Maximo&lt;float&gt;, numeroRespondentes&lt;int&gt;, baseCalculo&lt;int&gt;</span>
-</pre></div>
-</div>
-<p>O <em>endpoint</em> <code class="docutils literal notranslate"><span class="pre">ExpectativaMercadoMensais</span></code> retorna um conjunto de dados
-denominado <code class="docutils literal notranslate"><span class="pre">br.gov.bcb.olinda.servico.Expectativas.ExpectativaMercadoMensal</span></code>, que é um <code class="docutils literal notranslate"><span class="pre">EntityType</span></code>.
-Este <code class="docutils literal notranslate"><span class="pre">EntityType</span></code> tem as seguintes propriedades:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">Indicador&lt;str&gt;</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Data&lt;str&gt;</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">DataReferencia&lt;str&gt;</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Media&lt;float&gt;</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Mediana&lt;float&gt;</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">DesvioPadrao&lt;float&gt;</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Minimo&lt;float&gt;</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Maximo&lt;float&gt;</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">numeroRespondentes&lt;int&gt;</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">baseCalculo&lt;int&gt;</span></code></p></li>
-</ul>
-<p>Note que cada propriedade tem um tipo associado.
-As propriedades são formatadas em colunas no DataFrame retornado como resultado da consulta.
-É muito importante conhecer as colunas, pois caso se queira realizar filtros ou ordenação nas
-consultas, estes são aplicados às propriedades.</p>
-<blockquote>
-<div><p>A utilização de filtros e ordenação na consulta é fundamental para a realização de consultas eficientes, pois estas
-operações são realizadas diretamente no processamento da API e isso reduz o volume de dados trafegados e,
-consequentemente, acelera a consulta.</p>
-</div></blockquote>
-<p>Para realizar uma consulta é necessário obter um objeto da classe <a class="reference internal" href="api.html#bcb.odata.api.Endpoint" title="bcb.odata.api.Endpoint"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.Endpoint</span></code></a>.
-Isso é feito chamando o método <code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.odata.api.Expectativas.get_endpoint()</span></code> com o nome do <code class="docutils literal notranslate"><span class="pre">EntitySet</span></code> desejado.
-Vamos utilizar o <em>endpoint</em> <code class="docutils literal notranslate"><span class="pre">ExpectativaMercadoMensais</span></code> como exemplo.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [36]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">em</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s2">&quot;ExpectativasMercadoTop5Anuais&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Tendo o objeto com o <em>endpoint</em> basta executar a consulta com <code class="docutils literal notranslate"><span class="pre">query</span></code> e
-chamando <code class="docutils literal notranslate"><span class="pre">collect</span></code> ao fim para obter os dados.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [37]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
-<span class="gh">Out[37]: </span>
-<span class="go">   Indicador       Data DataReferencia  ... DesvioPadrao  Minimo  Maximo</span>
-<span class="go">0  PIB Total 2023-03-31     2023-01-01  ...       0.3553  0.9700    2.00</span>
-<span class="go">1  PIB Total 2023-03-31     2024-01-01  ...       0.4276  0.4585    1.45</span>
-<span class="go">2  PIB Total 2023-03-31     2025-01-01  ...       0.1546  1.4500    1.80</span>
-<span class="go">3  PIB Total 2023-03-31     2026-01-01  ...       0.1546  1.4500    1.80</span>
-<span class="go">4  PIB Total 2023-03-31     2027-01-01  ...       0.1546  1.4500    1.80</span>
-<span class="go">5  PIB Total 2023-04-03     2023-01-01  ...       0.3553  0.9700    2.00</span>
-<span class="go">6  PIB Total 2023-04-03     2024-01-01  ...       0.4276  0.4585    1.45</span>
-<span class="go">7  PIB Total 2023-04-03     2025-01-01  ...       0.1546  1.4500    1.80</span>
-<span class="go">8  PIB Total 2023-04-03     2026-01-01  ...       0.1546  1.4500    1.80</span>
-<span class="go">9  PIB Total 2023-04-03     2027-01-01  ...       0.1546  1.4500    1.80</span>
-
-<span class="go">[10 rows x 9 columns]</span>
-</pre></div>
-</div>
-<p>Note que o método <code class="docutils literal notranslate"><span class="pre">limit</span></code> limita o retorno da consulta em 10 elementos.
-Uma forma de avaliar a consulta sem executá-la é utilizando o método <code class="docutils literal notranslate"><span class="pre">show</span></code>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [38]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-<span class="go">URL:</span>
-<span class="go">  https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/ExpectativasMercadoTop5Anuais</span>
-<span class="go">Query Parameters:</span>
-<span class="go">  $format = json</span>
-<span class="go">  $top = 10</span>
-<span class="go">Return: Indicador&lt;str&gt;, Data&lt;str&gt;, DataReferencia&lt;str&gt;, tipoCalculo&lt;str&gt;, Media&lt;float&gt;, Mediana&lt;float&gt;, DesvioPadrao&lt;float&gt;, Minimo&lt;float&gt;, Maximo&lt;float&gt;</span>
-</pre></div>
-</div>
-<p>Note que como apenas o <code class="docutils literal notranslate"><span class="pre">limit</span></code> foi utilizado, o único
-parâmetro definido é o <code class="docutils literal notranslate"><span class="pre">$top</span> <span class="pre">=</span> <span class="pre">10</span></code> indicando que apenas
-10 elementos serão retornados.</p>
-<p>Todos os métodos de <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.framework.ODataQuery</span></code> retornam a própria
-instância do objeto, com excessão a <code class="docutils literal notranslate"><span class="pre">show</span></code> e <code class="docutils literal notranslate"><span class="pre">collect</span></code>.
-Por essa razão é possível realizar chamadas encadeadas configurando
-a consulta.</p>
-<p>Uma consulta mais elaborada com <code class="docutils literal notranslate"><span class="pre">filter</span></code>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [39]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Indicador</span> <span class="o">==</span> <span class="s2">&quot;IPCA&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
-<span class="gh">Out[39]: </span>
-<span class="go">  Indicador       Data DataReferencia  ... DesvioPadrao  Minimo  Maximo</span>
-<span class="go">0      IPCA 2018-01-18     2019-01-01  ...         0.13    4.00    4.25</span>
-<span class="go">1      IPCA 2018-01-18     2020-01-01  ...         0.00    4.00    4.00</span>
-<span class="go">2      IPCA 2018-01-18     2021-01-01  ...         0.11    3.75    4.00</span>
-<span class="go">3      IPCA 2018-01-18     2018-01-01  ...         0.26    3.27    3.95</span>
-<span class="go">4      IPCA 2018-01-19     2019-01-01  ...         0.25    3.70    4.30</span>
-<span class="go">5      IPCA 2018-01-19     2020-01-01  ...         0.23    3.70    4.35</span>
-<span class="go">6      IPCA 2018-01-19     2021-01-01  ...         0.25    3.70    4.40</span>
-<span class="go">7      IPCA 2018-01-19     2018-01-01  ...         0.20    3.58    4.15</span>
-<span class="go">8      IPCA 2018-01-19     2022-01-01  ...         0.22    3.70    4.25</span>
-<span class="go">9      IPCA 2018-01-19     2019-01-01  ...         0.14    3.90    4.25</span>
-
-<span class="go">[10 rows x 9 columns]</span>
-</pre></div>
-</div>
-<p>Note que o <em>endpoint</em> tem como atributo <code class="docutils literal notranslate"><span class="pre">Indicador</span></code> que é uma
-das colunas retornadas.
-Todas as demais colunas podem ser acessadas através do objeto
-<code class="docutils literal notranslate"><span class="pre">ep</span></code>.</p>
-<p>Outra consulta mais elaborada com diversos filtros e ordenação e selecionando
-um conjunto de colunas.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [40]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
-<span class="gp">   ....: </span> <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Indicador</span> <span class="o">==</span> <span class="s2">&quot;IPCA&quot;</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">DataReferencia</span> <span class="o">&gt;=</span> <span class="mi">2023</span><span class="p">)</span>
-<span class="gp">   ....: </span> <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span> <span class="o">&gt;=</span> <span class="s2">&quot;2022-01-01&quot;</span><span class="p">)</span>
-<span class="gp">   ....: </span> <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">tipoCalculo</span> <span class="o">==</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
-<span class="gp">   ....: </span> <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">DataReferencia</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">Media</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">Mediana</span><span class="p">)</span>
-<span class="gp">   ....: </span> <span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">desc</span><span class="p">(),</span> <span class="n">ep</span><span class="o">.</span><span class="n">DataReferencia</span><span class="o">.</span><span class="n">asc</span><span class="p">())</span>
-<span class="gp">   ....: </span> <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="gp">   ....: </span> <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
+<span class="gp">In [47]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Indicador</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">DataReferencia</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">tipoCalculo</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">Media</span><span class="p">)</span>
+<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
+<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">text</span><span class="p">())</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[40]: </span>
-<span class="go">        Data DataReferencia   Media  Mediana</span>
-<span class="go">0 2023-07-07     2023-01-01  4.7611   4.9135</span>
-<span class="go">1 2023-07-07     2024-01-01  3.8822   4.0000</span>
-<span class="go">2 2023-07-07     2025-01-01  4.1000   4.1000</span>
-<span class="go">3 2023-07-07     2026-01-01  4.1250   4.0000</span>
-<span class="go">4 2023-07-07     2027-01-01  4.1250   4.0000</span>
-<span class="go">5 2023-07-06     2023-01-01  4.7652   4.9135</span>
-<span class="go">6 2023-07-06     2024-01-01  3.9146   4.0000</span>
-<span class="go">7 2023-07-06     2025-01-01  4.1000   4.1000</span>
-<span class="go">8 2023-07-06     2026-01-01  4.1250   4.0000</span>
-<span class="go">9 2023-07-06     2027-01-01  4.1250   4.0000</span>
+<span class="gh">Out[47]: </span><span class="go">&#39;{&quot;@odata.context&quot;:&quot;https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTop5Anuais(Indicador,Data,DataReferencia,tipoCalculo,Media)&quot;,&quot;value&quot;:[{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2023-07-07&quot;,&quot;DataReferencia&quot;:&quot;2023&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:2.4258},{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2023-07-07&quot;,&quot;DataReferencia&quot;:&quot;2024&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:1.2264},{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2023-07-07&quot;,&quot;DataReferencia&quot;:&quot;2025&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:1.7333},{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2023-07-07&quot;,&quot;DataReferencia&quot;:&quot;2026&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:1.7333},{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2023-07-07&quot;,&quot;DataReferencia&quot;:&quot;2027&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:1.8333}]}&#39;</span>
 </pre></div>
 </div>
-</section>
-</section>
-<section id="api-de-moedas">
-<h3>API de Moedas<a class="headerlink" href="#api-de-moedas" title="Link permanente para este cabeçalho">#</a></h3>
-<p>Uma outra aplicação é com a API de Moedas que implementa a especificação OData.
-Utilizando a classe <a class="reference internal" href="api.html#bcb.odata.api.PTAX" title="bcb.odata.api.PTAX"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.PTAX</span></code></a> temos:</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [41]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">PTAX</span>
+<p>O texto retornado está no formato JSON.
+Contudo, as APIs OData também retornam conteúdo em XML.
+Para isso incluímos o método <code class="docutils literal notranslate"><span class="pre">format</span></code> na cadeia da consulta e passamos como parâmetro o tipo desejado.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [48]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">em</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s1">&#39;ExpectativasMercadoTop5Anuais&#39;</span><span class="p">)</span>
 
-<span class="gp">In [42]: </span><span class="n">ptax</span> <span class="o">=</span> <span class="n">PTAX</span><span class="p">()</span>
-
-<span class="gp">In [43]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
-<span class="go">EntitySets:</span>
-<span class="go">  Moedas</span>
-<span class="go">FunctionImports:</span>
-<span class="go">  CotacaoMoedaPeriodoFechamento</span>
-<span class="go">  CotacaoMoedaAberturaOuIntermediario</span>
-<span class="go">  CotacaoMoedaDia</span>
-<span class="go">  CotacaoMoedaPeriodo</span>
-<span class="go">  CotacaoDolarDia</span>
-<span class="go">  CotacaoDolarPeriodo</span>
-</pre></div>
-</div>
-<section id="functionimports">
-<h4>FunctionImports<a class="headerlink" href="#functionimports" title="Link permanente para este cabeçalho">#</a></h4>
-<p>Note que essa API tem um <code class="docutils literal notranslate"><span class="pre">EntitySet</span></code> e seis <code class="docutils literal notranslate"><span class="pre">FunctionImports</span></code>.
-A diferença entre eles é que os <code class="docutils literal notranslate"><span class="pre">FunctionImports</span></code> são funções
-e como funções recebem parâmetros que na maioria das vezes não são opicionais.</p>
-<p>Executando <code class="docutils literal notranslate"><span class="pre">describe</span></code> na função <code class="docutils literal notranslate"><span class="pre">CotacaoMoedaPeriodo</span></code> temos:</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [44]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">&quot;CotacaoMoedaPeriodo&quot;</span><span class="p">)</span>
-
-<span class="go">Function: CotacaoMoedaPeriodo</span>
-<span class="go">Parameters: moeda &lt;str&gt;, dataInicial &lt;str&gt;, dataFinalCotacao &lt;str&gt;</span>
-<span class="go">EntitySet: _CotacaoMoedaPeriodo</span>
-<span class="go">EntityType: br.gov.bcb.olinda.servico.PTAX.TipoCotacaoMoeda</span>
-<span class="go">Properties: paridadeCompra &lt;float&gt;, paridadeVenda &lt;float&gt;, cotacaoCompra &lt;float&gt;, cotacaoVenda &lt;float&gt;, dataHoraCotacao &lt;str&gt;, tipoBoletim &lt;str&gt;</span>
-</pre></div>
-</div>
-<p>Vemos que a função recebe três parâmetros: <code class="docutils literal notranslate"><span class="pre">moeda</span></code>, <code class="docutils literal notranslate"><span class="pre">dataInicial</span></code>,
-<code class="docutils literal notranslate"><span class="pre">dataFinalCotacao</span></code>.
-Estes parâmetros são passados para a consulta utilizando o método
-<code class="docutils literal notranslate"><span class="pre">parameters</span></code>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [45]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">ptax</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s2">&quot;CotacaoMoedaPeriodo&quot;</span><span class="p">)</span>
-
-<span class="gp">In [46]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
-<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">moeda</span><span class="o">=</span><span class="s2">&quot;USD&quot;</span><span class="p">,</span> <span class="n">dataInicial</span><span class="o">=</span><span class="s2">&quot;01/01/2022&quot;</span><span class="p">,</span> <span class="n">dataFinalCotacao</span><span class="o">=</span><span class="s2">&quot;01/10/2022&quot;</span><span class="p">)</span>
-<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
+<span class="gp">In [49]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Indicador</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">DataReferencia</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">tipoCalculo</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">Media</span><span class="p">)</span>
+<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
+<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;xml&quot;</span><span class="p">)</span>
+<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">text</span><span class="p">())</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[46]: </span>
-<span class="go">   paridadeCompra  paridadeVenda  ...         dataHoraCotacao    tipoBoletim</span>
-<span class="go">0             1.0            1.0  ... 2022-01-03 10:04:22.186       Abertura</span>
-<span class="go">1             1.0            1.0  ... 2022-01-03 11:11:42.883  Intermediário</span>
-<span class="go">2             1.0            1.0  ... 2022-01-03 12:09:19.760  Intermediário</span>
-<span class="go">3             1.0            1.0  ... 2022-01-03 13:11:50.353  Intermediário</span>
-<span class="go">4             1.0            1.0  ... 2022-01-03 13:11:50.357     Fechamento</span>
-<span class="go">5             1.0            1.0  ... 2022-01-04 10:05:22.015       Abertura</span>
-<span class="go">6             1.0            1.0  ... 2022-01-04 11:05:20.148  Intermediário</span>
-<span class="go">7             1.0            1.0  ... 2022-01-04 12:10:19.466  Intermediário</span>
-<span class="go">8             1.0            1.0  ... 2022-01-04 13:08:59.118  Intermediário</span>
-<span class="go">9             1.0            1.0  ... 2022-01-04 13:08:59.123     Fechamento</span>
-
-<span class="go">[10 rows x 6 columns]</span>
-</pre></div>
-</div>
-<p>Fora os parâmetros, todos os demais métodos funcionam como esperado.
-Podemos filtrar apenas pelos dados de abertura.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [47]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
-<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">tipoBoletim</span> <span class="o">==</span> <span class="s2">&quot;Abertura&quot;</span><span class="p">)</span>
-<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">moeda</span><span class="o">=</span><span class="s2">&quot;USD&quot;</span><span class="p">,</span> <span class="n">dataInicial</span><span class="o">=</span><span class="s2">&quot;01/01/2022&quot;</span><span class="p">,</span> <span class="n">dataFinalCotacao</span><span class="o">=</span><span class="s2">&quot;01/10/2022&quot;</span><span class="p">)</span>
-<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
-<span class="gp">   ....: </span>
-<span class="gh">Out[47]: </span>
-<span class="go">   paridadeCompra  paridadeVenda  ...         dataHoraCotacao  tipoBoletim</span>
-<span class="go">0             1.0            1.0  ... 2022-01-03 10:04:22.186     Abertura</span>
-<span class="go">1             1.0            1.0  ... 2022-01-04 10:05:22.015     Abertura</span>
-<span class="go">2             1.0            1.0  ... 2022-01-05 10:06:19.404     Abertura</span>
-<span class="go">3             1.0            1.0  ... 2022-01-06 10:08:20.059     Abertura</span>
-<span class="go">4             1.0            1.0  ... 2022-01-07 10:06:19.793     Abertura</span>
-<span class="go">5             1.0            1.0  ... 2022-01-10 10:05:20.954     Abertura</span>
-
-<span class="go">[6 rows x 6 columns]</span>
+<span class="gh">Out[49]: </span><span class="go">&#39;&lt;?xml version=\&#39;1.0\&#39; encoding=\&#39;UTF-8\&#39;?&gt;&lt;a:feed xmlns:a=&quot;http://www.w3.org/2005/Atom&quot; xmlns:m=&quot;http://docs.oasis-open.org/odata/ns/metadata&quot; xmlns:d=&quot;http://docs.oasis-open.org/odata/ns/data&quot; m:context=&quot;https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTop5Anuais(Indicador,Data,DataReferencia,tipoCalculo,Media)&quot;&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2023-07-15T09:03:56Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2023-07-07&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2023&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;2.4258&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2023-07-15T09:03:56Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2023-07-07&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2024&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;1.2264&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2023-07-15T09:03:56Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2023-07-07&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2025&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;1.7333&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2023-07-15T09:03:56Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2023-07-07&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2026&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;1.7333&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2023-07-15T09:03:56Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2023-07-07&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2027&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;1.8333&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;/a:feed&gt;&#39;</span>
 </pre></div>
 </div>
 </section>
 </section>
 <section id="classe-odataapi">
-<h3>Classe ODataAPI<a class="headerlink" href="#classe-odataapi" title="Link permanente para este cabeçalho">#</a></h3>
+<h2>Classe ODataAPI<a class="headerlink" href="#classe-odataapi" title="Link permanente para este cabeçalho">#</a></h2>
 <p>O portal de Dados Abertos to Banco Central apresenta diversas APIs OData, são
 dezenas de APIs disponíveis.
-A URL com metadados de cada API pode ser obtida no portal.
+A URL com metadados de cada API pode ser obtida no <a class="reference external" href="https://dadosabertos.bcb.gov.br">portal</a>.
 A classe <a class="reference internal" href="api.html#bcb.odata.api.ODataAPI" title="bcb.odata.api.ODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.ODataAPI</span></code></a> permite acessar qualquer API Odata de posse da sua URL.</p>
 <p>Por exemplo, a API de estatísticas de operações registradas no Selic tem a seguinte URL:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">olinda</span><span class="o">.</span><span class="n">bcb</span><span class="o">.</span><span class="n">gov</span><span class="o">.</span><span class="n">br</span><span class="o">/</span><span class="n">olinda</span><span class="o">/</span><span class="n">servico</span><span class="o">/</span><span class="n">selic_operacoes</span><span class="o">/</span><span class="n">versao</span><span class="o">/</span><span class="n">v1</span><span class="o">/</span><span class="n">odata</span><span class="o">/</span>
@@ -854,13 +729,13 @@ A classe <a class="reference internal" href="api.html#bcb.odata.api.ODataAPI" ti
 </div>
 <p>que pode ser obtida no portal de dados abertos no <a class="reference external" href="https://dadosabertos.bcb.gov.br/dataset/estatisticas-selic-operacoes">link</a>.</p>
 <p>Essa API pode ser diretamente acessada através da classe <a class="reference internal" href="api.html#bcb.odata.api.ODataAPI" title="bcb.odata.api.ODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.ODataAPI</span></code></a>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [48]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">ODataAPI</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [50]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">ODataAPI</span>
 
-<span class="gp">In [49]: </span><span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://olinda.bcb.gov.br/olinda/servico/selic_operacoes/versao/v1/odata/&quot;</span>
+<span class="gp">In [51]: </span><span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://olinda.bcb.gov.br/olinda/servico/selic_operacoes/versao/v1/odata/&quot;</span>
 
-<span class="gp">In [50]: </span><span class="n">service</span> <span class="o">=</span> <span class="n">ODataAPI</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="gp">In [52]: </span><span class="n">service</span> <span class="o">=</span> <span class="n">ODataAPI</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 
-<span class="gp">In [51]: </span><span class="n">service</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+<span class="gp">In [53]: </span><span class="n">service</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 <span class="go">EntitySets:</span>
 <span class="go">  DatasOperacoesSelic</span>
 <span class="go">FunctionImports:</span>
@@ -868,21 +743,6 @@ A classe <a class="reference internal" href="api.html#bcb.odata.api.ODataAPI" ti
 <span class="go">  OperacoesEmUmaData</span>
 </pre></div>
 </div>
-</section>
-</section>
-<section id="conclusao">
-<h2>Conclusão<a class="headerlink" href="#conclusao" title="Link permanente para este cabeçalho">#</a></h2>
-<p>Esta estrutura se aplica a todas as classes que fazem interface com APIs
-que implementam a especificação OData.</p>
-<p>Para conhecer a API, além de ler a documentação, basta executar os passos:</p>
-<ul class="simple">
-<li><p>instanciar a classe</p></li>
-<li><p>executar o <code class="docutils literal notranslate"><span class="pre">describe</span></code> para conhecer os <em>endpoints</em></p></li>
-<li><p>executar o <code class="docutils literal notranslate"><span class="pre">describe</span></code> para um dos <em>endpoints</em> e saber o que precisa ser
-fornecido e o que será retornado</p></li>
-<li><p>obter o <em>endpoint</em> com <code class="docutils literal notranslate"><span class="pre">get_endpoint</span></code></p></li>
-<li><p>tendo o <em>endpoint</em> executar <code class="docutils literal notranslate"><span class="pre">query</span></code> e não esquecer de chamar <code class="docutils literal notranslate"><span class="pre">collect</span></code> ao fim</p></li>
-</ul>
 </section>
 </section>
 
@@ -945,22 +805,14 @@ fornecido e o que será retornado</p></li>
 <li><a class="reference internal" href="#como-realizar-consultas-em-apis-odata">Como Realizar Consultas em APIs OData</a><ul>
 <li><a class="reference internal" href="#visualizando-a-consulta">Visualizando a Consulta</a></li>
 <li><a class="reference internal" href="#filtrando-dados">Filtrando Dados</a></li>
+<li><a class="reference internal" href="#ordenando-os-dados">Ordenando os Dados</a></li>
+<li><a class="reference internal" href="#selecionando-as-propriedades">Selecionando as Propriedades</a></li>
+<li><a class="reference internal" href="#metodo-limit">Método <code class="docutils literal notranslate"><span class="pre">limit</span></code></a></li>
 <li><a class="reference internal" href="#tipos-de-endpoints">Tipos de <em>endpoints</em></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#aplicacoes">Aplicações</a><ul>
-<li><a class="reference internal" href="#api-de-expectativas">API de Expectativas</a><ul>
-<li><a class="reference internal" href="#entitysets">EntitySets</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#api-de-moedas">API de Moedas</a><ul>
-<li><a class="reference internal" href="#functionimports">FunctionImports</a></li>
+<li><a class="reference internal" href="#obtendo-o-texto-da-api">Obtendo o Texto da API</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#classe-odataapi">Classe ODataAPI</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#conclusao">Conclusão</a></li>
 </ul>
 </li>
 </ul>
