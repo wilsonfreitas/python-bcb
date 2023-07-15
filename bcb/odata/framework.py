@@ -155,6 +155,9 @@ class ODataPropertyOrderBy:
     def __str__(self):
         return f"{self.obj.name} {self.order}"
 
+    def __repr__(self):
+        return f"<{str(self)}>"
+
 
 class ODataPropertyFilter:
     def __init__(self, obj, oth, operator):
@@ -176,6 +179,9 @@ class ODataPropertyFilter:
 
     def __str__(self):
         return self.statement()
+
+    def __repr__(self):
+        return f"<filter: {str(self)}>"
 
 
 class ODataProperty:
@@ -216,7 +222,7 @@ class ODataProperty:
         return ODataPropertyFilter(self, other, "eq")
 
     def __repr__(self):
-        return f"<Property {self.name}>"
+        return f"<Property {self.name}<{self.ftype}>>"
 
 
 class ODataFunction:
@@ -396,6 +402,7 @@ class ODataQuery:
         self._filter = []
         self._select = []
         self._orderby = []
+        self._raw = False
         self.is_function = isinstance(entity, ODataFunctionImport)
         if self.is_function:
             self.function_parameters = {
@@ -450,8 +457,12 @@ class ODataQuery:
             self._select.extend(args)
         return self
 
+    def raw(self):
+        self._raw = True
+        return self
+
     def _build_parameters(self):
-        params = {"$format": "json"}
+        params = {"$format": self._params.get("$format", "json")}
         if len(self._filter):
             _filter = " and ".join(str(f) for f in self._filter)
             params["$filter"] = _filter
@@ -470,6 +481,9 @@ class ODataQuery:
         self._params = {}
 
     def collect(self):
+        return json.loads(self.text())
+
+    def text(self):
         params = self._build_parameters()
         if self.is_function and len(self.function_parameters):
             for p in self.entity.function.parameters:
@@ -480,8 +494,7 @@ class ODataQuery:
         qs = "&".join([f"{quote(k)}={quote(str(v))}" for k, v in params.items()])
         headers = {"OData-Version": "4.0", "OData-MaxVersion": "4.0"}
         res = httpx.get(self.odata_url() + "?" + qs, headers=headers, timeout=60.0)
-        logging.debug(res.text)
-        return json.loads(res.text)
+        return res.text
 
     def show(self):
         print(f"URL:")

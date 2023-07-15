@@ -44,11 +44,12 @@ class EndpointQuery(ODataQuery):
     def collect(self):
         raw_data = super().collect()
         data = pd.DataFrame(raw_data["value"])
-        for col in self._DATE_COLUMN_NAMES:
-            if self.entity.name in self._DATE_COLUMN_NAMES_BY_ENDPOINT and col in self._DATE_COLUMN_NAMES_BY_ENDPOINT[self.entity.name]:
-                data[col] = pd.to_datetime(data[col], format=self._DATE_COLUMN_NAMES_BY_ENDPOINT[self.entity.name][col])
-            elif col in data.columns:
-                data[col] = pd.to_datetime(data[col])
+        if not self._raw:
+            for col in self._DATE_COLUMN_NAMES:
+                if self.entity.name in self._DATE_COLUMN_NAMES_BY_ENDPOINT and col in self._DATE_COLUMN_NAMES_BY_ENDPOINT[self.entity.name]:
+                    data[col] = pd.to_datetime(data[col], format=self._DATE_COLUMN_NAMES_BY_ENDPOINT[self.entity.name][col])
+                elif col in data.columns:
+                    data[col] = pd.to_datetime(data[col])
         return data
 
 
