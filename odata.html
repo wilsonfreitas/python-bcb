@@ -307,11 +307,11 @@ Vamos ordernar pela propriedade <code class="docutils literal notranslate"><span
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [9]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
 <span class="gh">Out[9]: </span>
 <span class="go">        Data  Quantidade        Total   Media</span>
-<span class="go">0 2023-07-19    96464512  41501922.13  430.23</span>
-<span class="go">1 2023-07-18    94993401  42736432.83  449.89</span>
-<span class="go">2 2023-07-17    98447274  56303224.55  571.91</span>
-<span class="go">3 2023-07-16    67448882   8105531.25  120.17</span>
-<span class="go">4 2023-07-15    98209462  16243552.03  165.40</span>
+<span class="go">0 2023-07-20   111026917  53029296.74  477.63</span>
+<span class="go">1 2023-07-19    96464512  41501922.13  430.23</span>
+<span class="go">2 2023-07-18    94993401  42736432.83  449.89</span>
+<span class="go">3 2023-07-17    98447274  56303224.55  571.91</span>
+<span class="go">4 2023-07-16    67448882   8105531.25  120.17</span>
 </pre></div>
 </div>
 <p>Veja que a consulta retorna as datas mais recentes primeiro.</p>
@@ -414,11 +414,11 @@ Podemos utilizar todos os operadores de comparação nos filtros.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [19]: </span><span class="n">query</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
 <span class="gh">Out[19]: </span>
 <span class="go">  Indicador       Data DataReferencia  ... DesvioPadrao  Minimo  Maximo</span>
-<span class="go">0      IPCA 2018-01-18     2019-01-01  ...         0.13    4.00    4.25</span>
-<span class="go">1      IPCA 2018-01-18     2020-01-01  ...         0.00    4.00    4.00</span>
-<span class="go">2      IPCA 2018-01-18     2021-01-01  ...         0.11    3.75    4.00</span>
-<span class="go">3      IPCA 2018-01-18     2018-01-01  ...         0.26    3.27    3.95</span>
-<span class="go">4      IPCA 2018-01-19     2019-01-01  ...         0.25    3.70    4.30</span>
+<span class="go">0      IPCA 2018-01-18           2019  ...         0.13    4.00    4.25</span>
+<span class="go">1      IPCA 2018-01-18           2020  ...         0.00    4.00    4.00</span>
+<span class="go">2      IPCA 2018-01-18           2021  ...         0.11    3.75    4.00</span>
+<span class="go">3      IPCA 2018-01-18           2018  ...         0.26    3.27    3.95</span>
+<span class="go">4      IPCA 2018-01-19           2019  ...         0.25    3.70    4.30</span>
 
 <span class="go">[5 rows x 9 columns]</span>
 </pre></div>
@@ -443,11 +443,11 @@ Podemos utilizar todos os operadores de comparação nos filtros.</p>
 <span class="gp">In [22]: </span><span class="n">query</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
 <span class="gh">Out[22]: </span>
 <span class="go">  Indicador       Data DataReferencia  ... DesvioPadrao  Minimo  Maximo</span>
-<span class="go">0      IPCA 2022-01-03     2023-01-01  ...       0.4385     2.5  3.8000</span>
-<span class="go">1      IPCA 2022-01-04     2023-01-01  ...       0.4385     2.5  3.8000</span>
-<span class="go">2      IPCA 2022-01-05     2023-01-01  ...       0.4385     2.5  3.8000</span>
-<span class="go">3      IPCA 2022-01-06     2023-01-01  ...       0.4385     2.5  3.8000</span>
-<span class="go">4      IPCA 2022-01-07     2023-01-01  ...       0.5711     2.5  4.2693</span>
+<span class="go">0      IPCA 2022-01-03           2023  ...       0.4385     2.5  3.8000</span>
+<span class="go">1      IPCA 2022-01-04           2023  ...       0.4385     2.5  3.8000</span>
+<span class="go">2      IPCA 2022-01-05           2023  ...       0.4385     2.5  3.8000</span>
+<span class="go">3      IPCA 2022-01-06           2023  ...       0.4385     2.5  3.8000</span>
+<span class="go">4      IPCA 2022-01-07           2023  ...       0.5711     2.5  4.2693</span>
 
 <span class="go">[5 rows x 9 columns]</span>
 </pre></div>
@@ -560,11 +560,11 @@ objeto <code class="docutils literal notranslate"><span class="pre">datetime</sp
 <span class="gp">   ....: </span>
 <span class="gh">Out[36]: </span>
 <span class="go">   Indicador       Data DataReferencia tipoCalculo   Media</span>
-<span class="go">0  PIB Total 2023-07-14     2023-01-01           L  2.4218</span>
-<span class="go">1  PIB Total 2023-07-14     2024-01-01           L  1.3932</span>
-<span class="go">2  PIB Total 2023-07-14     2025-01-01           L  1.7333</span>
-<span class="go">3  PIB Total 2023-07-14     2026-01-01           L  1.7333</span>
-<span class="go">4  PIB Total 2023-07-14     2027-01-01           L  1.8333</span>
+<span class="go">0  PIB Total 2023-07-14           2023           L  2.4218</span>
+<span class="go">1  PIB Total 2023-07-14           2024           L  1.3932</span>
+<span class="go">2  PIB Total 2023-07-14           2025           L  1.7333</span>
+<span class="go">3  PIB Total 2023-07-14           2026           L  1.7333</span>
+<span class="go">4  PIB Total 2023-07-14           2027           L  1.8333</span>
 </pre></div>
 </div>
 <p>Selecionar as colunas é importante para reduzir o volume de dados trafegado, pois a API do BCB não tem um bom
@@ -718,7 +718,7 @@ Para isso incluímos o método <code class="docutils literal notranslate"><span 
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">text</span><span class="p">())</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[49]: </span><span class="go">&#39;&lt;?xml version=\&#39;1.0\&#39; encoding=\&#39;UTF-8\&#39;?&gt;&lt;a:feed xmlns:a=&quot;http://www.w3.org/2005/Atom&quot; xmlns:m=&quot;http://docs.oasis-open.org/odata/ns/metadata&quot; xmlns:d=&quot;http://docs.oasis-open.org/odata/ns/data&quot; m:context=&quot;https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTop5Anuais(Indicador,Data,DataReferencia,tipoCalculo,Media)&quot;&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2023-07-20T06:49:26Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2023-07-14&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2023&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;2.4218&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2023-07-20T06:49:26Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2023-07-14&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2024&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;1.3932&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2023-07-20T06:49:26Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2023-07-14&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2025&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;1.7333&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2023-07-20T06:49:26Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2023-07-14&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2026&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;1.7333&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2023-07-20T06:49:26Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2023-07-14&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2027&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;1.8333&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;/a:feed&gt;&#39;</span>
+<span class="gh">Out[49]: </span><span class="go">&#39;&lt;?xml version=\&#39;1.0\&#39; encoding=\&#39;UTF-8\&#39;?&gt;&lt;a:feed xmlns:a=&quot;http://www.w3.org/2005/Atom&quot; xmlns:m=&quot;http://docs.oasis-open.org/odata/ns/metadata&quot; xmlns:d=&quot;http://docs.oasis-open.org/odata/ns/data&quot; m:context=&quot;https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTop5Anuais(Indicador,Data,DataReferencia,tipoCalculo,Media)&quot;&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2023-07-22T07:35:09Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2023-07-14&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2023&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;2.4218&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2023-07-22T07:35:09Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2023-07-14&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2024&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;1.3932&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2023-07-22T07:35:09Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2023-07-14&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2025&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;1.7333&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2023-07-22T07:35:09Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2023-07-14&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2026&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;1.7333&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2023-07-22T07:35:09Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2023-07-14&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2027&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;1.8333&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;/a:feed&gt;&#39;</span>
 </pre></div>
 </div>
 </section>

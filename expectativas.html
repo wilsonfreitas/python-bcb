@@ -271,16 +271,16 @@ método <code class="xref py py-meth docutils literal notranslate"><span class="
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [6]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
 <span class="gh">Out[6]: </span>
 <span class="go">   Indicador       Data DataReferencia  ... DesvioPadrao  Minimo  Maximo</span>
-<span class="go">0  PIB Total 2023-03-31     2023-01-01  ...       0.3553  0.9700    2.00</span>
-<span class="go">1  PIB Total 2023-03-31     2024-01-01  ...       0.4276  0.4585    1.45</span>
-<span class="go">2  PIB Total 2023-03-31     2025-01-01  ...       0.1546  1.4500    1.80</span>
-<span class="go">3  PIB Total 2023-03-31     2026-01-01  ...       0.1546  1.4500    1.80</span>
-<span class="go">4  PIB Total 2023-03-31     2027-01-01  ...       0.1546  1.4500    1.80</span>
-<span class="go">5  PIB Total 2023-04-03     2023-01-01  ...       0.3553  0.9700    2.00</span>
-<span class="go">6  PIB Total 2023-04-03     2024-01-01  ...       0.4276  0.4585    1.45</span>
-<span class="go">7  PIB Total 2023-04-03     2025-01-01  ...       0.1546  1.4500    1.80</span>
-<span class="go">8  PIB Total 2023-04-03     2026-01-01  ...       0.1546  1.4500    1.80</span>
-<span class="go">9  PIB Total 2023-04-03     2027-01-01  ...       0.1546  1.4500    1.80</span>
+<span class="go">0  PIB Total 2023-03-31           2023  ...       0.3553  0.9700    2.00</span>
+<span class="go">1  PIB Total 2023-03-31           2024  ...       0.4276  0.4585    1.45</span>
+<span class="go">2  PIB Total 2023-03-31           2025  ...       0.1546  1.4500    1.80</span>
+<span class="go">3  PIB Total 2023-03-31           2026  ...       0.1546  1.4500    1.80</span>
+<span class="go">4  PIB Total 2023-03-31           2027  ...       0.1546  1.4500    1.80</span>
+<span class="go">5  PIB Total 2023-04-03           2023  ...       0.3553  0.9700    2.00</span>
+<span class="go">6  PIB Total 2023-04-03           2024  ...       0.4276  0.4585    1.45</span>
+<span class="go">7  PIB Total 2023-04-03           2025  ...       0.1546  1.4500    1.80</span>
+<span class="go">8  PIB Total 2023-04-03           2026  ...       0.1546  1.4500    1.80</span>
+<span class="go">9  PIB Total 2023-04-03           2027  ...       0.1546  1.4500    1.80</span>
 
 <span class="go">[10 rows x 9 columns]</span>
 </pre></div>
@@ -295,16 +295,16 @@ indicador para que traga apenas informações do IPCA.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [7]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Indicador</span> <span class="o">==</span> <span class="s1">&#39;IPCA&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
 <span class="gh">Out[7]: </span>
 <span class="go">  Indicador       Data DataReferencia  ... DesvioPadrao  Minimo  Maximo</span>
-<span class="go">0      IPCA 2018-01-18     2019-01-01  ...         0.13    4.00    4.25</span>
-<span class="go">1      IPCA 2018-01-18     2020-01-01  ...         0.00    4.00    4.00</span>
-<span class="go">2      IPCA 2018-01-18     2021-01-01  ...         0.11    3.75    4.00</span>
-<span class="go">3      IPCA 2018-01-18     2018-01-01  ...         0.26    3.27    3.95</span>
-<span class="go">4      IPCA 2018-01-19     2019-01-01  ...         0.25    3.70    4.30</span>
-<span class="go">5      IPCA 2018-01-19     2020-01-01  ...         0.23    3.70    4.35</span>
-<span class="go">6      IPCA 2018-01-19     2021-01-01  ...         0.25    3.70    4.40</span>
-<span class="go">7      IPCA 2018-01-19     2018-01-01  ...         0.20    3.58    4.15</span>
-<span class="go">8      IPCA 2018-01-19     2022-01-01  ...         0.22    3.70    4.25</span>
-<span class="go">9      IPCA 2018-01-19     2019-01-01  ...         0.14    3.90    4.25</span>
+<span class="go">0      IPCA 2018-01-18           2019  ...         0.13    4.00    4.25</span>
+<span class="go">1      IPCA 2018-01-18           2020  ...         0.00    4.00    4.00</span>
+<span class="go">2      IPCA 2018-01-18           2021  ...         0.11    3.75    4.00</span>
+<span class="go">3      IPCA 2018-01-18           2018  ...         0.26    3.27    3.95</span>
+<span class="go">4      IPCA 2018-01-19           2019  ...         0.25    3.70    4.30</span>
+<span class="go">5      IPCA 2018-01-19           2020  ...         0.23    3.70    4.35</span>
+<span class="go">6      IPCA 2018-01-19           2021  ...         0.25    3.70    4.40</span>
+<span class="go">7      IPCA 2018-01-19           2018  ...         0.20    3.58    4.15</span>
+<span class="go">8      IPCA 2018-01-19           2022  ...         0.22    3.70    4.25</span>
+<span class="go">9      IPCA 2018-01-19           2019  ...         0.14    3.90    4.25</span>
 
 <span class="go">[10 rows x 9 columns]</span>
 </pre></div>
