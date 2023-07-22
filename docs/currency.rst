@@ -41,7 +41,7 @@ Esta implementação é mais estável que a do :ref:`Conversor de Moedas`.
        .parameters(moeda='AUD', dataCotacao='1/31/2022')
        .collect())
 
-É importante notar que as datas estão no formato dia/mês/ano e os números não
+É importante notar que as datas estão no formato mês/dia/ano e os números não
 são preenchidos com 0 para ter 2 dígitos.
 
 .. ipython:: python
