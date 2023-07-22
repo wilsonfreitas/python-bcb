@@ -34,7 +34,6 @@ class EndpointQuery(ODataQuery):
     }
     _DATE_COLUMN_NAMES = {
         "Data",
-        "DataReferencia",
         "dataHoraCotacao",
         "InicioPeriodo",
         "FimPeriodo",

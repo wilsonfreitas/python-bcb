@@ -1,8 +1,9 @@
 
 # Changelog
 
-## [0.2.0] - 
+## [0.2.0] - 2023-07-22
 - Date columns of some OData API endpoints are now formated in the returned Dataframe (Issue #3)
+- New methods ODataQuery.raw and ODataQuery.text
 
 ## [0.1.9] - 2023-06-26
 - Created class bcb.ODataAPI to directly wrap OData APIs
