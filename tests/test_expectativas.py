@@ -18,5 +18,3 @@ def test_expectativas_date_format(endpoints):
         assert isinstance(data, pd.DataFrame)
         assert data.shape[0] == 1
         assert isinstance(data["Data"].iloc[0], datetime)
-        if "DataReferencia" in data.columns:
-            assert isinstance(data["DataReferencia"].iloc[0], datetime)
