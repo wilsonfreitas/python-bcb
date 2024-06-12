@@ -1,8 +1,11 @@
 
 # Changelog
 
+## [0.3.0] - 2024-06-12
+- Dependencies updated
+
 ## [0.2.0] - 2023-07-22
-- Date columns of some OData API endpoints are now formated in the returned Dataframe (Issue #3)
+- Date columns of some OData API endpoints are now formatted in the returned Dataframe (Issue #3)
 - New methods ODataQuery.raw and ODataQuery.text
 
 ## [0.1.9] - 2023-06-26
