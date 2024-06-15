@@ -1,16 +1,16 @@
 <!doctype html>
-<html class="no-js" lang="pt-br">
+<html class="no-js" lang="pt-br" data-content_root="./">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Índice" href="genindex.html" /><link rel="search" title="Buscar" href="search.html" /><link rel="next" title="API" href="api.html" /><link rel="prev" title="Taxas de Juros" href="taxajuros.html" />
 
-    <!-- Generated with Sphinx 7.0.1 and Furo 2023.05.20 -->
-        <title>OData - documentação python-bcb</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.05.06 -->
+        <title>OData - Documentação python-bcb</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=387cc868" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
     
     
 
@@ -69,7 +69,7 @@
   <symbol id="svg-sun" viewBox="0 0 24 24">
     <title>Light mode</title>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
       <circle cx="12" cy="12" r="5"></circle>
       <line x1="12" y1="1" x2="12" y2="3"></line>
       <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -84,7 +84,7 @@
   <symbol id="svg-moon" viewBox="0 0 24 24">
     <title>Dark mode</title>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
       <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
     </svg>
@@ -92,7 +92,7 @@
   <symbol id="svg-sun-half" viewBox="0 0 24 24">
     <title>Auto light/dark mode</title>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
       <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
       <circle cx="12" cy="12" r="9" />
       <path d="M13 12h5" />
@@ -100,6 +100,60 @@
       <path d="M13 18h1" />
       <path d="M13 9h4" />
       <path d="M13 6h1" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" /
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
     </svg>
   </symbol>
 </svg>
@@ -113,6 +167,8 @@
   <div class="visually-hidden">Hide table of contents sidebar</div>
 </label>
 
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
 
 
 <div class="page">
@@ -124,13 +180,14 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">documentação python-bcb </div></a>
+      <a href="index.html"><div class="brand">Documentação python-bcb </div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
         <button class="theme-toggle">
           <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
-          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
           <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
@@ -147,7 +204,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">documentação python-bcb </span>
+  <span class="sidebar-brand-text">Documentação python-bcb </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Buscar" name="q" aria-label="Buscar">
@@ -181,19 +238,21 @@
           <span>Back to top</span>
         </a>
         <div class="content-icon-container">
-          <div class="edit-this-page">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/wilsonfreitas/python-bcb/blob/main/docs/odata.rst?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
   <a class="muted-link" href="https://github.com/wilsonfreitas/python-bcb/edit/main/docs/odata.rst" title="Edit this page">
-    <svg aria-hidden="true" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
-      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
-    </svg>
+    <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
 </div><div class="theme-toggle-container theme-toggle-content">
             <button class="theme-toggle">
               <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
-              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
               <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
@@ -203,9 +262,9 @@
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
-        <article role="main">
+        <article role="main" id="furo-main-content">
           <section id="odata">
-<h1>OData<a class="headerlink" href="#odata" title="Link permanente para este cabeçalho">#</a></h1>
+<h1>OData<a class="headerlink" href="#odata" title="Link para este cabeçalho">¶</a></h1>
 <p>Diversas APIs disponíveis no <a class="reference external" href="https://dadosabertos.bcb.gov.br/">portal de dados abertos</a> do Banco Central
 implementam o protocolo <a class="reference external" href="https://www.odata.org/">OData</a>, são centenas de APIs.</p>
 <p>O <code class="docutils literal notranslate"><span class="pre">python-bcb</span></code> tem algumas classes que implementam APIs OData:</p>
@@ -271,10 +330,10 @@ o nome do <em>endpoint</em>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [8]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
 <span class="gh">Out[8]: </span>
 <span class="go">        Data  Quantidade        Total   Media</span>
-<span class="go">0 2021-06-04    24945880  17229599.27  690.68</span>
-<span class="go">1 2021-09-28    28840568  17964083.35  622.88</span>
-<span class="go">2 2022-10-28    75938264  40180577.53  529.12</span>
-<span class="go">3 2022-12-01    93207145  47313669.38  507.62</span>
+<span class="go">0 2023-12-02   139072624  23360889.99  167.98</span>
+<span class="go">1 2024-04-19   163588000  79114284.18  483.62</span>
+<span class="go">2 2024-05-24   156097661  68660685.32  439.86</span>
+<span class="go">3 2024-02-10   140720681  25506025.17  181.25</span>
 <span class="go">4 2022-04-06    59981242  32855707.99  547.77</span>
 </pre></div>
 </div>
@@ -284,7 +343,7 @@ A consulta retorna um DataFrame pandas onde as colunas são as propriedades do <
 <p>Veremos abaixo, com mais detalhes, como realizar consultas nas APIs e quais os tipos de <em>endpoints</em> disponíveis
 (<code class="docutils literal notranslate"><span class="pre">EntitySets</span></code> e <code class="docutils literal notranslate"><span class="pre">FunctionImports</span></code>).</p>
 <section id="como-realizar-consultas-em-apis-odata">
-<h2>Como Realizar Consultas em APIs OData<a class="headerlink" href="#como-realizar-consultas-em-apis-odata" title="Link permanente para este cabeçalho">#</a></h2>
+<h2>Como Realizar Consultas em APIs OData<a class="headerlink" href="#como-realizar-consultas-em-apis-odata" title="Link para este cabeçalho">¶</a></h2>
 <p>As consultas são realizadas através do método <code class="docutils literal notranslate"><span class="pre">query</span></code> da classe <a class="reference internal" href="api.html#bcb.odata.api.Endpoint" title="bcb.odata.api.Endpoint"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.Endpoint</span></code></a>.
 Este método retorna um objeto <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.framework.ODataQuery</span></code> que abstrai a consulta e permite executar
 algumas firulas como: filtros e ordenação.
@@ -306,12 +365,12 @@ retornados.
 Vamos ordernar pela propriedade <code class="docutils literal notranslate"><span class="pre">Data</span></code> de forma decrescente.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [9]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
 <span class="gh">Out[9]: </span>
-<span class="go">        Data  Quantidade        Total   Media</span>
-<span class="go">0 2023-07-20   111026917  53029296.74  477.63</span>
-<span class="go">1 2023-07-19    96464512  41501922.13  430.23</span>
-<span class="go">2 2023-07-18    94993401  42736432.83  449.89</span>
-<span class="go">3 2023-07-17    98447274  56303224.55  571.91</span>
-<span class="go">4 2023-07-16    67448882   8105531.25  120.17</span>
+<span class="go">        Data  Quantidade         Total   Media</span>
+<span class="go">0 2024-06-13   146310122  5.830781e+07  398.52</span>
+<span class="go">1 2024-06-12   155053646  6.536795e+07  421.58</span>
+<span class="go">2 2024-06-11   161611592  7.162474e+07  443.19</span>
+<span class="go">3 2024-06-10   180385366  1.057377e+08  586.18</span>
+<span class="go">4 2024-06-09   123554195  1.607068e+07  130.07</span>
 </pre></div>
 </div>
 <p>Veja que a consulta retorna as datas mais recentes primeiro.</p>
@@ -347,11 +406,11 @@ Na última linha executo o método <code class="docutils literal notranslate"><s
 <span class="go">1 2023-04-10  661.04</span>
 <span class="go">2 2023-01-02  652.51</span>
 <span class="go">3 2023-01-30  642.01</span>
-<span class="go">4 2023-02-27  632.34</span>
+<span class="go">4 2024-04-01  633.91</span>
 </pre></div>
 </div>
 <section id="visualizando-a-consulta">
-<h3>Visualizando a Consulta<a class="headerlink" href="#visualizando-a-consulta" title="Link permanente para este cabeçalho">#</a></h3>
+<h3>Visualizando a Consulta<a class="headerlink" href="#visualizando-a-consulta" title="Link para este cabeçalho">¶</a></h3>
 <p>Algumas consultas podem ficar bastante complicadas, dependendo da quantidade de elementos que compõem a consulta.
 Para ajudar na construção e na depuração da <em>query</em>, criamos o método <code class="docutils literal notranslate"><span class="pre">show</span></code> imprime a query na tela,
 mas não a executa.</p>
@@ -375,7 +434,7 @@ mas não a executa.</p>
 </div>
 </section>
 <section id="filtrando-dados">
-<h3>Filtrando Dados<a class="headerlink" href="#filtrando-dados" title="Link permanente para este cabeçalho">#</a></h3>
+<h3>Filtrando Dados<a class="headerlink" href="#filtrando-dados" title="Link para este cabeçalho">¶</a></h3>
 <p>Os filtros são criados com o método <code class="docutils literal notranslate"><span class="pre">filter</span></code> e aplicados às propriedades do <em>endpoint</em>, por isso é necessário
 conhecê-lo, o que deve ser feito com o método <code class="docutils literal notranslate"><span class="pre">describe</span></code>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [13]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">Expectativas</span>
@@ -476,7 +535,7 @@ objeto <code class="docutils literal notranslate"><span class="pre">datetime</sp
 <p>O objeto <code class="docutils literal notranslate"><span class="pre">datetime</span></code> é formatado como data na consulta, note que não há aspas na definição da data no filtro.</p>
 </section>
 <section id="ordenando-os-dados">
-<h3>Ordenando os Dados<a class="headerlink" href="#ordenando-os-dados" title="Link permanente para este cabeçalho">#</a></h3>
+<h3>Ordenando os Dados<a class="headerlink" href="#ordenando-os-dados" title="Link para este cabeçalho">¶</a></h3>
 <p>A ordenação é definida no método <code class="docutils literal notranslate"><span class="pre">orderby</span></code> passando um objeto da classe
 <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.framework.ODataPropertyOrderBy</span></code> que é obtida dos métodos <code class="docutils literal notranslate"><span class="pre">asc</span></code> e <code class="docutils literal notranslate"><span class="pre">desc</span></code> da propriedade.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [25]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">pix</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s2">&quot;PixLiquidadosAtual&quot;</span><span class="p">)</span>
@@ -548,7 +607,7 @@ objeto <code class="docutils literal notranslate"><span class="pre">datetime</sp
 <p>Vejam que a consulta é exatamente a mesma.</p>
 </section>
 <section id="selecionando-as-propriedades">
-<h3>Selecionando as Propriedades<a class="headerlink" href="#selecionando-as-propriedades" title="Link permanente para este cabeçalho">#</a></h3>
+<h3>Selecionando as Propriedades<a class="headerlink" href="#selecionando-as-propriedades" title="Link para este cabeçalho">¶</a></h3>
 <p>O médoto <code class="docutils literal notranslate"><span class="pre">select</span></code> funciona de forma muito semelhante ao <em>select</em> de uma <em>query</em> SQL.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [35]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">em</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s1">&#39;ExpectativasMercadoTop5Anuais&#39;</span><span class="p">)</span>
 
@@ -560,18 +619,18 @@ objeto <code class="docutils literal notranslate"><span class="pre">datetime</sp
 <span class="gp">   ....: </span>
 <span class="gh">Out[36]: </span>
 <span class="go">   Indicador       Data DataReferencia tipoCalculo   Media</span>
-<span class="go">0  PIB Total 2023-07-14           2023           L  2.4218</span>
-<span class="go">1  PIB Total 2023-07-14           2024           L  1.3932</span>
-<span class="go">2  PIB Total 2023-07-14           2025           L  1.7333</span>
-<span class="go">3  PIB Total 2023-07-14           2026           L  1.7333</span>
-<span class="go">4  PIB Total 2023-07-14           2027           L  1.8333</span>
+<span class="go">0  PIB Total 2024-06-07           2024           L  2.3243</span>
+<span class="go">1  PIB Total 2024-06-07           2025           L  1.6753</span>
+<span class="go">2  PIB Total 2024-06-07           2026           L  1.8000</span>
+<span class="go">3  PIB Total 2024-06-07           2027           L  2.0000</span>
+<span class="go">4  PIB Total 2024-06-07           2028           L  2.0000</span>
 </pre></div>
 </div>
 <p>Selecionar as colunas é importante para reduzir o volume de dados trafegado, pois a API do BCB não tem um bom
 desempenho, logo, essas configurações aceleram as consultas.</p>
 </section>
 <section id="metodo-limit">
-<h3>Método <code class="docutils literal notranslate"><span class="pre">limit</span></code><a class="headerlink" href="#metodo-limit" title="Link permanente para este cabeçalho">#</a></h3>
+<h3>Método <code class="docutils literal notranslate"><span class="pre">limit</span></code><a class="headerlink" href="#metodo-limit" title="Link para este cabeçalho">¶</a></h3>
 <p>O método <code class="docutils literal notranslate"><span class="pre">limit</span></code> define a quantidade de linhas que será retornada pela consulta.
 Esse método é importante para investigar as consultas na API de forma rápida.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [37]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">pix</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s2">&quot;PixLiquidadosAtual&quot;</span><span class="p">)</span>
@@ -583,16 +642,16 @@ Esse método é importante para investigar as consultas na API de forma rápida.
 <span class="gp">   ....: </span>
 <span class="gh">Out[38]: </span>
 <span class="go">        Data  Quantidade        Total   Media</span>
-<span class="go">0 2023-05-14    58244317   7145275.47  122.68</span>
-<span class="go">1 2023-07-11   103725918  47312155.16  456.13</span>
-<span class="go">2 2023-06-13    90032796  41638840.07  462.49</span>
-<span class="go">3 2023-03-02    86677983  41061577.42  473.73</span>
-<span class="go">4 2023-04-23    53580202   6103128.95  113.91</span>
+<span class="go">0 2023-12-02   139072624  23360889.99  167.98</span>
+<span class="go">1 2024-04-19   163588000  79114284.18  483.62</span>
+<span class="go">2 2024-05-24   156097661  68660685.32  439.86</span>
+<span class="go">3 2024-02-10   140720681  25506025.17  181.25</span>
+<span class="go">4 2023-07-11   103725918  47312155.16  456.13</span>
 </pre></div>
 </div>
 </section>
 <section id="tipos-de-endpoints">
-<h3>Tipos de <em>endpoints</em><a class="headerlink" href="#tipos-de-endpoints" title="Link permanente para este cabeçalho">#</a></h3>
+<h3>Tipos de <em>endpoints</em><a class="headerlink" href="#tipos-de-endpoints" title="Link para este cabeçalho">¶</a></h3>
 <p>Como foi visto anteriormente, a API do PIX (<code class="docutils literal notranslate"><span class="pre">SPI</span></code>) possui 4 <code class="docutils literal notranslate"><span class="pre">EntitySets</span></code> e estes são os <em>endpoints</em> dessa API.
 Entretanto, há APIs que têm um outro tipo de <em>endpoint</em>, os <code class="docutils literal notranslate"><span class="pre">FunctionImports</span></code>.
 A API do PTAX, por exemplo</p>
@@ -688,7 +747,7 @@ Podemos aplicar filtros nessa consulta utilizando o método <code class="docutil
 </div>
 </section>
 <section id="obtendo-o-texto-da-api">
-<h3>Obtendo o Texto da API<a class="headerlink" href="#obtendo-o-texto-da-api" title="Link permanente para este cabeçalho">#</a></h3>
+<h3>Obtendo o Texto da API<a class="headerlink" href="#obtendo-o-texto-da-api" title="Link para este cabeçalho">¶</a></h3>
 <p>Uma alternativa ao DataFrame retornado pela consulta, via o método <code class="docutils literal notranslate"><span class="pre">collect</span></code>, é obter o texto, em formato JSON
 (padrão) ou XML, retornado pela consulta.</p>
 <p>O método <code class="docutils literal notranslate"><span class="pre">collect</span></code> faz o <em>parsing</em> do texto retornado na consulta e cria um DataFrame, o método <code class="docutils literal notranslate"><span class="pre">text</span></code> retorna
@@ -703,7 +762,7 @@ esse texto bruto.</p>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">text</span><span class="p">())</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[47]: </span><span class="go">&#39;{&quot;@odata.context&quot;:&quot;https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTop5Anuais(Indicador,Data,DataReferencia,tipoCalculo,Media)&quot;,&quot;value&quot;:[{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2023-07-14&quot;,&quot;DataReferencia&quot;:&quot;2023&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:2.4218},{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2023-07-14&quot;,&quot;DataReferencia&quot;:&quot;2024&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:1.3932},{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2023-07-14&quot;,&quot;DataReferencia&quot;:&quot;2025&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:1.7333},{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2023-07-14&quot;,&quot;DataReferencia&quot;:&quot;2026&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:1.7333},{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2023-07-14&quot;,&quot;DataReferencia&quot;:&quot;2027&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:1.8333}]}&#39;</span>
+<span class="gh">Out[47]: </span><span class="go">&#39;{&quot;@odata.context&quot;:&quot;https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTop5Anuais(Indicador,Data,DataReferencia,tipoCalculo,Media)&quot;,&quot;value&quot;:[{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2024-06-07&quot;,&quot;DataReferencia&quot;:&quot;2024&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:2.3243},{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2024-06-07&quot;,&quot;DataReferencia&quot;:&quot;2025&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:1.6753},{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2024-06-07&quot;,&quot;DataReferencia&quot;:&quot;2026&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:1.8000},{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2024-06-07&quot;,&quot;DataReferencia&quot;:&quot;2027&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:2.0000},{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2024-06-07&quot;,&quot;DataReferencia&quot;:&quot;2028&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:2.0000}]}&#39;</span>
 </pre></div>
 </div>
 <p>O texto retornado está no formato JSON.
@@ -718,13 +777,13 @@ Para isso incluímos o método <code class="docutils literal notranslate"><span 
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">text</span><span class="p">())</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[49]: </span><span class="go">&#39;&lt;?xml version=\&#39;1.0\&#39; encoding=\&#39;UTF-8\&#39;?&gt;&lt;a:feed xmlns:a=&quot;http://www.w3.org/2005/Atom&quot; xmlns:m=&quot;http://docs.oasis-open.org/odata/ns/metadata&quot; xmlns:d=&quot;http://docs.oasis-open.org/odata/ns/data&quot; m:context=&quot;https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTop5Anuais(Indicador,Data,DataReferencia,tipoCalculo,Media)&quot;&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2023-07-22T07:44:51Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2023-07-14&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2023&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;2.4218&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2023-07-22T07:44:51Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2023-07-14&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2024&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;1.3932&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2023-07-22T07:44:51Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2023-07-14&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2025&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;1.7333&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2023-07-22T07:44:51Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2023-07-14&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2026&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;1.7333&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2023-07-22T07:44:51Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2023-07-14&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2027&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;1.8333&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;/a:feed&gt;&#39;</span>
+<span class="gh">Out[49]: </span><span class="go">&#39;&lt;?xml version=\&#39;1.0\&#39; encoding=\&#39;UTF-8\&#39;?&gt;&lt;a:feed xmlns:a=&quot;http://www.w3.org/2005/Atom&quot; xmlns:m=&quot;http://docs.oasis-open.org/odata/ns/metadata&quot; xmlns:d=&quot;http://docs.oasis-open.org/odata/ns/data&quot; m:context=&quot;https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTop5Anuais(Indicador,Data,DataReferencia,tipoCalculo,Media)&quot;&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2024-06-15T11:14:54Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2024-06-07&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2024&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;2.3243&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2024-06-15T11:14:54Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2024-06-07&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2025&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;1.6753&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2024-06-15T11:14:54Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2024-06-07&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2026&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;1.8000&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2024-06-15T11:14:54Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2024-06-07&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2027&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;2.0000&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2024-06-15T11:14:54Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2024-06-07&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2028&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;2.0000&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;/a:feed&gt;&#39;</span>
 </pre></div>
 </div>
 </section>
 </section>
 <section id="classe-odataapi">
-<h2>Classe ODataAPI<a class="headerlink" href="#classe-odataapi" title="Link permanente para este cabeçalho">#</a></h2>
+<h2>Classe ODataAPI<a class="headerlink" href="#classe-odataapi" title="Link para este cabeçalho">¶</a></h2>
 <p>O portal de Dados Abertos to Banco Central apresenta diversas APIs OData, são
 dezenas de APIs disponíveis.
 A URL com metadados de cada API pode ser obtida no <a class="reference external" href="https://dadosabertos.bcb.gov.br">portal</a>.
@@ -830,9 +889,9 @@ A classe <a class="reference internal" href="api.html#bcb.odata.api.ODataAPI" ti
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/scripts/furo.js"></script>
+</div><script src="_static/documentation_options.js?v=5ffef437"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=4e2eecee"></script>
     </body>
 </html>
