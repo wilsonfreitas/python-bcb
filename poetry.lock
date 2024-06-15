@@ -1465,6 +1465,17 @@ files = [
 ptyprocess = ">=0.5"
 
 [[package]]
+name = "pickleshare"
+version = "0.7.5"
+description = "Tiny 'shelve'-like database with concurrency support"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pickleshare-0.7.5-py2.py3-none-any.whl", hash = "sha256:9649af414d74d4df115d5d718f82acb59c9d418196b7b4290ed47a12ce62df56"},
+    {file = "pickleshare-0.7.5.tar.gz", hash = "sha256:87683d47965c1da65cdacaf31c8441d12b8044cdec9aca500cd78fc2c683afca"},
+]
+
+[[package]]
 name = "pillow"
 version = "10.3.0"
 description = "Python Imaging Library (Fork)"
@@ -2225,4 +2236,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">= 3.10"
-content-hash = "b97be47973563ee3f988c281eebab7d5f717d75d8ae274ccad16d94820a7e152"
+content-hash = "1dab0bf4b16c0cb98441565d6c3c3a35c8f6b72fc28105aa8f86ef80ed9a15d8"

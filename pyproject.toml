@@ -23,6 +23,7 @@ pydata-sphinx-theme = ">= 0.10.1"
 matplotlib = ">= 3.5.3"
 ipython = ">= 8.14.0"
 furo = ">= 2022.6.21"
+pickleshare = "^0.7.5"
 
 [tool.poetry.group.dev.dependencies]
 pycodestyle = ">= 2.9.1"
