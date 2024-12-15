@@ -1,5 +1,7 @@
 from datetime import datetime
 import pandas as pd
+import pytest
+
 from bcb import sgs
 
 
@@ -87,3 +89,15 @@ def test_get_series():
     assert len(x) == 5
     assert x.index[0] == datetime.strptime("2021-01-18", "%Y-%m-%d")
     assert x.index[-1] == datetime.strptime("2021-01-22", "%Y-%m-%d")
+
+
+@pytest.mark.parametrize("states,expected_columns", [
+    (["BA"], ["15861"]),
+    (["ba"], ["15861"]),
+    #(["ba", "se", "al"], ["1"])
+])
+def test_get_series_by_states(states, expected_columns):
+    series = sgs.get_by_states(states, last=10)
+    assert isinstance(series, pd.DataFrame)
+    assert series.columns == expected_columns
+    assert len(series) == 10

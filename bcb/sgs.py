@@ -14,6 +14,10 @@ interface json do serviço BCData/SGS -
 <https://www3.bcb.gov.br/sgspub/localizarseries/localizarSeries.do?method=prepararTelaLocalizarSeries>`_.
 """
 
+SGS_CODES_BY_STATE = {
+    "BA": "15861",
+}
+
 
 class SGSCode:
     def __init__(self, code, name=None):
@@ -129,3 +133,14 @@ def get(codes, start=None, end=None, last=0, multi=True, freq=None):
             return pd.concat(dfs, axis=1)
         else:
             return dfs
+
+
+def get_by_states(states, start=None, end=None, last=0, freq=None):
+    codes_from_states = []
+    for state in states:
+        found = SGS_CODES_BY_STATE.get(state.upper())
+        if not found:
+            raise Exception(f"Invalid state: {state}")
+        codes_from_states.append(found)
+
+    return get(codes_from_states, start=start, end=end, last=last, multi=True, freq=freq)
