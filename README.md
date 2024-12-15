@@ -31,7 +31,7 @@ pip install python-bcb
 
 ## SGS
 Utiliza o webservice do SGS
-(`Sistema Gerenciador de Séries Temporais <https://www3.bcb.gov.br/sgspub/>`_)
+([Sistema Gerenciador de Séries Temporais](https://www3.bcb.gov.br/sgspub/))
 para obter os dados.
 
 ## Conversor de Moedas
