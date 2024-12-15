@@ -1,5 +1,7 @@
-
 # Changelog
+
+## Unpublished
+- Add Regional economy series support
 
 ## [0.3.0] - 2024-06-12
 - Dependencies updated
