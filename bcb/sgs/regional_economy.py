@@ -127,7 +127,7 @@ def get_non_performing_loans_codes(states_or_region, mode="total"):
     if not is_state and not is_region:
         raise Exception(f"Not a valid state or region: {states_or_region}")
 
-    codes = []
+    codes = {}
     non_performing_loans_by_location = NON_PERFORMING_LOANS_BY_STATE_TOTAL
     if is_state:
         if mode.upper() == "PF":
@@ -142,7 +142,7 @@ def get_non_performing_loans_codes(states_or_region, mode="total"):
             non_performing_loans_by_location = NON_PERFORMING_LOANS_BY_REGION_PJ
 
     for location in states_or_region:
-        codes.append(non_performing_loans_by_location[location])
+        codes[location] = non_performing_loans_by_location[location]
     return codes
 
 

@@ -25,6 +25,9 @@ class SGSCode:
             self.name = str(name)
             self.value = int(code)
 
+    def __repr__(self):
+        return f"{self.code} - {self.name}" if self.name else f"{self.code}"
+
 
 def _codes(codes):
     if isinstance(codes, int) or isinstance(codes, str):
@@ -36,8 +39,8 @@ def _codes(codes):
             _ist = isinstance(cd, tuple)
             yield SGSCode(cd[1], cd[0]) if _ist else SGSCode(cd)
     elif isinstance(codes, dict):
-        for cd in codes:
-            yield SGSCode(codes[cd], cd)
+        for name, code in codes.items():
+            yield SGSCode(code, name)
 
 
 def _get_url_and_payload(code, start_date, end_date, last):
