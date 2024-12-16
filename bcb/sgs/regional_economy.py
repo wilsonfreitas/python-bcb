@@ -1,5 +1,4 @@
 from bcb.sgs import get
-import pandas as pd
 
 NON_PERFORMING_LOANS_BY_REGION_PF = {
     "N": "15888",
