@@ -93,7 +93,7 @@ def get(codes, start=None, end=None, last=0, multi=True, freq=None):
         Data de início da série.
         Interpreta diferentes tipos e formatos de datas.
     end : string, int, date, datetime, Timestamp
-        Data de início da série.
+        Data final da série.
         Interpreta diferentes tipos e formatos de datas.
     last : int
         Retorna os últimos ``last`` elementos disponíveis da série temporal
