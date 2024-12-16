@@ -1,6 +1,15 @@
 from datetime import datetime, date
 
 
+BRAZILIAN_REGIONS = {
+   "N": ["AC", "AP", "AM", "PA", "RO", "RR", "TO"],
+   "NE": ["AL", "BA", "CE", "MA", "PB", "PE", "PI", "RN", "SE"],
+   "CO": ["DF", "GO", "MT", "MS"],
+   "SE": ["ES", "MG", "RJ", "SP"],
+   "S": ["PR", "RS", "SC"]
+}
+
+
 class Date:
     def __init__(self, d=None, format="%Y-%m-%d", mindate=date(1900, 1, 1)):
         d = d if d else mindate

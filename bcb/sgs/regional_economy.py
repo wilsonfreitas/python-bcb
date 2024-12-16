@@ -4,7 +4,7 @@ import pandas as pd
 NON_PERFORMING_LOANS_BY_REGION_PF = {
     "N": "15888",
     "NE": "15889",
-    "CO": "",
+    "CO": "15890",
     "SE": "",
     "S": "",
 }
@@ -15,12 +15,12 @@ NON_PERFORMING_LOANS_BY_STATE_PF = {
     "AM": "15864",
     "BA": "15865",
     "CE": "15866",
-    "DF": "",
+    "DF": "15867",
     "ES": "",
-    "GO": "",
+    "GO": "15869",
     "MA": "15870",
-    "MT": "",
-    "MS": "",
+    "MT": "15871",
+    "MS": "15872",
     "MG": "",
     "PA": "15874",
     "PB": "15875",
@@ -40,7 +40,7 @@ NON_PERFORMING_LOANS_BY_STATE_PF = {
 NON_PERFORMING_LOANS_BY_REGION_PJ = {
     "N": "15920",
     "NE": "15921",
-    "CO": "",
+    "CO": "15922",
     "SE": "",
     "S": "",
 }
@@ -51,12 +51,12 @@ NON_PERFORMING_LOANS_BY_STATE_PJ = {
     "AM": "15896",
     "BA": "15897",
     "CE": "15898",
-    "DF": "",
+    "DF": "15899",
     "ES": "",
-    "GO": "",
+    "GO": "15901",
     "MA": "15902",
-    "MT": "",
-    "MS": "",
+    "MT": "15903",
+    "MS": "15904",
     "MG": "",
     "PA": "15906",
     "PB": "15907",
@@ -76,7 +76,7 @@ NON_PERFORMING_LOANS_BY_STATE_PJ = {
 NON_PERFORMING_LOANS_BY_REGION_TOTAL = {
     "N": "15952",
     "NE": "15953",
-    "CO": "",
+    "CO": "15954",
     "SE": "",
     "S": "",
 }
@@ -87,12 +87,12 @@ NON_PERFORMING_LOANS_BY_STATE_TOTAL = {
     "AM": "15928",
     "BA": "15929",
     "CE": "15930",
-    "DF": "",
+    "DF": "15931",
     "ES": "",
-    "GO": "",
+    "GO": "15933",
     "MA": "15934",
-    "MT": "",
-    "MS": "",
+    "MT": "15935",
+    "MS": "15936",
     "MG": "",
     "PA": "15938",
     "PB": "15939",
@@ -112,9 +112,6 @@ NON_PERFORMING_LOANS_BY_STATE_TOTAL = {
 
 
 def get_non_performing_loans_codes(states_or_region, mode="total"):
-    """SGS da Inadimplência das operações de crédito.
-
-    Pode ser total, pessoas físicas (PF) ou jurídicas (PJ)."""
     is_state = False
     is_region = False
     states_or_region = [states_or_region] if isinstance(states_or_region, str) else states_or_region
@@ -147,5 +144,10 @@ def get_non_performing_loans_codes(states_or_region, mode="total"):
 
 
 def get_non_performing_loans(states_or_region, mode="total", start=None, end=None, last=0, freq=None):
+    """SGS da Inadimplência das operações de crédito.
+
+    Se for um ou mais estados, é esperado uma lista. Se for uma região,
+    uma string.
+    Pode ser total, pessoas físicas (PF) ou jurídicas (PJ)."""
     codes = get_non_performing_loans_codes(states_or_region, mode=mode)
     return get(codes, start=start, end=end, last=last, multi=True, freq=freq)
