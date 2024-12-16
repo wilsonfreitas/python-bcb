@@ -2,6 +2,7 @@ import pandas as pd
 import pytest
 from bcb.sgs.regional_economy import get_non_performing_loans, get_non_performing_loans_codes
 from bcb.utils import BRAZILIAN_REGIONS
+from bcb.sgs import regional_economy
 
 
 class TestGetNonPerformingLoansCodes:
@@ -34,3 +35,33 @@ class TestGetNonPerformingLoans:
         assert isinstance(series, pd.DataFrame)
         assert (series.columns == south_states).all()
         assert len(series) == 5
+
+
+class TestNonPerformingLoansCodes:
+    @pytest.fixture
+    def non_performing_constants(self):
+        constants = [
+            item
+            for item in dir(regional_economy)
+            if item.startswith("NON_PERFORMING_LOANS_BY")
+        ]
+        return constants
+
+    def test_if_all_regions_and_states_are_there(self, non_performing_constants):
+        states = []
+        for state in BRAZILIAN_REGIONS.values():
+            states.extend(state)
+        for item_str in non_performing_constants:
+            item = getattr(regional_economy, item_str)
+            if "REGION" in str(item):
+                assert (list(item.values()) == list(BRAZILIAN_REGIONS.keys())), item_str
+            elif "STATE" in str(item):
+                assert (list(item.values()) == states), item_str
+
+    def test_check_if_codes_are_unique(self, non_performing_constants):
+        for item_str in non_performing_constants:
+            item = getattr(regional_economy, item_str)
+
+            unique_values = set(item.values())
+            assert all(unique_values), item_str
+            assert (len(item.values()) == len(unique_values)), item_str
