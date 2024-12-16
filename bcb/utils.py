@@ -8,6 +8,9 @@ BRAZILIAN_REGIONS = {
    "SE": ["ES", "MG", "RJ", "SP"],
    "S": ["PR", "RS", "SC"]
 }
+BRAZILIAN_STATES = []
+for state in BRAZILIAN_REGIONS.values():
+    BRAZILIAN_STATES.extend(state)
 
 
 class Date:
