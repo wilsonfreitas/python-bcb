@@ -29,6 +29,7 @@ pickleshare = "^0.7.5"
 pycodestyle = ">= 2.9.1"
 ipykernel = ">= 6.15.2"
 black = {version = ">= 22.8.0", allow-prereleases = true}
+jupyter = "^1.1.1"
 
 [build-system]
 requires = ["poetry-core"]
