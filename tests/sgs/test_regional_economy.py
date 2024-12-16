@@ -5,8 +5,8 @@ from bcb.sgs.regional_economy import get_non_performing_loans, get_non_performin
 
 class TestGetNonPerformingLoansCodes:
     @pytest.mark.parametrize("states,expected_codes", [
-        (["ba", "pa"], {"BA": "15865", "PA": "15938"}),
-        (["BA"], {"BA": "15865"}),
+        (["ba", "pa"], {"BA": "15929", "PA": "15938"}),
+        (["BA"], {"BA": "15929"}),
         ("N", {"N": "15952"}),
     ])
     def test_get_non_performing_loans_codes_by_state_total(self, states, expected_codes):
