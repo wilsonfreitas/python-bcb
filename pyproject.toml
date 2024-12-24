@@ -24,6 +24,7 @@ matplotlib = ">= 3.5.3"
 ipython = ">= 8.14.0"
 furo = "^2024"
 pickleshare = "^0.7.5"
+pygments = "^2.7"
 
 [tool.poetry.group.dev.dependencies]
 pycodestyle = ">= 2.9.1"
