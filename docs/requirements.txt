@@ -2,10 +2,13 @@ ipython
 pygments >= 2.7.*
 pydata-sphinx-theme
 sphinx == 6.*
+babel == 2.9
+docutils == 0.18.*
+packaging >= 21.*
 pandas
 lxml
 numpy
 matplotlib
 httpx
-requests
+requests >= 2.25.*
 furo
