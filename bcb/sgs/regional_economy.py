@@ -1,5 +1,14 @@
 from bcb.sgs import get
 
+"""
+Dados da Economia Regional
+
+Histórico de taxas de inadimplência das operações de crédito do Sistema Financeiro Nacional para
+pessoas físicas e pessoas jurídicas.
+
+Dados disponíveis por região e por estado.
+"""
+
 NON_PERFORMING_LOANS_BY_REGION_PF = {
     "N": "15888",
     "NE": "15889",
@@ -70,7 +79,7 @@ NON_PERFORMING_LOANS_BY_STATE_PJ = {
     "SC": "15916",
     "SP": "15917",
     "SE": "15918",
-    "TO": "15919"
+    "TO": "15919",
 }
 NON_PERFORMING_LOANS_BY_REGION_TOTAL = {
     "N": "15952",
@@ -106,7 +115,7 @@ NON_PERFORMING_LOANS_BY_STATE_TOTAL = {
     "SC": "15948",
     "SP": "15949",
     "SE": "15950",
-    "TO": "15951"
+    "TO": "15951",
 }
 
 
@@ -143,10 +152,45 @@ def get_non_performing_loans_codes(states_or_region, mode="total"):
 
 
 def get_non_performing_loans(states_or_region, mode="total", start=None, end=None, last=0, freq=None):
-    """SGS da Inadimplência das operações de crédito.
+    """Dados de inadimplência das operações de crédito.
 
-    Se for um ou mais estados, é esperado uma lista. Se for uma região,
-    uma string.
-    Pode ser total, pessoas físicas (PF) ou jurídicas (PJ)."""
+    Esta função é um *wrapper* para o método para a função ``get`` do módulo ``sgs``,
+    simplificando o acesso aos dados de inadimplência das operações de crédito.
+    Nessa função o usuário escolhe o tipo de inadimplência, o(s) estado(s) ou as regiões
+    que deseja obter os dados.
+
+    >>> from bcb.sgs.regional_economy import get_non_performing_loans
+    >>> from bcb.utils import BRAZILIAN_REGIONS
+    >>> series = get_non_performing_loans(["RR"], last=10, mode="all")
+    >>> northeast_states = BRAZILIAN_REGIONS["NE"]
+    >>> series_ne = get_non_performing_loans(northeast_states, last=5, mode="pj")
+
+    Parameters
+    ----------
+
+    states_or_region (List[str]): Uma lista com estado ou região.
+    mode (str): O tipo de inadimplência. Pode ser "PF" (pessoas físicas),
+                "PJ" (pessoas jurídicas) ou "total" (inadimplência total).
+    start : str, int, date, datetime, Timestamp
+        Data de início da série.
+        Interpreta diferentes tipos e formatos de datas.
+    end : string, int, date, datetime, Timestamp
+        Data final da série.
+        Interpreta diferentes tipos e formatos de datas.
+    last : int
+        Retorna os últimos ``last`` elementos disponíveis da série temporal
+        solicitada. Se ``last`` for maior que 0 (zero) os argumentos ``start``
+        e ``end`` são ignorados.
+    freq : str
+        Define a frequência a ser utilizada na série temporal
+
+
+    Returns
+    -------
+
+    ``DataFrame`` :
+        série temporal univariada ou multivariada,
+        quando solicitado mais de uma série temporal.
+    """
     codes = get_non_performing_loans_codes(states_or_region, mode=mode)
     return get(codes, start=start, end=end, last=last, multi=True, freq=freq)

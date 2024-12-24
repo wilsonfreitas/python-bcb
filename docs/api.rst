@@ -8,6 +8,9 @@ Módulo :py:mod:`bcb.sgs`
 .. automodule:: bcb.sgs
    :members:
 
+.. automodule:: bcb.sgs.regional_economy
+   :members:
+
 Módulo :py:mod:`bcb.currency`
 -----------------------------
 
