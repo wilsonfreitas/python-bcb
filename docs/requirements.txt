@@ -1,4 +1,5 @@
 ipython
+pygments >= 2.7.*
 pydata-sphinx-theme
 sphinx
 pandas
