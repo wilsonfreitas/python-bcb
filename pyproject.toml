@@ -19,10 +19,10 @@ flaky = ">= 3.7.0"
 
 [tool.poetry.group.docs.dependencies]
 Sphinx = "^6"
-pydata-sphinx-theme = ">= 0.10.1"
+pydata-sphinx-theme = "^0.16"
 matplotlib = ">= 3.5.3"
 ipython = ">= 8.14.0"
-furo = ">= 2022.6.21"
+furo = "^2024"
 pickleshare = "^0.7.5"
 
 [tool.poetry.group.dev.dependencies]
