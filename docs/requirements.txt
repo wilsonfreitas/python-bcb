@@ -6,6 +6,7 @@ babel == 2.9
 docutils == 0.18.*
 packaging >= 21.*
 pandas
+pytz >= 2020.*
 lxml
 numpy
 matplotlib
