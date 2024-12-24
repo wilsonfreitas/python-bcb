@@ -1,7 +1,7 @@
 ipython
 pygments >= 2.7.*
 pydata-sphinx-theme
-sphinx
+sphinx >= 6.*
 pandas
 lxml
 numpy
