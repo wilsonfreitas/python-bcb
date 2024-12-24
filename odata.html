@@ -1,16 +1,16 @@
 <!doctype html>
-<html class="no-js" lang="pt-br" data-content_root="./">
+<html class="no-js" lang="pt-br" data-content_root="">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 <link rel="index" title="Índice" href="genindex.html" /><link rel="search" title="Buscar" href="search.html" /><link rel="next" title="API" href="api.html" /><link rel="prev" title="Taxas de Juros" href="taxajuros.html" />
 
-    <!-- Generated with Sphinx 7.3.7 and Furo 2024.05.06 -->
-        <title>OData - Documentação python-bcb</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=387cc868" />
+    <!-- Generated with Sphinx 6.2.1 and Furo 2024.08.06 -->
+        <title>OData - documentação python-bcb</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=04c057b233f3c8d71940eee6080f658a04e2027d" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=cf727022eb7470bc603c08d2e55c3247faec75c9" />
     
     
 
@@ -89,19 +89,6 @@
       <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
     </svg>
   </symbol>
-  <symbol id="svg-sun-half" viewBox="0 0 24 24">
-    <title>Auto light/dark mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
-      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M13 12h5" />
-      <path d="M13 15h4" />
-      <path d="M13 18h1" />
-      <path d="M13 9h4" />
-      <path d="M13 6h1" />
-    </svg>
-  </symbol>
   <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
     <title>Auto light/dark, in light mode</title>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -142,7 +129,7 @@
       <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
       <path d="M13.5 6.5l4 4" />
       <path d="M20 21l2 -2l-2 -2" />
-      <path d="M17 17l-2 2l2 2" /
+      <path d="M17 17l-2 2l2 2" />
     </svg>
   </symbol>
   <symbol id="svg-eye" viewBox="0 0 24 24">
@@ -180,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentação python-bcb </div></a>
+      <a href="index.html"><div class="brand">documentação python-bcb </div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -204,7 +191,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">Documentação python-bcb </span>
+  <span class="sidebar-brand-text">documentação python-bcb </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Buscar" name="q" aria-label="Buscar">
@@ -264,7 +251,7 @@
         </div>
         <article role="main" id="furo-main-content">
           <section id="odata">
-<h1>OData<a class="headerlink" href="#odata" title="Link para este cabeçalho">¶</a></h1>
+<h1>OData<a class="headerlink" href="#odata" title="Link permanente para este cabeçalho">¶</a></h1>
 <p>Diversas APIs disponíveis no <a class="reference external" href="https://dadosabertos.bcb.gov.br/">portal de dados abertos</a> do Banco Central
 implementam o protocolo <a class="reference external" href="https://www.odata.org/">OData</a>, são centenas de APIs.</p>
 <p>O <code class="docutils literal notranslate"><span class="pre">python-bcb</span></code> tem algumas classes que implementam APIs OData:</p>
@@ -305,7 +292,7 @@ o nome do <em>endpoint</em>.</p>
 
 <span class="go">EntitySet (Endpoint): PixLiquidadosAtual</span>
 <span class="go">EntityType: br.gov.bcb.olinda.servico.SPI.PixLiquidadosAtual</span>
-<span class="go">Properties: Data&lt;datetime&gt;, Quantidade&lt;int&gt;, Total&lt;float&gt;, Media&lt;float&gt;</span>
+<span class="go">Properties: Data&lt;datetime&gt;, Quantidade&lt;int&gt;, CanalPrimario&lt;int&gt;, CanalSecundario&lt;int&gt;, Total&lt;float&gt;, Media&lt;float&gt;</span>
 </pre></div>
 </div>
 <p>Vemos que o <em>endpoint</em> <code class="docutils literal notranslate"><span class="pre">PixLiquidadosAtual</span></code> retorna 4 propriedades:</p>
@@ -329,12 +316,12 @@ o nome do <em>endpoint</em>.</p>
 <p>Para acessar os dados deste <em>endpoint</em> é necessário executar uma <code class="docutils literal notranslate"><span class="pre">query</span></code> nesse objeto.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [8]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
 <span class="gh">Out[8]: </span>
-<span class="go">        Data  Quantidade        Total   Media</span>
-<span class="go">0 2023-12-02   139072624  23360889.99  167.98</span>
-<span class="go">1 2024-04-19   163588000  79114284.18  483.62</span>
-<span class="go">2 2024-05-24   156097661  68660685.32  439.86</span>
-<span class="go">3 2024-02-10   140720681  25506025.17  181.25</span>
-<span class="go">4 2022-04-06    59981242  32855707.99  547.77</span>
+<span class="go">        Data  Quantidade  CanalPrimario  CanalSecundario        Total   Media</span>
+<span class="go">0 2023-12-02   139072624    138976370.0          96254.0  23360889.99  167.98</span>
+<span class="go">1 2024-04-19   163588000    163124269.0         463731.0  79114284.18  483.62</span>
+<span class="go">2 2024-05-24   156097661    155912971.0         184690.0  68660685.32  439.86</span>
+<span class="go">3 2024-02-10   140720681    140509596.0         211085.0  25506025.17  181.25</span>
+<span class="go">4 2022-04-06    59981242            NaN              NaN  32855707.99  547.77</span>
 </pre></div>
 </div>
 <p>Ao realizar a <code class="docutils literal notranslate"><span class="pre">query</span></code> no <em>endpoint</em> limitamos a consulta a retornar 10 elementos, apenas para visualizar os dados
@@ -343,7 +330,7 @@ A consulta retorna um DataFrame pandas onde as colunas são as propriedades do <
 <p>Veremos abaixo, com mais detalhes, como realizar consultas nas APIs e quais os tipos de <em>endpoints</em> disponíveis
 (<code class="docutils literal notranslate"><span class="pre">EntitySets</span></code> e <code class="docutils literal notranslate"><span class="pre">FunctionImports</span></code>).</p>
 <section id="como-realizar-consultas-em-apis-odata">
-<h2>Como Realizar Consultas em APIs OData<a class="headerlink" href="#como-realizar-consultas-em-apis-odata" title="Link para este cabeçalho">¶</a></h2>
+<h2>Como Realizar Consultas em APIs OData<a class="headerlink" href="#como-realizar-consultas-em-apis-odata" title="Link permanente para este cabeçalho">¶</a></h2>
 <p>As consultas são realizadas através do método <code class="docutils literal notranslate"><span class="pre">query</span></code> da classe <a class="reference internal" href="api.html#bcb.odata.api.Endpoint" title="bcb.odata.api.Endpoint"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.Endpoint</span></code></a>.
 Este método retorna um objeto <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.framework.ODataQuery</span></code> que abstrai a consulta e permite executar
 algumas firulas como: filtros e ordenação.
@@ -365,12 +352,12 @@ retornados.
 Vamos ordernar pela propriedade <code class="docutils literal notranslate"><span class="pre">Data</span></code> de forma decrescente.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [9]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
 <span class="gh">Out[9]: </span>
-<span class="go">        Data  Quantidade         Total   Media</span>
-<span class="go">0 2024-06-13   146310122  5.830781e+07  398.52</span>
-<span class="go">1 2024-06-12   155053646  6.536795e+07  421.58</span>
-<span class="go">2 2024-06-11   161611592  7.162474e+07  443.19</span>
-<span class="go">3 2024-06-10   180385366  1.057377e+08  586.18</span>
-<span class="go">4 2024-06-09   123554195  1.607068e+07  130.07</span>
+<span class="go">        Data  Quantidade  CanalPrimario  CanalSecundario         Total   Media</span>
+<span class="go">0 2024-12-23   208964869      208627721           337148  1.157906e+08  554.11</span>
+<span class="go">1 2024-12-22   154699875      154613675            86200  2.008746e+07  129.85</span>
+<span class="go">2 2024-12-21   213637544      213470679           166865  3.748529e+07  175.46</span>
+<span class="go">3 2024-12-20   252126990      250766508          1360482  1.629023e+08  646.11</span>
+<span class="go">4 2024-12-19   194048002      193703107           344895  9.890886e+07  509.71</span>
 </pre></div>
 </div>
 <p>Veja que a consulta retorna as datas mais recentes primeiro.</p>
@@ -402,15 +389,15 @@ Na última linha executo o método <code class="docutils literal notranslate"><s
 <span class="gp">   ....: </span>
 <span class="gh">Out[11]: </span>
 <span class="go">        Data   Media</span>
-<span class="go">0 2023-05-02  661.07</span>
-<span class="go">1 2023-04-10  661.04</span>
-<span class="go">2 2023-01-02  652.51</span>
-<span class="go">3 2023-01-30  642.01</span>
-<span class="go">4 2024-04-01  633.91</span>
+<span class="go">0 2024-11-18  677.12</span>
+<span class="go">1 2023-05-02  661.07</span>
+<span class="go">2 2023-04-10  661.04</span>
+<span class="go">3 2024-09-30  659.94</span>
+<span class="go">4 2023-01-02  652.51</span>
 </pre></div>
 </div>
 <section id="visualizando-a-consulta">
-<h3>Visualizando a Consulta<a class="headerlink" href="#visualizando-a-consulta" title="Link para este cabeçalho">¶</a></h3>
+<h3>Visualizando a Consulta<a class="headerlink" href="#visualizando-a-consulta" title="Link permanente para este cabeçalho">¶</a></h3>
 <p>Algumas consultas podem ficar bastante complicadas, dependendo da quantidade de elementos que compõem a consulta.
 Para ajudar na construção e na depuração da <em>query</em>, criamos o método <code class="docutils literal notranslate"><span class="pre">show</span></code> imprime a query na tela,
 mas não a executa.</p>
@@ -429,12 +416,12 @@ mas não a executa.</p>
 <span class="go">  $orderby = Media desc</span>
 <span class="go">  $select = Data,Media</span>
 <span class="go">  $top = 5</span>
-<span class="go">Return: Data&lt;datetime&gt;, Quantidade&lt;int&gt;, Total&lt;float&gt;, Media&lt;float&gt;</span>
+<span class="go">Return: Data&lt;datetime&gt;, Quantidade&lt;int&gt;, CanalPrimario&lt;int&gt;, CanalSecundario&lt;int&gt;, Total&lt;float&gt;, Media&lt;float&gt;</span>
 </pre></div>
 </div>
 </section>
 <section id="filtrando-dados">
-<h3>Filtrando Dados<a class="headerlink" href="#filtrando-dados" title="Link para este cabeçalho">¶</a></h3>
+<h3>Filtrando Dados<a class="headerlink" href="#filtrando-dados" title="Link permanente para este cabeçalho">¶</a></h3>
 <p>Os filtros são criados com o método <code class="docutils literal notranslate"><span class="pre">filter</span></code> e aplicados às propriedades do <em>endpoint</em>, por isso é necessário
 conhecê-lo, o que deve ser feito com o método <code class="docutils literal notranslate"><span class="pre">describe</span></code>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [13]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">Expectativas</span>
@@ -529,13 +516,13 @@ objeto <code class="docutils literal notranslate"><span class="pre">datetime</sp
 <span class="go">  $format = json</span>
 <span class="go">  $filter = Data ge 2023-01-01</span>
 <span class="go">  $top = 5</span>
-<span class="go">Return: Data&lt;datetime&gt;, Quantidade&lt;int&gt;, Total&lt;float&gt;, Media&lt;float&gt;</span>
+<span class="go">Return: Data&lt;datetime&gt;, Quantidade&lt;int&gt;, CanalPrimario&lt;int&gt;, CanalSecundario&lt;int&gt;, Total&lt;float&gt;, Media&lt;float&gt;</span>
 </pre></div>
 </div>
 <p>O objeto <code class="docutils literal notranslate"><span class="pre">datetime</span></code> é formatado como data na consulta, note que não há aspas na definição da data no filtro.</p>
 </section>
 <section id="ordenando-os-dados">
-<h3>Ordenando os Dados<a class="headerlink" href="#ordenando-os-dados" title="Link para este cabeçalho">¶</a></h3>
+<h3>Ordenando os Dados<a class="headerlink" href="#ordenando-os-dados" title="Link permanente para este cabeçalho">¶</a></h3>
 <p>A ordenação é definida no método <code class="docutils literal notranslate"><span class="pre">orderby</span></code> passando um objeto da classe
 <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.framework.ODataPropertyOrderBy</span></code> que é obtida dos métodos <code class="docutils literal notranslate"><span class="pre">asc</span></code> e <code class="docutils literal notranslate"><span class="pre">desc</span></code> da propriedade.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [25]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">pix</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s2">&quot;PixLiquidadosAtual&quot;</span><span class="p">)</span>
@@ -557,16 +544,16 @@ objeto <code class="docutils literal notranslate"><span class="pre">datetime</sp
 <span class="go">  $format = json</span>
 <span class="go">  $orderby = Data asc</span>
 <span class="go">  $top = 5</span>
-<span class="go">Return: Data&lt;datetime&gt;, Quantidade&lt;int&gt;, Total&lt;float&gt;, Media&lt;float&gt;</span>
+<span class="go">Return: Data&lt;datetime&gt;, Quantidade&lt;int&gt;, CanalPrimario&lt;int&gt;, CanalSecundario&lt;int&gt;, Total&lt;float&gt;, Media&lt;float&gt;</span>
 
 <span class="gp">In [29]: </span><span class="n">query</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
 <span class="gh">Out[29]: </span>
-<span class="go">        Data  Quantidade     Total   Media</span>
-<span class="go">0 2020-11-03        2345    210.24   89.65</span>
-<span class="go">1 2020-11-04        2629    336.37  127.94</span>
-<span class="go">2 2020-11-05       16669   2685.84  161.13</span>
-<span class="go">3 2020-11-06       57936  21133.81  364.78</span>
-<span class="go">4 2020-11-07       11089   2333.89  210.47</span>
+<span class="go">        Data  Quantidade CanalPrimario CanalSecundario     Total   Media</span>
+<span class="go">0 2020-11-03        2345          None            None    210.24   89.65</span>
+<span class="go">1 2020-11-04        2629          None            None    336.37  127.94</span>
+<span class="go">2 2020-11-05       16669          None            None   2685.84  161.13</span>
+<span class="go">3 2020-11-06       57936          None            None  21133.81  364.78</span>
+<span class="go">4 2020-11-07       11089          None            None   2333.89  210.47</span>
 </pre></div>
 </div>
 <p>O método <code class="docutils literal notranslate"><span class="pre">orderby</span></code> pode receber diversas propriedades para a definição da ordenação.</p>
@@ -607,7 +594,7 @@ objeto <code class="docutils literal notranslate"><span class="pre">datetime</sp
 <p>Vejam que a consulta é exatamente a mesma.</p>
 </section>
 <section id="selecionando-as-propriedades">
-<h3>Selecionando as Propriedades<a class="headerlink" href="#selecionando-as-propriedades" title="Link para este cabeçalho">¶</a></h3>
+<h3>Selecionando as Propriedades<a class="headerlink" href="#selecionando-as-propriedades" title="Link permanente para este cabeçalho">¶</a></h3>
 <p>O médoto <code class="docutils literal notranslate"><span class="pre">select</span></code> funciona de forma muito semelhante ao <em>select</em> de uma <em>query</em> SQL.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [35]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">em</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s1">&#39;ExpectativasMercadoTop5Anuais&#39;</span><span class="p">)</span>
 
@@ -619,18 +606,18 @@ objeto <code class="docutils literal notranslate"><span class="pre">datetime</sp
 <span class="gp">   ....: </span>
 <span class="gh">Out[36]: </span>
 <span class="go">   Indicador       Data DataReferencia tipoCalculo   Media</span>
-<span class="go">0  PIB Total 2024-06-07           2024           L  2.3243</span>
-<span class="go">1  PIB Total 2024-06-07           2025           L  1.6753</span>
-<span class="go">2  PIB Total 2024-06-07           2026           L  1.8000</span>
-<span class="go">3  PIB Total 2024-06-07           2027           L  2.0000</span>
-<span class="go">4  PIB Total 2024-06-07           2028           L  2.0000</span>
+<span class="go">0  PIB Total 2024-12-20           2024           L  3.5145</span>
+<span class="go">1  PIB Total 2024-12-20           2025           L  1.9631</span>
+<span class="go">2  PIB Total 2024-12-20           2026           L  1.8000</span>
+<span class="go">3  PIB Total 2024-12-20           2027           L  2.1500</span>
+<span class="go">4  PIB Total 2024-12-20           2028           L  2.1500</span>
 </pre></div>
 </div>
 <p>Selecionar as colunas é importante para reduzir o volume de dados trafegado, pois a API do BCB não tem um bom
 desempenho, logo, essas configurações aceleram as consultas.</p>
 </section>
 <section id="metodo-limit">
-<h3>Método <code class="docutils literal notranslate"><span class="pre">limit</span></code><a class="headerlink" href="#metodo-limit" title="Link para este cabeçalho">¶</a></h3>
+<h3>Método <code class="docutils literal notranslate"><span class="pre">limit</span></code><a class="headerlink" href="#metodo-limit" title="Link permanente para este cabeçalho">¶</a></h3>
 <p>O método <code class="docutils literal notranslate"><span class="pre">limit</span></code> define a quantidade de linhas que será retornada pela consulta.
 Esse método é importante para investigar as consultas na API de forma rápida.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [37]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">pix</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s2">&quot;PixLiquidadosAtual&quot;</span><span class="p">)</span>
@@ -641,17 +628,17 @@ Esse método é importante para investigar as consultas na API de forma rápida.
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
 <span class="gp">   ....: </span>
 <span class="gh">Out[38]: </span>
-<span class="go">        Data  Quantidade        Total   Media</span>
-<span class="go">0 2023-12-02   139072624  23360889.99  167.98</span>
-<span class="go">1 2024-04-19   163588000  79114284.18  483.62</span>
-<span class="go">2 2024-05-24   156097661  68660685.32  439.86</span>
-<span class="go">3 2024-02-10   140720681  25506025.17  181.25</span>
-<span class="go">4 2023-07-11   103725918  47312155.16  456.13</span>
+<span class="go">        Data  Quantidade  CanalPrimario  CanalSecundario        Total   Media</span>
+<span class="go">0 2023-12-02   139072624      138976370            96254  23360889.99  167.98</span>
+<span class="go">1 2024-04-19   163588000      163124269           463731  79114284.18  483.62</span>
+<span class="go">2 2024-05-24   156097661      155912971           184690  68660685.32  439.86</span>
+<span class="go">3 2024-02-10   140720681      140509596           211085  25506025.17  181.25</span>
+<span class="go">4 2024-10-02   177004363      176268828           735535  78683919.77  444.53</span>
 </pre></div>
 </div>
 </section>
 <section id="tipos-de-endpoints">
-<h3>Tipos de <em>endpoints</em><a class="headerlink" href="#tipos-de-endpoints" title="Link para este cabeçalho">¶</a></h3>
+<h3>Tipos de <em>endpoints</em><a class="headerlink" href="#tipos-de-endpoints" title="Link permanente para este cabeçalho">¶</a></h3>
 <p>Como foi visto anteriormente, a API do PIX (<code class="docutils literal notranslate"><span class="pre">SPI</span></code>) possui 4 <code class="docutils literal notranslate"><span class="pre">EntitySets</span></code> e estes são os <em>endpoints</em> dessa API.
 Entretanto, há APIs que têm um outro tipo de <em>endpoint</em>, os <code class="docutils literal notranslate"><span class="pre">FunctionImports</span></code>.
 A API do PTAX, por exemplo</p>
@@ -747,7 +734,7 @@ Podemos aplicar filtros nessa consulta utilizando o método <code class="docutil
 </div>
 </section>
 <section id="obtendo-o-texto-da-api">
-<h3>Obtendo o Texto da API<a class="headerlink" href="#obtendo-o-texto-da-api" title="Link para este cabeçalho">¶</a></h3>
+<h3>Obtendo o Texto da API<a class="headerlink" href="#obtendo-o-texto-da-api" title="Link permanente para este cabeçalho">¶</a></h3>
 <p>Uma alternativa ao DataFrame retornado pela consulta, via o método <code class="docutils literal notranslate"><span class="pre">collect</span></code>, é obter o texto, em formato JSON
 (padrão) ou XML, retornado pela consulta.</p>
 <p>O método <code class="docutils literal notranslate"><span class="pre">collect</span></code> faz o <em>parsing</em> do texto retornado na consulta e cria um DataFrame, o método <code class="docutils literal notranslate"><span class="pre">text</span></code> retorna
@@ -762,7 +749,7 @@ esse texto bruto.</p>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">text</span><span class="p">())</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[47]: </span><span class="go">&#39;{&quot;@odata.context&quot;:&quot;https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTop5Anuais(Indicador,Data,DataReferencia,tipoCalculo,Media)&quot;,&quot;value&quot;:[{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2024-06-07&quot;,&quot;DataReferencia&quot;:&quot;2024&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:2.3243},{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2024-06-07&quot;,&quot;DataReferencia&quot;:&quot;2025&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:1.6753},{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2024-06-07&quot;,&quot;DataReferencia&quot;:&quot;2026&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:1.8000},{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2024-06-07&quot;,&quot;DataReferencia&quot;:&quot;2027&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:2.0000},{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2024-06-07&quot;,&quot;DataReferencia&quot;:&quot;2028&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:2.0000}]}&#39;</span>
+<span class="gh">Out[47]: </span><span class="go">&#39;{&quot;@odata.context&quot;:&quot;https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTop5Anuais(Indicador,Data,DataReferencia,tipoCalculo,Media)&quot;,&quot;value&quot;:[{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2024-12-20&quot;,&quot;DataReferencia&quot;:&quot;2024&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:3.5145},{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2024-12-20&quot;,&quot;DataReferencia&quot;:&quot;2025&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:1.9631},{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2024-12-20&quot;,&quot;DataReferencia&quot;:&quot;2026&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:1.8000},{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2024-12-20&quot;,&quot;DataReferencia&quot;:&quot;2027&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:2.1500},{&quot;Indicador&quot;:&quot;PIB Total&quot;,&quot;Data&quot;:&quot;2024-12-20&quot;,&quot;DataReferencia&quot;:&quot;2028&quot;,&quot;tipoCalculo&quot;:&quot;L&quot;,&quot;Media&quot;:2.1500}]}&#39;</span>
 </pre></div>
 </div>
 <p>O texto retornado está no formato JSON.
@@ -777,13 +764,13 @@ Para isso incluímos o método <code class="docutils literal notranslate"><span 
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">text</span><span class="p">())</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[49]: </span><span class="go">&#39;&lt;?xml version=\&#39;1.0\&#39; encoding=\&#39;UTF-8\&#39;?&gt;&lt;a:feed xmlns:a=&quot;http://www.w3.org/2005/Atom&quot; xmlns:m=&quot;http://docs.oasis-open.org/odata/ns/metadata&quot; xmlns:d=&quot;http://docs.oasis-open.org/odata/ns/data&quot; m:context=&quot;https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTop5Anuais(Indicador,Data,DataReferencia,tipoCalculo,Media)&quot;&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2024-06-15T11:14:54Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2024-06-07&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2024&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;2.3243&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2024-06-15T11:14:54Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2024-06-07&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2025&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;1.6753&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2024-06-15T11:14:54Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2024-06-07&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2026&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;1.8000&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2024-06-15T11:14:54Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2024-06-07&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2027&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;2.0000&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2024-06-15T11:14:54Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2024-06-07&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2028&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;2.0000&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;/a:feed&gt;&#39;</span>
+<span class="gh">Out[49]: </span><span class="go">&#39;&lt;?xml version=\&#39;1.0\&#39; encoding=\&#39;UTF-8\&#39;?&gt;&lt;a:feed xmlns:a=&quot;http://www.w3.org/2005/Atom&quot; xmlns:m=&quot;http://docs.oasis-open.org/odata/ns/metadata&quot; xmlns:d=&quot;http://docs.oasis-open.org/odata/ns/data&quot; m:context=&quot;https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTop5Anuais(Indicador,Data,DataReferencia,tipoCalculo,Media)&quot;&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2024-12-24T08:59:36Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2024-12-20&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2024&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;3.5145&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2024-12-24T08:59:36Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2024-12-20&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2025&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;1.9631&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2024-12-24T08:59:36Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2024-12-20&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2026&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;1.8000&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2024-12-24T08:59:36Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2024-12-20&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2027&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;2.1500&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2024-12-24T08:59:36Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;PIB Total&lt;/d:Indicador&gt;&lt;d:Data&gt;2024-12-20&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2028&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;L&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;2.1500&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;/a:feed&gt;&#39;</span>
 </pre></div>
 </div>
 </section>
 </section>
 <section id="classe-odataapi">
-<h2>Classe ODataAPI<a class="headerlink" href="#classe-odataapi" title="Link para este cabeçalho">¶</a></h2>
+<h2>Classe ODataAPI<a class="headerlink" href="#classe-odataapi" title="Link permanente para este cabeçalho">¶</a></h2>
 <p>O portal de Dados Abertos to Banco Central apresenta diversas APIs OData, são
 dezenas de APIs disponíveis.
 A URL com metadados de cada API pode ser obtida no <a class="reference external" href="https://dadosabertos.bcb.gov.br">portal</a>.
@@ -889,9 +876,9 @@ A classe <a class="reference internal" href="api.html#bcb.odata.api.ODataAPI" ti
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=5ffef437"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="_static/scripts/furo.js?v=4e2eecee"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/scripts/furo.js"></script>
     </body>
 </html>

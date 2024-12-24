@@ -1,16 +1,16 @@
 <!doctype html>
-<html class="no-js" lang="pt-br" data-content_root="./">
+<html class="no-js" lang="pt-br" data-content_root="">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 <link rel="index" title="Índice" href="genindex.html" /><link rel="search" title="Buscar" href="search.html" /><link rel="next" title="Expectativas" href="expectativas.html" /><link rel="prev" title="SGS" href="sgs.html" />
 
-    <!-- Generated with Sphinx 7.3.7 and Furo 2024.05.06 -->
-        <title>Moedas - Documentação python-bcb</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=387cc868" />
+    <!-- Generated with Sphinx 6.2.1 and Furo 2024.08.06 -->
+        <title>Moedas - documentação python-bcb</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=04c057b233f3c8d71940eee6080f658a04e2027d" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=cf727022eb7470bc603c08d2e55c3247faec75c9" />
     
     
 
@@ -89,19 +89,6 @@
       <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
     </svg>
   </symbol>
-  <symbol id="svg-sun-half" viewBox="0 0 24 24">
-    <title>Auto light/dark mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
-      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M13 12h5" />
-      <path d="M13 15h4" />
-      <path d="M13 18h1" />
-      <path d="M13 9h4" />
-      <path d="M13 6h1" />
-    </svg>
-  </symbol>
   <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
     <title>Auto light/dark, in light mode</title>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -142,7 +129,7 @@
       <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
       <path d="M13.5 6.5l4 4" />
       <path d="M20 21l2 -2l-2 -2" />
-      <path d="M17 17l-2 2l2 2" /
+      <path d="M17 17l-2 2l2 2" />
     </svg>
   </symbol>
   <symbol id="svg-eye" viewBox="0 0 24 24">
@@ -180,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentação python-bcb </div></a>
+      <a href="index.html"><div class="brand">documentação python-bcb </div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -204,7 +191,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">Documentação python-bcb </span>
+  <span class="sidebar-brand-text">documentação python-bcb </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Buscar" name="q" aria-label="Buscar">
@@ -264,14 +251,14 @@
         </div>
         <article role="main" id="furo-main-content">
           <section id="moedas">
-<h1>Moedas<a class="headerlink" href="#moedas" title="Link para este cabeçalho">¶</a></h1>
+<h1>Moedas<a class="headerlink" href="#moedas" title="Link permanente para este cabeçalho">¶</a></h1>
 <p>O pacote tem 2 APIs que dão acesso a informações de moedas.</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#api-odata-de-moedas"><span class="std std-ref">API OData de Moedas</span></a> com cotações de taxas de câmbio</p></li>
 <li><p>Webscraping no <a class="reference internal" href="#conversor-de-moedas"><span class="std std-ref">Conversor de Moedas</span></a></p></li>
 </ul>
 <section id="api-odata-de-moedas">
-<h2>API OData de Moedas<a class="headerlink" href="#api-odata-de-moedas" title="Link para este cabeçalho">¶</a></h2>
+<h2>API OData de Moedas<a class="headerlink" href="#api-odata-de-moedas" title="Link permanente para este cabeçalho">¶</a></h2>
 <p>A classe <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.PTAX</span></code> retorna cotações de moedas os obtidas a partir da <a class="reference external" href="https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/documentacao">API de Moedas</a> do BCB.
 Esta implementação é mais estável que a do <a class="reference internal" href="#conversor-de-moedas"><span class="std std-ref">Conversor de Moedas</span></a>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">PTAX</span>
@@ -379,7 +366,7 @@ são preenchidos com 0 para ter 2 dígitos.</p>
 </div>
 </section>
 <section id="conversor-de-moedas">
-<h2>Conversor de Moedas<a class="headerlink" href="#conversor-de-moedas" title="Link para este cabeçalho">¶</a></h2>
+<h2>Conversor de Moedas<a class="headerlink" href="#conversor-de-moedas" title="Link permanente para este cabeçalho">¶</a></h2>
 <p>O módulo <a class="reference internal" href="api.html#module-bcb.currency" title="bcb.currency"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bcb.currency</span></code></a> obtem dados de moedas do conversor de moedas do Banco Central através de webscraping.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [13]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">currency</span>
 
@@ -487,9 +474,9 @@ são preenchidos com 0 para ter 2 dígitos.</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=5ffef437"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="_static/scripts/furo.js?v=4e2eecee"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/scripts/furo.js"></script>
     </body>
 </html>
