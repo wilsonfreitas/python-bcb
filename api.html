@@ -201,6 +201,7 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="sgs.html">SGS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sgs.html#dados-de-inadimplencia-de-operacoes-de-credito">Dados de Inadimplência de Operações de Crédito</a></li>
 <li class="toctree-l1"><a class="reference internal" href="currency.html">Moedas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="expectativas.html">Expectativas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="taxajuros.html">Taxas de Juros</a></li>
@@ -291,6 +292,46 @@ quando solicitado mais de uma série (parâmetro <code class="docutils literal n
 quando solicitado mais de uma série (parâmetro <code class="docutils literal notranslate"><span class="pre">multi=False</span></code>).</p></li>
 </ul>
 </p>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-bcb.sgs.regional_economy"></span><dl class="py function">
+<dt class="sig sig-object py" id="bcb.sgs.regional_economy.get_non_performing_loans">
+<span class="sig-prename descclassname"><span class="pre">bcb.sgs.regional_economy.</span></span><span class="sig-name descname"><span class="pre">get_non_performing_loans</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states_or_region</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'total'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcb.sgs.regional_economy.get_non_performing_loans" title="Link permanente para esta definição">¶</a></dt>
+<dd><p>Dados de inadimplência das operações de crédito.</p>
+<p>Esta função é um <em>wrapper</em> para o método para a função <code class="docutils literal notranslate"><span class="pre">get</span></code> do módulo <code class="docutils literal notranslate"><span class="pre">sgs</span></code>,
+simplificando o acesso aos dados de inadimplência das operações de crédito.
+Nessa função o usuário escolhe o tipo de inadimplência, o(s) estado(s) ou as regiões
+que deseja obter os dados.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bcb.sgs.regional_economy</span> <span class="kn">import</span> <span class="n">get_non_performing_loans</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bcb.utils</span> <span class="kn">import</span> <span class="n">BRAZILIAN_REGIONS</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">series</span> <span class="o">=</span> <span class="n">get_non_performing_loans</span><span class="p">([</span><span class="s2">&quot;RR&quot;</span><span class="p">],</span> <span class="n">last</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">northeast_states</span> <span class="o">=</span> <span class="n">BRAZILIAN_REGIONS</span><span class="p">[</span><span class="s2">&quot;NE&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">series_ne</span> <span class="o">=</span> <span class="n">get_non_performing_loans</span><span class="p">(</span><span class="n">northeast_states</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;pj&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parâmetros<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>(</strong><strong>List</strong><strong>[</strong><strong>str</strong><strong>]</strong><strong>)</strong> (<em>states_or_region</em>) – </p></li>
+<li><p><strong>(</strong><strong>str</strong><strong>)</strong> (<em>mode</em>) – “PJ” (pessoas jurídicas) ou “total” (inadimplência total).</p></li>
+<li><p><strong>start</strong> (<em>str</em><em>, </em><em>int</em><em>, </em><em>date</em><em>, </em><em>datetime</em><em>, </em><em>Timestamp</em>) – Data de início da série.
+Interpreta diferentes tipos e formatos de datas.</p></li>
+<li><p><strong>end</strong> (<em>string</em><em>, </em><em>int</em><em>, </em><em>date</em><em>, </em><em>datetime</em><em>, </em><em>Timestamp</em>) – Data final da série.
+Interpreta diferentes tipos e formatos de datas.</p></li>
+<li><p><strong>last</strong> (<em>int</em>) – Retorna os últimos <code class="docutils literal notranslate"><span class="pre">last</span></code> elementos disponíveis da série temporal
+solicitada. Se <code class="docutils literal notranslate"><span class="pre">last</span></code> for maior que 0 (zero) os argumentos <code class="docutils literal notranslate"><span class="pre">start</span></code>
+e <code class="docutils literal notranslate"><span class="pre">end</span></code> são ignorados.</p></li>
+<li><p><strong>freq</strong> (<em>str</em>) – Define a frequência a ser utilizada na série temporal</p></li>
+</ul>
+</dd>
+<dt class="field-even">Retorna<span class="colon">:</span></dt>
+<dd class="field-even"><p>série temporal univariada ou multivariada,
+quando solicitado mais de uma série temporal.</p>
+</dd>
+<dt class="field-odd">Tipo de retorno<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -761,6 +802,7 @@ Real (símbolos : R$, BRL).</p>
 <li><a class="reference internal" href="#">API</a><ul>
 <li><a class="reference internal" href="#module-bcb.sgs">Módulo <code class="xref py py-mod docutils literal notranslate"><span class="pre">bcb.sgs</span></code></a><ul>
 <li><a class="reference internal" href="#bcb.sgs.get"><code class="docutils literal notranslate"><span class="pre">get()</span></code></a></li>
+<li><a class="reference internal" href="#bcb.sgs.regional_economy.get_non_performing_loans"><code class="docutils literal notranslate"><span class="pre">get_non_performing_loans()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-bcb.currency">Módulo <code class="xref py py-mod docutils literal notranslate"><span class="pre">bcb.currency</span></code></a><ul>

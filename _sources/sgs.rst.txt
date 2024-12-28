@@ -5,8 +5,8 @@ A função :py:func:`bcb.sgs.get` obtem os dados do webservice do Banco Central 
 interface json do serviço BCData/SGS - 
 `Sistema Gerenciador de Séries Temporais (SGS) <https://www3.bcb.gov.br/sgspub/localizarseries/localizarSeries.do?method=prepararTelaLocalizarSeries>`_.
 
-Exemplo
--------
+Exemplos
+--------
 
 .. ipython:: python
 
@@ -34,3 +34,23 @@ Exemplo
     plt.ylabel('%')
     @savefig sgs1.png
     plt.legend().set_visible(False)
+
+
+Dados de Inadimplência de Operações de Crédito
+==============================================
+
+.. ipython:: python
+
+    from bcb.sgs.regional_economy import get_non_performing_loans
+    from bcb.utils import BRAZILIAN_REGIONS, BRAZILIAN_STATES
+    import pandas as pd
+    get_non_performing_loans(["RR"], last=10, mode="all")
+
+.. ipython:: python
+
+    northeast_states = BRAZILIAN_REGIONS["NE"]
+    get_non_performing_loans(northeast_states, last=5, mode="pj")
+
+.. ipython:: python
+
+    get_non_performing_loans(BRAZILIAN_STATES, mode="PF", start="2024-01-01")

@@ -201,6 +201,7 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">SGS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#dados-de-inadimplencia-de-operacoes-de-credito">Dados de Inadimplência de Operações de Crédito</a></li>
 <li class="toctree-l1"><a class="reference internal" href="currency.html">Moedas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="expectativas.html">Expectativas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="taxajuros.html">Taxas de Juros</a></li>
@@ -255,8 +256,8 @@
 <p>A função <a class="reference internal" href="api.html#bcb.sgs.get" title="bcb.sgs.get"><code class="xref py py-func docutils literal notranslate"><span class="pre">bcb.sgs.get()</span></code></a> obtem os dados do webservice do Banco Central ,
 interface json do serviço BCData/SGS -
 <a class="reference external" href="https://www3.bcb.gov.br/sgspub/localizarseries/localizarSeries.do?method=prepararTelaLocalizarSeries">Sistema Gerenciador de Séries Temporais (SGS)</a>.</p>
-<section id="exemplo">
-<h2>Exemplo<a class="headerlink" href="#exemplo" title="Link permanente para este cabeçalho">¶</a></h2>
+<section id="exemplos">
+<h2>Exemplos<a class="headerlink" href="#exemplos" title="Link permanente para este cabeçalho">¶</a></h2>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">sgs</span>
 
 <span class="gp">In [2]: </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -316,6 +317,62 @@ interface json do serviço BCData/SGS -
 <img alt="_images/sgs1.png" src="_images/sgs1.png" />
 </section>
 </section>
+<section id="dados-de-inadimplencia-de-operacoes-de-credito">
+<h1>Dados de Inadimplência de Operações de Crédito<a class="headerlink" href="#dados-de-inadimplencia-de-operacoes-de-credito" title="Link permanente para este cabeçalho">¶</a></h1>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [17]: </span><span class="kn">from</span> <span class="nn">bcb.sgs.regional_economy</span> <span class="kn">import</span> <span class="n">get_non_performing_loans</span>
+
+<span class="gp">In [18]: </span><span class="kn">from</span> <span class="nn">bcb.utils</span> <span class="kn">import</span> <span class="n">BRAZILIAN_REGIONS</span><span class="p">,</span> <span class="n">BRAZILIAN_STATES</span>
+
+<span class="gp">In [19]: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="gp">In [20]: </span><span class="n">get_non_performing_loans</span><span class="p">([</span><span class="s2">&quot;RR&quot;</span><span class="p">],</span> <span class="n">last</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+<span class="gh">Out[20]: </span>
+<span class="go">              RR</span>
+<span class="go">Date            </span>
+<span class="go">2024-01-01  3.87</span>
+<span class="go">2024-02-01  3.88</span>
+<span class="go">2024-03-01  3.96</span>
+<span class="go">2024-04-01  3.94</span>
+<span class="go">2024-05-01  4.22</span>
+<span class="go">2024-06-01  4.15</span>
+<span class="go">2024-07-01  4.07</span>
+<span class="go">2024-08-01  3.77</span>
+<span class="go">2024-09-01  3.85</span>
+<span class="go">2024-10-01  3.85</span>
+</pre></div>
+</div>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [21]: </span><span class="n">northeast_states</span> <span class="o">=</span> <span class="n">BRAZILIAN_REGIONS</span><span class="p">[</span><span class="s2">&quot;NE&quot;</span><span class="p">]</span>
+
+<span class="gp">In [22]: </span><span class="n">get_non_performing_loans</span><span class="p">(</span><span class="n">northeast_states</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;pj&quot;</span><span class="p">)</span>
+<span class="gh">Out[22]: </span>
+<span class="go">              AL    BA    CE    MA    PB    PE    PI    RN    SE</span>
+<span class="go">Date                                                            </span>
+<span class="go">2024-06-01  2.69  3.45  2.58  4.00  3.47  3.44  1.97  3.56  3.49</span>
+<span class="go">2024-07-01  2.68  3.03  2.72  4.18  3.35  3.40  2.09  3.50  3.42</span>
+<span class="go">2024-08-01  2.77  3.06  2.70  4.35  3.40  3.18  2.18  3.50  3.45</span>
+<span class="go">2024-09-01  2.69  3.13  2.67  4.41  3.48  3.14  2.26  3.44  3.55</span>
+<span class="go">2024-10-01  2.60  3.09  2.77  4.59  3.56  3.02  2.33  3.64  3.61</span>
+</pre></div>
+</div>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [23]: </span><span class="n">get_non_performing_loans</span><span class="p">(</span><span class="n">BRAZILIAN_STATES</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;PF&quot;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2024-01-01&quot;</span><span class="p">)</span>
+<span class="gh">Out[23]: </span>
+<span class="go">              AC    AP    AM    PA    RO  ...    RJ    SP    PR    RS    SC</span>
+<span class="go">Date                                      ...                              </span>
+<span class="go">2024-01-01  3.49  4.09  5.40  4.16  2.76  ...  5.33  3.45  2.76  2.48  2.85</span>
+<span class="go">2024-02-01  3.48  4.05  5.25  4.15  2.78  ...  5.25  3.43  2.75  2.51  2.84</span>
+<span class="go">2024-03-01  3.43  4.01  5.18  4.09  2.81  ...  5.17  3.36  2.74  2.53  2.81</span>
+<span class="go">2024-04-01  3.46  4.10  5.15  4.09  2.85  ...  5.13  3.41  2.75  2.53  2.81</span>
+<span class="go">2024-05-01  3.54  4.22  5.26  4.15  2.99  ...  5.14  3.46  2.83  2.60  2.87</span>
+<span class="go">2024-06-01  3.50  4.11  5.14  4.09  3.07  ...  5.04  3.40  2.76  2.61  2.79</span>
+<span class="go">2024-07-01  3.49  4.13  5.14  4.14  3.16  ...  5.02  3.43  2.87  2.61  2.82</span>
+<span class="go">2024-08-01  3.44  4.04  5.06  4.14  3.24  ...  4.98  3.42  3.02  2.58  2.81</span>
+<span class="go">2024-09-01  3.58  4.06  4.99  4.16  3.24  ...  4.89  3.39  3.00  2.54  2.78</span>
+<span class="go">2024-10-01  3.59  3.98  4.87  4.22  3.26  ...  4.84  3.35  2.97  2.48  2.74</span>
+
+<span class="go">[10 rows x 27 columns]</span>
+</pre></div>
+</div>
+</section>
 
         </article>
       </div>
@@ -373,9 +430,10 @@ interface json do serviço BCData/SGS -
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">SGS</a><ul>
-<li><a class="reference internal" href="#exemplo">Exemplo</a></li>
+<li><a class="reference internal" href="#exemplos">Exemplos</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#dados-de-inadimplencia-de-operacoes-de-credito">Dados de Inadimplência de Operações de Crédito</a></li>
 </ul>
 
           </div>
