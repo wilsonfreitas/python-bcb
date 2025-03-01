@@ -50,11 +50,9 @@ def _get_url_and_payload(code, start_date, end_date, last):
             payload["dataInicial"] = Date(start_date).date.strftime("%d/%m/%Y")
             end_date = end_date if end_date else "today"
             payload["dataFinal"] = Date(end_date).date.strftime("%d/%m/%Y")
-        url = "http://api.bcb.gov.br/dados/serie/bcdata.sgs.{}/dados".format(code)
+        url = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.{}/dados".format(code)
     else:
-        url = (
-            "http://api.bcb.gov.br/dados/serie/bcdata.sgs.{}/dados" "/ultimos/{}"
-        ).format(code, last)
+        url = ("https://api.bcb.gov.br/dados/serie/bcdata.sgs.{}/dados" "/ultimos/{}").format(code, last)
 
     return {"payload": payload, "url": url}
 
