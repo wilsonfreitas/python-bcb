@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.3.2] - 2025-03-01
+- Poetry lock file updated
+- Replaced http with https in SGS URL
+
 ## [0.3.1] - 2024-12-24
 - Add Regional economy series support (tks @anapaulagomes)
 
