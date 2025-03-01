@@ -262,7 +262,7 @@
 <h2>API OData de Moedas<a class="headerlink" href="#api-odata-de-moedas" title="Link permanente para este cabeçalho">¶</a></h2>
 <p>A classe <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.PTAX</span></code> retorna cotações de moedas os obtidas a partir da <a class="reference external" href="https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/documentacao">API de Moedas</a> do BCB.
 Esta implementação é mais estável que a do <a class="reference internal" href="#conversor-de-moedas"><span class="std std-ref">Conversor de Moedas</span></a>.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">PTAX</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb</span><span class="w"> </span><span class="kn">import</span> <span class="n">PTAX</span>
 
 <span class="gp">In [2]: </span><span class="n">ptax</span> <span class="o">=</span> <span class="n">PTAX</span><span class="p">()</span>
 
@@ -369,7 +369,7 @@ são preenchidos com 0 para ter 2 dígitos.</p>
 <section id="conversor-de-moedas">
 <h2>Conversor de Moedas<a class="headerlink" href="#conversor-de-moedas" title="Link permanente para este cabeçalho">¶</a></h2>
 <p>O módulo <a class="reference internal" href="api.html#module-bcb.currency" title="bcb.currency"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bcb.currency</span></code></a> obtem dados de moedas do conversor de moedas do Banco Central através de webscraping.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [13]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">currency</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [13]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb</span><span class="w"> </span><span class="kn">import</span> <span class="n">currency</span>
 
 <span class="gp">In [14]: </span><span class="n">df</span> <span class="o">=</span> <span class="n">currency</span><span class="o">.</span><span class="n">get</span><span class="p">([</span><span class="s1">&#39;USD&#39;</span><span class="p">,</span> <span class="s1">&#39;EUR&#39;</span><span class="p">],</span>
 <span class="gp">   ....: </span>                  <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2000-01-01&#39;</span><span class="p">,</span>

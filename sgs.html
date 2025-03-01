@@ -258,11 +258,11 @@ interface json do serviço BCData/SGS -
 <a class="reference external" href="https://www3.bcb.gov.br/sgspub/localizarseries/localizarSeries.do?method=prepararTelaLocalizarSeries">Sistema Gerenciador de Séries Temporais (SGS)</a>.</p>
 <section id="exemplos">
 <h2>Exemplos<a class="headerlink" href="#exemplos" title="Link permanente para este cabeçalho">¶</a></h2>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span> <span class="nn">bcb</span> <span class="kn">import</span> <span class="n">sgs</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb</span><span class="w"> </span><span class="kn">import</span> <span class="n">sgs</span>
 
-<span class="gp">In [2]: </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="gp">In [2]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
-<span class="gp">In [3]: </span><span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
+<span class="gp">In [3]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
 
 <span class="gp">In [4]: </span><span class="n">mpl</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;bmh&#39;</span><span class="p">)</span>
 
@@ -319,18 +319,16 @@ interface json do serviço BCData/SGS -
 </section>
 <section id="dados-de-inadimplencia-de-operacoes-de-credito">
 <h1>Dados de Inadimplência de Operações de Crédito<a class="headerlink" href="#dados-de-inadimplencia-de-operacoes-de-credito" title="Link permanente para este cabeçalho">¶</a></h1>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [17]: </span><span class="kn">from</span> <span class="nn">bcb.sgs.regional_economy</span> <span class="kn">import</span> <span class="n">get_non_performing_loans</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [17]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb.sgs.regional_economy</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_non_performing_loans</span>
 
-<span class="gp">In [18]: </span><span class="kn">from</span> <span class="nn">bcb.utils</span> <span class="kn">import</span> <span class="n">BRAZILIAN_REGIONS</span><span class="p">,</span> <span class="n">BRAZILIAN_STATES</span>
+<span class="gp">In [18]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">BRAZILIAN_REGIONS</span><span class="p">,</span> <span class="n">BRAZILIAN_STATES</span>
 
-<span class="gp">In [19]: </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="gp">In [19]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="gp">In [20]: </span><span class="n">get_non_performing_loans</span><span class="p">([</span><span class="s2">&quot;RR&quot;</span><span class="p">],</span> <span class="n">last</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
 <span class="gh">Out[20]: </span>
 <span class="go">              RR</span>
 <span class="go">Date            </span>
-<span class="go">2024-01-01  3.87</span>
-<span class="go">2024-02-01  3.88</span>
 <span class="go">2024-03-01  3.96</span>
 <span class="go">2024-04-01  3.94</span>
 <span class="go">2024-05-01  4.22</span>
@@ -338,7 +336,9 @@ interface json do serviço BCData/SGS -
 <span class="go">2024-07-01  4.07</span>
 <span class="go">2024-08-01  3.77</span>
 <span class="go">2024-09-01  3.85</span>
-<span class="go">2024-10-01  3.85</span>
+<span class="go">2024-10-01  3.84</span>
+<span class="go">2024-11-01  3.78</span>
+<span class="go">2024-12-01  3.62</span>
 </pre></div>
 </div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [21]: </span><span class="n">northeast_states</span> <span class="o">=</span> <span class="n">BRAZILIAN_REGIONS</span><span class="p">[</span><span class="s2">&quot;NE&quot;</span><span class="p">]</span>
@@ -347,11 +347,11 @@ interface json do serviço BCData/SGS -
 <span class="gh">Out[22]: </span>
 <span class="go">              AL    BA    CE    MA    PB    PE    PI    RN    SE</span>
 <span class="go">Date                                                            </span>
-<span class="go">2024-06-01  2.69  3.45  2.58  4.00  3.47  3.44  1.97  3.56  3.49</span>
-<span class="go">2024-07-01  2.68  3.03  2.72  4.18  3.35  3.40  2.09  3.50  3.42</span>
-<span class="go">2024-08-01  2.77  3.06  2.70  4.35  3.40  3.18  2.18  3.50  3.45</span>
-<span class="go">2024-09-01  2.69  3.13  2.67  4.41  3.48  3.14  2.26  3.44  3.55</span>
-<span class="go">2024-10-01  2.60  3.09  2.77  4.59  3.56  3.02  2.33  3.64  3.61</span>
+<span class="go">2024-08-01  2.77  3.06  2.70  4.35  3.38  3.18  2.18  3.50  3.45</span>
+<span class="go">2024-09-01  2.69  3.13  2.67  4.41  3.46  3.15  2.26  3.44  3.55</span>
+<span class="go">2024-10-01  2.59  3.09  2.77  4.59  3.53  3.03  2.33  3.65  3.61</span>
+<span class="go">2024-11-01  2.55  3.40  2.73  4.65  3.54  2.91  2.41  3.60  4.02</span>
+<span class="go">2024-12-01  2.15  2.55  2.57  4.56  3.30  2.76  2.30  3.31  3.90</span>
 </pre></div>
 </div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [23]: </span><span class="n">get_non_performing_loans</span><span class="p">(</span><span class="n">BRAZILIAN_STATES</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;PF&quot;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2024-01-01&quot;</span><span class="p">)</span>
@@ -365,11 +365,13 @@ interface json do serviço BCData/SGS -
 <span class="go">2024-05-01  3.54  4.22  5.26  4.15  2.99  ...  5.14  3.46  2.83  2.60  2.87</span>
 <span class="go">2024-06-01  3.50  4.11  5.14  4.09  3.07  ...  5.04  3.40  2.76  2.61  2.79</span>
 <span class="go">2024-07-01  3.49  4.13  5.14  4.14  3.16  ...  5.02  3.43  2.87  2.61  2.82</span>
-<span class="go">2024-08-01  3.44  4.04  5.06  4.14  3.24  ...  4.98  3.42  3.02  2.58  2.81</span>
-<span class="go">2024-09-01  3.58  4.06  4.99  4.16  3.24  ...  4.89  3.39  3.00  2.54  2.78</span>
-<span class="go">2024-10-01  3.59  3.98  4.87  4.22  3.26  ...  4.84  3.35  2.97  2.48  2.74</span>
+<span class="go">2024-08-01  3.41  4.03  5.05  4.13  3.23  ...  4.97  3.42  3.02  2.58  2.81</span>
+<span class="go">2024-09-01  3.55  4.06  4.99  4.16  3.24  ...  4.90  3.39  3.01  2.54  2.79</span>
+<span class="go">2024-10-01  3.55  3.98  4.86  4.21  3.26  ...  4.84  3.35  2.97  2.49  2.74</span>
+<span class="go">2024-11-01  3.49  3.97  4.74  4.23  3.31  ...  4.80  3.32  2.94  2.41  2.70</span>
+<span class="go">2024-12-01  3.52  4.05  4.63  4.21  3.35  ...  4.70  3.28  2.88  2.29  2.65</span>
 
-<span class="go">[10 rows x 27 columns]</span>
+<span class="go">[12 rows x 27 columns]</span>
 </pre></div>
 </div>
 </section>
