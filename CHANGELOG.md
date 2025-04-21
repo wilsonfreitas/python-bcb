@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.3] - 2025-04-21
+- Improved error handling in SGS API
+- Added type hints to the bcb.sgs and sgs.currency modules
+- Added function sgs.get_json to retrieve raw JSON data returned from SGS API
+
 ## [0.3.2] - 2025-03-01
 - Poetry lock file updated
 - Replaced http with https in SGS URL
