@@ -1,7 +1,8 @@
+import json
 from io import StringIO
 
-import requests
 import pandas as pd
+import requests
 
 from bcb.utils import Date
 
@@ -119,6 +120,12 @@ def get(codes, start=None, end=None, last=0, multi=True, freq=None):
         urd = _get_url_and_payload(code.value, start, end, last)
         res = requests.get(urd["url"], params=urd["payload"])
         if res.status_code != 200:
+            try:
+                res_json = json.loads(res.text)
+            except Exception:
+                res_json = {}
+            if "error" in res_json:
+                raise Exception("Download error: {}".format(res_json["error"]))
             raise Exception("Download error: code = {}".format(code.value))
         df = pd.read_json(StringIO(res.text))
         df = _format_df(df, code, freq)
