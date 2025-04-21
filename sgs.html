@@ -329,8 +329,6 @@ interface json do serviço BCData/SGS -
 <span class="gh">Out[20]: </span>
 <span class="go">              RR</span>
 <span class="go">Date            </span>
-<span class="go">2024-03-01  3.96</span>
-<span class="go">2024-04-01  3.94</span>
 <span class="go">2024-05-01  4.22</span>
 <span class="go">2024-06-01  4.15</span>
 <span class="go">2024-07-01  4.07</span>
@@ -339,6 +337,8 @@ interface json do serviço BCData/SGS -
 <span class="go">2024-10-01  3.84</span>
 <span class="go">2024-11-01  3.78</span>
 <span class="go">2024-12-01  3.62</span>
+<span class="go">2025-01-01  3.87</span>
+<span class="go">2025-02-01  4.09</span>
 </pre></div>
 </div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [21]: </span><span class="n">northeast_states</span> <span class="o">=</span> <span class="n">BRAZILIAN_REGIONS</span><span class="p">[</span><span class="s2">&quot;NE&quot;</span><span class="p">]</span>
@@ -347,11 +347,11 @@ interface json do serviço BCData/SGS -
 <span class="gh">Out[22]: </span>
 <span class="go">              AL    BA    CE    MA    PB    PE    PI    RN    SE</span>
 <span class="go">Date                                                            </span>
-<span class="go">2024-08-01  2.77  3.06  2.70  4.35  3.38  3.18  2.18  3.50  3.45</span>
-<span class="go">2024-09-01  2.69  3.13  2.67  4.41  3.46  3.15  2.26  3.44  3.55</span>
 <span class="go">2024-10-01  2.59  3.09  2.77  4.59  3.53  3.03  2.33  3.65  3.61</span>
-<span class="go">2024-11-01  2.55  3.40  2.73  4.65  3.54  2.91  2.41  3.60  4.02</span>
-<span class="go">2024-12-01  2.15  2.55  2.57  4.56  3.30  2.76  2.30  3.31  3.90</span>
+<span class="go">2024-11-01  2.55  3.40  2.73  4.65  3.55  2.91  2.41  3.61  4.00</span>
+<span class="go">2024-12-01  2.12  2.53  2.55  4.55  3.24  2.71  2.28  3.28  3.86</span>
+<span class="go">2025-01-01  2.28  2.83  2.89  4.93  3.85  2.94  2.42  3.43  4.10</span>
+<span class="go">2025-02-01  2.35  3.03  3.04  5.15  4.03  3.02  2.35  3.51  4.30</span>
 </pre></div>
 </div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [23]: </span><span class="n">get_non_performing_loans</span><span class="p">(</span><span class="n">BRAZILIAN_STATES</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;PF&quot;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2024-01-01&quot;</span><span class="p">)</span>
@@ -368,10 +368,12 @@ interface json do serviço BCData/SGS -
 <span class="go">2024-08-01  3.41  4.03  5.05  4.13  3.23  ...  4.97  3.42  3.02  2.58  2.81</span>
 <span class="go">2024-09-01  3.55  4.06  4.99  4.16  3.24  ...  4.90  3.39  3.01  2.54  2.79</span>
 <span class="go">2024-10-01  3.55  3.98  4.86  4.21  3.26  ...  4.84  3.35  2.97  2.49  2.74</span>
-<span class="go">2024-11-01  3.49  3.97  4.74  4.23  3.31  ...  4.80  3.32  2.94  2.41  2.70</span>
-<span class="go">2024-12-01  3.52  4.05  4.63  4.21  3.35  ...  4.70  3.28  2.88  2.29  2.65</span>
+<span class="go">2024-11-01  3.49  3.96  4.74  4.23  3.30  ...  4.79  3.32  2.94  2.41  2.70</span>
+<span class="go">2024-12-01  3.52  4.04  4.64  4.20  3.34  ...  4.70  3.28  2.87  2.29  2.65</span>
+<span class="go">2025-01-01  3.85  4.43  4.90  4.50  3.71  ...  5.08  3.55  3.17  2.53  2.90</span>
+<span class="go">2025-02-01  3.96  4.55  5.03  4.68  3.85  ...  5.12  3.63  3.28  2.75  3.03</span>
 
-<span class="go">[12 rows x 27 columns]</span>
+<span class="go">[14 rows x 27 columns]</span>
 </pre></div>
 </div>
 </section>
