@@ -1,12 +1,12 @@
-from datetime import datetime, date
-
+from datetime import date, datetime
+from typing import Union
 
 BRAZILIAN_REGIONS = {
-   "N": ["AC", "AP", "AM", "PA", "RO", "RR", "TO"],
-   "NE": ["AL", "BA", "CE", "MA", "PB", "PE", "PI", "RN", "SE"],
-   "CO": ["DF", "GO", "MT", "MS"],
-   "SE": ["ES", "MG", "RJ", "SP"],
-   "S": ["PR", "RS", "SC"]
+    "N": ["AC", "AP", "AM", "PA", "RO", "RR", "TO"],
+    "NE": ["AL", "BA", "CE", "MA", "PB", "PE", "PI", "RN", "SE"],
+    "CO": ["DF", "GO", "MT", "MS"],
+    "SE": ["ES", "MG", "RJ", "SP"],
+    "S": ["PR", "RS", "SC"],
 }
 BRAZILIAN_STATES = []
 for state in BRAZILIAN_REGIONS.values():
@@ -14,8 +14,7 @@ for state in BRAZILIAN_REGIONS.values():
 
 
 class Date:
-    def __init__(self, d=None, format="%Y-%m-%d", mindate=date(1900, 1, 1)):
-        d = d if d else mindate
+    def __init__(self, d: Union[str, datetime, "Date", date], format: str = "%Y-%m-%d") -> None:
         if isinstance(d, str):
             if d == "now" or d == "today":
                 d = date.today()
@@ -29,27 +28,27 @@ class Date:
             pass
         else:
             raise ValueError()
-        self.date = d
+        self.date: date = d
 
-    def format(self, fmts="%Y-%m-%d"):
+    def format(self, fmts: str = "%Y-%m-%d") -> str:
         return datetime.strftime(self.date, fmts)
 
-    def __gt__(self, other):
+    def __gt__(self, other) -> bool:
         return self.date > other.date
 
-    def __ge__(self, other):
+    def __ge__(self, other) -> bool:
         return self.date >= other.date
 
-    def __lt__(self, other):
+    def __lt__(self, other) -> bool:
         return self.date < other.date
 
-    def __le__(self, other):
+    def __le__(self, other) -> bool:
         return self.date <= other.date
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return self.date == other.date
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.format()
 
     __str__ = __repr__
