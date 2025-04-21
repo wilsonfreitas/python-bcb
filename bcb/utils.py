@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import Union
+from typing import TypeAlias, Union
 
 BRAZILIAN_REGIONS = {
     "N": ["AC", "AP", "AM", "PA", "RO", "RR", "TO"],
@@ -12,9 +12,11 @@ BRAZILIAN_STATES = []
 for state in BRAZILIAN_REGIONS.values():
     BRAZILIAN_STATES.extend(state)
 
+DateInput: TypeAlias = Union[str, datetime, "Date", date]
+
 
 class Date:
-    def __init__(self, d: Union[str, datetime, "Date", date], format: str = "%Y-%m-%d") -> None:
+    def __init__(self, d: DateInput, format: str = "%Y-%m-%d") -> None:
         if isinstance(d, str):
             if d == "now" or d == "today":
                 d = date.today()

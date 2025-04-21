@@ -1,10 +1,11 @@
 import json
 from io import StringIO
+from typing import Dict, Generator, List, Optional, Tuple, TypeAlias, Union
 
 import pandas as pd
 import requests
 
-from bcb.utils import Date
+from bcb.utils import Date, DateInput
 
 """
 Sistema Gerenciador de Séries Temporais (SGS)
@@ -17,7 +18,7 @@ interface json do serviço BCData/SGS -
 
 
 class SGSCode:
-    def __init__(self, code, name=None):
+    def __init__(self, code: Union[str, int], name: Optional[str] = None) -> None:
         if name is None:
             if isinstance(code, int) or isinstance(code, str):
                 self.name = str(code)
@@ -30,7 +31,16 @@ class SGSCode:
         return f"{self.code} - {self.name}" if self.name else f"{self.code}"
 
 
-def _codes(codes):
+SGSCodeInput: TypeAlias = Union[
+    int,
+    str,
+    Tuple[str, Union[int, str]],
+    List[Union[int, str, Tuple[str, Union[int, str]]]],
+    Dict[str, Union[int, str]],
+]
+
+
+def _codes(codes: SGSCodeInput) -> Generator[SGSCode, None, None]:
     if isinstance(codes, int) or isinstance(codes, str):
         yield SGSCode(codes)
     elif isinstance(codes, tuple):
@@ -44,7 +54,7 @@ def _codes(codes):
             yield SGSCode(code, name)
 
 
-def _get_url_and_payload(code, start_date, end_date, last):
+def _get_url_and_payload(code: int, start_date: DateInput, end_date: DateInput, last: int) -> Dict[str, str]:
     payload = {"formato": "json"}
     if last == 0:
         if start_date is not None or end_date is not None:
@@ -58,7 +68,7 @@ def _get_url_and_payload(code, start_date, end_date, last):
     return {"payload": payload, "url": url}
 
 
-def _format_df(df, code, freq):
+def _format_df(df: pd.DataFrame, code: SGSCode, freq: str) -> pd.DataFrame:
     cns = {"data": "Date", "valor": code.name, "datafim": "enddate"}
     df = df.rename(columns=cns)
     if "Date" in df:
@@ -71,7 +81,14 @@ def _format_df(df, code, freq):
     return df
 
 
-def get(codes, start=None, end=None, last=0, multi=True, freq=None):
+def get(
+    codes: SGSCodeInput,
+    start: Optional[DateInput] = None,
+    end: Optional[DateInput] = None,
+    last: int = 0,
+    multi: bool = True,
+    freq: Optional[str] = None,
+) -> Union[pd.DataFrame, List[pd.DataFrame]]:
     """
     Retorna um DataFrame pandas com séries temporais obtidas do SGS.
 
@@ -130,7 +147,7 @@ def get(codes, start=None, end=None, last=0, multi=True, freq=None):
             return dfs
 
 
-def get_json(code: int, start=None, end=None, last: int = 0) -> str:
+def get_json(code: int, start: Optional[DateInput] = None, end: Optional[DateInput] = None, last: int = 0) -> str:
     """
     Retorna um JSON com séries temporais obtidas do SGS.
 

@@ -1,4 +1,9 @@
+from typing import Dict, List, Optional, Union
+
+import pandas as pd
+
 from bcb.sgs import get
+from bcb.utils import DateInput
 
 """
 Dados da Economia Regional
@@ -119,7 +124,7 @@ NON_PERFORMING_LOANS_BY_STATE_TOTAL = {
 }
 
 
-def get_non_performing_loans_codes(states_or_region, mode="total"):
+def get_non_performing_loans_codes(states_or_region: Union[str, List[str]], mode: str = "total") -> Dict[str, str]:
     is_state = False
     is_region = False
     states_or_region = [states_or_region] if isinstance(states_or_region, str) else states_or_region
@@ -151,7 +156,14 @@ def get_non_performing_loans_codes(states_or_region, mode="total"):
     return codes
 
 
-def get_non_performing_loans(states_or_region, mode="total", start=None, end=None, last=0, freq=None):
+def get_non_performing_loans(
+    states_or_region: Union[str, List[str]],
+    mode: str = "total",
+    start: Optional[DateInput] = None,
+    end: Optional[DateInput] = None,
+    last: int = 0,
+    freq: Optional[str] = None,
+) -> pd.DataFrame:
     """Dados de inadimplência das operações de crédito.
 
     Esta função é um *wrapper* para o método para a função ``get`` do módulo ``sgs``,
