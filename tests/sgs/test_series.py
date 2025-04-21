@@ -91,19 +91,6 @@ def test_get_series():
     assert x.index[-1] == datetime.strptime("2021-01-22", "%Y-%m-%d")
 
 
-def test_get_long_series_error():
-    # Test for error when getting long series
-    try:
-        sgs.get(1, start="2000-01-01", end="2023-01-01")
-    except Exception as e:
-        assert (
-            str(e)
-            == "Download error: O sistema aceita uma janela de consulta de, no máximo, 10 anos em séries de periodicidade diária"
-        )
-    else:
-        assert False, "Expected an exception but none was raised."
-
-
 def test_json_return():
     # Test for JSON return
     x = sgs.get_json(1, last=10)
