@@ -137,3 +137,44 @@ def get(codes, start=None, end=None, last=0, multi=True, freq=None):
             return pd.concat(dfs, axis=1)
         else:
             return dfs
+
+
+def get_json(code: int, start=None, end=None, last: int = 0) -> str:
+    """
+    Retorna um JSON com séries temporais obtidas do SGS.
+
+    Parameters
+    ----------
+
+    code : int
+        Código da série temporal
+    start : str, int, date, datetime, Timestamp
+        Data de início da série.
+        Interpreta diferentes tipos e formatos de datas.
+    end : string, int, date, datetime, Timestamp
+        Data final da série.
+        Interpreta diferentes tipos e formatos de datas.
+    last : int
+        Retorna os últimos ``last`` elementos disponíveis da série temporal
+        solicitada. Se ``last`` for maior que 0 (zero) os argumentos ``start``
+        e ``end`` são ignorados.
+
+    Returns
+    -------
+
+    JSON :
+        série temporal univariada em formato JSON.
+    """
+    urd = _get_url_and_payload(code, start, end, last)
+    res = requests.get(urd["url"], params=urd["payload"])
+    if res.status_code != 200:
+        try:
+            res_json = json.loads(res.text)
+        except Exception:
+            res_json = {}
+        if "error" in res_json:
+            raise Exception("BCB error: {}".format(res_json["error"]))
+        elif "erro" in res_json:
+            raise Exception("BCB error: {}".format(res_json["erro"]["detail"]))
+        raise Exception("Download error: code = {}".format(code))
+    return res.text

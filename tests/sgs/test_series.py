@@ -102,3 +102,35 @@ def test_get_long_series_error():
         )
     else:
         assert False, "Expected an exception but none was raised."
+
+
+def test_json_return():
+    # Test for JSON return
+    x = sgs.get_json(1, last=10)
+    assert isinstance(x, str)
+    assert len(x) > 0
+    assert x.startswith("[")
+    assert x.endswith("]")
+
+
+def test_json_return_long_series_error():
+    # Test for JSON return long series error
+    try:
+        sgs.get_json(1, start="2000-01-01", end="2023-01-01")
+    except Exception as e:
+        assert (
+            str(e)
+            == "BCB error: O sistema aceita uma janela de consulta de, no máximo, 10 anos em séries de periodicidade diária"
+        )
+    else:
+        assert False, "Expected an exception but none was raised."
+
+    try:
+        sgs.get_json(1, last=50)
+    except Exception as e:
+        assert (
+            str(e)
+            == "BCB error: br.gov.bcb.pec.sgs.comum.excecoes.SGSNegocioException: A quantidade máxima de valores deve ser 20"
+        )
+    else:
+        assert False, "Expected an exception but none was raised."
