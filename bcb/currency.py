@@ -1,22 +1,22 @@
 import re
 import warnings
-from io import BytesIO, StringIO
 from datetime import date, timedelta
+from io import BytesIO, StringIO
+from typing import List, Union
 
+import numpy as np
+import pandas as pd
 import requests
 from lxml import html
 
-import pandas as pd
-import numpy as np
-
-from .utils import Date
+from .utils import Date, DateInput
 
 """
 O módulo :py:mod:`bcb.currency` tem como objetivo fazer consultas no site do conversor de moedas do BCB.
 """
 
 
-def _currency_url(currency_id, start_date, end_date):
+def _currency_url(currency_id: str, start_date: DateInput, end_date: DateInput) -> str:
     start_date = Date(start_date)
     end_date = Date(end_date)
     url = (
@@ -30,14 +30,11 @@ def _currency_url(currency_id, start_date, end_date):
 CACHE = dict()
 
 
-def _currency_id_list():
+def _currency_id_list() -> pd.DataFrame:
     if CACHE.get("TEMP_CURRENCY_ID_LIST") is not None:
         return CACHE.get("TEMP_CURRENCY_ID_LIST")
     else:
-        url1 = (
-            "https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?"
-            "method=exibeFormularioConsultaBoletim"
-        )
+        url1 = "https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?" "method=exibeFormularioConsultaBoletim"
         res = requests.get(url1)
         if res.status_code != 200:
             msg = f"BCB API Request error, status code = {res.status_code}"
@@ -52,7 +49,7 @@ def _currency_id_list():
         return df
 
 
-def _get_valid_currency_list(_date, n=0):
+def _get_valid_currency_list(_date: date, n: int = 0) -> requests.models.Response:
     url2 = f"http://www4.bcb.gov.br/Download/fechamento/M{_date:%Y%m%d}.csv"
     try:
         res = requests.get(url2)
@@ -66,7 +63,7 @@ def _get_valid_currency_list(_date, n=0):
         return _get_valid_currency_list(_date - timedelta(1), 0)
 
 
-def get_currency_list():
+def get_currency_list() -> pd.DataFrame:
     """
     Listagem com todas as moedas disponíveis na API e suas configurações de paridade.
 
@@ -99,14 +96,14 @@ def get_currency_list():
         return df
 
 
-def _get_currency_id(symbol):
+def _get_currency_id(symbol: str) -> int:
     id_list = _currency_id_list()
     all_currencies = get_currency_list()
     x = pd.merge(id_list, all_currencies, on=["name"])
     return np.max(x.loc[x["symbol"] == symbol, "id"])
 
 
-def _get_symbol(symbol, start_date, end_date):
+def _get_symbol(symbol: str, start_date: DateInput, end_date: DateInput) -> pd.DataFrame:
     cid = _get_currency_id(symbol)
     url = _currency_url(cid, start_date, end_date)
     res = requests.get(url)
@@ -123,9 +120,7 @@ def _get_symbol(symbol, start_date, end_date):
         return None
 
     columns = ["Date", "aa", "bb", "cc", "bid", "ask", "dd", "ee"]
-    df = pd.read_csv(
-        StringIO(res.text), delimiter=";", header=None, names=columns, dtype=str
-    )
+    df = pd.read_csv(StringIO(res.text), delimiter=";", header=None, names=columns, dtype=str)
     df = df.assign(
         Date=lambda x: pd.to_datetime(x["Date"], format="%d%m%Y"),
         bid=lambda x: x["bid"].str.replace(",", ".").astype(np.float64),
@@ -139,7 +134,9 @@ def _get_symbol(symbol, start_date, end_date):
     return df1
 
 
-def get(symbols, start, end, side="ask", groupby="symbol"):
+def get(
+    symbols: Union[str, List[str]], start: DateInput, end: DateInput, side: str = "ask", groupby: str = "symbol"
+) -> pd.DataFrame:
     """
     Retorna um DataFrame pandas com séries temporais com taxas de câmbio.
 
@@ -189,4 +186,4 @@ def get(symbols, start, end, side="ask", groupby="symbol"):
         else:
             raise Exception(f"Unknown side value, use: bid, ask, both")
     else:
-        return None
+        raise Exception(f"Currency not found: {symbols}")
