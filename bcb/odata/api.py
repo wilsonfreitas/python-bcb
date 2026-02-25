@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Literal, Optional, Union, overload
 from .framework import (
     ODataEntitySet,
     ODataFunctionImport,
@@ -50,7 +50,15 @@ class EndpointQuery(ODataQuery):
         super().__init__(entity, url)
         self._date_columns: list[str] = date_columns or []
 
-    def collect(self) -> pd.DataFrame:
+    @overload
+    def collect(self, output: Literal["dataframe"] = ...) -> pd.DataFrame: ...
+
+    @overload
+    def collect(self, output: Literal["text"]) -> str: ...
+
+    def collect(self, output: str = "dataframe") -> Union[pd.DataFrame, str]:
+        if output == "text":
+            return self.text()
         raw_data = super().collect()
         data = pd.DataFrame(raw_data["value"])
         if not self._raw:
@@ -109,7 +117,7 @@ class Endpoint(metaclass=EndpointMeta):
         self._url = url
         self._date_columns: list[str] = date_columns or []
 
-    def get(self, *args: Any, **kwargs: Any) -> pd.DataFrame:
+    def get(self, *args: Any, **kwargs: Any) -> Union[pd.DataFrame, str]:
         """
         Executa a consulta na API OData e retorna o resultado.
 
@@ -117,11 +125,13 @@ class Endpoint(metaclass=EndpointMeta):
         ----------
         *args : argumentos para a consulta
 
-        **kwargs : argumentos para a consulta
+        **kwargs : argumentos para a consulta. Use ``output='text'`` to get
+            the raw OData JSON response string instead of a DataFrame.
 
         Returns
         -------
-        pd.DataFrame: resultado da consulta
+        pd.DataFrame or str: resultado da consulta. Returns a DataFrame by
+            default; returns a raw JSON string when ``output='text'``.
         """
         _query = EndpointQuery(self._entity, self._url, self._date_columns)
         for arg in args:
@@ -132,6 +142,7 @@ class Endpoint(metaclass=EndpointMeta):
             elif isinstance(arg, ODataProperty):
                 _query.select(arg)
         verbose = False
+        output_format = "dataframe"
         for k, val in kwargs.items():
             if k == "limit":
                 _query.limit(val)
@@ -139,13 +150,18 @@ class Endpoint(metaclass=EndpointMeta):
                 _query.skip(val)
             elif k == "verbose":
                 verbose = val
+            elif k == "output":
+                output_format = val
             else:
                 _query.parameters(**{k: val})
         _query.format("application/json")
 
         if verbose:
             _query.show()
-        data = _query.collect()
+        if output_format == "text":
+            data = _query.collect(output="text")
+        else:
+            data = _query.collect()
         _query.reset()
         return data
 

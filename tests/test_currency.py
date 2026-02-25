@@ -201,3 +201,58 @@ def test_currency_get_list_all_unknown_raises(httpx_mock):
     add_currency_list_mock(httpx_mock)
     with pytest.raises(CurrencyNotFoundError):
         currency.get(["ZAR", "ZZ1"], START, END)
+
+
+# ---------------------------------------------------------------------------
+# output="text" — raw CSV string
+# ---------------------------------------------------------------------------
+
+
+def test_currency_get_output_text_single_returns_string(httpx_mock):
+    """get('USD', output='text') returns the raw CSV string."""
+    add_id_list_mock(httpx_mock)
+    add_currency_list_mock(httpx_mock)
+    add_rate_mock(httpx_mock)
+    result = currency.get("USD", START, END, output="text")
+    assert isinstance(result, str)
+    assert "01122020" in result
+
+
+def test_currency_get_output_text_multi_returns_dict(httpx_mock):
+    """get(['USD', 'USD'], output='text') returns a dict mapping symbol → CSV."""
+    add_id_list_mock(httpx_mock)
+    add_currency_list_mock(httpx_mock)
+    # Two calls for USD (same mock symbol, different entries in symbols list)
+    httpx_mock.add_response(
+        url=PTAX_RATE_URL,
+        text=CURRENCY_RATE_CSV,
+        status_code=200,
+        headers={"Content-Type": "text/csv"},
+    )
+    httpx_mock.add_response(
+        url=PTAX_RATE_URL,
+        text=CURRENCY_RATE_CSV,
+        status_code=200,
+        headers={"Content-Type": "text/csv"},
+    )
+    result = currency.get(["USD", "USD"], START, END, output="text")
+    assert isinstance(result, dict)
+    assert "USD" in result
+    assert isinstance(result["USD"], str)
+
+
+def test_currency_get_output_text_unknown_raises(httpx_mock):
+    """get('ZAR', output='text') raises CurrencyNotFoundError."""
+    add_id_list_mock(httpx_mock)
+    add_currency_list_mock(httpx_mock)
+    with pytest.raises(CurrencyNotFoundError):
+        currency.get("ZAR", START, END, output="text")
+
+
+def test_currency_get_output_dataframe_is_default(httpx_mock):
+    """Default output still returns DataFrame."""
+    add_id_list_mock(httpx_mock)
+    add_currency_list_mock(httpx_mock)
+    add_rate_mock(httpx_mock)
+    result = currency.get("USD", START, END)
+    assert isinstance(result, pd.DataFrame)

@@ -1,6 +1,17 @@
 import json
 from io import StringIO
-from typing import Dict, Generator, List, Mapping, Optional, Tuple, TypeAlias, Union
+from typing import (
+    Dict,
+    Generator,
+    List,
+    Literal,
+    Mapping,
+    Optional,
+    Tuple,
+    TypeAlias,
+    Union,
+    overload,
+)
 
 import httpx
 import pandas as pd
@@ -91,6 +102,30 @@ def _format_df(df: pd.DataFrame, code: SGSCode, freq: Optional[str]) -> pd.DataF
     return df
 
 
+@overload
+def get(
+    codes: SGSCodeInput,
+    start: Optional[DateInput] = ...,
+    end: Optional[DateInput] = ...,
+    last: int = ...,
+    multi: bool = ...,
+    freq: Optional[str] = ...,
+    output: Literal["dataframe"] = ...,
+) -> Union[pd.DataFrame, List[pd.DataFrame]]: ...
+
+
+@overload
+def get(
+    codes: SGSCodeInput,
+    start: Optional[DateInput] = ...,
+    end: Optional[DateInput] = ...,
+    last: int = ...,
+    multi: bool = ...,
+    freq: Optional[str] = ...,
+    output: Literal["text"] = ...,
+) -> Union[str, Dict[int, str]]: ...
+
+
 def get(
     codes: SGSCodeInput,
     start: Optional[DateInput] = None,
@@ -98,7 +133,8 @@ def get(
     last: int = 0,
     multi: bool = True,
     freq: Optional[str] = None,
-) -> Union[pd.DataFrame, List[pd.DataFrame]]:
+    output: str = "dataframe",
+) -> Union[pd.DataFrame, List[pd.DataFrame], str, Dict[int, str]]:
     """
     Retorna um DataFrame pandas com séries temporais obtidas do SGS.
 
@@ -130,6 +166,11 @@ def get(
         série multivariada ou uma lista com séries univariadas.
     freq : str
         Define a frequência a ser utilizada na série temporal
+    output : str
+        Define o formato de saída. Use ``'dataframe'`` (padrão) para retornar
+        um DataFrame pandas, ou ``'text'`` para retornar o JSON bruto da API
+        do BCB. Para um único código retorna uma string; para múltiplos
+        códigos retorna um ``dict`` mapeando código inteiro → JSON string.
 
     Returns
     -------
@@ -141,7 +182,23 @@ def get(
     ``list`` :
         lista com séries temporais univariadas,
         quando solicitado mais de uma série (parâmetro ``multi=False``).
+
+    ``str`` :
+        JSON bruto da API (quando ``output='text'`` e um único código).
+
+    ``dict`` :
+        Mapeamento de código → JSON bruto (quando ``output='text'`` e
+        múltiplos códigos).
     """
+    if output == "text":
+        results: Dict[int, str] = {}
+        for code in _codes(codes):
+            results[code.value] = get_json(code.value, start, end, last)
+        values = list(results.values())
+        if len(values) == 1:
+            return values[0]
+        return results
+
     dfs = []
     for code in _codes(codes):
         text = get_json(code.value, start, end, last)

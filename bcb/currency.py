@@ -2,7 +2,7 @@ import re
 import warnings
 from datetime import date, timedelta
 from io import BytesIO, StringIO
-from typing import List, Optional, Union
+from typing import Dict, List, Literal, Optional, Union, overload
 
 import httpx
 import numpy as np
@@ -121,16 +121,15 @@ def _get_currency_id(symbol: str) -> int:
     return int(matches.max())
 
 
-def _get_symbol(
+def _fetch_symbol_response(
     symbol: str, start_date: DateInput, end_date: DateInput
-) -> Optional[pd.DataFrame]:
+) -> Optional[httpx.Response]:
     try:
         cid = _get_currency_id(symbol)
     except CurrencyNotFoundError:
         return None
     url = _currency_url(cid, start_date, end_date)
     res = httpx.get(url, follow_redirects=True)
-
     if res.headers["Content-Type"].startswith("text/html"):
         doc = html.parse(BytesIO(res.content)).getroot()
         xpath = "//div[@class='msgErro']"
@@ -141,7 +140,15 @@ def _get_symbol(
         msg = f"BCB API returned error: {x} - {symbol}"
         warnings.warn(msg)
         return None
+    return res
 
+
+def _get_symbol(
+    symbol: str, start_date: DateInput, end_date: DateInput
+) -> Optional[pd.DataFrame]:
+    res = _fetch_symbol_response(symbol, start_date, end_date)
+    if res is None:
+        return None
     columns = ["Date", "aa", "bb", "cc", "bid", "ask", "dd", "ee"]
     df = pd.read_csv(
         StringIO(res.text), delimiter=";", header=None, names=columns, dtype=str
@@ -159,13 +166,43 @@ def _get_symbol(
     return df1
 
 
+def _get_symbol_text(
+    symbol: str, start_date: DateInput, end_date: DateInput
+) -> Optional[str]:
+    res = _fetch_symbol_response(symbol, start_date, end_date)
+    return res.text if res is not None else None
+
+
+@overload
+def get(
+    symbols: Union[str, List[str]],
+    start: DateInput,
+    end: DateInput,
+    side: str = ...,
+    groupby: str = ...,
+    output: Literal["dataframe"] = ...,
+) -> pd.DataFrame: ...
+
+
+@overload
+def get(
+    symbols: Union[str, List[str]],
+    start: DateInput,
+    end: DateInput,
+    side: str = ...,
+    groupby: str = ...,
+    output: Literal["text"] = ...,
+) -> Union[str, Dict[str, str]]: ...
+
+
 def get(
     symbols: Union[str, List[str]],
     start: DateInput,
     end: DateInput,
     side: str = "ask",
     groupby: str = "symbol",
-) -> pd.DataFrame:
+    output: str = "dataframe",
+) -> Union[pd.DataFrame, str, Dict[str, str]]:
     """
     Retorna um DataFrame pandas com séries temporais com taxas de câmbio.
 
@@ -204,6 +241,19 @@ def get(
     """
     if isinstance(symbols, str):
         symbols = [symbols]
+
+    if output == "text":
+        results: Dict[str, str] = {}
+        for symbol in symbols:
+            raw = _get_symbol_text(symbol, start, end)
+            if raw is not None:
+                results[symbol] = raw
+        if not results:
+            raise CurrencyNotFoundError(f"Currency not found: {symbols}")
+        if len(symbols) == 1:
+            return results[symbols[0]]
+        return results
+
     dss = []
     for symbol in symbols:
         df1 = _get_symbol(symbol, start, end)
@@ -219,6 +269,8 @@ def get(
                 return df
             elif groupby == "side":
                 return df.reorder_levels([1, 0], axis=1).sort_index(axis=1)
+            else:
+                raise ValueError("Unknown groupby value, use: symbol, side")
         else:
             raise ValueError("Unknown side value, use: bid, ask, both")
     else:

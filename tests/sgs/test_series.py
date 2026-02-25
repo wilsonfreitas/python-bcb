@@ -152,3 +152,54 @@ def test_get_json_generic_error_response(httpx_mock):
     )
     with pytest.raises(SGSError, match="unknown series"):
         sgs.get_json(99999, last=1)
+
+
+# ---------------------------------------------------------------------------
+# output="text" — raw JSON string
+# ---------------------------------------------------------------------------
+
+
+def test_get_output_text_single_code_returns_string(httpx_mock):
+    """get(code, output='text') returns the raw JSON string for a single code."""
+    httpx_mock.add_response(
+        url=SGS_CODE_1_URL,
+        text=SGS_JSON_5,
+        status_code=200,
+    )
+    result = sgs.get(1, last=5, output="text")
+    assert isinstance(result, str)
+    assert result == SGS_JSON_5
+
+
+def test_get_output_text_multi_code_returns_dict(httpx_mock):
+    """get([c1, c2], output='text') returns a dict mapping code → JSON string."""
+    SGS_CODE_2_URL = re.compile(
+        r".*bcdata\.sgs\.2[^0-9].*|.*bcdata\.sgs\.2$|.*bcdata\.sgs\.2/.*"
+    )
+    httpx_mock.add_response(
+        url=SGS_CODE_1_URL,
+        text=SGS_JSON_5,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url=SGS_CODE_2_URL,
+        text=SGS_JSON_5,
+        status_code=200,
+    )
+    result = sgs.get([1, 2], last=5, output="text")
+    assert isinstance(result, dict)
+    assert 1 in result
+    assert 2 in result
+    assert isinstance(result[1], str)
+    assert isinstance(result[2], str)
+
+
+def test_get_output_dataframe_is_default(httpx_mock):
+    """Default output (no output param) still returns a DataFrame."""
+    httpx_mock.add_response(
+        url=SGS_CODE_1_URL,
+        text=SGS_JSON_5,
+        status_code=200,
+    )
+    result = sgs.get(1, last=5)
+    assert isinstance(result, pd.DataFrame)

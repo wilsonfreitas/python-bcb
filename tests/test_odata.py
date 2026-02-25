@@ -223,3 +223,53 @@ def test_date_columns_propagates_through_get_shortcut(httpx_mock):
     df = ep.get(limit=1)
     assert isinstance(df["Data"].iloc[0], datetime)
     assert isinstance(df["DataVigencia"].iloc[0], str)
+
+
+# ---------------------------------------------------------------------------
+# output="text" — raw OData JSON response
+# ---------------------------------------------------------------------------
+
+
+def test_collect_output_text_returns_string(httpx_mock):
+    """collect(output='text') returns the raw JSON string from the API."""
+    add_service_mocks(httpx_mock)
+    httpx_mock.add_response(
+        url=ENTITY_URL_PATTERN,
+        text=ODATA_QUERY_RESPONSE_JSON,
+        status_code=200,
+    )
+    api = Expectativas()
+    ep = api.get_endpoint("ExpectativasMercadoAnuais")
+    result = ep.query().limit(1).collect(output="text")
+    assert isinstance(result, str)
+    assert '"value"' in result
+    assert "IPCA" in result
+
+
+def test_endpoint_get_output_text_returns_string(httpx_mock):
+    """ep.get(output='text') returns the raw JSON string from the API."""
+    add_service_mocks(httpx_mock)
+    httpx_mock.add_response(
+        url=ENTITY_URL_PATTERN,
+        text=ODATA_QUERY_RESPONSE_JSON,
+        status_code=200,
+    )
+    api = Expectativas()
+    ep = api.get_endpoint("ExpectativasMercadoAnuais")
+    result = ep.get(limit=1, output="text")
+    assert isinstance(result, str)
+    assert "IPCA" in result
+
+
+def test_collect_output_dataframe_is_default(httpx_mock):
+    """The default output is still a DataFrame when output is not specified."""
+    add_service_mocks(httpx_mock)
+    httpx_mock.add_response(
+        url=ENTITY_URL_PATTERN,
+        text=ODATA_QUERY_RESPONSE_JSON,
+        status_code=200,
+    )
+    api = Expectativas()
+    ep = api.get_endpoint("ExpectativasMercadoAnuais")
+    result = ep.query().limit(1).collect()
+    assert isinstance(result, pd.DataFrame)
