@@ -36,6 +36,37 @@ Exemplos
     plt.legend().set_visible(False)
 
 
+Obtendo o JSON bruto
+--------------------
+
+A função :py:func:`bcb.sgs.get_json` retorna o JSON bruto da API para um único código.
+Para pipelines de dados onde o dado bruto deve ser persistido antes de qualquer transformação,
+o parâmetro ``output='text'`` pode ser passado à função :py:func:`bcb.sgs.get`.
+
+Para um único código é retornada uma ``str``; para múltiplos códigos é retornado um ``dict``
+mapeando código inteiro → JSON string.
+
+.. code:: python
+
+    from bcb import sgs
+
+    # único código → str
+    raw = sgs.get(433, start='2024-01-01', output='text')
+
+    # múltiplos códigos → dict[int, str]
+    raws = sgs.get([433, 189], start='2024-01-01', output='text')
+    # raws[433] → JSON string do IPCA
+    # raws[189] → JSON string do IGP-M
+
+    # salvar em disco
+    with open('ipca_raw.json', 'w') as f:
+        f.write(raw)
+
+O JSON retornado é um array de objetos com os campos ``data`` e ``valor``, exatamente como
+devolvido pela API BCData/SGS.
+O comportamento padrão (retorno de DataFrame) é mantido quando o parâmetro não é informado.
+
+
 Dados de Inadimplência de Operações de Crédito
 ==============================================
 

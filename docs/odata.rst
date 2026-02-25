@@ -387,6 +387,34 @@ Para isso incluímos o método ``format`` na cadeia da consulta e passamos como 
        .limit(5)
        .text())
 
+O parâmetro ``output='text'``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Para pipelines de dados onde é necessário persistir o dado bruto antes de qualquer transformação
+(camada SOR/SOT), o parâmetro ``output='text'`` pode ser passado diretamente ao método ``collect``
+ou ao método ``get`` do endpoint.
+Isso evita serializar um DataFrame de volta para texto, o que pode ser uma operação com perda de informação.
+
+.. code:: python
+
+    ep = em.get_endpoint('ExpectativasMercadoTop5Anuais')
+
+    # via query chain
+    raw = (ep.query()
+              .filter(ep.Indicador == 'IPCA')
+              .limit(100)
+              .collect(output='text'))
+
+    # via atalho get()
+    raw = ep.get(ep.Indicador == 'IPCA', limit=100, output='text')
+
+    # salvar em disco
+    with open('expectativas_raw.json', 'w') as f:
+        f.write(raw)
+
+O texto retornado é o JSON bruto da resposta OData, incluindo o campo ``@odata.context`` e o array ``value``.
+O comportamento padrão (retorno de DataFrame) é mantido quando o parâmetro não é informado.
+
 
 Classe ODataAPI
 ---------------
