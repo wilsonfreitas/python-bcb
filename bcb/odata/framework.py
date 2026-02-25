@@ -5,6 +5,8 @@ import json
 import httpx
 from urllib.parse import quote
 
+from bcb.exceptions import ODataError
+
 
 # Edm.Boolean
 # Edm.Byte
@@ -358,7 +360,7 @@ class ODataService:
             if fi is not None:
                 return fi
             else:
-                raise ValueError("Invalid name: " + item)
+                raise ODataError("Invalid name: " + item)
         else:
             return es
 
@@ -427,7 +429,7 @@ class ODataQuery:
             if arg in self.function_parameters:
                 self.function_parameters[arg] = kwargs[arg]
             else:
-                raise ValueError(f"Unknown parameter: {arg}")
+                raise ODataError(f"Unknown parameter: {arg}")
         return self
 
     def filter(self, *args):
@@ -489,7 +491,7 @@ class ODataQuery:
             for p in self.entity.function.parameters:
                 val = self.function_parameters[p.name]
                 if p.required and val is None:
-                    raise ValueError("Parameter not set: " + p.name)
+                    raise ODataError("Parameter not set: " + p.name)
                 params["@" + p.name] = p.format(val)
         qs = "&".join([f"{quote(k)}={quote(str(v))}" for k, v in params.items()])
         headers = {"OData-Version": "4.0", "OData-MaxVersion": "4.0"}

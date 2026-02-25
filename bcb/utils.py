@@ -29,7 +29,7 @@ class Date:
         elif isinstance(d, date):
             pass
         else:
-            raise ValueError()
+            raise ValueError(f"Unsupported date type: {type(d).__name__}")
         self.date: date = d
 
     def format(self, fmts: str = "%Y-%m-%d") -> str:

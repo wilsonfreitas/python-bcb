@@ -9,6 +9,7 @@ import pandas as pd
 import requests
 from lxml import html
 
+from .exceptions import BCBAPIError, CurrencyNotFoundError
 from .utils import Date, DateInput
 
 """
@@ -37,7 +38,7 @@ def _currency_id_list() -> pd.DataFrame:
         res = requests.get(url1)
         if res.status_code != 200:
             msg = f"BCB API Request error, status code = {res.status_code}"
-            raise Exception(msg)
+            raise BCBAPIError(msg, res.status_code)
 
         doc = html.parse(BytesIO(res.content)).getroot()
         xpath = "//select[@name='ChkMoeda']/option"
@@ -183,6 +184,6 @@ def get(
             elif groupby == "side":
                 return df.reorder_levels([1, 0], axis=1).sort_index(axis=1)
         else:
-            raise Exception(f"Unknown side value, use: bid, ask, both")
+            raise ValueError("Unknown side value, use: bid, ask, both")
     else:
-        raise Exception(f"Currency not found: {symbols}")
+        raise CurrencyNotFoundError(f"Currency not found: {symbols}")

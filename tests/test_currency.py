@@ -1,7 +1,9 @@
 from datetime import datetime, date
 import pandas as pd
+import pytest
 from pytest import mark
 from bcb import currency
+from bcb.exceptions import CurrencyNotFoundError
 
 
 def test_currency_id():
@@ -18,10 +20,10 @@ def test_currency_get_symbol():
     assert x is None
     x = currency.get("USD", start_date, end_date)
     assert isinstance(x, pd.DataFrame)
-    x = currency.get("ZAR", start_date, end_date)
-    assert x is None
-    x = currency.get(["ZAR", "ZZ1"], start_date, end_date)
-    assert x is None
+    with pytest.raises(CurrencyNotFoundError):
+        currency.get("ZAR", start_date, end_date)
+    with pytest.raises(CurrencyNotFoundError):
+        currency.get(["ZAR", "ZZ1"], start_date, end_date)
 
 
 def test_get_valid_currency_list():

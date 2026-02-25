@@ -5,6 +5,7 @@ from typing import Dict, Generator, List, Optional, Tuple, TypeAlias, Union
 import pandas as pd
 import requests
 
+from bcb.exceptions import SGSError
 from bcb.utils import Date, DateInput
 
 """
@@ -181,8 +182,8 @@ def get_json(code: int, start: Optional[DateInput] = None, end: Optional[DateInp
         except Exception:
             res_json = {}
         if "error" in res_json:
-            raise Exception(f"BCB error: {res_json['error']}")
+            raise SGSError(f"BCB error: {res_json['error']}")
         elif "erro" in res_json:
-            raise Exception(f"BCB error: {res_json['erro']['detail']}")
-        raise Exception(f"Download error: code = {code}")
+            raise SGSError(f"BCB error: {res_json['erro']['detail']}")
+        raise SGSError(f"Download error: code = {code}")
     return res.text

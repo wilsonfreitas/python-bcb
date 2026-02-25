@@ -1,3 +1,4 @@
+from .exceptions import BCBError, BCBAPIError, CurrencyNotFoundError, SGSError, ODataError
 from .odata.api import (
     ODataAPI,
     Expectativas,

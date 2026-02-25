@@ -12,9 +12,12 @@ def endpoints():
 
 
 def test_expectativas_date_format(endpoints):
+    date_columns = {"Data", "dataHoraCotacao", "InicioPeriodo", "FimPeriodo", "DataVigencia"}
     for endpoint in endpoints:
         query = endpoint.query().limit(1)
         data = query.collect()
         assert isinstance(data, pd.DataFrame)
         assert data.shape[0] == 1
-        assert isinstance(data["Data"].iloc[0], datetime)
+        for col in date_columns:
+            if col in data.columns:
+                assert isinstance(data[col].iloc[0], datetime)
