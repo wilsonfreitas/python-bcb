@@ -71,7 +71,9 @@ def _get_url_and_payload(
             payload["dataFinal"] = Date(end_date).date.strftime("%d/%m/%Y")
         url = f"https://api.bcb.gov.br/dados/serie/bcdata.sgs.{code}/dados"
     else:
-        url = f"https://api.bcb.gov.br/dados/serie/bcdata.sgs.{code}/dados/ultimos/{last}"
+        url = (
+            f"https://api.bcb.gov.br/dados/serie/bcdata.sgs.{code}/dados/ultimos/{last}"
+        )
 
     return url, payload
 

@@ -46,8 +46,16 @@ class EndpointQuery(ODataQuery):
         data = pd.DataFrame(raw_data["value"])
         if not self._raw:
             for col in self._DATE_COLUMN_NAMES:
-                if self.entity.name in self._DATE_COLUMN_NAMES_BY_ENDPOINT and col in self._DATE_COLUMN_NAMES_BY_ENDPOINT[self.entity.name]:
-                    data[col] = pd.to_datetime(data[col], format=self._DATE_COLUMN_NAMES_BY_ENDPOINT[self.entity.name][col])
+                if (
+                    self.entity.name in self._DATE_COLUMN_NAMES_BY_ENDPOINT
+                    and col in self._DATE_COLUMN_NAMES_BY_ENDPOINT[self.entity.name]
+                ):
+                    data[col] = pd.to_datetime(
+                        data[col],
+                        format=self._DATE_COLUMN_NAMES_BY_ENDPOINT[self.entity.name][
+                            col
+                        ],
+                    )
                 elif col in data.columns:
                     data[col] = pd.to_datetime(data[col])
         return data
@@ -66,6 +74,7 @@ class Endpoint(metaclass=EndpointMeta):
     :py:meth:`bcb.odata.api.BaseODataAPI.get_endpoint` das classes que herdam
     :py:class:`bcb.odata.api.BaseODataAPI`.
     """
+
     def __init__(self, entity: Any, url: str) -> None:
         """
         Construtor da classe Endpoint.

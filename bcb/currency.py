@@ -34,7 +34,10 @@ def _currency_id_list() -> pd.DataFrame:
     if CACHE.get("TEMP_CURRENCY_ID_LIST") is not None:
         return CACHE.get("TEMP_CURRENCY_ID_LIST")
     else:
-        url1 = "https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?" "method=exibeFormularioConsultaBoletim"
+        url1 = (
+            "https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?"
+            "method=exibeFormularioConsultaBoletim"
+        )
         res = httpx.get(url1, follow_redirects=True)
         if res.status_code != 200:
             msg = f"BCB API Request error, status code = {res.status_code}"
@@ -106,7 +109,9 @@ def _get_currency_id(symbol: str) -> int:
     return int(matches.max())
 
 
-def _get_symbol(symbol: str, start_date: DateInput, end_date: DateInput) -> Optional[pd.DataFrame]:
+def _get_symbol(
+    symbol: str, start_date: DateInput, end_date: DateInput
+) -> Optional[pd.DataFrame]:
     try:
         cid = _get_currency_id(symbol)
     except CurrencyNotFoundError:
@@ -126,7 +131,9 @@ def _get_symbol(symbol: str, start_date: DateInput, end_date: DateInput) -> Opti
         return None
 
     columns = ["Date", "aa", "bb", "cc", "bid", "ask", "dd", "ee"]
-    df = pd.read_csv(StringIO(res.text), delimiter=";", header=None, names=columns, dtype=str)
+    df = pd.read_csv(
+        StringIO(res.text), delimiter=";", header=None, names=columns, dtype=str
+    )
     df = df.assign(
         Date=lambda x: pd.to_datetime(x["Date"], format="%d%m%Y"),
         bid=lambda x: x["bid"].str.replace(",", ".").astype(np.float64),
@@ -141,7 +148,11 @@ def _get_symbol(symbol: str, start_date: DateInput, end_date: DateInput) -> Opti
 
 
 def get(
-    symbols: Union[str, List[str]], start: DateInput, end: DateInput, side: str = "ask", groupby: str = "symbol"
+    symbols: Union[str, List[str]],
+    start: DateInput,
+    end: DateInput,
+    side: str = "ask",
+    groupby: str = "symbol",
 ) -> pd.DataFrame:
     """
     Retorna um DataFrame pandas com séries temporais com taxas de câmbio.

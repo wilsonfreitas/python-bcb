@@ -7,13 +7,16 @@ from bcb import sgs
 from bcb.exceptions import SGSError
 from tests.conftest import SGS_JSON_5
 
-SGS_CODE_1_URL = re.compile(r".*bcdata\.sgs\.1[^0-9].*|.*bcdata\.sgs\.1$|.*bcdata\.sgs\.1/.*")
+SGS_CODE_1_URL = re.compile(
+    r".*bcdata\.sgs\.1[^0-9].*|.*bcdata\.sgs\.1$|.*bcdata\.sgs\.1/.*"
+)
 SGS_CODE_99999_URL = re.compile(r".*bcdata\.sgs\.99999.*")
 
 
 # ---------------------------------------------------------------------------
 # Pure unit tests (no HTTP)
 # ---------------------------------------------------------------------------
+
 
 def test_series_code_args():
     code = sgs.SGSCode(1)
@@ -93,6 +96,7 @@ def test_series_code_iter_unknown_type():
 # ---------------------------------------------------------------------------
 # Mocked HTTP tests
 # ---------------------------------------------------------------------------
+
 
 def test_get_json_returns_string(httpx_mock):
     httpx_mock.add_response(

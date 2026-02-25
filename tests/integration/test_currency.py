@@ -1,4 +1,5 @@
 """Integration tests for bcb.currency — require live BCB network access."""
+
 from datetime import datetime, date
 
 import pandas as pd

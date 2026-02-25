@@ -90,7 +90,9 @@ Properties: {props}"""
 
 
 class ODataFunctionImport:
-    def __init__(self, name: str, function: "ODataFunction", entity_set: ODataEntitySet) -> None:
+    def __init__(
+        self, name: str, function: "ODataFunction", entity_set: ODataEntitySet
+    ) -> None:
         self.name = name
         self.entity_set = entity_set
         self.function = function
@@ -242,7 +244,9 @@ class ODataFunction:
 
 
 class ODataEntity:
-    def __init__(self, name: str, properties: dict[str, ODataProperty], namespace: str) -> None:
+    def __init__(
+        self, name: str, properties: dict[str, ODataProperty], namespace: str
+    ) -> None:
         self.name = name
         self.properties = properties
         self.fullname = f"{namespace}.{name}"
@@ -287,7 +291,9 @@ class ODataMetadata:
             for e in schema.xpath(_xpath, namespaces=self.namespaces)
         ]
 
-        self._entities_fullnames: dict[str, ODataEntity] = {e.fullname: e for e in self.entities}
+        self._entities_fullnames: dict[str, ODataEntity] = {
+            e.fullname: e for e in self.entities
+        }
 
     def _parse_entity_sets(self, schema: Any) -> None:
         _xpath = "edm:EntityContainer/edm:EntitySet"
@@ -354,7 +360,9 @@ class ODataService:
         self.url = url
         res = httpx.get(self.url, timeout=60.0)
         self.api_data: dict[str, Any] = json.loads(res.text)
-        self.endpoints: list[ODataEndPoint] = [ODataEndPoint(**x) for x in self.api_data["value"]]
+        self.endpoints: list[ODataEndPoint] = [
+            ODataEndPoint(**x) for x in self.api_data["value"]
+        ]
         self._odata_context_url: str = self.api_data["@odata.context"]
         self.metadata = ODataMetadata(self._odata_context_url)
 
@@ -396,12 +404,16 @@ class ODataService:
             for es in self.function_imports.keys():
                 print(" ", es)
 
-    def query(self, entity_set: Union[ODataEntitySet, ODataFunctionImport]) -> "ODataQuery":
+    def query(
+        self, entity_set: Union[ODataEntitySet, ODataFunctionImport]
+    ) -> "ODataQuery":
         return ODataQuery(entity_set, self.url)
 
 
 class ODataQuery:
-    def __init__(self, entity: Union[ODataEntitySet, ODataFunctionImport], url: str) -> None:
+    def __init__(
+        self, entity: Union[ODataEntitySet, ODataFunctionImport], url: str
+    ) -> None:
         self.entity = entity
         self.base_url = url
         self._params: dict[str, Any] = {}

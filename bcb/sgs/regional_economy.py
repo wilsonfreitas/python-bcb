@@ -124,14 +124,24 @@ NON_PERFORMING_LOANS_BY_STATE_TOTAL = {
 }
 
 
-def get_non_performing_loans_codes(states_or_region: Union[str, List[str]], mode: str = "total") -> Dict[str, str]:
+def get_non_performing_loans_codes(
+    states_or_region: Union[str, List[str]], mode: str = "total"
+) -> Dict[str, str]:
     is_state = False
     is_region = False
-    states_or_region = [states_or_region] if isinstance(states_or_region, str) else states_or_region
+    states_or_region = (
+        [states_or_region] if isinstance(states_or_region, str) else states_or_region
+    )
     states_or_region = [location.upper() for location in states_or_region]
-    if any(location in list(NON_PERFORMING_LOANS_BY_STATE_TOTAL.keys()) for location in states_or_region):
+    if any(
+        location in list(NON_PERFORMING_LOANS_BY_STATE_TOTAL.keys())
+        for location in states_or_region
+    ):
         is_state = True
-    elif any(location in list(NON_PERFORMING_LOANS_BY_REGION_TOTAL.keys()) for location in states_or_region):
+    elif any(
+        location in list(NON_PERFORMING_LOANS_BY_REGION_TOTAL.keys())
+        for location in states_or_region
+    ):
         is_region = True
 
     if not is_state and not is_region:

@@ -72,6 +72,7 @@ ODATA_QUERY_RESPONSE_JSON = """{
 # Fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture(autouse=True)
 def clear_currency_cache():
     """Clear module-level currency cache before and after each test."""

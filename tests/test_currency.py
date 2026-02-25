@@ -49,6 +49,7 @@ def add_rate_mock(httpx_mock):
 # _currency_id_list
 # ---------------------------------------------------------------------------
 
+
 def test_currency_id_list(httpx_mock):
     add_id_list_mock(httpx_mock)
     df = currency._currency_id_list()
@@ -68,6 +69,7 @@ def test_currency_id_list_cached(httpx_mock):
 # get_currency_list
 # ---------------------------------------------------------------------------
 
+
 def test_get_currency_list(httpx_mock):
     add_currency_list_mock(httpx_mock)
     df = currency.get_currency_list()
@@ -80,6 +82,7 @@ def test_get_currency_list(httpx_mock):
 # ---------------------------------------------------------------------------
 # _get_currency_id
 # ---------------------------------------------------------------------------
+
 
 def test_get_currency_id_found(httpx_mock):
     add_id_list_mock(httpx_mock)
@@ -97,6 +100,7 @@ def test_get_currency_id_not_found(httpx_mock):
 # ---------------------------------------------------------------------------
 # _get_symbol
 # ---------------------------------------------------------------------------
+
 
 def test_get_symbol_returns_dataframe(httpx_mock):
     add_id_list_mock(httpx_mock)
@@ -120,6 +124,7 @@ def test_get_symbol_unknown_currency_returns_none(httpx_mock):
 # ---------------------------------------------------------------------------
 # get
 # ---------------------------------------------------------------------------
+
 
 def test_currency_get_ask(httpx_mock):
     add_id_list_mock(httpx_mock)

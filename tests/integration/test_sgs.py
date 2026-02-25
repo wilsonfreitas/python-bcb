@@ -1,4 +1,5 @@
 """Integration tests for bcb.sgs — require live BCB network access."""
+
 from datetime import datetime
 
 import pandas as pd

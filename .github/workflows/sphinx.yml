@@ -1,6 +1,11 @@
 name: Sphinx build
 
-on: push
+on:
+  push:
+    paths:
+      - 'docs/**'
+      - 'bcb/**'
+      - '.github/workflows/sphinx.yml'
 
 jobs:
   build:

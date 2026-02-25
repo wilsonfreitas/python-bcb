@@ -40,6 +40,7 @@ def add_service_mocks(httpx_mock):
 # Service / metadata instantiation
 # ---------------------------------------------------------------------------
 
+
 def test_service_discovers_entity_sets(httpx_mock):
     add_service_mocks(httpx_mock)
     api = Expectativas()
@@ -65,6 +66,7 @@ def test_invalid_endpoint_raises(httpx_mock):
 # ---------------------------------------------------------------------------
 # ODataProperty operator overloading
 # ---------------------------------------------------------------------------
+
 
 def test_string_property_equality_filter(httpx_mock):
     add_service_mocks(httpx_mock)
@@ -98,6 +100,7 @@ def test_property_orderby(httpx_mock):
 # ---------------------------------------------------------------------------
 # Query chain building
 # ---------------------------------------------------------------------------
+
 
 def test_query_limit(httpx_mock):
     add_service_mocks(httpx_mock)

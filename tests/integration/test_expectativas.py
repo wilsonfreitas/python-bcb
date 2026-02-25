@@ -1,4 +1,5 @@
 """Integration tests for bcb.odata Expectativas — require live BCB network access."""
+
 import pandas as pd
 import pytest
 from datetime import datetime
@@ -15,7 +16,13 @@ def endpoints():
 
 @pytest.mark.integration
 def test_expectativas_date_format(endpoints):
-    date_columns = {"Data", "dataHoraCotacao", "InicioPeriodo", "FimPeriodo", "DataVigencia"}
+    date_columns = {
+        "Data",
+        "dataHoraCotacao",
+        "InicioPeriodo",
+        "FimPeriodo",
+        "DataVigencia",
+    }
     for endpoint in endpoints:
         query = endpoint.query().limit(1)
         data = query.collect()
