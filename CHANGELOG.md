@@ -1,5 +1,8 @@
 # Changelog
 
+## [Unreleased]
+- Added `output="text"` parameter to `sgs.get()`, `currency.get()`, `EndpointQuery.collect()`, and `Endpoint.get()` — returns raw API response text (JSON for SGS and OData, CSV for currency) instead of a DataFrame; multi-code/symbol calls return `dict[key, str]`; default behavior unchanged
+
 ## [0.3.4] - 2026-02-25
 - Replaced `requests` with `httpx` as the sole HTTP client across all modules
 - Added custom exceptions: `BCBError`, `BCBAPIError`, `CurrencyNotFoundError`, `SGSError`, `ODataError`
