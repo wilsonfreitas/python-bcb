@@ -35,7 +35,7 @@ pelas instituições financeiras.
     ep = em.get_endpoint('TaxasJurosDiariaPorInicioPeriodo')
     df_cheque = (ep.query()
                    .filter(ep.Segmento == 'PESSOA FÍSICA',
-                           ep.Modalidade == 'Cheque especial - Pré-fixado')
+                           ep.Modalidade == 'Cheque especial - Prefixado')
                    .collect())
     grp = df_cheque.groupby('InicioPeriodo')
     df_mean = grp.agg({'TaxaJurosAoMes': 'median'})
