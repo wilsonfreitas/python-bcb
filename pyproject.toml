@@ -34,6 +34,7 @@ black = { version = ">= 22.8.0", allow-prereleases = true }
 jupyter = "^1.1.1"
 mypy = ">= 1.0.0"
 pytest-cov = ">= 4.0.0"
+types-requests = "^2.32.4.20260107"
 
 [build-system]
 requires = ["poetry-core"]

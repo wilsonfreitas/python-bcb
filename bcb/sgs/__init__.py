@@ -1,6 +1,6 @@
 import json
 from io import StringIO
-from typing import Dict, Generator, List, Optional, Tuple, TypeAlias, Union
+from typing import Dict, Generator, List, Mapping, Optional, Tuple, TypeAlias, Union
 
 import pandas as pd
 import requests
@@ -28,8 +28,8 @@ class SGSCode:
             self.name = str(name)
             self.value = int(code)
 
-    def __repr__(self):
-        return f"{self.code} - {self.name}" if self.name else f"{self.code}"
+    def __repr__(self) -> str:
+        return f"{self.value} - {self.name}" if self.name else f"{self.value}"
 
 
 SGSCodeInput: TypeAlias = Union[
@@ -37,7 +37,7 @@ SGSCodeInput: TypeAlias = Union[
     str,
     Tuple[str, Union[int, str]],
     List[Union[int, str, Tuple[str, Union[int, str]]]],
-    Dict[str, Union[int, str]],
+    Mapping[str, Union[int, str]],
 ]
 
 
@@ -48,28 +48,35 @@ def _codes(codes: SGSCodeInput) -> Generator[SGSCode, None, None]:
         yield SGSCode(codes[1], codes[0])
     elif isinstance(codes, list):
         for cd in codes:
-            _ist = isinstance(cd, tuple)
-            yield SGSCode(cd[1], cd[0]) if _ist else SGSCode(cd)
-    elif isinstance(codes, dict):
+            if isinstance(cd, tuple):
+                yield SGSCode(cd[1], cd[0])
+            else:
+                yield SGSCode(cd)
+    elif isinstance(codes, Mapping):
         for name, code in codes.items():
             yield SGSCode(code, name)
 
 
-def _get_url_and_payload(code: int, start_date: DateInput, end_date: DateInput, last: int) -> Dict[str, str]:
-    payload = {"formato": "json"}
+def _get_url_and_payload(
+    code: int,
+    start_date: Optional[DateInput],
+    end_date: Optional[DateInput],
+    last: int,
+) -> Tuple[str, Dict[str, str]]:
+    payload: Dict[str, str] = {"formato": "json"}
     if last == 0:
         if start_date is not None or end_date is not None:
-            payload["dataInicial"] = Date(start_date).date.strftime("%d/%m/%Y")
+            payload["dataInicial"] = Date(start_date).date.strftime("%d/%m/%Y")  # type: ignore[arg-type]
             end_date = end_date if end_date else "today"
             payload["dataFinal"] = Date(end_date).date.strftime("%d/%m/%Y")
         url = f"https://api.bcb.gov.br/dados/serie/bcdata.sgs.{code}/dados"
     else:
         url = f"https://api.bcb.gov.br/dados/serie/bcdata.sgs.{code}/dados/ultimos/{last}"
 
-    return {"payload": payload, "url": url}
+    return url, payload
 
 
-def _format_df(df: pd.DataFrame, code: SGSCode, freq: str) -> pd.DataFrame:
+def _format_df(df: pd.DataFrame, code: SGSCode, freq: Optional[str]) -> pd.DataFrame:
     cns = {"data": "Date", "valor": code.name, "datafim": "enddate"}
     df = df.rename(columns=cns)
     if "Date" in df:
@@ -148,7 +155,12 @@ def get(
             return dfs
 
 
-def get_json(code: int, start: Optional[DateInput] = None, end: Optional[DateInput] = None, last: int = 0) -> str:
+def get_json(
+    code: int,
+    start: Optional[DateInput] = None,
+    end: Optional[DateInput] = None,
+    last: int = 0,
+) -> str:
     """
     Retorna um JSON com séries temporais obtidas do SGS.
 
@@ -174,8 +186,8 @@ def get_json(code: int, start: Optional[DateInput] = None, end: Optional[DateInp
     JSON :
         série temporal univariada em formato JSON.
     """
-    urd = _get_url_and_payload(code, start, end, last)
-    res = requests.get(urd["url"], params=urd["payload"])
+    url, payload = _get_url_and_payload(code, start, end, last)
+    res = requests.get(url, params=payload)
     if res.status_code != 200:
         try:
             res_json = json.loads(res.text)
@@ -186,4 +198,4 @@ def get_json(code: int, start: Optional[DateInput] = None, end: Optional[DateInp
         elif "erro" in res_json:
             raise SGSError(f"BCB error: {res_json['erro']['detail']}")
         raise SGSError(f"Download error: code = {code}")
-    return res.text
+    return str(res.text)

@@ -1,3 +1,4 @@
+from typing import Any, Optional
 from .framework import (
     ODataEntitySet,
     ODataFunctionImport,
@@ -13,10 +14,10 @@ OLINDA_BASE_URL = "https://olinda.bcb.gov.br/olinda/servico"
 
 
 class EndpointMeta(type):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
 
-    def __call__(self, *args):
+    def __call__(self, *args: Any) -> Any:
         obj = super().__call__(*args)
         entity = args[0]
         if isinstance(entity, ODataEntitySet):
@@ -29,10 +30,10 @@ class EndpointMeta(type):
 
 
 class EndpointQuery(ODataQuery):
-    _DATE_COLUMN_NAMES_BY_ENDPOINT = {
+    _DATE_COLUMN_NAMES_BY_ENDPOINT: dict[str, dict[str, str]] = {
         "IfDataCadastro": {"Data": "%Y%m"}
     }
-    _DATE_COLUMN_NAMES = {
+    _DATE_COLUMN_NAMES: set[str] = {
         "Data",
         "dataHoraCotacao",
         "InicioPeriodo",
@@ -40,7 +41,7 @@ class EndpointQuery(ODataQuery):
         "DataVigencia",
     }
 
-    def collect(self):
+    def collect(self) -> pd.DataFrame:
         raw_data = super().collect()
         data = pd.DataFrame(raw_data["value"])
         if not self._raw:
@@ -65,7 +66,7 @@ class Endpoint(metaclass=EndpointMeta):
     :py:meth:`bcb.odata.api.BaseODataAPI.get_endpoint` das classes que herdam
     :py:class:`bcb.odata.api.BaseODataAPI`.
     """
-    def __init__(self, entity, url):
+    def __init__(self, entity: Any, url: str) -> None:
         """
         Construtor da classe Endpoint.
 
@@ -80,7 +81,7 @@ class Endpoint(metaclass=EndpointMeta):
         self._entity = entity
         self._url = url
 
-    def get(self, *args, **kwargs):
+    def get(self, *args: Any, **kwargs: Any) -> pd.DataFrame:
         """
         Executa a consulta na API OData e retorna o resultado.
 
@@ -120,7 +121,7 @@ class Endpoint(metaclass=EndpointMeta):
         _query.reset()
         return data
 
-    def query(self):
+    def query(self) -> EndpointQuery:
         """
         Retorna uma instância de EndpointQuery através da qual se construirá a consulta na API OData.
 
@@ -138,13 +139,15 @@ class BaseODataAPI:
     Essa classe não deve ser acessada diretamente.
     """
 
-    def __init__(self):
+    BASE_URL: str
+
+    def __init__(self) -> None:
         """
         BaseODataAPI construtor
         """
         self.service = ODataService(self.BASE_URL)
 
-    def describe(self, endpoint=None):
+    def describe(self, endpoint: Optional[str] = None) -> None:
         """
         Mostra a descrição de uma API ou de um *endpoint*
         específico.
@@ -166,7 +169,7 @@ class BaseODataAPI:
         else:
             self.service.describe()
 
-    def get_endpoint(self, endpoint):
+    def get_endpoint(self, endpoint: str) -> Endpoint:
         """
         Obtem o *endpoint*
 
@@ -200,7 +203,7 @@ class ODataAPI(BaseODataAPI):
     não possuem implementação específica.
     """
 
-    def __init__(self, url):
+    def __init__(self, url: str) -> None:
         """
         Parameters
         ----------
@@ -411,8 +414,8 @@ class TarifasBancariasPorInstituicaoFinanceira(BaseODataAPI):
     cobradas por instituições financeiras, por Segmento e por Instituição.
     """
 
-    K = "Informes_ListaTarifasPorInstituicaoFinanceira"
-    BASE_URL = f"{OLINDA_BASE_URL}/{K}/versao/v1/odata/"
+    SERVICE_KEY = "Informes_ListaTarifasPorInstituicaoFinanceira"
+    BASE_URL = f"{OLINDA_BASE_URL}/{SERVICE_KEY}/versao/v1/odata/"
 
 
 class TarifasBancariasPorServico(BaseODataAPI):
@@ -424,8 +427,8 @@ class TarifasBancariasPorServico(BaseODataAPI):
     por serviço.
     """
 
-    K = "Informes_ListaValoresDeServicoBancario"
-    BASE_URL = f"{OLINDA_BASE_URL}/{K}/versao/v1/odata/"
+    SERVICE_KEY = "Informes_ListaValoresDeServicoBancario"
+    BASE_URL = f"{OLINDA_BASE_URL}/{SERVICE_KEY}/versao/v1/odata/"
 
 
 class PostosAtendimentoEletronicoPorInstituicaoFinanceira(BaseODataAPI):
@@ -437,8 +440,8 @@ class PostosAtendimentoEletronicoPorInstituicaoFinanceira(BaseODataAPI):
     pelo Banco Central.
     """
 
-    K = "Informes_PostosDeAtendimentoEletronico"
-    BASE_URL = f"{OLINDA_BASE_URL}/{K}/versao/v1/odata/"
+    SERVICE_KEY = "Informes_PostosDeAtendimentoEletronico"
+    BASE_URL = f"{OLINDA_BASE_URL}/{SERVICE_KEY}/versao/v1/odata/"
 
 
 class PostosAtendimentoCorrespondentesPorInstituicaoFinanceira(BaseODataAPI):
@@ -451,8 +454,8 @@ class PostosAtendimentoCorrespondentesPorInstituicaoFinanceira(BaseODataAPI):
     descrito na Resolução 3.954.
     """
 
-    K = "Informes_Correspondentes"
-    BASE_URL = f"{OLINDA_BASE_URL}/{K}/versao/v1/odata/"
+    SERVICE_KEY = "Informes_Correspondentes"
+    BASE_URL = f"{OLINDA_BASE_URL}/{SERVICE_KEY}/versao/v1/odata/"
 
 
 class EstatisticasSTR(BaseODataAPI):
@@ -464,8 +467,8 @@ class EstatisticasSTR(BaseODataAPI):
     mantidas pelos participantes no Banco Central.
     """
 
-    K = "STR"
-    BASE_URL = f"{OLINDA_BASE_URL}/{K}/versao/v1/odata/"
+    SERVICE_KEY = "STR"
+    BASE_URL = f"{OLINDA_BASE_URL}/{SERVICE_KEY}/versao/v1/odata/"
 
 
 class DinheiroCirculacao(BaseODataAPI):
@@ -478,8 +481,8 @@ class DinheiroCirculacao(BaseODataAPI):
     Real (símbolos : R$, BRL).
     """
 
-    K = "mecir_dinheiro_em_circulacao"
-    BASE_URL = f"{OLINDA_BASE_URL}/{K}/versao/v1/odata/"
+    SERVICE_KEY = "mecir_dinheiro_em_circulacao"
+    BASE_URL = f"{OLINDA_BASE_URL}/{SERVICE_KEY}/versao/v1/odata/"
 
 
 # /Informes_Ouvidorias/versao/v1/odata/

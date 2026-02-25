@@ -35,19 +35,21 @@ class Date:
     def format(self, fmts: str = "%Y-%m-%d") -> str:
         return datetime.strftime(self.date, fmts)
 
-    def __gt__(self, other) -> bool:
+    def __gt__(self, other: "Date") -> bool:
         return self.date > other.date
 
-    def __ge__(self, other) -> bool:
+    def __ge__(self, other: "Date") -> bool:
         return self.date >= other.date
 
-    def __lt__(self, other) -> bool:
+    def __lt__(self, other: "Date") -> bool:
         return self.date < other.date
 
-    def __le__(self, other) -> bool:
+    def __le__(self, other: "Date") -> bool:
         return self.date <= other.date
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Date):
+            return NotImplemented
         return self.date == other.date
 
     def __repr__(self) -> str:

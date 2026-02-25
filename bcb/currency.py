@@ -2,7 +2,7 @@ import re
 import warnings
 from datetime import date, timedelta
 from io import BytesIO, StringIO
-from typing import List, Union
+from typing import List, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -17,7 +17,7 @@ O módulo :py:mod:`bcb.currency` tem como objetivo fazer consultas no site do co
 """
 
 
-def _currency_url(currency_id: str, start_date: DateInput, end_date: DateInput) -> str:
+def _currency_url(currency_id: int, start_date: DateInput, end_date: DateInput) -> str:
     start_date = Date(start_date)
     end_date = Date(end_date)
     return (
@@ -27,7 +27,7 @@ def _currency_url(currency_id: str, start_date: DateInput, end_date: DateInput) 
     )
 
 
-CACHE = dict()
+CACHE: dict[str, pd.DataFrame] = dict()
 
 
 def _currency_id_list() -> pd.DataFrame:
@@ -100,11 +100,17 @@ def _get_currency_id(symbol: str) -> int:
     id_list = _currency_id_list()
     all_currencies = get_currency_list()
     x = pd.merge(id_list, all_currencies, on=["name"])
-    return np.max(x.loc[x["symbol"] == symbol, "id"])
+    matches = x.loc[x["symbol"] == symbol, "id"]
+    if matches.empty:
+        raise CurrencyNotFoundError(f"Unknown currency symbol: {symbol}")
+    return int(matches.max())
 
 
-def _get_symbol(symbol: str, start_date: DateInput, end_date: DateInput) -> pd.DataFrame:
-    cid = _get_currency_id(symbol)
+def _get_symbol(symbol: str, start_date: DateInput, end_date: DateInput) -> Optional[pd.DataFrame]:
+    try:
+        cid = _get_currency_id(symbol)
+    except CurrencyNotFoundError:
+        return None
     url = _currency_url(cid, start_date, end_date)
     res = requests.get(url)
 
