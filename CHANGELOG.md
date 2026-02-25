@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.3.4] - 2026-02-25
+- Replaced `requests` with `httpx` as the sole HTTP client across all modules
+- Added custom exceptions: `BCBError`, `BCBAPIError`, `CurrencyNotFoundError`, `SGSError`, `ODataError`
+- Added full type annotations with `mypy --strict` compliance
+- Added `DATE_COLUMNS` class attribute to `BaseODataAPI` for configurable date column detection
+- Renamed internal `CACHE` to `_CACHE` in `currency` module; added `currency.clear_cache()`
+- Overhauled test suite with mocked HTTP unit tests and a separate `tests/integration/` layer
+- Added CI/CD workflows: test matrix (Python 3.10–3.12), lint (black + mypy), Sphinx docs build
+- Fixed Sphinx docs build: updated `taxajuros` example to match BCB API rename of `'Cheque especial - Pré-fixado'` → `'Cheque especial - Prefixado'`
+
 ## [0.3.3] - 2025-04-21
 - Improved error handling in SGS API
 - Added type hints to the bcb.sgs and sgs.currency modules
