@@ -61,9 +61,9 @@ def _get_url_and_payload(code: int, start_date: DateInput, end_date: DateInput, 
             payload["dataInicial"] = Date(start_date).date.strftime("%d/%m/%Y")
             end_date = end_date if end_date else "today"
             payload["dataFinal"] = Date(end_date).date.strftime("%d/%m/%Y")
-        url = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.{}/dados".format(code)
+        url = f"https://api.bcb.gov.br/dados/serie/bcdata.sgs.{code}/dados"
     else:
-        url = ("https://api.bcb.gov.br/dados/serie/bcdata.sgs.{}/dados" "/ultimos/{}").format(code, last)
+        url = f"https://api.bcb.gov.br/dados/serie/bcdata.sgs.{code}/dados/ultimos/{last}"
 
     return {"payload": payload, "url": url}
 
@@ -181,8 +181,8 @@ def get_json(code: int, start: Optional[DateInput] = None, end: Optional[DateInp
         except Exception:
             res_json = {}
         if "error" in res_json:
-            raise Exception("BCB error: {}".format(res_json["error"]))
+            raise Exception(f"BCB error: {res_json['error']}")
         elif "erro" in res_json:
-            raise Exception("BCB error: {}".format(res_json["erro"]["detail"]))
-        raise Exception("Download error: code = {}".format(code))
+            raise Exception(f"BCB error: {res_json['erro']['detail']}")
+        raise Exception(f"Download error: code = {code}")
     return res.text

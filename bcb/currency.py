@@ -19,12 +19,11 @@ O módulo :py:mod:`bcb.currency` tem como objetivo fazer consultas no site do co
 def _currency_url(currency_id: str, start_date: DateInput, end_date: DateInput) -> str:
     start_date = Date(start_date)
     end_date = Date(end_date)
-    url = (
-        "https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?"
-        "method=gerarCSVFechamentoMoedaNoPeriodo&"
-        "ChkMoeda={}&DATAINI={:%d/%m/%Y}&DATAFIM={:%d/%m/%Y}"
+    return (
+        f"https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?"
+        f"method=gerarCSVFechamentoMoedaNoPeriodo&"
+        f"ChkMoeda={currency_id}&DATAINI={start_date.date:%d/%m/%Y}&DATAFIM={end_date.date:%d/%m/%Y}"
     )
-    return url.format(currency_id, start_date.date, end_date.date)
 
 
 CACHE = dict()
@@ -115,7 +114,7 @@ def _get_symbol(symbol: str, start_date: DateInput, end_date: DateInput) -> pd.D
         x = elm.text
         x = re.sub(r"^\W+", "", x)
         x = re.sub(r"\W+$", "", x)
-        msg = "BCB API returned error: {} - {}".format(x, symbol)
+        msg = f"BCB API returned error: {x} - {symbol}"
         warnings.warn(msg)
         return None
 
