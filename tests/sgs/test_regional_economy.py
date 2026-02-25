@@ -15,6 +15,7 @@ class TestGetNonPerformingLoansCodes:
         assert get_non_performing_loans_codes(states) == expected_codes
 
 
+@pytest.mark.integration
 class TestGetNonPerformingLoans:
     @pytest.mark.parametrize("states,expected_columns", [
         (["BA"], ["BA"]),
