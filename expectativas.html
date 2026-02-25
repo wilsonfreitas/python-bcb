@@ -277,12 +277,16 @@ através do método <code class="xref py py-meth docutils literal notranslate"><
 <span class="go">EntitySets:</span>
 <span class="go">  ExpectativasMercadoTop5Anuais</span>
 <span class="go">  ExpectativaMercadoMensais</span>
+<span class="go">  ExpectativasMercadoTop5Inflacao12Meses</span>
 <span class="go">  ExpectativasMercadoInflacao24Meses</span>
-<span class="go">  ExpectativasMercadoInflacao12Meses</span>
 <span class="go">  ExpectativasMercadoSelic</span>
+<span class="go">  DatasReferencia</span>
 <span class="go">  ExpectativasMercadoTop5Selic</span>
 <span class="go">  ExpectativasMercadoTop5Mensais</span>
 <span class="go">  ExpectativasMercadoTrimestrais</span>
+<span class="go">  ExpectativasMercadoTop5Inflacao24Meses</span>
+<span class="go">  ExpectativaMercadoTop5Trimestral</span>
+<span class="go">  ExpectativasMercadoInflacao12Meses</span>
 <span class="go">  ExpectativasMercadoAnuais</span>
 </pre></div>
 </div>
@@ -318,17 +322,17 @@ método <code class="xref py py-meth docutils literal notranslate"><span class="
 <p>A partir desse <em>endpoint</em> executar uma consulta com o método <code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.Endpoint.query()</span></code>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [6]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
 <span class="gh">Out[6]: </span>
-<span class="go">   Indicador       Data DataReferencia  ... DesvioPadrao  Minimo  Maximo</span>
-<span class="go">0  PIB Total 2023-03-31           2023  ...       0.3553  0.9700    2.00</span>
-<span class="go">1  PIB Total 2023-03-31           2024  ...       0.4276  0.4585    1.45</span>
-<span class="go">2  PIB Total 2023-03-31           2025  ...       0.1546  1.4500    1.80</span>
-<span class="go">3  PIB Total 2023-03-31           2026  ...       0.1546  1.4500    1.80</span>
-<span class="go">4  PIB Total 2023-03-31           2027  ...       0.1546  1.4500    1.80</span>
-<span class="go">5  PIB Total 2023-04-03           2023  ...       0.3553  0.9700    2.00</span>
-<span class="go">6  PIB Total 2023-04-03           2024  ...       0.4276  0.4585    1.45</span>
-<span class="go">7  PIB Total 2023-04-03           2025  ...       0.1546  1.4500    1.80</span>
-<span class="go">8  PIB Total 2023-04-03           2026  ...       0.1546  1.4500    1.80</span>
-<span class="go">9  PIB Total 2023-04-03           2027  ...       0.1546  1.4500    1.80</span>
+<span class="go">  Indicador       Data DataReferencia  ... DesvioPadrao  Minimo  Maximo</span>
+<span class="go">0    Câmbio 2018-01-18           2020  ...         0.11    3.45    3.70</span>
+<span class="go">1    Câmbio 2018-01-18           2019  ...         0.08    3.40    3.59</span>
+<span class="go">2    Câmbio 2018-01-18           2021  ...         0.13    3.50    3.80</span>
+<span class="go">3    Câmbio 2018-01-18           2018  ...         0.06    3.35    3.50</span>
+<span class="go">4    Câmbio 2018-01-18           2022  ...         0.02    3.86    3.90</span>
+<span class="go">5    Câmbio 2018-01-18           2020  ...         0.26    3.00    3.67</span>
+<span class="go">6    Câmbio 2018-01-18           2019  ...         0.18    3.10    3.59</span>
+<span class="go">7    Câmbio 2018-01-18           2021  ...         0.21    3.25    3.76</span>
+<span class="go">8    Câmbio 2018-01-18           2018  ...         0.11    3.21    3.50</span>
+<span class="go">9    Câmbio 2018-01-18           2022  ...         0.38    3.10    3.86</span>
 
 <span class="go">[10 rows x 9 columns]</span>
 </pre></div>
