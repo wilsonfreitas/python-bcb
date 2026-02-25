@@ -4,9 +4,9 @@ from datetime import date, timedelta
 from io import BytesIO, StringIO
 from typing import List, Optional, Union
 
+import httpx
 import numpy as np
 import pandas as pd
-import requests
 from lxml import html
 
 from .exceptions import BCBAPIError, CurrencyNotFoundError
@@ -35,7 +35,7 @@ def _currency_id_list() -> pd.DataFrame:
         return CACHE.get("TEMP_CURRENCY_ID_LIST")
     else:
         url1 = "https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?" "method=exibeFormularioConsultaBoletim"
-        res = requests.get(url1)
+        res = httpx.get(url1, follow_redirects=True)
         if res.status_code != 200:
             msg = f"BCB API Request error, status code = {res.status_code}"
             raise BCBAPIError(msg, res.status_code)
@@ -49,11 +49,11 @@ def _currency_id_list() -> pd.DataFrame:
         return df
 
 
-def _get_valid_currency_list(_date: date, n: int = 0) -> requests.models.Response:
+def _get_valid_currency_list(_date: date, n: int = 0) -> httpx.Response:
     url2 = f"http://www4.bcb.gov.br/Download/fechamento/M{_date:%Y%m%d}.csv"
     try:
-        res = requests.get(url2)
-    except requests.exceptions.ConnectionError as ex:
+        res = httpx.get(url2, follow_redirects=True)
+    except httpx.ConnectError as ex:
         if n >= 3:
             raise ex
         return _get_valid_currency_list(_date, n + 1)
@@ -112,7 +112,7 @@ def _get_symbol(symbol: str, start_date: DateInput, end_date: DateInput) -> Opti
     except CurrencyNotFoundError:
         return None
     url = _currency_url(cid, start_date, end_date)
-    res = requests.get(url)
+    res = httpx.get(url, follow_redirects=True)
 
     if res.headers["Content-Type"].startswith("text/html"):
         doc = html.parse(BytesIO(res.content)).getroot()

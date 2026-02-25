@@ -2,8 +2,8 @@ import json
 from io import StringIO
 from typing import Dict, Generator, List, Mapping, Optional, Tuple, TypeAlias, Union
 
+import httpx
 import pandas as pd
-import requests
 
 from bcb.exceptions import SGSError
 from bcb.utils import Date, DateInput
@@ -187,7 +187,7 @@ def get_json(
         série temporal univariada em formato JSON.
     """
     url, payload = _get_url_and_payload(code, start, end, last)
-    res = requests.get(url, params=payload)
+    res = httpx.get(url, params=payload, follow_redirects=True)
     if res.status_code != 200:
         try:
             res_json = json.loads(res.text)
