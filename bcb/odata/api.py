@@ -41,23 +41,36 @@ class EndpointQuery(ODataQuery):
         "DataVigencia",
     }
 
+    def __init__(
+        self,
+        entity: Any,
+        url: str,
+        date_columns: Optional[list[str]] = None,
+    ) -> None:
+        super().__init__(entity, url)
+        self._date_columns: list[str] = date_columns or []
+
     def collect(self) -> pd.DataFrame:
         raw_data = super().collect()
         data = pd.DataFrame(raw_data["value"])
         if not self._raw:
-            for col in self._DATE_COLUMN_NAMES:
-                if (
-                    self.entity.name in self._DATE_COLUMN_NAMES_BY_ENDPOINT
-                    and col in self._DATE_COLUMN_NAMES_BY_ENDPOINT[self.entity.name]
-                ):
-                    data[col] = pd.to_datetime(
-                        data[col],
-                        format=self._DATE_COLUMN_NAMES_BY_ENDPOINT[self.entity.name][
-                            col
-                        ],
-                    )
-                elif col in data.columns:
-                    data[col] = pd.to_datetime(data[col])
+            if self._date_columns:
+                # Use the explicit list provided by the API subclass.
+                for col in self._date_columns:
+                    if col in data.columns:
+                        data[col] = pd.to_datetime(data[col])
+            else:
+                # Fall back to the built-in heuristic.
+                endpoint_overrides = self._DATE_COLUMN_NAMES_BY_ENDPOINT.get(
+                    self.entity.name, {}
+                )
+                for col in self._DATE_COLUMN_NAMES:
+                    if col in endpoint_overrides:
+                        data[col] = pd.to_datetime(
+                            data[col], format=endpoint_overrides[col]
+                        )
+                    elif col in data.columns:
+                        data[col] = pd.to_datetime(data[col])
         return data
 
 
@@ -75,7 +88,9 @@ class Endpoint(metaclass=EndpointMeta):
     :py:class:`bcb.odata.api.BaseODataAPI`.
     """
 
-    def __init__(self, entity: Any, url: str) -> None:
+    def __init__(
+        self, entity: Any, url: str, date_columns: Optional[list[str]] = None
+    ) -> None:
         """
         Construtor da classe Endpoint.
 
@@ -86,9 +101,13 @@ class Endpoint(metaclass=EndpointMeta):
             Obtidos da classe ``bcb.odata.framework.ODataService``.
         url : str
             URL da API OData.
+        date_columns : list[str], optional
+            Colunas a converter para datetime. Quando fornecido, substitui a
+            heurística padrão de detecção de datas.
         """
         self._entity = entity
         self._url = url
+        self._date_columns: list[str] = date_columns or []
 
     def get(self, *args: Any, **kwargs: Any) -> pd.DataFrame:
         """
@@ -104,7 +123,7 @@ class Endpoint(metaclass=EndpointMeta):
         -------
         pd.DataFrame: resultado da consulta
         """
-        _query = EndpointQuery(self._entity, self._url)
+        _query = EndpointQuery(self._entity, self._url, self._date_columns)
         for arg in args:
             if isinstance(arg, ODataPropertyFilter):
                 _query.filter(arg)
@@ -138,7 +157,7 @@ class Endpoint(metaclass=EndpointMeta):
         -------
         bcb.odata.api.EndpointQuery
         """
-        return EndpointQuery(self._entity, self._url)
+        return EndpointQuery(self._entity, self._url, self._date_columns)
 
 
 class BaseODataAPI:
@@ -149,6 +168,7 @@ class BaseODataAPI:
     """
 
     BASE_URL: str
+    DATE_COLUMNS: list[str] = []
 
     def __init__(self) -> None:
         """
@@ -198,7 +218,9 @@ class BaseODataAPI:
         ValueError
             Se o *endpoint* fornecido é errado.
         """
-        return Endpoint(self.service[endpoint], self.service.url)
+        return Endpoint(
+            self.service[endpoint], self.service.url, self.DATE_COLUMNS or None
+        )
 
 
 class ODataAPI(BaseODataAPI):

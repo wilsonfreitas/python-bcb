@@ -11,6 +11,7 @@ from tests.conftest import (
     ODATA_SERVICE_ROOT_JSON,
     ODATA_METADATA_XML,
     ODATA_QUERY_RESPONSE_JSON,
+    ODATA_QUERY_RESPONSE_MULTI_DATE_JSON,
 )
 
 EXPECTATIVAS_BASE_URL = (
@@ -142,3 +143,83 @@ def test_endpoint_get_shortcut(httpx_mock):
     df = ep.get(limit=1)
     assert isinstance(df, pd.DataFrame)
     assert len(df) == 1
+
+
+# ---------------------------------------------------------------------------
+# DATE_COLUMNS — configurable date detection (Phase 7.1)
+# ---------------------------------------------------------------------------
+
+
+class _SingleDateAPI(Expectativas):
+    """API subclass that restricts date conversion to 'Data' only."""
+
+    DATE_COLUMNS = ["Data"]
+
+
+class _AltDateAPI(Expectativas):
+    """API subclass that restricts date conversion to 'DataVigencia' only."""
+
+    DATE_COLUMNS = ["DataVigencia"]
+
+
+def test_date_columns_default_empty_uses_heuristic(httpx_mock):
+    """When DATE_COLUMNS is empty (default), the built-in heuristic fires."""
+    add_service_mocks(httpx_mock)
+    httpx_mock.add_response(
+        url=ENTITY_URL_PATTERN,
+        text=ODATA_QUERY_RESPONSE_MULTI_DATE_JSON,
+        status_code=200,
+    )
+    api = Expectativas()  # DATE_COLUMNS = []
+    ep = api.get_endpoint("ExpectativasMercadoAnuais")
+    df = ep.query().limit(1).collect()
+    # Heuristic converts both "Data" and "DataVigencia"
+    assert isinstance(df["Data"].iloc[0], datetime)
+    assert isinstance(df["DataVigencia"].iloc[0], datetime)
+
+
+def test_date_columns_explicit_list_converts_only_listed(httpx_mock):
+    """When DATE_COLUMNS lists only 'Data', only that column is converted."""
+    add_service_mocks(httpx_mock)
+    httpx_mock.add_response(
+        url=ENTITY_URL_PATTERN,
+        text=ODATA_QUERY_RESPONSE_MULTI_DATE_JSON,
+        status_code=200,
+    )
+    api = _SingleDateAPI()
+    ep = api.get_endpoint("ExpectativasMercadoAnuais")
+    df = ep.query().limit(1).collect()
+    assert isinstance(df["Data"].iloc[0], datetime)
+    # DataVigencia is NOT in DATE_COLUMNS so it stays as a raw string
+    assert isinstance(df["DataVigencia"].iloc[0], str)
+
+
+def test_date_columns_explicit_list_alternate_column(httpx_mock):
+    """When DATE_COLUMNS lists only 'DataVigencia', only that column is converted."""
+    add_service_mocks(httpx_mock)
+    httpx_mock.add_response(
+        url=ENTITY_URL_PATTERN,
+        text=ODATA_QUERY_RESPONSE_MULTI_DATE_JSON,
+        status_code=200,
+    )
+    api = _AltDateAPI()
+    ep = api.get_endpoint("ExpectativasMercadoAnuais")
+    df = ep.query().limit(1).collect()
+    assert isinstance(df["DataVigencia"].iloc[0], datetime)
+    # Data is NOT in DATE_COLUMNS so it stays as a raw string
+    assert isinstance(df["Data"].iloc[0], str)
+
+
+def test_date_columns_propagates_through_get_shortcut(httpx_mock):
+    """DATE_COLUMNS applies to ep.get() as well as ep.query().collect()."""
+    add_service_mocks(httpx_mock)
+    httpx_mock.add_response(
+        url=ENTITY_URL_PATTERN,
+        text=ODATA_QUERY_RESPONSE_MULTI_DATE_JSON,
+        status_code=200,
+    )
+    api = _SingleDateAPI()
+    ep = api.get_endpoint("ExpectativasMercadoAnuais")
+    df = ep.get(limit=1)
+    assert isinstance(df["Data"].iloc[0], datetime)
+    assert isinstance(df["DataVigencia"].iloc[0], str)

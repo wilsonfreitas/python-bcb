@@ -67,6 +67,13 @@ ODATA_QUERY_RESPONSE_JSON = """{
   ]
 }"""
 
+# Response with two date columns to test DATE_COLUMNS selectivity
+ODATA_QUERY_RESPONSE_MULTI_DATE_JSON = """{
+  "value": [
+    {"Indicador": "IPCA", "Data": "2021-01-04", "DataVigencia": "2021-06-01", "Mediana": 4.5}
+  ]
+}"""
+
 
 # ---------------------------------------------------------------------------
 # Fixtures
