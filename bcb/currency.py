@@ -27,12 +27,24 @@ def _currency_url(currency_id: int, start_date: DateInput, end_date: DateInput) 
     )
 
 
-CACHE: dict[str, pd.DataFrame] = dict()
+_CACHE: dict[str, pd.DataFrame] = dict()
+
+
+def clear_cache() -> None:
+    """Clear the module-level session cache.
+
+    :func:`get` and :func:`get_currency_list` cache the currency ID list and
+    the full currency master table for the duration of the Python session so
+    that repeated calls do not make redundant HTTP requests.  Call this
+    function to force a fresh fetch on the next request (useful in tests or
+    long-running scripts where the master data may have changed).
+    """
+    _CACHE.clear()
 
 
 def _currency_id_list() -> pd.DataFrame:
-    if CACHE.get("TEMP_CURRENCY_ID_LIST") is not None:
-        return CACHE.get("TEMP_CURRENCY_ID_LIST")
+    if _CACHE.get("TEMP_CURRENCY_ID_LIST") is not None:
+        return _CACHE.get("TEMP_CURRENCY_ID_LIST")
     else:
         url1 = (
             "https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?"
@@ -48,7 +60,7 @@ def _currency_id_list() -> pd.DataFrame:
         x = [(elm.text, elm.get("value")) for elm in doc.xpath(xpath)]
         df = pd.DataFrame(x, columns=["name", "id"])
         df["id"] = df["id"].astype("int32")
-        CACHE["TEMP_CURRENCY_ID_LIST"] = df
+        _CACHE["TEMP_CURRENCY_ID_LIST"] = df
         return df
 
 
@@ -76,8 +88,8 @@ def get_currency_list() -> pd.DataFrame:
     DataFrame :
         Tabela com a listagem de moedas disponíveis.
     """
-    if CACHE.get("TEMP_FILE_CURRENCY_LIST") is not None:
-        return CACHE.get("TEMP_FILE_CURRENCY_LIST")
+    if _CACHE.get("TEMP_FILE_CURRENCY_LIST") is not None:
+        return _CACHE.get("TEMP_FILE_CURRENCY_LIST")
     else:
         res = _get_valid_currency_list(date.today())
         df = pd.read_csv(StringIO(res.text), delimiter=";")
@@ -95,7 +107,7 @@ def get_currency_list() -> pd.DataFrame:
         df["country_code"] = df["country_code"].astype("int32")
         df["code"] = df["code"].astype("int32")
         df["symbol"] = df["symbol"].str.strip()
-        CACHE["TEMP_FILE_CURRENCY_LIST"] = df
+        _CACHE["TEMP_FILE_CURRENCY_LIST"] = df
         return df
 
 
@@ -179,6 +191,13 @@ def get(
 
     Returns
     -------
+
+    Notes
+    -----
+    The currency ID list and the master currency table are cached in memory
+    for the lifetime of the Python session so that multiple calls to
+    :func:`get` do not repeat the same HTTP requests.  Use
+    :func:`clear_cache` to invalidate the cache when fresh data is needed.
 
     DataFrame :
         Série temporal com cotações diárias das moedas solicitadas.

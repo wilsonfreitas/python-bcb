@@ -83,6 +83,6 @@ ODATA_QUERY_RESPONSE_MULTI_DATE_JSON = """{
 @pytest.fixture(autouse=True)
 def clear_currency_cache():
     """Clear module-level currency cache before and after each test."""
-    currency.CACHE.clear()
+    currency.clear_cache()
     yield
-    currency.CACHE.clear()
+    currency.clear_cache()

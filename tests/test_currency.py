@@ -65,6 +65,22 @@ def test_currency_id_list_cached(httpx_mock):
     assert df1 is df2
 
 
+def test_clear_cache(httpx_mock):
+    # Populate the cache with one call
+    add_id_list_mock(httpx_mock)
+    currency._currency_id_list()
+    assert currency._CACHE  # cache is non-empty
+
+    # clear_cache() empties it
+    currency.clear_cache()
+    assert not currency._CACHE
+
+    # A subsequent call re-fetches and re-populates
+    add_id_list_mock(httpx_mock)
+    currency._currency_id_list()
+    assert currency._CACHE
+
+
 # ---------------------------------------------------------------------------
 # get_currency_list
 # ---------------------------------------------------------------------------
