@@ -1,7 +1,11 @@
 # Changelog
 
 ## [Unreleased]
+
+## [0.3.5] - 2026-02-27
 - Added `output="text"` parameter to `sgs.get()`, `currency.get()`, `EndpointQuery.collect()`, and `Endpoint.get()` — returns raw API response text (JSON for SGS and OData, CSV for currency) instead of a DataFrame; multi-code/symbol calls return `dict[key, str]`; default behavior unchanged
+- Migrated from Poetry to uv for package management (PEP 621 + hatchling build backend)
+- Replaced `black` and `pycodestyle` with `ruff` for linting and formatting
 
 ## [0.3.4] - 2026-02-25
 - Replaced `requests` with `httpx` as the sole HTTP client across all modules

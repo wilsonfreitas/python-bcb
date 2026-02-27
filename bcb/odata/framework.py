@@ -1,5 +1,4 @@
 from io import BytesIO
-import logging
 from typing import Any, Optional, Union
 from lxml import etree
 import json
@@ -234,7 +233,7 @@ class ODataFunction:
         self.name: str = kwargs["Name"]
         self.parameters: list[ODataParameter] = kwargs["parameters"]
         self.return_type: str = kwargs["return_type"]
-        self.fullname: str = f'{kwargs["namespace"]}.{self.name}'
+        self.fullname: str = f"{kwargs['namespace']}.{self.name}"
 
     def __repr__(self) -> str:
         return f"<Function {self.name}>"
@@ -422,7 +421,8 @@ class ODataQuery:
         self.is_function = isinstance(entity, ODataFunctionImport)
         if self.is_function:
             self.function_parameters = {
-                (p.name or ""): None for p in self.entity.function.parameters  # type: ignore[union-attr]
+                (p.name or ""): None
+                for p in self.entity.function.parameters  # type: ignore[union-attr]
             }
 
     def odata_url(self) -> str:
@@ -513,7 +513,7 @@ class ODataQuery:
         return res.text
 
     def show(self) -> None:
-        print(f"URL:")
+        print("URL:")
         print(f"  {self.odata_url()}")
         if self.is_function and len(self.function_parameters):
             print("Function Parameters:")
@@ -535,7 +535,8 @@ class ODataQuery:
             print("Return:", names_str)
         else:
             names = [
-                f"{p.name}<{p.ftype}>" for p in self.entity.entity.properties.values()  # type: ignore[union-attr]
+                f"{p.name}<{p.ftype}>"
+                for p in self.entity.entity.properties.values()  # type: ignore[union-attr]
             ]
             names_str = ", ".join(names)
             print("Return:", names_str)

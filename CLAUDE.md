@@ -8,12 +8,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Python Environment
 
-**This project uses uv exclusively.** All Python commands must be run via `uv run`. Never invoke `python`, `pytest`, `black`, or any other Python tool directly.
+**This project uses uv exclusively.** All Python commands must be run via `uv run`. Never invoke `python`, `pytest`, `ruff`, or any other Python tool directly.
 
 ```bash
 uv run python ...
 uv run pytest ...
-uv run black ...
+uv run ruff ...
 ```
 
 ## Commands
@@ -36,8 +36,8 @@ Note: Many tests make live HTTP requests to BCB APIs. Tests marked with `@mark.f
 
 ### Linting / Formatting
 ```bash
-uv run pycodestyle bcb/                  # lint with pycodestyle
-uv run black bcb/                        # format with black
+uv run ruff check bcb/                   # lint with ruff
+uv run ruff format bcb/                  # format with ruff
 ```
 
 ### Docs
