@@ -72,6 +72,17 @@ A generic OData client plus named wrappers for specific BCB OData services (host
 - `BRAZILIAN_REGIONS` / `BRAZILIAN_STATES` constants for geographic lookups.
 - `DateInput` type alias used throughout the codebase.
 
+## Definition of Done
+
+Every task must pass all of the following before it is considered complete:
+
+```bash
+uv run pytest -m "not integration"       # all unit tests pass
+uv run ruff check bcb/ tests/            # no lint errors
+uv run ruff format --check bcb/ tests/   # code is formatted
+uv run mypy bcb/                         # no type errors
+```
+
 ## Key Patterns
 
 - **OData query building**: `api.get_endpoint("EntityName")` returns an `Endpoint`. Call `.get(Property >= value, limit=100)` for one-shot queries, or `.query()` for a chainable `EndpointQuery`.
