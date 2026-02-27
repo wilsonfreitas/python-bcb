@@ -403,6 +403,31 @@ são preenchidos com 0 para ter 2 dígitos.</p>
 <span class="go">[5 rows x 7 columns]</span>
 </pre></div>
 </div>
+<section id="obtendo-o-csv-bruto">
+<h3>Obtendo o CSV bruto<a class="headerlink" href="#obtendo-o-csv-bruto" title="Link permanente para este cabeçalho">¶</a></h3>
+<p>Para pipelines de dados onde o dado bruto deve ser persistido antes de qualquer transformação,
+o parâmetro <code class="docutils literal notranslate"><span class="pre">output='text'</span></code> pode ser passado à função <a class="reference internal" href="api.html#bcb.currency.get" title="bcb.currency.get"><code class="xref py py-func docutils literal notranslate"><span class="pre">bcb.currency.get()</span></code></a>.</p>
+<p>Para um único símbolo é retornada uma <code class="docutils literal notranslate"><span class="pre">str</span></code> com o CSV bruto; para múltiplos símbolos é
+retornado um <code class="docutils literal notranslate"><span class="pre">dict</span></code> mapeando símbolo ISO → CSV string.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb</span><span class="w"> </span><span class="kn">import</span> <span class="n">currency</span>
+
+<span class="c1"># único símbolo → str (CSV)</span>
+<span class="n">raw</span> <span class="o">=</span> <span class="n">currency</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;USD&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2024-01-01&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2024-01-31&#39;</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
+
+<span class="c1"># múltiplos símbolos → dict[str, str]</span>
+<span class="n">raws</span> <span class="o">=</span> <span class="n">currency</span><span class="o">.</span><span class="n">get</span><span class="p">([</span><span class="s1">&#39;USD&#39;</span><span class="p">,</span> <span class="s1">&#39;EUR&#39;</span><span class="p">],</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2024-01-01&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2024-01-31&#39;</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
+<span class="c1"># raws[&#39;USD&#39;] → CSV string</span>
+<span class="c1"># raws[&#39;EUR&#39;] → CSV string</span>
+
+<span class="c1"># salvar em disco</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;usd_raw.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>O CSV retornado usa ponto-e-vírgula como separador, datas no formato <code class="docutils literal notranslate"><span class="pre">DDMMYYYY</span></code> e vírgula
+como separador decimal — exatamente como devolvido pela API PTAX do BCB.
+O comportamento padrão (retorno de DataFrame) é mantido quando o parâmetro não é informado.</p>
+</section>
 </section>
 </section>
 
@@ -463,7 +488,10 @@ são preenchidos com 0 para ter 2 dígitos.</p>
             <ul>
 <li><a class="reference internal" href="#">Moedas</a><ul>
 <li><a class="reference internal" href="#api-odata-de-moedas">API OData de Moedas</a></li>
-<li><a class="reference internal" href="#conversor-de-moedas">Conversor de Moedas</a></li>
+<li><a class="reference internal" href="#conversor-de-moedas">Conversor de Moedas</a><ul>
+<li><a class="reference internal" href="#obtendo-o-csv-bruto">Obtendo o CSV bruto</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

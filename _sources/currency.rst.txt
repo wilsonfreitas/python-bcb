@@ -77,3 +77,32 @@ O módulo :py:mod:`bcb.currency` obtem dados de moedas do conversor de moedas do
 
     currency.get_currency_list().head()
 
+Obtendo o CSV bruto
+^^^^^^^^^^^^^^^^^^^
+
+Para pipelines de dados onde o dado bruto deve ser persistido antes de qualquer transformação,
+o parâmetro ``output='text'`` pode ser passado à função :py:func:`bcb.currency.get`.
+
+Para um único símbolo é retornada uma ``str`` com o CSV bruto; para múltiplos símbolos é
+retornado um ``dict`` mapeando símbolo ISO → CSV string.
+
+.. code:: python
+
+    from bcb import currency
+
+    # único símbolo → str (CSV)
+    raw = currency.get('USD', start='2024-01-01', end='2024-01-31', output='text')
+
+    # múltiplos símbolos → dict[str, str]
+    raws = currency.get(['USD', 'EUR'], start='2024-01-01', end='2024-01-31', output='text')
+    # raws['USD'] → CSV string
+    # raws['EUR'] → CSV string
+
+    # salvar em disco
+    with open('usd_raw.csv', 'w') as f:
+        f.write(raw)
+
+O CSV retornado usa ponto-e-vírgula como separador, datas no formato ``DDMMYYYY`` e vírgula
+como separador decimal — exatamente como devolvido pela API PTAX do BCB.
+O comportamento padrão (retorno de DataFrame) é mantido quando o parâmetro não é informado.
+

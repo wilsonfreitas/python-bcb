@@ -316,6 +316,32 @@ interface json do serviço BCData/SGS -
 </div>
 <img alt="_images/sgs1.png" src="_images/sgs1.png" />
 </section>
+<section id="obtendo-o-json-bruto">
+<h2>Obtendo o JSON bruto<a class="headerlink" href="#obtendo-o-json-bruto" title="Link permanente para este cabeçalho">¶</a></h2>
+<p>A função <a class="reference internal" href="api.html#bcb.sgs.get_json" title="bcb.sgs.get_json"><code class="xref py py-func docutils literal notranslate"><span class="pre">bcb.sgs.get_json()</span></code></a> retorna o JSON bruto da API para um único código.
+Para pipelines de dados onde o dado bruto deve ser persistido antes de qualquer transformação,
+o parâmetro <code class="docutils literal notranslate"><span class="pre">output='text'</span></code> pode ser passado à função <a class="reference internal" href="api.html#bcb.sgs.get" title="bcb.sgs.get"><code class="xref py py-func docutils literal notranslate"><span class="pre">bcb.sgs.get()</span></code></a>.</p>
+<p>Para um único código é retornada uma <code class="docutils literal notranslate"><span class="pre">str</span></code>; para múltiplos códigos é retornado um <code class="docutils literal notranslate"><span class="pre">dict</span></code>
+mapeando código inteiro → JSON string.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb</span><span class="w"> </span><span class="kn">import</span> <span class="n">sgs</span>
+
+<span class="c1"># único código → str</span>
+<span class="n">raw</span> <span class="o">=</span> <span class="n">sgs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">433</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2024-01-01&#39;</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
+
+<span class="c1"># múltiplos códigos → dict[int, str]</span>
+<span class="n">raws</span> <span class="o">=</span> <span class="n">sgs</span><span class="o">.</span><span class="n">get</span><span class="p">([</span><span class="mi">433</span><span class="p">,</span> <span class="mi">189</span><span class="p">],</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2024-01-01&#39;</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
+<span class="c1"># raws[433] → JSON string do IPCA</span>
+<span class="c1"># raws[189] → JSON string do IGP-M</span>
+
+<span class="c1"># salvar em disco</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;ipca_raw.json&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>O JSON retornado é um array de objetos com os campos <code class="docutils literal notranslate"><span class="pre">data</span></code> e <code class="docutils literal notranslate"><span class="pre">valor</span></code>, exatamente como
+devolvido pela API BCData/SGS.
+O comportamento padrão (retorno de DataFrame) é mantido quando o parâmetro não é informado.</p>
+</section>
 </section>
 <section id="dados-de-inadimplencia-de-operacoes-de-credito">
 <h1>Dados de Inadimplência de Operações de Crédito<a class="headerlink" href="#dados-de-inadimplencia-de-operacoes-de-credito" title="Link permanente para este cabeçalho">¶</a></h1>
@@ -445,6 +471,7 @@ interface json do serviço BCData/SGS -
             <ul>
 <li><a class="reference internal" href="#">SGS</a><ul>
 <li><a class="reference internal" href="#exemplos">Exemplos</a></li>
+<li><a class="reference internal" href="#obtendo-o-json-bruto">Obtendo o JSON bruto</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#dados-de-inadimplencia-de-operacoes-de-credito">Dados de Inadimplência de Operações de Crédito</a></li>
