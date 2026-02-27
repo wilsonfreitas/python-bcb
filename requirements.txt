@@ -1,5 +1,0 @@
-lxml
-pandas
-numpy
-requests
-httpx

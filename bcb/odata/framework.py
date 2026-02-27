@@ -9,7 +9,6 @@ from typing_extensions import Self
 
 from bcb.exceptions import ODataError
 
-
 # Edm.Boolean
 # Edm.Byte
 # Edm.Date
@@ -78,12 +77,10 @@ class ODataEntitySet(metaclass=ODataEntitySetMeta):
         props = ", ".join(
             [f"{prop.name}<{prop.ftype}>" for prop in self.entity.properties.values()]
         )
-        print(
-            f"""
+        print(f"""
 EntitySet (Endpoint): {self.name}
 EntityType: {self.entity_type}
-Properties: {props}"""
-        )
+Properties: {props}""")
 
     def __repr__(self) -> str:
         return f"<EntitySet {self.name}>"
