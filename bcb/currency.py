@@ -1,13 +1,7 @@
-import re
-import warnings
-from datetime import date, timedelta
-from io import BytesIO, StringIO
 from typing import Dict, List, Literal, Optional, Union, overload
 
 import httpx
-import numpy as np
 import pandas as pd
-from lxml import html
 
 from .exceptions import BCBAPIError, CurrencyNotFoundError
 from .utils import Date, DateInput
@@ -16,16 +10,7 @@ from .utils import Date, DateInput
 O módulo :py:mod:`bcb.currency` tem como objetivo fazer consultas no site do conversor de moedas do BCB.
 """
 
-
-def _currency_url(currency_id: int, start_date: DateInput, end_date: DateInput) -> str:
-    start_date = Date(start_date)
-    end_date = Date(end_date)
-    return (
-        f"https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?"
-        f"method=gerarCSVFechamentoMoedaNoPeriodo&"
-        f"ChkMoeda={currency_id}&DATAINI={start_date.date:%d/%m/%Y}&DATAFIM={end_date.date:%d/%m/%Y}"
-    )
-
+_PTAX_BASE_URL = "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata"
 
 _CACHE: dict[str, pd.DataFrame] = dict()
 
@@ -33,49 +18,13 @@ _CACHE: dict[str, pd.DataFrame] = dict()
 def clear_cache() -> None:
     """Clear the module-level session cache.
 
-    :func:`get` and :func:`get_currency_list` cache the currency ID list and
-    the full currency master table for the duration of the Python session so
-    that repeated calls do not make redundant HTTP requests.  Call this
-    function to force a fresh fetch on the next request (useful in tests or
-    long-running scripts where the master data may have changed).
+    :func:`get` and :func:`get_currency_list` cache the currency list for the
+    duration of the Python session so that repeated calls do not make redundant
+    HTTP requests.  Call this function to force a fresh fetch on the next
+    request (useful in tests or long-running scripts where the data may have
+    changed).
     """
     _CACHE.clear()
-
-
-def _currency_id_list() -> pd.DataFrame:
-    if _CACHE.get("TEMP_CURRENCY_ID_LIST") is not None:
-        return _CACHE.get("TEMP_CURRENCY_ID_LIST")
-    else:
-        url1 = (
-            "https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?"
-            "method=exibeFormularioConsultaBoletim"
-        )
-        res = httpx.get(url1, follow_redirects=True)
-        if res.status_code != 200:
-            msg = f"BCB API Request error, status code = {res.status_code}"
-            raise BCBAPIError(msg, res.status_code)
-
-        doc = html.parse(BytesIO(res.content)).getroot()
-        xpath = "//select[@name='ChkMoeda']/option"
-        x = [(elm.text, elm.get("value")) for elm in doc.xpath(xpath)]
-        df = pd.DataFrame(x, columns=["name", "id"])
-        df["id"] = df["id"].astype("int32")
-        _CACHE["TEMP_CURRENCY_ID_LIST"] = df
-        return df
-
-
-def _get_valid_currency_list(_date: date, n: int = 0) -> httpx.Response:
-    url2 = f"http://www4.bcb.gov.br/Download/fechamento/M{_date:%Y%m%d}.csv"
-    try:
-        res = httpx.get(url2, follow_redirects=True)
-    except httpx.ConnectError as ex:
-        if n >= 3:
-            raise ex
-        return _get_valid_currency_list(_date, n + 1)
-    if res.status_code == 200:
-        return res
-    else:
-        return _get_valid_currency_list(_date - timedelta(1), 0)
 
 
 def get_currency_list() -> pd.DataFrame:
@@ -86,59 +35,55 @@ def get_currency_list() -> pd.DataFrame:
     -------
 
     DataFrame :
-        Tabela com a listagem de moedas disponíveis.
+        Tabela com a listagem de moedas disponíveis (colunas: ``symbol``,
+        ``name``, ``type``).
     """
-    if _CACHE.get("TEMP_FILE_CURRENCY_LIST") is not None:
-        return _CACHE.get("TEMP_FILE_CURRENCY_LIST")
-    else:
-        res = _get_valid_currency_list(date.today())
-        df = pd.read_csv(StringIO(res.text), delimiter=";")
-        df.columns = [
-            "code",
-            "name",
-            "symbol",
-            "country_code",
-            "country_name",
-            "type",
-            "exclusion_date",
-        ]
-        df = df.loc[~df["country_code"].isna()]
-        df["exclusion_date"] = pd.to_datetime(df["exclusion_date"], dayfirst=True)
-        df["country_code"] = df["country_code"].astype("int32")
-        df["code"] = df["code"].astype("int32")
-        df["symbol"] = df["symbol"].str.strip()
-        _CACHE["TEMP_FILE_CURRENCY_LIST"] = df
-        return df
+    cached = _CACHE.get("TEMP_FILE_CURRENCY_LIST")
+    if cached is not None:
+        return cached
+    url = f"{_PTAX_BASE_URL}/Moedas?$format=json"
+    res = httpx.get(url, follow_redirects=True)
+    if res.status_code != 200:
+        msg = f"BCB API Request error, status code = {res.status_code}"
+        raise BCBAPIError(msg, res.status_code)
+    data = res.json()
+    df = pd.DataFrame(data["value"])
+    df = df.rename(
+        columns={"simbolo": "symbol", "nomeFormatado": "name", "tipoMoeda": "type"}
+    )
+    _CACHE["TEMP_FILE_CURRENCY_LIST"] = df
+    return df
 
 
-def _get_currency_id(symbol: str) -> int:
-    id_list = _currency_id_list()
+def _validate_currency_symbol(symbol: str) -> None:
     all_currencies = get_currency_list()
-    x = pd.merge(id_list, all_currencies, on=["name"])
-    matches = x.loc[x["symbol"] == symbol, "id"]
-    if matches.empty:
+    if symbol not in all_currencies["symbol"].values:
         raise CurrencyNotFoundError(f"Unknown currency symbol: {symbol}")
-    return int(matches.max())
+
+
+def _currency_url(symbol: str, start_date: DateInput, end_date: DateInput) -> str:
+    start_date = Date(start_date)
+    end_date = Date(end_date)
+    return (
+        f"{_PTAX_BASE_URL}/CotacaoMoedaPeriodo("
+        f"moeda=@moeda,dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?"
+        f"@moeda='{symbol}'&"
+        f"@dataInicial='{start_date.date:%m-%d-%Y}'&"
+        f"@dataFinalCotacao='{end_date.date:%m-%d-%Y}'&"
+        f"$format=json"
+    )
 
 
 def _fetch_symbol_response(
     symbol: str, start_date: DateInput, end_date: DateInput
 ) -> Optional[httpx.Response]:
     try:
-        cid = _get_currency_id(symbol)
+        _validate_currency_symbol(symbol)
     except CurrencyNotFoundError:
         return None
-    url = _currency_url(cid, start_date, end_date)
+    url = _currency_url(symbol, start_date, end_date)
     res = httpx.get(url, follow_redirects=True)
-    if res.headers["Content-Type"].startswith("text/html"):
-        doc = html.parse(BytesIO(res.content)).getroot()
-        xpath = "//div[@class='msgErro']"
-        elm = doc.xpath(xpath)[0]
-        x = elm.text
-        x = re.sub(r"^\W+", "", x)
-        x = re.sub(r"\W+$", "", x)
-        msg = f"BCB API returned error: {x} - {symbol}"
-        warnings.warn(msg)
+    if res.status_code != 200:
         return None
     return res
 
@@ -149,18 +94,17 @@ def _get_symbol(
     res = _fetch_symbol_response(symbol, start_date, end_date)
     if res is None:
         return None
-    columns = ["Date", "aa", "bb", "cc", "bid", "ask", "dd", "ee"]
-    df = pd.read_csv(
-        StringIO(res.text), delimiter=";", header=None, names=columns, dtype=str
-    )
-    df = df.assign(
-        Date=lambda x: pd.to_datetime(x["Date"], format="%d%m%Y"),
-        bid=lambda x: x["bid"].str.replace(",", ".").astype(np.float64),
-        ask=lambda x: x["ask"].str.replace(",", ".").astype(np.float64),
-    )
-    df1 = df.set_index("Date")
+    data = res.json()
+    if not data.get("value"):
+        return None
+    df = pd.DataFrame(data["value"])
+    df = df[df["tipoBoletim"] == "Fechamento"].copy()
+    if df.empty:
+        return None
+    df["Date"] = pd.to_datetime(df["dataHoraCotacao"]).dt.normalize()
+    df = df.rename(columns={"cotacaoCompra": "bid", "cotacaoVenda": "ask"})
     n = ["bid", "ask"]
-    df1 = df1[n]
+    df1 = df.set_index("Date")[n]
     tuples = list(zip([symbol] * len(n), n))
     df1.columns = pd.MultiIndex.from_tuples(tuples)
     return df1

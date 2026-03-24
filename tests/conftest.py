@@ -1,3 +1,5 @@
+import json
+
 import pytest
 from bcb import currency
 
@@ -5,27 +7,51 @@ from bcb import currency
 # Mock data constants
 # ---------------------------------------------------------------------------
 
-CURRENCY_ID_LIST_HTML = b"""
-<html><body><form>
-  <select name="ChkMoeda">
-    <option value="61">DOLLAR DOS EUA</option>
-  </select>
-</form></body></html>
-"""
-
-# First row is treated as header by pd.read_csv, then overwritten by df.columns = [...]
-CURRENCY_LIST_CSV = (
-    "Codigo;Nome;Simbolo;CodPais;NomePais;Tipo;DataExclusao\n"
-    "61;DOLLAR DOS EUA;USD;249;EUA;A;\n"
+# OData /Moedas response
+CURRENCY_LIST_JSON = json.dumps(
+    {
+        "value": [
+            {"simbolo": "USD", "nomeFormatado": "DOLLAR DOS EUA", "tipoMoeda": "A"},
+        ]
+    }
 )
 
-# 8 columns, no header, date format DDMMYYYY, comma as decimal separator
-CURRENCY_RATE_CSV = (
-    "01122020;0;0;0;5,0000;5,1000;0;0\n"
-    "02122020;0;0;0;5,0100;5,1100;0;0\n"
-    "03122020;0;0;0;5,0200;5,1200;0;0\n"
-    "04122020;0;0;0;5,0300;5,1300;0;0\n"
-    "07122020;0;0;0;5,0400;5,1400;0;0\n"
+# OData /CotacaoMoedaPeriodo response — one "Fechamento" bulletin per trading day
+CURRENCY_RATE_ODATA_JSON = json.dumps(
+    {
+        "value": [
+            {
+                "cotacaoCompra": 5.0000,
+                "cotacaoVenda": 5.1000,
+                "dataHoraCotacao": "2020-12-01 13:03:38.273",
+                "tipoBoletim": "Fechamento",
+            },
+            {
+                "cotacaoCompra": 5.0100,
+                "cotacaoVenda": 5.1100,
+                "dataHoraCotacao": "2020-12-02 13:03:38.273",
+                "tipoBoletim": "Fechamento",
+            },
+            {
+                "cotacaoCompra": 5.0200,
+                "cotacaoVenda": 5.1200,
+                "dataHoraCotacao": "2020-12-03 13:03:38.273",
+                "tipoBoletim": "Fechamento",
+            },
+            {
+                "cotacaoCompra": 5.0300,
+                "cotacaoVenda": 5.1300,
+                "dataHoraCotacao": "2020-12-04 13:03:38.273",
+                "tipoBoletim": "Fechamento",
+            },
+            {
+                "cotacaoCompra": 5.0400,
+                "cotacaoVenda": 5.1400,
+                "dataHoraCotacao": "2020-12-07 13:03:38.273",
+                "tipoBoletim": "Fechamento",
+            },
+        ]
+    }
 )
 
 SGS_JSON_5 = (
