@@ -1,4 +1,6 @@
-from .api import (
+from __future__ import annotations
+
+from bcb.odata.api import (
     ODataAPI,
     Expectativas,
     PTAX,

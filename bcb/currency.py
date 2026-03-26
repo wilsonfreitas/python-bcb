@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import re
 import threading
 from datetime import date, timedelta
@@ -359,6 +361,93 @@ def _fetch_symbol_response(
     return res
 
 
+def _validate_currency_csv(csv_text: str) -> pd.DataFrame:
+    """Parse and validate currency CSV format.
+
+    Parameters
+    ----------
+    csv_text : str
+        CSV content from BCB API
+
+    Returns
+    -------
+    pd.DataFrame
+        Parsed DataFrame with all columns
+
+    Raises
+    ------
+    BCBAPIError
+        If CSV format is invalid (wrong column count)
+    """
+    df = pd.read_csv(StringIO(csv_text), delimiter=";", header=None, dtype=str)
+
+    # Validate column count
+    if len(df.columns) != 8:
+        raise BCBAPIError(
+            f"Invalid CSV format: expected 8 columns, got {len(df.columns)}",
+            status_code=400,
+        )
+
+    # Assign meaningful names
+    df.columns = ["Date", "_col1", "_col2", "_col3", "bid", "ask", "_col6", "_col7"]
+    return df
+
+
+def _parse_currency_dates(df: pd.DataFrame) -> pd.DataFrame:
+    """Parse and validate date column in currency CSV.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame with Date column as strings
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame with parsed DatetimeIndex
+
+    Raises
+    ------
+    BCBAPIError
+        If date parsing fails
+    """
+    try:
+        df["Date"] = pd.to_datetime(df["Date"], format="%d%m%Y")
+    except ValueError as e:
+        raise BCBAPIError(
+            f"Failed to parse currency date column: {str(e)}", status_code=400
+        )
+    return df
+
+
+def _parse_currency_types(df: pd.DataFrame) -> pd.DataFrame:
+    """Parse and validate data types in currency DataFrame.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame with mixed types
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame with validated types
+
+    Raises
+    ------
+    BCBAPIError
+        If type conversion fails
+    """
+    try:
+        df["bid"] = df["bid"].str.replace(",", ".").astype(np.float64)
+        df["ask"] = df["ask"].str.replace(",", ".").astype(np.float64)
+    except (ValueError, TypeError) as e:
+        raise BCBAPIError(
+            f"Failed to parse currency numeric columns: {str(e)}", status_code=400
+        )
+    return df
+
+
 def _get_symbol(
     symbol: str, start_date: DateInput, end_date: DateInput
 ) -> pd.DataFrame:
@@ -383,18 +472,12 @@ def _get_symbol(
     CurrencyNotFoundError
         If currency not found
     BCBAPIError
-        If API returns error
+        If API returns error or data format is invalid
     """
     res = _fetch_symbol_response(symbol, start_date, end_date)
-    columns = ["Date", "aa", "bb", "cc", "bid", "ask", "dd", "ee"]
-    df = pd.read_csv(
-        StringIO(res.text), delimiter=";", header=None, names=columns, dtype=str
-    )
-    df = df.assign(
-        Date=lambda x: pd.to_datetime(x["Date"], format="%d%m%Y"),
-        bid=lambda x: x["bid"].str.replace(",", ".").astype(np.float64),
-        ask=lambda x: x["ask"].str.replace(",", ".").astype(np.float64),
-    )
+    df = _validate_currency_csv(res.text)
+    df = _parse_currency_dates(df)
+    df = _parse_currency_types(df)
     df1 = df.set_index("Date")
     n = ["bid", "ask"]
     df1 = df1[n]
@@ -431,9 +514,13 @@ def _get_symbol_text(symbol: str, start_date: DateInput, end_date: DateInput) ->
     return res.text
 
 
+# Type alias for text output with multiple symbols
+CurrencyTextResult = Dict[str, str]  # Maps symbol → CSV text
+
+
 @overload
 def get(
-    symbols: Union[str, List[str]],
+    symbols: str,
     start: DateInput,
     end: DateInput,
     side: str = ...,
@@ -444,13 +531,35 @@ def get(
 
 @overload
 def get(
-    symbols: Union[str, List[str]],
+    symbols: List[str],
+    start: DateInput,
+    end: DateInput,
+    side: str = ...,
+    groupby: str = ...,
+    output: Literal["dataframe"] = ...,
+) -> pd.DataFrame: ...
+
+
+@overload
+def get(
+    symbols: str,
     start: DateInput,
     end: DateInput,
     side: str = ...,
     groupby: str = ...,
     output: Literal["text"] = ...,
-) -> Union[str, Dict[str, str]]: ...
+) -> str: ...
+
+
+@overload
+def get(
+    symbols: List[str],
+    start: DateInput,
+    end: DateInput,
+    side: str = ...,
+    groupby: str = ...,
+    output: Literal["text"] = ...,
+) -> CurrencyTextResult: ...
 
 
 def get(

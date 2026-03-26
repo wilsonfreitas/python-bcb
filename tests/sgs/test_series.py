@@ -19,24 +19,24 @@ SGS_CODE_99999_URL = re.compile(r".*bcdata\.sgs\.99999.*")
 
 
 def test_series_code_args():
-    code = sgs.SGSCode(1)
+    code = sgs.SGSCode.from_code(1)
     assert code.name == "1"
     assert code.value == 1
 
-    code = sgs.SGSCode("1")
+    code = sgs.SGSCode.from_code("1")
     assert code.name == "1"
     assert code.value == 1
 
-    code = sgs.SGSCode(1, "name")
+    code = sgs.SGSCode.from_named(1, "name")
     assert code.name == "name"
     assert code.value == 1
 
 
 def test_series_code_repr():
-    code = sgs.SGSCode(1)
+    code = sgs.SGSCode.from_code(1)
     assert repr(code) == "1 - 1"  # name defaults to str(value)
 
-    code = sgs.SGSCode(1, "SELIC")
+    code = sgs.SGSCode.from_named(1, "SELIC")
     assert repr(code) == "1 - SELIC"
 
 

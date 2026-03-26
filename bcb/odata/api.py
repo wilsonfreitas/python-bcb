@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 from typing import Any, Literal, Optional, Union, overload
-from .framework import (
+
+from bcb.odata.framework import (
     ODataEntitySet,
     ODataFunctionImport,
     ODataQuery,

@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import json
+from dataclasses import dataclass
 from io import StringIO
 from typing import (
     Dict,
@@ -29,18 +32,58 @@ interface json do serviço BCData/SGS -
 """
 
 
+@dataclass(frozen=True)
 class SGSCode:
-    def __init__(self, code: Union[str, int], name: Optional[str] = None) -> None:
-        if name is None:
-            if isinstance(code, int) or isinstance(code, str):
-                self.name = str(code)
-                self.value = int(code)
-        else:
-            self.name = str(name)
-            self.value = int(code)
+    """SGS time series code with optional human-readable name.
+
+    Attributes
+    ----------
+    value : int
+        Numeric SGS code
+    name : str
+        Human-readable name or string representation of code
+    """
+
+    value: int
+    name: str
+
+    @classmethod
+    def from_code(cls, code: int | str) -> "SGSCode":
+        """Create SGSCode from numeric or string code.
+
+        Parameters
+        ----------
+        code : int | str
+            SGS code
+
+        Returns
+        -------
+        SGSCode
+            New instance with name = str(code)
+        """
+        code_int = int(code)
+        return cls(value=code_int, name=str(code_int))
+
+    @classmethod
+    def from_named(cls, code: int | str, name: str) -> "SGSCode":
+        """Create SGSCode with explicit name.
+
+        Parameters
+        ----------
+        code : int | str
+            SGS code
+        name : str
+            Human-readable name
+
+        Returns
+        -------
+        SGSCode
+            New instance with value and name
+        """
+        return cls(value=int(code), name=name)
 
     def __repr__(self) -> str:
-        return f"{self.value} - {self.name}" if self.name else f"{self.value}"
+        return f"{self.value} - {self.name}"
 
 
 SGSCodeInput: TypeAlias = Union[
@@ -52,20 +95,62 @@ SGSCodeInput: TypeAlias = Union[
 ]
 
 
+def _validate_sgs_code(code: SGSCode) -> None:
+    """Validate SGSCode value.
+
+    Parameters
+    ----------
+    code : SGSCode
+        Code to validate
+
+    Raises
+    ------
+    ValueError
+        If code value is not positive integer
+    """
+    if code.value <= 0:
+        raise ValueError(f"SGS code must be positive integer, got {code.value}")
+
+
 def _codes(codes: SGSCodeInput) -> Generator[SGSCode, None, None]:
+    """Normalize various SGSCodeInput formats to SGSCode instances.
+
+    Parameters
+    ----------
+    codes : SGSCodeInput
+        Input in various formats: int, str, tuple, list, or mapping
+
+    Yields
+    ------
+    SGSCode
+        Validated SGSCode instances
+
+    Raises
+    ------
+    ValueError
+        If any code is a non-positive integer
+    """
     if isinstance(codes, int) or isinstance(codes, str):
-        yield SGSCode(codes)
+        code_obj = SGSCode.from_code(codes)
+        _validate_sgs_code(code_obj)
+        yield code_obj
     elif isinstance(codes, tuple):
-        yield SGSCode(codes[1], codes[0])
+        code_obj = SGSCode.from_named(codes[1], codes[0])
+        _validate_sgs_code(code_obj)
+        yield code_obj
     elif isinstance(codes, list):
         for cd in codes:
             if isinstance(cd, tuple):
-                yield SGSCode(cd[1], cd[0])
+                code_obj = SGSCode.from_named(cd[1], cd[0])
             else:
-                yield SGSCode(cd)
+                code_obj = SGSCode.from_code(cd)
+            _validate_sgs_code(code_obj)
+            yield code_obj
     elif isinstance(codes, Mapping):
         for name, code in codes.items():
-            yield SGSCode(code, name)
+            code_obj = SGSCode.from_named(code, name)
+            _validate_sgs_code(code_obj)
+            yield code_obj
 
 
 def _get_url_and_payload(

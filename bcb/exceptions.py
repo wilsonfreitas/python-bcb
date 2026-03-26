@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+
 class BCBError(Exception):
     """Base exception for all python-bcb errors."""
 

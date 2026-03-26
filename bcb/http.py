@@ -1,5 +1,7 @@
 """Shared HTTP client and utilities for python-bcb."""
 
+from __future__ import annotations
+
 from typing import Callable, TypeVar
 
 import httpx

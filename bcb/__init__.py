@@ -1,11 +1,13 @@
-from .exceptions import (
+from __future__ import annotations
+
+from bcb.exceptions import (
     BCBError,
     BCBAPIError,
     CurrencyNotFoundError,
     SGSError,
     ODataError,
 )
-from .odata.api import (
+from bcb.odata.api import (
     ODataAPI,
     Expectativas,
     PTAX,

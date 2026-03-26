@@ -1,6 +1,9 @@
+from __future__ import annotations
+
 import threading
 from io import BytesIO
 from typing import Any, Optional, Union
+
 from lxml import etree
 import json
 from urllib.parse import quote
