@@ -69,16 +69,18 @@ def test_clear_cache(httpx_mock):
     # Populate the cache with one call
     add_id_list_mock(httpx_mock)
     currency._currency_id_list()
-    assert currency._CACHE  # cache is non-empty
+    # Check that cache is populated by calling _DEFAULT_CACHE.get()
+    key = currency._CacheKey(type="currency_id_list")
+    assert currency._DEFAULT_CACHE.get(key) is not None
 
     # clear_cache() empties it
     currency.clear_cache()
-    assert not currency._CACHE
+    assert currency._DEFAULT_CACHE.get(key) is None
 
     # A subsequent call re-fetches and re-populates
     add_id_list_mock(httpx_mock)
     currency._currency_id_list()
-    assert currency._CACHE
+    assert currency._DEFAULT_CACHE.get(key) is not None
 
 
 # ---------------------------------------------------------------------------
@@ -130,11 +132,11 @@ def test_get_symbol_returns_dataframe(httpx_mock):
     assert len(df) == 5
 
 
-def test_get_symbol_unknown_currency_returns_none(httpx_mock):
+def test_get_symbol_unknown_currency_raises(httpx_mock):
     add_id_list_mock(httpx_mock)
     add_currency_list_mock(httpx_mock)
-    result = currency._get_symbol("ZAR", START, END)
-    assert result is None
+    with pytest.raises(CurrencyNotFoundError, match="ZAR"):
+        currency._get_symbol("ZAR", START, END)
 
 
 # ---------------------------------------------------------------------------

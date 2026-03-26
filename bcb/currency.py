@@ -618,9 +618,11 @@ def get(
     if output == "text":
         results: Dict[str, str] = {}
         for symbol in symbols:
-            raw = _get_symbol_text(symbol, start, end)
-            if raw is not None:
+            try:
+                raw = _get_symbol_text(symbol, start, end)
                 results[symbol] = raw
+            except CurrencyNotFoundError:
+                pass  # Skip missing currencies
         if not results:
             raise CurrencyNotFoundError(f"Currency not found: {symbols}")
         if len(symbols) == 1:
@@ -629,9 +631,11 @@ def get(
 
     dss = []
     for symbol in symbols:
-        df1 = _get_symbol(symbol, start, end)
-        if df1 is not None:
+        try:
+            df1 = _get_symbol(symbol, start, end)
             dss.append(df1)
+        except CurrencyNotFoundError:
+            pass  # Skip missing currencies
     if len(dss) > 0:
         df = pd.concat(dss, axis=1)
         if side in ("bid", "ask"):

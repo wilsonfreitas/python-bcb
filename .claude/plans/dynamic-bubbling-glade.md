@@ -153,36 +153,202 @@
 - `bcb/odata/api.py`
 - `bcb/odata/framework.py`
 
+**Files to change:**
+- `bcb/currency.py` — URL construction fix only
+- `bcb/odata/api.py` — Endpoint.get() explicit kwargs
+- `bcb/sgs/__init__.py` — no URL changes needed (payload dict already passed via `params=` to httpx)
+
 **Changes:**
-- **Standardize `start`/`end` parameter names** across all modules (already consistent; verify and document)
-- **URL construction** (`bcb/currency.py`, `bcb/sgs/__init__.py`):
-  - Replace raw f-string URL building with `urllib.parse.urlencode` / `urllib.parse.urljoin` where user input is involved
-  - Note: OData framework already uses `urllib.parse.quote` — leave as-is
-- **OData `.get()` keyword args** (`bcb/odata/api.py`):
-  - Add `filter=`, `orderby=`, `select=` as explicit keyword args to `Endpoint.get()` in addition to existing positional args
+
+**5A: `bcb/currency.py` — `_currency_url()` uses urlencode**
+
+Add `from urllib.parse import urlencode` and replace inline f-string query params:
+
+```python
+def _currency_url(currency_id: int, start_date: DateInput, end_date: DateInput) -> str:
+    start_date = Date(start_date)
+    end_date = Date(end_date)
+    params = urlencode({
+        "method": "gerarCSVFechamentoMoedaNoPeriodo",
+        "ChkMoeda": currency_id,
+        "DATAINI": start_date.date.strftime("%d/%m/%Y"),
+        "DATAFIM": end_date.date.strftime("%d/%m/%Y"),
+    })
+    return f"https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?{params}"
+```
+
+**5B: `bcb/odata/api.py` — explicit kwargs on `Endpoint.get()`**
+
+Add typed explicit kwargs while keeping `*args` for backwards compatibility:
+
+```python
+def get(
+    self,
+    *args: Any,
+    filter: Optional[ODataPropertyFilter] = None,
+    orderby: Optional[ODataPropertyOrderBy] = None,
+    select: Optional[ODataProperty] = None,
+    limit: Optional[int] = None,
+    skip: Optional[int] = None,
+    output: str = "dataframe",
+    **kwargs: Any,
+) -> Union[pd.DataFrame, str]:
+```
+
+Apply explicit kwargs first, then process `*args` positional dispatch.
+`filter` shadows the built-in intentionally (common pattern in Python ORMs).
 
 ---
 
 ## Phase 6: Async API
 **Dependencies:** Phase 1 (`_ASYNC_CLIENT` defined), Phases 2–5 (stable sync API)
 
-**Files:**
-- `bcb/sgs/__init__.py`
-- `bcb/currency.py`
-- `bcb/odata/framework.py`
-- `bcb/odata/api.py`
-- `bcb/http.py`
+**Files to change:**
+- `bcb/sgs/__init__.py` — `async_get_json()` + `async_get()` with `asyncio.gather()`
+- `bcb/currency.py` — full async internal chain + `async_get()`
+- `bcb/odata/framework.py` — `ODataQuery.async_text()` + `ODataQuery.async_collect()`
+- `bcb/odata/api.py` — `EndpointQuery.async_collect()` + `Endpoint.async_get()` + `Endpoint.async_query()`
 
-**Changes:**
-- Add `async_get()` in `bcb/sgs/__init__.py`:
-  - Same signature as `get()` but `async def async_get(...)`
-  - Uses `_ASYNC_CLIENT.get()` from `bcb/http.py`
-  - Internal `_async_get_json()` helper
-- Add `async_get()` in `bcb/currency.py`:
-  - Async version of the currency fetch flow
-- Add `async_text()` / `async_collect()` to `ODataQuery` in `bcb/odata/framework.py`
-- Add `async_get()` / `async_query()` to `Endpoint` in `bcb/odata/api.py`
-- Lifecycle note: `_ASYNC_CLIENT` is a module-level object; document that it should be closed in long-running apps via `bcb.http.close_async_client()`
+`bcb/http.py` needs no changes — `_ASYNC_CLIENT` already defined.
+
+---
+
+### 6A: `bcb/sgs/__init__.py`
+
+Add `import asyncio` and `from bcb.http import _ASYNC_CLIENT` to imports.
+
+```python
+async def async_get_json(code, start=None, end=None, last=0) -> str:
+    url, payload = _get_url_and_payload(code, start, end, last)
+    res = await _ASYNC_CLIENT.get(url, params=payload)
+    if res.status_code == 429:
+        raise BCBRateLimitError(...)
+    if res.status_code != 200:
+        try:
+            res_json = json.loads(res.text)
+        except json.JSONDecodeError:
+            res_json = {}
+        if "error" in res_json:
+            raise SGSError(f"BCB error: {res_json['error']}")
+        elif "erro" in res_json:
+            raise SGSError(f"BCB error: {res_json['erro']['detail']}")
+        raise SGSError(f"Download error: code = {code}")
+    return str(res.text)
+
+
+async def async_get(codes, start=None, end=None, last=0, multi=True, freq=None, output="dataframe"):
+    code_list = list(_codes(codes))
+    # Concurrent HTTP requests via asyncio.gather()
+    texts = await asyncio.gather(
+        *[async_get_json(c.value, start, end, last) for c in code_list]
+    )
+    if output == "text":
+        results = {c.value: t for c, t in zip(code_list, texts)}
+        if len(results) == 1:
+            return next(iter(results.values()))
+        return results
+    dfs = [_format_df(pd.read_json(StringIO(t)), c, freq) for c, t in zip(code_list, texts)]
+    if len(dfs) == 1:
+        return dfs[0]
+    return pd.concat(dfs, axis=1) if multi else dfs
+```
+
+---
+
+### 6B: `bcb/currency.py`
+
+Add `import asyncio` and `from bcb.http import _ASYNC_CLIENT` to imports.
+
+Write async versions of the internal chain — all sharing the same `_DEFAULT_CACHE`
+(the `threading.RLock()` is safe to acquire briefly from async code since cache
+operations are O(1) dict lookups):
+
+```python
+async def _async_currency_id_list(cache=None) -> pd.DataFrame:
+    # Check cache; fetch HTML via _ASYNC_CLIENT if miss; same parse logic as sync
+
+async def _async_get_valid_currency_list(_date, n=0, max_rollback=30):
+    # Same date rollback loop as sync, but with await _ASYNC_CLIENT.get()
+
+async def _async_get_currency_list(cache=None) -> pd.DataFrame:
+    # Check cache; call _async_get_valid_currency_list() if miss; same parse
+
+async def _async_get_currency_id(symbol) -> int:
+    # Concurrent: asyncio.gather(_async_currency_id_list(), _async_get_currency_list())
+    # Then same merge/lookup logic as _get_currency_id()
+
+async def _async_fetch_symbol_response(symbol, start_date, end_date):
+    # cid = await _async_get_currency_id(symbol)
+    # res = await _ASYNC_CLIENT.get(_currency_url(cid, start_date, end_date))
+    # Same HTML error page check + HTTP status checks as sync version
+
+async def _async_get_symbol(symbol, start_date, end_date) -> pd.DataFrame:
+    # res = await _async_fetch_symbol_response(...)
+    # Then same _validate_currency_csv / _parse_currency_dates / _parse_currency_types pipeline
+
+async def _async_get_symbol_text(symbol, start_date, end_date) -> str:
+    # res = await _async_fetch_symbol_response(...)
+    # return res.text
+
+async def async_get(symbols, start, end, side="ask", groupby="symbol", output="dataframe"):
+    # Concurrent requests: asyncio.gather(*[_async_get_symbol(s,...) for s in symbols])
+    # Same side/groupby post-processing as sync get()
+```
+
+---
+
+### 6C: `bcb/odata/framework.py`
+
+Add `from bcb.http import _ASYNC_CLIENT` to imports.
+Add two methods to `ODataQuery`:
+
+```python
+async def async_text(self) -> str:
+    # Identical query-string building to text() (reuse _build_parameters())
+    # Only difference: await _ASYNC_CLIENT.get(...) instead of _CLIENT.get(...)
+
+async def async_collect(self) -> Any:
+    return json.loads(await self.async_text())
+```
+
+---
+
+### 6D: `bcb/odata/api.py`
+
+Add `import asyncio` to imports.
+
+`EndpointQuery`:
+```python
+async def async_collect(self, output="dataframe") -> Union[pd.DataFrame, str]:
+    if output == "text":
+        return await self.async_text()
+    raw_data = await super().async_collect()
+    data = pd.DataFrame(raw_data["value"])
+    # Same date-column logic as sync collect()
+    return data
+```
+
+`Endpoint`:
+```python
+def async_query(self) -> EndpointQuery:
+    return EndpointQuery(self._entity, self._url, self._date_columns)
+
+async def async_get(self, *args, filter=None, orderby=None, select=None,
+                    limit=None, skip=None, output="dataframe", verbose=False, **kwargs):
+    # Same query setup as sync get(), but final call uses:
+    # await _query.async_collect(output="text") or await _query.async_collect()
+```
+
+---
+
+### Lifecycle note
+
+Document in `bcb/http.py` docstring and `close_async_client()` that the
+`_ASYNC_CLIENT` module-level singleton should be closed in long-running apps:
+
+```python
+await bcb.http.close_async_client()  # or via asyncio context manager
+```
 
 ---
 
