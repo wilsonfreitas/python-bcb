@@ -120,16 +120,40 @@ class Endpoint(metaclass=EndpointMeta):
         self._url = url
         self._date_columns: list[str] = date_columns or []
 
-    def get(self, *args: Any, **kwargs: Any) -> Union[pd.DataFrame, str]:
+    def get(
+        self,
+        *args: Any,
+        filter: Optional[ODataPropertyFilter] = None,
+        orderby: Optional[ODataPropertyOrderBy] = None,
+        select: Optional[ODataProperty] = None,
+        limit: Optional[int] = None,
+        skip: Optional[int] = None,
+        output: str = "dataframe",
+        verbose: bool = False,
+        **kwargs: Any,
+    ) -> Union[pd.DataFrame, str]:
         """
         Executa a consulta na API OData e retorna o resultado.
 
         Parameters
         ----------
-        *args : argumentos para a consulta
-
-        **kwargs : argumentos para a consulta. Use ``output='text'`` to get
-            the raw OData JSON response string instead of a DataFrame.
+        *args : argumentos para a consulta (ODataPropertyFilter, ODataPropertyOrderBy, ODataProperty)
+        filter : ODataPropertyFilter, optional
+            Filter condition for the query
+        orderby : ODataPropertyOrderBy, optional
+            Order by condition for the query
+        select : ODataProperty, optional
+            Properties to select from the query
+        limit : int, optional
+            Limit the number of results
+        skip : int, optional
+            Skip the first N results
+        output : str, default "dataframe"
+            Output format. Use ``'text'`` to get the raw OData JSON response
+            string instead of a DataFrame.
+        verbose : bool, default False
+            Print the query before executing it
+        **kwargs : argumentos adicionais para a consulta
 
         Returns
         -------
@@ -137,6 +161,20 @@ class Endpoint(metaclass=EndpointMeta):
             default; returns a raw JSON string when ``output='text'``.
         """
         _query = EndpointQuery(self._entity, self._url, self._date_columns)
+
+        # Apply explicit kwargs first
+        if filter is not None:
+            _query.filter(filter)
+        if orderby is not None:
+            _query.orderby(orderby)
+        if select is not None:
+            _query.select(select)
+        if limit is not None:
+            _query.limit(limit)
+        if skip is not None:
+            _query.skip(skip)
+
+        # Apply positional args for backwards compatibility
         for arg in args:
             if isinstance(arg, ODataPropertyFilter):
                 _query.filter(arg)
@@ -144,24 +182,16 @@ class Endpoint(metaclass=EndpointMeta):
                 _query.orderby(arg)
             elif isinstance(arg, ODataProperty):
                 _query.select(arg)
-        verbose = False
-        output_format = "dataframe"
+
+        # Apply any remaining kwargs as query parameters
         for k, val in kwargs.items():
-            if k == "limit":
-                _query.limit(val)
-            elif k == "skip":
-                _query.skip(val)
-            elif k == "verbose":
-                verbose = val
-            elif k == "output":
-                output_format = val
-            else:
-                _query.parameters(**{k: val})
+            _query.parameters(**{k: val})
+
         _query.format("application/json")
 
         if verbose:
             _query.show()
-        if output_format == "text":
+        if output == "text":
             data = _query.collect(output="text")
         else:
             data = _query.collect()

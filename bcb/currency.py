@@ -5,6 +5,7 @@ import threading
 from datetime import date, timedelta
 from io import BytesIO, StringIO
 from typing import TYPE_CHECKING, Dict, List, Literal, NamedTuple, Union, overload
+from urllib.parse import urlencode
 
 import numpy as np
 import pandas as pd
@@ -30,11 +31,15 @@ O módulo :py:mod:`bcb.currency` tem como objetivo fazer consultas no site do co
 def _currency_url(currency_id: int, start_date: DateInput, end_date: DateInput) -> str:
     start_date = Date(start_date)
     end_date = Date(end_date)
-    return (
-        f"https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?"
-        f"method=gerarCSVFechamentoMoedaNoPeriodo&"
-        f"ChkMoeda={currency_id}&DATAINI={start_date.date:%d/%m/%Y}&DATAFIM={end_date.date:%d/%m/%Y}"
+    params = urlencode(
+        {
+            "method": "gerarCSVFechamentoMoedaNoPeriodo",
+            "ChkMoeda": currency_id,
+            "DATAINI": start_date.date.strftime("%d/%m/%Y"),
+            "DATAFIM": end_date.date.strftime("%d/%m/%Y"),
+        }
     )
+    return f"https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?{params}"
 
 
 class _CacheKey(NamedTuple):
