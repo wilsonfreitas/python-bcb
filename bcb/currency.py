@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import re
 import threading
 from datetime import date, timedelta
@@ -11,7 +12,7 @@ import numpy as np
 import pandas as pd
 from lxml import html
 
-from bcb.http import _CLIENT
+from bcb.http import _CLIENT, _ASYNC_CLIENT
 from bcb.exceptions import (
     BCBAPIError,
     BCBAPINotFoundError,
@@ -631,6 +632,260 @@ def get(
         df1 = _get_symbol(symbol, start, end)
         if df1 is not None:
             dss.append(df1)
+    if len(dss) > 0:
+        df = pd.concat(dss, axis=1)
+        if side in ("bid", "ask"):
+            dx = df.reorder_levels([1, 0], axis=1).sort_index(axis=1)
+            return dx[side]
+        elif side == "both":
+            if groupby == "symbol":
+                return df
+            elif groupby == "side":
+                return df.reorder_levels([1, 0], axis=1).sort_index(axis=1)
+            else:
+                raise ValueError("Unknown groupby value, use: symbol, side")
+        else:
+            raise ValueError("Unknown side value, use: bid, ask, both")
+    else:
+        raise CurrencyNotFoundError(f"Currency not found: {symbols}")
+
+
+async def _async_currency_id_list(
+    cache: _ThreadSafeCache | None = None,
+) -> pd.DataFrame:
+    """Async version of _currency_id_list()."""
+    cache = cache or _DEFAULT_CACHE
+    cache_key = _CacheKey(type="currency_id_list")
+    cached = cache.get(cache_key)
+    if cached is not None:
+        return cached
+
+    url1 = (
+        "https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?"
+        "method=exibeFormularioConsultaBoletim"
+    )
+    res = await _ASYNC_CLIENT.get(url1)
+    if res.status_code == 429:
+        raise BCBRateLimitError(
+            "BCB API rate limit exceeded. Please try again later.",
+            status_code=429,
+        )
+    if res.status_code == 404:
+        raise BCBAPINotFoundError(
+            "BCB API endpoint not found (404)",
+            status_code=404,
+        )
+    if res.status_code >= 500:
+        raise BCBAPIError(
+            f"BCB API server error (status {res.status_code})",
+            status_code=res.status_code,
+        )
+    if res.status_code != 200:
+        msg = f"BCB API Request error, status code = {res.status_code}"
+        raise BCBAPIError(msg, res.status_code)
+
+    doc = html.parse(BytesIO(res.content)).getroot()
+    xpath = "//select[@name='ChkMoeda']/option"
+    x = [(elm.text, elm.get("value")) for elm in doc.xpath(xpath)]
+    df = pd.DataFrame(x, columns=["name", "id"])
+    df["id"] = df["id"].astype("int32")
+    cache.set(cache_key, df)
+    return df
+
+
+async def _async_get_valid_currency_list(
+    _date: date, n: int = 0, max_rollback: int = 30
+) -> "httpx.Response":
+    """Async version of _get_valid_currency_list()."""
+    days_rolled_back = (date.today() - _date).days
+    if days_rolled_back > max_rollback:
+        raise BCBAPIError(
+            f"No currency list available in last {max_rollback} days",
+            status_code=503,
+        )
+
+    url2 = f"https://www4.bcb.gov.br/Download/fechamento/M{_date:%Y%m%d}.csv"
+    try:
+        res = await _ASYNC_CLIENT.get(url2)
+    except Exception as ex:
+        if n >= 3:
+            raise ex
+        return await _async_get_valid_currency_list(_date, n + 1, max_rollback)
+
+    if res.status_code == 200:
+        return res
+    else:
+        return await _async_get_valid_currency_list(
+            _date - timedelta(1), 0, max_rollback
+        )
+
+
+async def _async_get_currency_list(
+    cache: _ThreadSafeCache | None = None,
+) -> pd.DataFrame:
+    """Async version of get_currency_list()."""
+    cache = cache or _DEFAULT_CACHE
+    cache_key = _CacheKey(type="currency_list")
+    cached = cache.get(cache_key)
+    if cached is not None:
+        return cached
+
+    res = await _async_get_valid_currency_list(date.today())
+    df = pd.read_csv(StringIO(res.text), delimiter=";")
+    df.columns = [
+        "code",
+        "name",
+        "symbol",
+        "country_code",
+        "country_name",
+        "type",
+        "exclusion_date",
+    ]
+    df = df.loc[~df["country_code"].isna()]
+    df["exclusion_date"] = pd.to_datetime(df["exclusion_date"], dayfirst=True)
+    df["country_code"] = df["country_code"].astype("int32")
+    df["code"] = df["code"].astype("int32")
+    df["symbol"] = df["symbol"].str.strip()
+    cache.set(cache_key, df)
+    return df
+
+
+async def _async_get_currency_id(symbol: str) -> int:
+    """Async version of _get_currency_id() with concurrent cache warming."""
+    id_list, all_currencies = await asyncio.gather(
+        _async_currency_id_list(),
+        _async_get_currency_list(),
+    )
+    x = pd.merge(id_list, all_currencies, on=["name"])
+    matches = x.loc[x["symbol"] == symbol, "id"]
+    if matches.empty:
+        raise CurrencyNotFoundError(f"Unknown currency symbol: {symbol}")
+    return int(matches.max())
+
+
+async def _async_fetch_symbol_response(
+    symbol: str, start_date: DateInput, end_date: DateInput
+) -> "httpx.Response":
+    """Async version of _fetch_symbol_response()."""
+    cid = await _async_get_currency_id(symbol)
+    url = _currency_url(cid, start_date, end_date)
+    res = await _ASYNC_CLIENT.get(url)
+
+    if res.headers["Content-Type"].startswith("text/html"):
+        doc = html.parse(BytesIO(res.content)).getroot()
+        xpath = "//div[@class='msgErro']"
+        elm = doc.xpath(xpath)[0]
+        x = elm.text
+        x = re.sub(r"^\W+", "", x)
+        x = re.sub(r"\W+$", "", x)
+        msg = f"BCB API returned error: {x} - {symbol}"
+        raise BCBAPIError(msg, status_code=400)
+
+    if res.status_code == 429:
+        raise BCBRateLimitError(
+            "BCB API rate limit exceeded. Please try again later.",
+            status_code=429,
+        )
+    if res.status_code == 404:
+        raise BCBAPINotFoundError(
+            f"Currency data not found for {symbol}",
+            status_code=404,
+        )
+    if res.status_code >= 500:
+        raise BCBAPIError(
+            f"BCB API server error (status {res.status_code})",
+            status_code=res.status_code,
+        )
+    if res.status_code != 200:
+        raise BCBAPIError(
+            f"BCB API request failed with status {res.status_code}",
+            status_code=res.status_code,
+        )
+
+    return res
+
+
+async def _async_get_symbol(
+    symbol: str, start_date: DateInput, end_date: DateInput
+) -> pd.DataFrame:
+    """Async version of _get_symbol()."""
+    res = await _async_fetch_symbol_response(symbol, start_date, end_date)
+    df = _validate_currency_csv(res.text)
+    df = _parse_currency_dates(df)
+    df = _parse_currency_types(df)
+    df1 = df.set_index("Date")
+    n = ["bid", "ask"]
+    df1 = df1[n]
+    tuples = list(zip([symbol] * len(n), n))
+    df1.columns = pd.MultiIndex.from_tuples(tuples)
+    return df1
+
+
+async def _async_get_symbol_text(
+    symbol: str, start_date: DateInput, end_date: DateInput
+) -> str:
+    """Async version of _get_symbol_text()."""
+    res = await _async_fetch_symbol_response(symbol, start_date, end_date)
+    return res.text
+
+
+async def async_get(
+    symbols: Union[str, List[str]],
+    start: DateInput,
+    end: DateInput,
+    side: str = "ask",
+    groupby: str = "symbol",
+    output: str = "dataframe",
+) -> Union[pd.DataFrame, str, Dict[str, str]]:
+    """
+    Retorna um DataFrame pandas com séries temporais com taxas de câmbio (async version).
+
+    Uses :func:`asyncio.gather` to fetch multiple symbols concurrently.
+
+    Same signature as :func:`get`, but returns a coroutine.
+
+    Parameters
+    ----------
+    symbols : str, List[str]
+        Códigos das moedas padrão ISO
+    start : str, int, date, datetime, Timestamp
+        Data de início da série
+    end : string, int, date, datetime, Timestamp
+        Data final da série
+    side : str
+        ``'ask'``, ``'bid'`` ou ``'both'``
+    groupby : str
+        ``'symbol'`` ou ``'side'``
+    output : str
+        ``'dataframe'`` ou ``'text'``
+
+    Returns
+    -------
+    Union[pd.DataFrame, str, Dict[str, str]]
+        Série temporal conforme especificado
+    """
+    if isinstance(symbols, str):
+        symbols = [symbols]
+
+    if output == "text":
+        results: Dict[str, str] = {}
+        texts = await asyncio.gather(
+            *[_async_get_symbol_text(symbol, start, end) for symbol in symbols]
+        )
+        for symbol, text in zip(symbols, texts):
+            if text is not None:
+                results[symbol] = text
+        if not results:
+            raise CurrencyNotFoundError(f"Currency not found: {symbols}")
+        if len(symbols) == 1:
+            return results[symbols[0]]
+        return results
+
+    dss = await asyncio.gather(
+        *[_async_get_symbol(symbol, start, end) for symbol in symbols]
+    )
+    dss = [df for df in dss if df is not None]
+
     if len(dss) > 0:
         df = pd.concat(dss, axis=1)
         if side in ("bid", "ask"):

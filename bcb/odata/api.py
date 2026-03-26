@@ -84,6 +84,32 @@ class EndpointQuery(ODataQuery):
                         data[col] = pd.to_datetime(data[col])
         return data
 
+    async def async_collect(
+        self, output: str = "dataframe"
+    ) -> Union[pd.DataFrame, str]:
+        """Async version of collect(). Awaits super().async_collect() for data fetch."""
+        if output == "text":
+            return await self.async_text()
+        raw_data = await super().async_collect()
+        data = pd.DataFrame(raw_data["value"])
+        if not self._raw:
+            if self._date_columns:
+                for col in self._date_columns:
+                    if col in data.columns:
+                        data[col] = pd.to_datetime(data[col])
+            else:
+                endpoint_overrides = self._DATE_COLUMN_NAMES_BY_ENDPOINT.get(
+                    self.entity.name, {}
+                )
+                for col in self._DATE_COLUMN_NAMES:
+                    if col in endpoint_overrides:
+                        data[col] = pd.to_datetime(
+                            data[col], format=endpoint_overrides[col]
+                        )
+                    elif col in data.columns:
+                        data[col] = pd.to_datetime(data[col])
+        return data
+
 
 class Endpoint(metaclass=EndpointMeta):
     """
@@ -207,6 +233,97 @@ class Endpoint(metaclass=EndpointMeta):
         bcb.odata.api.EndpointQuery
         """
         return EndpointQuery(self._entity, self._url, self._date_columns)
+
+    def async_query(self) -> EndpointQuery:
+        """
+        Async version of query(). Returns an EndpointQuery for manual chaining with async methods.
+
+        Returns
+        -------
+        bcb.odata.api.EndpointQuery
+            Same as query(); call async_collect() on the result
+        """
+        return EndpointQuery(self._entity, self._url, self._date_columns)
+
+    async def async_get(
+        self,
+        *args: Any,
+        filter: Optional[ODataPropertyFilter] = None,
+        orderby: Optional[ODataPropertyOrderBy] = None,
+        select: Optional[ODataProperty] = None,
+        limit: Optional[int] = None,
+        skip: Optional[int] = None,
+        output: str = "dataframe",
+        verbose: bool = False,
+        **kwargs: Any,
+    ) -> Union[pd.DataFrame, str]:
+        """
+        Async version of get(). Executes the OData query asynchronously.
+
+        Same signature as :func:`get`, but returns a coroutine.
+
+        Parameters
+        ----------
+        *args : ODataPropertyFilter, ODataPropertyOrderBy, ODataProperty
+            Positional filter/orderby/select arguments (for backwards compatibility)
+        filter : ODataPropertyFilter, optional
+            Filter condition for the query
+        orderby : ODataPropertyOrderBy, optional
+            Order by condition for the query
+        select : ODataProperty, optional
+            Properties to select from the query
+        limit : int, optional
+            Limit the number of results
+        skip : int, optional
+            Skip the first N results
+        output : str, default "dataframe"
+            Output format. Use ``'text'`` for raw JSON.
+        verbose : bool, default False
+            Print the query before executing it
+        **kwargs : argumentos adicionais para a consulta
+
+        Returns
+        -------
+        Union[pd.DataFrame, str]
+            Resultado da consulta
+        """
+        _query = EndpointQuery(self._entity, self._url, self._date_columns)
+
+        # Apply explicit kwargs first
+        if filter is not None:
+            _query.filter(filter)
+        if orderby is not None:
+            _query.orderby(orderby)
+        if select is not None:
+            _query.select(select)
+        if limit is not None:
+            _query.limit(limit)
+        if skip is not None:
+            _query.skip(skip)
+
+        # Apply positional args for backwards compatibility
+        for arg in args:
+            if isinstance(arg, ODataPropertyFilter):
+                _query.filter(arg)
+            elif isinstance(arg, ODataPropertyOrderBy):
+                _query.orderby(arg)
+            elif isinstance(arg, ODataProperty):
+                _query.select(arg)
+
+        # Apply any remaining kwargs as query parameters
+        for k, val in kwargs.items():
+            _query.parameters(**{k: val})
+
+        _query.format("application/json")
+
+        if verbose:
+            _query.show()
+        if output == "text":
+            data = await _query.async_collect(output="text")
+        else:
+            data = await _query.async_collect()
+        _query.reset()
+        return data
 
 
 class BaseODataAPI:

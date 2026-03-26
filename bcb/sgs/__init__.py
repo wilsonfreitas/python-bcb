@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import json
 from dataclasses import dataclass
 from io import StringIO
@@ -18,7 +19,7 @@ from typing import (
 
 import pandas as pd
 
-from bcb.http import _CLIENT
+from bcb.http import _CLIENT, _ASYNC_CLIENT
 from bcb.exceptions import BCBRateLimitError, SGSError
 from bcb.utils import Date, DateInput
 
@@ -352,3 +353,122 @@ def get_json(
             raise SGSError(f"BCB error: {res_json['erro']['detail']}")
         raise SGSError(f"Download error: code = {code}")
     return str(res.text)
+
+
+async def async_get_json(
+    code: int,
+    start: Optional[DateInput] = None,
+    end: Optional[DateInput] = None,
+    last: int = 0,
+) -> str:
+    """
+    Retorna um JSON com séries temporais obtidas do SGS (async version).
+
+    Parameters
+    ----------
+    code : int
+        Código da série temporal
+    start : str, int, date, datetime, Timestamp, optional
+        Data de início da série
+    end : string, int, date, datetime, Timestamp, optional
+        Data final da série
+    last : int
+        Retorna os últimos ``last`` elementos disponíveis
+
+    Returns
+    -------
+    str
+        JSON bruto da API do BCB
+
+    Raises
+    ------
+    BCBRateLimitError
+        Se API rate limit é excedido (429)
+    SGSError
+        Se a API retorna um erro
+    """
+    url, payload = _get_url_and_payload(code, start, end, last)
+    res = await _ASYNC_CLIENT.get(url, params=payload)
+
+    # Check for rate limiting first
+    if res.status_code == 429:
+        raise BCBRateLimitError(
+            "BCB API rate limit exceeded. Please try again later.",
+            status_code=429,
+        )
+
+    if res.status_code != 200:
+        try:
+            res_json = json.loads(res.text)
+        except json.JSONDecodeError:
+            res_json = {}
+
+        if "error" in res_json:
+            raise SGSError(f"BCB error: {res_json['error']}")
+        elif "erro" in res_json:
+            raise SGSError(f"BCB error: {res_json['erro']['detail']}")
+        raise SGSError(f"Download error: code = {code}")
+    return str(res.text)
+
+
+async def async_get(
+    codes: SGSCodeInput,
+    start: Optional[DateInput] = None,
+    end: Optional[DateInput] = None,
+    last: int = 0,
+    multi: bool = True,
+    freq: Optional[str] = None,
+    output: str = "dataframe",
+) -> Union[pd.DataFrame, List[pd.DataFrame], str, Dict[int, str]]:
+    """
+    Retorna um DataFrame pandas com séries temporais obtidas do SGS (async version).
+
+    Same signature as :func:`get`, but uses async HTTP requests and
+    :func:`asyncio.gather` to fetch multiple codes concurrently.
+
+    Parameters
+    ----------
+    codes : {int, List[int], List[str], Dict[str:int]}
+        Código(s) da série temporal
+    start : str, int, date, datetime, Timestamp, optional
+        Data de início da série
+    end : string, int, date, datetime, Timestamp, optional
+        Data final da série
+    last : int
+        Retorna os últimos ``last`` elementos disponíveis
+    multi : bool
+        Define se retorna série multivariada ou lista de séries univariadas
+    freq : str, optional
+        Frequência a ser utilizada na série temporal
+    output : str
+        Formato de saída: ``'dataframe'`` ou ``'text'``
+
+    Returns
+    -------
+    Union[pd.DataFrame, List[pd.DataFrame], str, Dict[int, str]]
+        Série(s) temporal(is) conforme especificado
+    """
+    code_list = list(_codes(codes))
+
+    # Concurrent HTTP requests via asyncio.gather()
+    texts = await asyncio.gather(
+        *[async_get_json(c.value, start, end, last) for c in code_list]
+    )
+
+    if output == "text":
+        results: Dict[int, str] = {c.value: t for c, t in zip(code_list, texts)}
+        values = list(results.values())
+        if len(values) == 1:
+            return values[0]
+        return results
+
+    dfs = [
+        _format_df(pd.read_json(StringIO(t)), c, freq) for c, t in zip(code_list, texts)
+    ]
+    if len(dfs) == 1:
+        return dfs[0]
+    else:
+        if multi:
+            return pd.concat(dfs, axis=1)
+        else:
+            return dfs

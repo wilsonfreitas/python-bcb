@@ -9,7 +9,7 @@ import json
 from urllib.parse import quote
 from typing_extensions import Self
 
-from bcb.http import _CLIENT
+from bcb.http import _CLIENT, _ASYNC_CLIENT
 from bcb.exceptions import ODataError
 
 # Module-level metadata cache for OData services
@@ -522,6 +522,24 @@ class ODataQuery:
 
     def collect(self) -> Any:
         return json.loads(self.text())
+
+    async def async_text(self) -> str:
+        """Async version of text(). Fetches OData response using _ASYNC_CLIENT."""
+        params = self._build_parameters()
+        if self.is_function and len(self.function_parameters):
+            for p in self.entity.function.parameters:  # type: ignore[union-attr]
+                val = self.function_parameters[p.name or ""]
+                if p.required and val is None:
+                    raise ODataError("Parameter not set: " + (p.name or ""))
+                params["@" + (p.name or "")] = p.format(val)
+        qs = "&".join([f"{quote(k)}={quote(str(v))}" for k, v in params.items()])
+        headers = {"OData-Version": "4.0", "OData-MaxVersion": "4.0"}
+        res = await _ASYNC_CLIENT.get(self.odata_url() + "?" + qs, headers=headers)
+        return res.text
+
+    async def async_collect(self) -> Any:
+        """Async version of collect(). Awaits async_text() and parses JSON."""
+        return json.loads(await self.async_text())
 
     def text(self) -> str:
         params = self._build_parameters()
