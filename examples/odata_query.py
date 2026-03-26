@@ -1,33 +1,33 @@
 """
-Example: Querying OData APIs
+Exemplo: Consultando APIs OData
 
-This example demonstrates how to use the OData client to query
-the Central Bank's OData endpoints with filters and sorting.
+Este exemplo demonstra como usar o cliente OData para consultar
+os endpoints OData do Banco Central com filtros e ordenação.
 """
 
 from bcb import Expectativas
 
-# Create an API instance for market expectations
+# Criar uma instância de API para expectativas de mercado
 api = Expectativas()
 
-# Get the entity set for annual market expectations
+# Obter o conjunto de entidades para expectativas de mercado anual
 endpoint = api.get_endpoint("ExpectativasMercadoAnuais")
 
-# Example 1: Simple query with limit
-print("Example 1: Get first 5 records")
+# Exemplo 1: Consulta simples com limite
+print("Exemplo 1: Obter os primeiros 5 registros")
 df = endpoint.get(limit=5)
 print(df)
 print()
 
-# Example 2: Query with filter - get specific indicator
-print("Example 2: Filter by indicator (IPCA)")
+# Exemplo 2: Consulta com filtro - obter indicador específico
+print("Exemplo 2: Filtrar por indicador (IPCA)")
 query = endpoint.query().filter(endpoint.Indicador == "IPCA").limit(10)
 df = query.collect()
 print(df)
 print()
 
-# Example 3: Multiple filters (AND condition)
-print("Example 3: Multiple filters")
+# Exemplo 3: Múltiplos filtros (condição AND)
+print("Exemplo 3: Múltiplos filtros")
 query = (
     endpoint.query()
     .filter(endpoint.Indicador == "IPCA")
@@ -38,44 +38,44 @@ df = query.collect()
 print(df)
 print()
 
-# Example 4: Using comparison operators
-print("Example 4: Range filters")
+# Exemplo 4: Usando operadores de comparação
+print("Exemplo 4: Filtros de intervalo")
 query = (
     endpoint.query()
     .filter((endpoint.Mediana >= 3.0) & (endpoint.Mediana <= 5.0))
     .limit(5)
 )
-# Note: AND (&) operator usage with OData filters
+# Nota: Uso de operador AND (&) com filtros OData
 try:
     df = query.collect()
     print(df)
 except Exception as e:
-    print(f"Note: Complex filters may need different syntax. {type(e).__name__}")
+    print(f"Nota: Filtros complexos podem precisar de sintaxe diferente. {type(e).__name__}")
 print()
 
-# Example 5: Ordering results
-print("Example 5: Order by descending")
+# Exemplo 5: Ordenar resultados
+print("Exemplo 5: Ordenar por decrescente")
 query = endpoint.query().orderby(endpoint.Mediana.desc()).limit(5)
 df = query.collect()
 print(df)
 print()
 
-# Example 6: Select specific columns
-print("Example 6: Select specific columns")
+# Exemplo 6: Selecionar colunas específicas
+print("Exemplo 6: Selecionar colunas específicas")
 query = endpoint.query().select([endpoint.Indicador, endpoint.Mediana]).limit(5)
 df = query.collect()
 print(df)
 print()
 
-# Example 7: Get raw JSON
-print("Example 7: Raw JSON output")
+# Exemplo 7: Obter saída JSON bruta
+print("Exemplo 7: Saída JSON bruta")
 query = endpoint.query().limit(2)
 json_str = query.collect(output="text")
 print(json_str[:300])
 print()
 
-# Example 8: Using chainable API
-print("Example 8: Chained query")
+# Exemplo 8: Usando API encadeável
+print("Exemplo 8: Consulta encadeada")
 df = (
     endpoint.query()
     .filter(endpoint.Indicador == "PIB")

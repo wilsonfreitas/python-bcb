@@ -1,43 +1,43 @@
 """
-Example: Fetching Currency Exchange Rates
+Exemplo: Buscando Taxas de Câmbio
 
-This example demonstrates how to fetch exchange rate data from the
-Central Bank's PTAX system (daily foreign exchange rates).
+Este exemplo demonstra como buscar dados de taxa de câmbio do
+sistema PTAX do Banco Central (cotações diárias de câmbio).
 """
 
 from datetime import datetime
 from bcb import currency
 
-# Fetch a single currency (USD)
-# Returns both bid and ask rates
+# Buscar uma única moeda (USD)
+# Retorna tanto taxas de compra quanto venda
 usd_rates = currency.get("USD", start="2024-01-01", end="2024-12-31")
-print("USD Exchange Rates")
+print("Taxas de Câmbio do USD")
 print(usd_rates.head())
 print()
 
-# Get only ask prices
+# Obter apenas preços de venda (ask)
 usd_ask = currency.get("USD", start="2024-01-01", end="2024-12-31", side="ask")
-print("USD Ask Prices Only")
+print("Apenas Preços de Venda do USD")
 print(usd_ask.head())
 print()
 
-# Get only bid prices
+# Obter apenas preços de compra (bid)
 usd_bid = currency.get("USD", start="2024-01-01", end="2024-12-31", side="bid")
-print("USD Bid Prices Only")
+print("Apenas Preços de Compra do USD")
 print(usd_bid.head())
 print()
 
-# Fetch multiple currencies at once
+# Buscar múltiplas moedas de uma vez
 symbols = ["USD", "EUR"]
 try:
     rates = currency.get(symbols, start="2024-01-01", end="2024-12-31")
-    print("Multiple Currencies (USD + EUR)")
+    print("Múltiplas Moedas (USD + EUR)")
     print(rates.head())
 except Exception as e:
-    print(f"Note: Some currencies may not be available. Error: {e}")
+    print(f"Nota: Algumas moedas podem não estar disponíveis. Erro: {e}")
 print()
 
-# Get data grouped by side instead of symbol
+# Obter dados agrupados por lado em vez de símbolo
 try:
     rates = currency.get(
         ["USD", "EUR"],
@@ -46,26 +46,26 @@ try:
         side="both",
         groupby="side",
     )
-    print("Currencies Grouped by Side")
+    print("Moedas Agrupadas por Lado")
     print(rates.head())
 except Exception as e:
-    print(f"Note: Error fetching multiple currencies. Error: {e}")
+    print(f"Nota: Erro ao buscar múltiplas moedas. Erro: {e}")
 print()
 
-# Get raw CSV text instead of DataFrame
+# Obter texto CSV bruto em vez de DataFrame
 csv_text = currency.get("USD", start="2024-01-01", end="2024-01-31", output="text")
-print("Raw CSV output (first 200 chars):")
+print("Saída CSV bruto (primeiros 200 caracteres):")
 print(csv_text[:200])
 print()
 
-# Clear the cache if running multiple requests
+# Limpar o cache se executando múltiplas requisições
 currency.clear_cache()
-print("Cache cleared for fresh requests")
+print("Cache limpo para requisições fresgas")
 
-# Get today's USD rate (approximate)
+# Obter taxa de câmbio de hoje (aproximada)
 import datetime as dt
 
 today = dt.date.today()
 today_rates = currency.get("USD", start=today - dt.timedelta(days=30), end=today)
-print("\nRecent USD Rates")
+print("\nTaxas de Câmbio Recentes do USD")
 print(today_rates.tail(5))

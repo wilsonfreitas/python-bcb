@@ -1,44 +1,40 @@
 """
-Example: Fetching SGS Time Series Data
+Exemplo: Buscando Dados de Séries Temporais do SGS
 
-This example demonstrates how to fetch and work with time series data
-from the Central Bank's SGS (Sistema Gerenciador de Séries Temporais).
+Este exemplo demonstra como buscar e trabalhar com dados de séries temporais
+do SGS (Sistema Gerenciador de Séries Temporais) do Banco Central.
 """
 
 import pandas as pd
 from bcb import sgs
 
-# Fetch a single time series
-# SELIC rate (code 1)
+# Buscar uma única série temporal
+# Taxa Selic (código 1)
 selic = sgs.get(1, start="2020-01-01", end="2024-12-31")
-print("SELIC Rate Time Series")
+print("Série Temporal da Taxa Selic")
 print(selic.head())
 print()
 
-# Fetch the last 30 days
-last_30_days = sgs.get(1, last=30)
-print("Last 30 days of SELIC")
-print(last_30_days.tail(10))
+# Buscar os últimos 30 dias
+ultimos_30_dias = sgs.get(1, last=30)
+print("Últimos 30 dias da Selic")
+print(ultimos_30_dias.tail(10))
 print()
 
-# Fetch multiple time series at once
-# SELIC (1) and IPCA (433)
-codes = [
-    ("SELIC", 1),
-    ("IPCA", 433),
-]
+# Buscar múltiplas séries temporais de uma vez
+# SELIC (1) e IPCA (433)
 multi_series = sgs.get([("SELIC", 1), ("IPCA", 433)], start="2023-01-01", end="2024-12-31")
-print("Multiple Time Series (SELIC + IPCA)")
+print("Múltiplas Séries Temporais (SELIC + IPCA)")
 print(multi_series.head())
 print()
 
-# Get raw JSON responses instead of DataFrames
+# Obter respostas JSON bruto em vez de DataFrames
 json_data = sgs.get(1, start="2024-01-01", end="2024-12-31", output="text")
-print("Raw JSON output (first 200 chars):")
+print("Saída JSON bruto (primeiros 200 caracteres):")
 print(json_data[:200])
 print()
 
-# Use with pandas for analysis
+# Usar com pandas para análise
 selic_df = sgs.get(1, start="2020-01-01", end="2024-12-31")
-print("SELIC Statistics:")
+print("Estatísticas da Selic:")
 print(selic_df.describe())

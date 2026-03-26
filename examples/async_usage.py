@@ -1,8 +1,8 @@
 """
-Example: Using Async APIs
+Exemplo: Usando APIs Assíncronas
 
-This example demonstrates how to use the async versions of the APIs
-for concurrent data fetching (useful for fetching multiple series).
+Este exemplo demonstra como usar as versões assíncronas das APIs
+para busca de dados concorrente (útil para buscar múltiplas séries).
 """
 
 import asyncio
@@ -12,76 +12,76 @@ from bcb.odata.api import Expectativas
 
 
 async def fetch_multiple_sgs_series():
-    """Fetch multiple SGS time series concurrently."""
-    print("Example 1: Fetching multiple SGS series concurrently")
+    """Buscar múltiplas séries temporais do SGS concorrentemente."""
+    print("Exemplo 1: Buscando múltiplas séries do SGS concorrentemente")
 
-    # Fetch SELIC, CDI, and IPCA concurrently
+    # Buscar SELIC, CDI e IPCA concorrentemente
     codes = [1, 12, 433]  # SELIC, CDI, IPCA
 
     df = await sgs.async_get(codes, start="2023-01-01", end="2024-12-31", multi=True)
-    print("Concurrent SGS fetch completed")
+    print("Busca concorrente do SGS concluída")
     print(df.head())
     print()
 
 
 async def fetch_multiple_currencies():
-    """Fetch currency rates concurrently."""
-    print("Example 2: Fetching currency rates concurrently")
+    """Buscar taxas de câmbio concorrentemente."""
+    print("Exemplo 2: Buscando taxas de câmbio concorrentemente")
 
-    # Fetch USD rate (note: you'd need to implement multi-symbol async
-    # for this to truly be concurrent for different symbols)
+    # Buscar taxa do USD (nota: você precisaria implementar async multi-símbolo
+    # para isso ser verdadeiramente concorrente para diferentes símbolos)
     df = await currency.async_get("USD", start="2024-01-01", end="2024-12-31")
-    print("Async currency fetch completed")
+    print("Busca de câmbio assíncrona concluída")
     print(df.head())
     print()
 
 
 async def fetch_odata_async():
-    """Fetch OData results asynchronously."""
-    print("Example 3: Fetching OData results asynchronously")
+    """Buscar resultados OData de forma assíncrona."""
+    print("Exemplo 3: Buscando resultados OData de forma assíncrona")
 
     api = Expectativas()
     endpoint = api.get_endpoint("ExpectativasMercadoAnuais")
 
-    # Build and execute query asynchronously
+    # Construir e executar consulta de forma assíncrona
     query = endpoint.query().filter(endpoint.Indicador == "IPCA").limit(5)
     df = await query.async_collect()
-    print("Async OData fetch completed")
+    print("Busca OData assíncrona concluída")
     print(df)
     print()
 
 
 async def concurrent_operations():
-    """Execute multiple async operations concurrently."""
-    print("Example 4: Multiple concurrent operations")
+    """Executar múltiplas operações assíncronas concorrentemente."""
+    print("Exemplo 4: Múltiplas operações concorrentes")
 
-    # Create tasks for concurrent execution
+    # Criar tarefas para execução concorrente
     tasks = [
         sgs.async_get(1, start="2024-01-01", end="2024-12-31"),  # SELIC
         sgs.async_get(11, start="2024-01-01", end="2024-12-31"),  # CDI
         sgs.async_get(433, start="2024-01-01", end="2024-12-31"),  # IPCA
     ]
 
-    # Wait for all tasks to complete
+    # Aguardar conclusão de todas as tarefas
     results = await asyncio.gather(*tasks)
-    print(f"Fetched {len(results)} concurrent series")
-    print("First series sample:")
+    print(f"Buscadas {len(results)} séries concorrentes")
+    print("Amostra da primeira série:")
     print(results[0].head())
     print()
 
 
 async def main():
-    """Run all async examples."""
+    """Executar todos os exemplos assíncronos."""
     try:
         await fetch_multiple_sgs_series()
         await fetch_multiple_currencies()
         await fetch_odata_async()
         await concurrent_operations()
     except Exception as e:
-        print(f"Error: {type(e).__name__}: {e}")
+        print(f"Erro: {type(e).__name__}: {e}")
 
 
 if __name__ == "__main__":
-    # Run the async examples
-    # Note: This requires Python 3.7+ with asyncio
+    # Executar os exemplos assíncronos
+    # Nota: Isso requer Python 3.7+ com asyncio
     asyncio.run(main())
