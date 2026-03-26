@@ -83,6 +83,12 @@ APIs implementadas
    é passada para a classe :py:class:`bcb.ODataAPI` e o objeto criado dá
    total acesso a API.
    Veja a documentação em :ref:`Classe ODataAPI`.
+``APIs Assíncronas``
+   Todos os módulos oferecem versões assíncronas de suas funções principais
+   para programação não-bloqueante com ``asyncio``.
+   Use ``sgs.async_get()``, ``currency.async_get()``, e ``ODataQuery.async_collect()``
+   para buscar múltiplos dados em paralelo e melhorar a performance.
+   Veja a documentação em :ref:`async`.
 Muito mais
    Veja todos os *endpoints* implementados na documentação de nossa :ref:`API`.
 
@@ -104,6 +110,7 @@ Uso
    expectativas
    taxajuros
    odata
+   async
    api
 
 Índices e tabelas

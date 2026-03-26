@@ -198,7 +198,7 @@
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
-<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+<div id="searchbox"></div><div class="sidebar-tree">
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="sgs.html">SGS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sgs.html#dados-de-inadimplencia-de-operacoes-de-credito">Dados de Inadimplência de Operações de Crédito</a></li>
@@ -206,10 +206,10 @@
 <li class="toctree-l1"><a class="reference internal" href="expectativas.html">Expectativas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="taxajuros.html">Taxas de Juros</a></li>
 <li class="toctree-l1"><a class="reference internal" href="odata.html">OData</a></li>
+<li class="toctree-l1"><a class="reference internal" href="async.html">APIs Assíncronas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 </ul>
 
-</div>
 </div>
 
       </div>
@@ -325,6 +325,12 @@ Toda API que segue a especificação OData possui uma URL de acesso, esta URL
 total acesso a API.
 Veja a documentação em <a class="reference internal" href="odata.html#classe-odataapi"><span class="std std-ref">Classe ODataAPI</span></a>.</p>
 </dd>
+<dt><code class="docutils literal notranslate"><span class="pre">APIs</span> <span class="pre">Assíncronas</span></code></dt><dd><p>Todos os módulos oferecem versões assíncronas de suas funções principais
+para programação não-bloqueante com <code class="docutils literal notranslate"><span class="pre">asyncio</span></code>.
+Use <code class="docutils literal notranslate"><span class="pre">sgs.async_get()</span></code>, <code class="docutils literal notranslate"><span class="pre">currency.async_get()</span></code>, e <code class="docutils literal notranslate"><span class="pre">ODataQuery.async_collect()</span></code>
+para buscar múltiplos dados em paralelo e melhorar a performance.
+Veja a documentação em <a class="reference internal" href="async.html#async"><span class="std std-ref">APIs Assíncronas</span></a>.</p>
+</dd>
 <dt>Muito mais</dt><dd><p>Veja todos os <em>endpoints</em> implementados na documentação de nossa <a class="reference internal" href="api.html#api"><span class="std std-ref">API</span></a>.</p>
 </dd>
 </dl>
@@ -337,7 +343,6 @@ Veja a documentação em <a class="reference internal" href="odata.html#classe-o
 <span class="gh">Out[2]: </span>
 <span class="go">            IPCA</span>
 <span class="go">Date            </span>
-<span class="go">2025-02-01  1.31</span>
 <span class="go">2025-03-01  0.56</span>
 <span class="go">2025-04-01  0.43</span>
 <span class="go">2025-05-01  0.26</span>
@@ -349,6 +354,7 @@ Veja a documentação em <a class="reference internal" href="odata.html#classe-o
 <span class="go">2025-11-01  0.18</span>
 <span class="go">2025-12-01  0.33</span>
 <span class="go">2026-01-01  0.33</span>
+<span class="go">2026-02-01  0.70</span>
 </pre></div>
 </div>
 <div class="toctree-wrapper compound">
@@ -359,6 +365,7 @@ Veja a documentação em <a class="reference internal" href="odata.html#classe-o
 <li class="toctree-l1"><a class="reference internal" href="expectativas.html">Expectativas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="taxajuros.html">Taxas de Juros</a></li>
 <li class="toctree-l1"><a class="reference internal" href="odata.html">OData</a></li>
+<li class="toctree-l1"><a class="reference internal" href="async.html">APIs Assíncronas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 </ul>
 </div>

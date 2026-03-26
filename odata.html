@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<link rel="index" title="Índice" href="genindex.html" /><link rel="search" title="Buscar" href="search.html" /><link rel="next" title="API" href="api.html" /><link rel="prev" title="Taxas de Juros" href="taxajuros.html" />
+<link rel="index" title="Índice" href="genindex.html" /><link rel="search" title="Buscar" href="search.html" /><link rel="next" title="APIs Assíncronas" href="async.html" /><link rel="prev" title="Taxas de Juros" href="taxajuros.html" />
 
     <!-- Generated with Sphinx 6.2.1 and Furo 2024.08.06 -->
         <title>OData - documentação python-bcb</title>
@@ -198,7 +198,7 @@
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
-<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+<div id="searchbox"></div><div class="sidebar-tree">
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="sgs.html">SGS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sgs.html#dados-de-inadimplencia-de-operacoes-de-credito">Dados de Inadimplência de Operações de Crédito</a></li>
@@ -206,10 +206,10 @@
 <li class="toctree-l1"><a class="reference internal" href="expectativas.html">Expectativas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="taxajuros.html">Taxas de Juros</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">OData</a></li>
+<li class="toctree-l1"><a class="reference internal" href="async.html">APIs Assíncronas</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 </ul>
 
-</div>
 </div>
 
       </div>
@@ -355,11 +355,11 @@ Vamos ordernar pela propriedade <code class="docutils literal notranslate"><span
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [9]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
 <span class="gh">Out[9]: </span>
 <span class="go">        Data  Quantidade  CanalPrimario  CanalSecundario         Total   Media</span>
-<span class="go">0 2026-02-26   203978604      203013464           965140  1.047491e+08  513.53</span>
-<span class="go">1 2026-02-25   207919773      206897637          1022136  1.157953e+08  556.92</span>
-<span class="go">2 2026-02-24   197844997      197096191           748806  9.713411e+07  490.96</span>
-<span class="go">3 2026-02-23   200568000      199854053           713947  1.165797e+08  581.25</span>
-<span class="go">4 2026-02-22   159121822      158516044           605778  1.852684e+07  116.43</span>
+<span class="go">0 2026-03-25   209817266      208825826           991440  1.114498e+08  531.18</span>
+<span class="go">1 2026-03-24   198880432      198162416           718016  9.912195e+07  498.40</span>
+<span class="go">2 2026-03-23   204650082      203903502           746580  1.193682e+08  583.28</span>
+<span class="go">3 2026-03-22   165070259      164418447           651812  1.866940e+07  113.10</span>
+<span class="go">4 2026-03-21   225643754      224986712           657042  3.245386e+07  143.83</span>
 </pre></div>
 </div>
 <p>Veja que a consulta retorna as datas mais recentes primeiro.</p>
@@ -607,12 +607,12 @@ objeto <code class="docutils literal notranslate"><span class="pre">datetime</sp
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
 <span class="gp">   ....: </span>
 <span class="gh">Out[36]: </span>
-<span class="go">  Indicador       Data DataReferencia tipoCalculo   Media</span>
-<span class="go">0    Câmbio 2026-02-20           2026           M  5.3952</span>
-<span class="go">1    Câmbio 2026-02-20           2027           M  5.4872</span>
-<span class="go">2    Câmbio 2026-02-20           2028           M  5.5560</span>
-<span class="go">3    Câmbio 2026-02-20           2029           M  5.6200</span>
-<span class="go">4    Câmbio 2026-02-20           2030           M  5.6960</span>
+<span class="go">  Indicador       Data DataReferencia tipoCalculo  Media</span>
+<span class="go">0    Câmbio 2026-03-20           2026           M  5.366</span>
+<span class="go">1    Câmbio 2026-03-20           2027           M  5.460</span>
+<span class="go">2    Câmbio 2026-03-20           2028           M  5.546</span>
+<span class="go">3    Câmbio 2026-03-20           2029           M  5.620</span>
+<span class="go">4    Câmbio 2026-03-20           2030           M  5.676</span>
 </pre></div>
 </div>
 <p>Selecionar as colunas é importante para reduzir o volume de dados trafegado, pois a API do BCB não tem um bom
@@ -751,7 +751,7 @@ esse texto bruto.</p>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">text</span><span class="p">())</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[47]: </span><span class="go">&#39;{&quot;@odata.context&quot;:&quot;https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTop5Anuais(Indicador,Data,DataReferencia,tipoCalculo,Media)&quot;,&quot;value&quot;:[{&quot;Indicador&quot;:&quot;Câmbio&quot;,&quot;Data&quot;:&quot;2026-02-20&quot;,&quot;DataReferencia&quot;:&quot;2026&quot;,&quot;tipoCalculo&quot;:&quot;M&quot;,&quot;Media&quot;:5.3952},{&quot;Indicador&quot;:&quot;Câmbio&quot;,&quot;Data&quot;:&quot;2026-02-20&quot;,&quot;DataReferencia&quot;:&quot;2027&quot;,&quot;tipoCalculo&quot;:&quot;M&quot;,&quot;Media&quot;:5.4872},{&quot;Indicador&quot;:&quot;Câmbio&quot;,&quot;Data&quot;:&quot;2026-02-20&quot;,&quot;DataReferencia&quot;:&quot;2028&quot;,&quot;tipoCalculo&quot;:&quot;M&quot;,&quot;Media&quot;:5.5560},{&quot;Indicador&quot;:&quot;Câmbio&quot;,&quot;Data&quot;:&quot;2026-02-20&quot;,&quot;DataReferencia&quot;:&quot;2029&quot;,&quot;tipoCalculo&quot;:&quot;M&quot;,&quot;Media&quot;:5.6200},{&quot;Indicador&quot;:&quot;Câmbio&quot;,&quot;Data&quot;:&quot;2026-02-20&quot;,&quot;DataReferencia&quot;:&quot;2030&quot;,&quot;tipoCalculo&quot;:&quot;M&quot;,&quot;Media&quot;:5.6960}]}&#39;</span>
+<span class="gh">Out[47]: </span><span class="go">&#39;{&quot;@odata.context&quot;:&quot;https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTop5Anuais(Indicador,Data,DataReferencia,tipoCalculo,Media)&quot;,&quot;value&quot;:[{&quot;Indicador&quot;:&quot;Câmbio&quot;,&quot;Data&quot;:&quot;2026-03-20&quot;,&quot;DataReferencia&quot;:&quot;2026&quot;,&quot;tipoCalculo&quot;:&quot;M&quot;,&quot;Media&quot;:5.3660},{&quot;Indicador&quot;:&quot;Câmbio&quot;,&quot;Data&quot;:&quot;2026-03-20&quot;,&quot;DataReferencia&quot;:&quot;2027&quot;,&quot;tipoCalculo&quot;:&quot;M&quot;,&quot;Media&quot;:5.4600},{&quot;Indicador&quot;:&quot;Câmbio&quot;,&quot;Data&quot;:&quot;2026-03-20&quot;,&quot;DataReferencia&quot;:&quot;2028&quot;,&quot;tipoCalculo&quot;:&quot;M&quot;,&quot;Media&quot;:5.5460},{&quot;Indicador&quot;:&quot;Câmbio&quot;,&quot;Data&quot;:&quot;2026-03-20&quot;,&quot;DataReferencia&quot;:&quot;2029&quot;,&quot;tipoCalculo&quot;:&quot;M&quot;,&quot;Media&quot;:5.6200},{&quot;Indicador&quot;:&quot;Câmbio&quot;,&quot;Data&quot;:&quot;2026-03-20&quot;,&quot;DataReferencia&quot;:&quot;2030&quot;,&quot;tipoCalculo&quot;:&quot;M&quot;,&quot;Media&quot;:5.6760}]}&#39;</span>
 </pre></div>
 </div>
 <p>O texto retornado está no formato JSON.
@@ -766,7 +766,7 @@ Para isso incluímos o método <code class="docutils literal notranslate"><span 
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">text</span><span class="p">())</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[49]: </span><span class="go">&#39;&lt;?xml version=\&#39;1.0\&#39; encoding=\&#39;UTF-8\&#39;?&gt;&lt;a:feed xmlns:a=&quot;http://www.w3.org/2005/Atom&quot; xmlns:m=&quot;http://docs.oasis-open.org/odata/ns/metadata&quot; xmlns:d=&quot;http://docs.oasis-open.org/odata/ns/data&quot; m:context=&quot;https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTop5Anuais(Indicador,Data,DataReferencia,tipoCalculo,Media)&quot;&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-02-27T06:49:11Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-02-20&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2026&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.3952&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-02-27T06:49:11Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-02-20&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2027&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.4872&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-02-27T06:49:11Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-02-20&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2028&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.5560&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-02-27T06:49:11Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-02-20&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2029&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.6200&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-02-27T06:49:11Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-02-20&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2030&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.6960&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;/a:feed&gt;&#39;</span>
+<span class="gh">Out[49]: </span><span class="go">&#39;&lt;?xml version=\&#39;1.0\&#39; encoding=\&#39;UTF-8\&#39;?&gt;&lt;a:feed xmlns:a=&quot;http://www.w3.org/2005/Atom&quot; xmlns:m=&quot;http://docs.oasis-open.org/odata/ns/metadata&quot; xmlns:d=&quot;http://docs.oasis-open.org/odata/ns/data&quot; m:context=&quot;https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTop5Anuais(Indicador,Data,DataReferencia,tipoCalculo,Media)&quot;&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-03-26T08:32:10Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-03-20&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2026&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.3660&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-03-26T08:32:10Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-03-20&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2027&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.4600&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-03-26T08:32:10Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-03-20&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2028&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.5460&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-03-26T08:32:10Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-03-20&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2029&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.6200&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-03-26T08:32:10Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-03-20&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2030&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.6760&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;/a:feed&gt;&#39;</span>
 </pre></div>
 </div>
 </section>
@@ -830,12 +830,12 @@ A classe <a class="reference internal" href="api.html#bcb.odata.api.ODataAPI" ti
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="api.html">
+          <a class="next-page" href="async.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">API</div>
+                <div class="title">APIs Assíncronas</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
