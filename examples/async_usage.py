@@ -6,7 +6,6 @@ para busca de dados concorrente (útil para buscar múltiplas séries).
 """
 
 import asyncio
-from datetime import datetime
 from bcb import sgs, currency
 from bcb.odata.api import Expectativas
 
