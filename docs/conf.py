@@ -65,6 +65,17 @@ html_theme_options = {
     "source_repository": "https://github.com/wilsonfreitas/python-bcb/",
     "source_branch": "main",
     "source_directory": "docs/",
+    "navigation_with_keys": True,
+}
+
+# Customize sidebar to show navigation on all pages
+html_sidebars = {
+    "**": [
+        "sidebar/brand.html",
+        "sidebar/search.html",
+        "sidebar/navigation.html",
+        "sidebar/ethical-ads.html",
+    ]
 }
 # html_theme = "alabaster"
 # html_theme_options = {
