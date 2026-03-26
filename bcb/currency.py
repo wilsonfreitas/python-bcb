@@ -1,7 +1,8 @@
 import re
+import threading
 from datetime import date, timedelta
 from io import BytesIO, StringIO
-from typing import TYPE_CHECKING, Dict, List, Literal, Union, overload
+from typing import TYPE_CHECKING, Dict, List, Literal, NamedTuple, Union, overload
 
 import numpy as np
 import pandas as pd
@@ -34,10 +35,74 @@ def _currency_url(currency_id: int, start_date: DateInput, end_date: DateInput) 
     )
 
 
-_CACHE: dict[str, pd.DataFrame] = dict()
+class _CacheKey(NamedTuple):
+    """Structured cache key for currency module.
+
+    Attributes
+    ----------
+    type : str
+        Cache type: "currency_id_list" or "currency_list"
+    """
+
+    type: str
+
+    def __repr__(self) -> str:
+        return f"CacheKey(type={self.type!r})"
 
 
-def clear_cache() -> None:
+class _ThreadSafeCache:
+    """Thread-safe cache wrapper for currency data.
+
+    Parameters
+    ----------
+    initial_data : dict, optional
+        Initial cache data (default: empty)
+    """
+
+    def __init__(self, initial_data: dict[_CacheKey, pd.DataFrame] | None = None):
+        self._lock = threading.RLock()
+        self._data: dict[_CacheKey, pd.DataFrame] = initial_data or {}
+
+    def get(self, key: _CacheKey) -> pd.DataFrame | None:
+        """Get value from cache.
+
+        Parameters
+        ----------
+        key : _CacheKey
+            Cache key
+
+        Returns
+        -------
+        pd.DataFrame | None
+            Cached DataFrame or None if not found
+        """
+        with self._lock:
+            return self._data.get(key)
+
+    def set(self, key: _CacheKey, value: pd.DataFrame) -> None:
+        """Set value in cache.
+
+        Parameters
+        ----------
+        key : _CacheKey
+            Cache key
+        value : pd.DataFrame
+            DataFrame to cache
+        """
+        with self._lock:
+            self._data[key] = value
+
+    def clear(self) -> None:
+        """Clear all cache entries."""
+        with self._lock:
+            self._data.clear()
+
+
+# Default module-level cache instance
+_DEFAULT_CACHE = _ThreadSafeCache()
+
+
+def clear_cache(cache: _ThreadSafeCache | None = None) -> None:
     """Clear the module-level session cache.
 
     :func:`get` and :func:`get_currency_list` cache the currency ID list and
@@ -45,45 +110,76 @@ def clear_cache() -> None:
     that repeated calls do not make redundant HTTP requests.  Call this
     function to force a fresh fetch on the next request (useful in tests or
     long-running scripts where the master data may have changed).
+
+    Parameters
+    ----------
+    cache : _ThreadSafeCache, optional
+        Cache instance to clear. If None, uses module-level default.
     """
-    _CACHE.clear()
+    (cache or _DEFAULT_CACHE).clear()
 
 
-def _currency_id_list() -> pd.DataFrame:
-    if _CACHE.get("TEMP_CURRENCY_ID_LIST") is not None:
-        return _CACHE.get("TEMP_CURRENCY_ID_LIST")
-    else:
-        url1 = (
-            "https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?"
-            "method=exibeFormularioConsultaBoletim"
+def _currency_id_list(
+    cache: _ThreadSafeCache | None = None,
+) -> pd.DataFrame:
+    """Fetch list of available currency IDs and names.
+
+    Parameters
+    ----------
+    cache : _ThreadSafeCache, optional
+        Cache instance to use. If None, uses module-level default.
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame with columns: name, id
+
+    Raises
+    ------
+    BCBRateLimitError
+        If API rate limit is exceeded (429)
+    BCBAPINotFoundError
+        If API endpoint not found (404)
+    BCBAPIError
+        If API returns error response
+    """
+    cache = cache or _DEFAULT_CACHE
+    cache_key = _CacheKey(type="currency_id_list")
+    cached = cache.get(cache_key)
+    if cached is not None:
+        return cached
+
+    url1 = (
+        "https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?"
+        "method=exibeFormularioConsultaBoletim"
+    )
+    res = _CLIENT.get(url1)
+    if res.status_code == 429:
+        raise BCBRateLimitError(
+            "BCB API rate limit exceeded. Please try again later.",
+            status_code=429,
         )
-        res = _CLIENT.get(url1)
-        if res.status_code == 429:
-            raise BCBRateLimitError(
-                "BCB API rate limit exceeded. Please try again later.",
-                status_code=429,
-            )
-        if res.status_code == 404:
-            raise BCBAPINotFoundError(
-                "BCB API endpoint not found (404)",
-                status_code=404,
-            )
-        if res.status_code >= 500:
-            raise BCBAPIError(
-                f"BCB API server error (status {res.status_code})",
-                status_code=res.status_code,
-            )
-        if res.status_code != 200:
-            msg = f"BCB API Request error, status code = {res.status_code}"
-            raise BCBAPIError(msg, res.status_code)
+    if res.status_code == 404:
+        raise BCBAPINotFoundError(
+            "BCB API endpoint not found (404)",
+            status_code=404,
+        )
+    if res.status_code >= 500:
+        raise BCBAPIError(
+            f"BCB API server error (status {res.status_code})",
+            status_code=res.status_code,
+        )
+    if res.status_code != 200:
+        msg = f"BCB API Request error, status code = {res.status_code}"
+        raise BCBAPIError(msg, res.status_code)
 
-        doc = html.parse(BytesIO(res.content)).getroot()
-        xpath = "//select[@name='ChkMoeda']/option"
-        x = [(elm.text, elm.get("value")) for elm in doc.xpath(xpath)]
-        df = pd.DataFrame(x, columns=["name", "id"])
-        df["id"] = df["id"].astype("int32")
-        _CACHE["TEMP_CURRENCY_ID_LIST"] = df
-        return df
+    doc = html.parse(BytesIO(res.content)).getroot()
+    xpath = "//select[@name='ChkMoeda']/option"
+    x = [(elm.text, elm.get("value")) for elm in doc.xpath(xpath)]
+    df = pd.DataFrame(x, columns=["name", "id"])
+    df["id"] = df["id"].astype("int32")
+    cache.set(cache_key, df)
+    return df
 
 
 def _get_valid_currency_list(
@@ -139,37 +235,50 @@ def _get_valid_currency_list(
         return _get_valid_currency_list(_date - timedelta(1), 0, max_rollback)
 
 
-def get_currency_list() -> pd.DataFrame:
-    """
-    Listagem com todas as moedas disponíveis na API e suas configurações de paridade.
+def get_currency_list(
+    cache: _ThreadSafeCache | None = None,
+) -> pd.DataFrame:
+    """Listagem com todas as moedas disponíveis na API e suas configurações de paridade.
+
+    Parameters
+    ----------
+    cache : _ThreadSafeCache, optional
+        Cache instance to use. If None, uses module-level default.
 
     Returns
     -------
-
-    DataFrame :
+    pd.DataFrame
         Tabela com a listagem de moedas disponíveis.
+
+    Raises
+    ------
+    BCBAPIError
+        If API returns error response
     """
-    if _CACHE.get("TEMP_FILE_CURRENCY_LIST") is not None:
-        return _CACHE.get("TEMP_FILE_CURRENCY_LIST")
-    else:
-        res = _get_valid_currency_list(date.today())
-        df = pd.read_csv(StringIO(res.text), delimiter=";")
-        df.columns = [
-            "code",
-            "name",
-            "symbol",
-            "country_code",
-            "country_name",
-            "type",
-            "exclusion_date",
-        ]
-        df = df.loc[~df["country_code"].isna()]
-        df["exclusion_date"] = pd.to_datetime(df["exclusion_date"], dayfirst=True)
-        df["country_code"] = df["country_code"].astype("int32")
-        df["code"] = df["code"].astype("int32")
-        df["symbol"] = df["symbol"].str.strip()
-        _CACHE["TEMP_FILE_CURRENCY_LIST"] = df
-        return df
+    cache = cache or _DEFAULT_CACHE
+    cache_key = _CacheKey(type="currency_list")
+    cached = cache.get(cache_key)
+    if cached is not None:
+        return cached
+
+    res = _get_valid_currency_list(date.today())
+    df = pd.read_csv(StringIO(res.text), delimiter=";")
+    df.columns = [
+        "code",
+        "name",
+        "symbol",
+        "country_code",
+        "country_name",
+        "type",
+        "exclusion_date",
+    ]
+    df = df.loc[~df["country_code"].isna()]
+    df["exclusion_date"] = pd.to_datetime(df["exclusion_date"], dayfirst=True)
+    df["country_code"] = df["country_code"].astype("int32")
+    df["code"] = df["code"].astype("int32")
+    df["symbol"] = df["symbol"].str.strip()
+    cache.set(cache_key, df)
+    return df
 
 
 def _get_currency_id(symbol: str) -> int:

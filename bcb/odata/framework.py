@@ -1,3 +1,4 @@
+import threading
 from io import BytesIO
 from typing import Any, Optional, Union
 from lxml import etree
@@ -7,6 +8,11 @@ from typing_extensions import Self
 
 from bcb.http import _CLIENT
 from bcb.exceptions import ODataError
+
+# Module-level metadata cache for OData services
+# Maps service URL → ODataMetadata instance
+_METADATA_CACHE: dict[str, "ODataMetadata"] = {}
+_METADATA_CACHE_LOCK = threading.RLock()
 
 # Edm.Boolean
 # Edm.Byte
@@ -352,6 +358,14 @@ class ODataMetadata:
 
 
 class ODataService:
+    """OData service client.
+
+    Parameters
+    ----------
+    url : str
+        OData service root URL
+    """
+
     def __init__(self, url: str) -> None:
         self.url = url
         res = _CLIENT.get(self.url)
@@ -360,7 +374,14 @@ class ODataService:
             ODataEndPoint(**x) for x in self.api_data["value"]
         ]
         self._odata_context_url: str = self.api_data["@odata.context"]
-        self.metadata = ODataMetadata(self._odata_context_url)
+
+        # Use cached metadata if available, otherwise create and cache new one
+        with _METADATA_CACHE_LOCK:
+            if self._odata_context_url in _METADATA_CACHE:
+                self.metadata = _METADATA_CACHE[self._odata_context_url]
+            else:
+                self.metadata = ODataMetadata(self._odata_context_url)
+                _METADATA_CACHE[self._odata_context_url] = self.metadata
 
     def __getitem__(self, item: str) -> Union[ODataEntitySet, ODataFunctionImport]:
         es = self.entity_sets.get(item)
