@@ -38,19 +38,19 @@ df = query.collect()
 print(df)
 print()
 
-# Exemplo 4: Usando operadores de comparação
+# Exemplo 4: Usando múltiplos filtros para intervalo
 print("Exemplo 4: Filtros de intervalo")
 query = (
     endpoint.query()
-    .filter((endpoint.Mediana >= 3.0) & (endpoint.Mediana <= 5.0))
+    .filter(endpoint.Mediana >= 3.0)
+    .filter(endpoint.Mediana <= 5.0)
     .limit(5)
 )
-# Nota: Uso de operador AND (&) com filtros OData
 try:
     df = query.collect()
     print(df)
 except Exception as e:
-    print(f"Nota: Filtros complexos podem precisar de sintaxe diferente. {type(e).__name__}")
+    print(f"Nota: Filtros podem ter limitações. {type(e).__name__}: {e}")
 print()
 
 # Exemplo 5: Ordenar resultados
@@ -62,7 +62,7 @@ print()
 
 # Exemplo 6: Selecionar colunas específicas
 print("Exemplo 6: Selecionar colunas específicas")
-query = endpoint.query().select([endpoint.Indicador, endpoint.Mediana]).limit(5)
+query = endpoint.query().select(endpoint.Indicador, endpoint.Mediana).limit(5)
 df = query.collect()
 print(df)
 print()

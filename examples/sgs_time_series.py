@@ -15,10 +15,10 @@ print("Série Temporal da Taxa Selic")
 print(selic.head())
 print()
 
-# Buscar os últimos 30 dias
-ultimos_30_dias = sgs.get(1, last=30)
-print("Últimos 30 dias da Selic")
-print(ultimos_30_dias.tail(10))
+# Buscar os últimos 20 dias
+ultimos_20_dias = sgs.get(1, last=20)
+print("Últimos 20 dias da Selic")
+print(ultimos_20_dias.tail(10))
 print()
 
 # Buscar múltiplas séries temporais de uma vez
