@@ -2,6 +2,24 @@
 
 ## [Unreleased]
 
+### Added
+- **Async API Support** — All modules now have async counterparts: `sgs.async_get()`, `sgs.async_get_json()`, `currency.async_get()`, `ODataQuery.async_text()`, `ODataQuery.async_collect()`, `Endpoint.async_get()` for concurrent data fetching with `asyncio.gather()`
+- **Logging Infrastructure** — Debug-level logging for all HTTP requests/responses (URL, status, response length) and warning-level logging for connection retry attempts across currency, sgs, and odata modules
+- **Comprehensive Test Coverage** — Added 36 new tests: 12 negative tests for currency API (404/429/500 errors, malformed CSV), 15 negative tests for SGS API (malformed JSON, invalid inputs), 9 async tests; total 103 unit tests with proper mock isolation
+- **Example Scripts** — Added `examples/` directory with 4 comprehensive usage examples: SGS time series, currency exchange rates, OData queries with filters/sorting, and async API usage
+- **Enhanced Documentation** — Added "Which Module to Use?" decision table and FAQ section to README covering module differences, data coverage, async usage, error handling, logging setup, caching, and long-running applications
+- **Factory Functions** in tests/conftest.py — Parameterizable mock data generators: `make_currency_id_list_html()`, `make_currency_list_csv()`, `make_currency_rate_csv()`, `make_sgs_response()`, `make_odata_metadata_xml()`, `make_odata_query_response()`
+- **Cache Clearing Fixtures** — Added automatic OData metadata cache clearing between tests to prevent pytest-httpx mock assertion errors
+
+### Changed
+- **Exception Handling** — Updated `bcb/currency.py` `get()` function to wrap `_get_symbol()` calls in try-except, allowing skipping of missing currencies while maintaining fail-fast for internal errors (per Phase 2 architecture)
+- **Test Organization** — Added `clear_odata_cache` fixture for proper test isolation; fixed `test_clear_cache` to use new `_ThreadSafeCache` API; renamed `test_get_symbol_unknown_currency_returns_none` to `test_get_symbol_unknown_currency_raises` to match fail-fast semantics
+- **Cache Management** — Added explicit `_CacheKey` namedtuple for structured cache keys in currency module; enhanced thread-safe cache with clear, get, set operations
+
+### Fixed
+- **Cache State Issues** — Resolved pytest-httpx unused mock assertions by implementing `clear_odata_cache` fixture that clears global `_METADATA_CACHE` between tests
+- **Test Failures** — Fixed 2 failing tests (`test_clear_cache`, `test_get_symbol_unknown_currency_returns_none`) to work with Phase 2 architecture changes and Phase 3 cache refactor
+
 ## [0.3.5] - 2026-02-27
 - Added `output="text"` parameter to `sgs.get()`, `currency.get()`, `EndpointQuery.collect()`, and `Endpoint.get()` — returns raw API response text (JSON for SGS and OData, CSV for currency) instead of a DataFrame; multi-code/symbol calls return `dict[key, str]`; default behavior unchanged
 - Migrated from Poetry to uv for package management (PEP 621 + hatchling build backend)
