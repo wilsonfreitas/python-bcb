@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 from dataclasses import dataclass
 from io import StringIO
 from typing import (
@@ -22,6 +23,8 @@ import pandas as pd
 from bcb.http import _CLIENT, _ASYNC_CLIENT
 from bcb.exceptions import BCBRateLimitError, SGSError
 from bcb.utils import Date, DateInput
+
+logger = logging.getLogger(__name__)
 
 """
 Sistema Gerenciador de Séries Temporais (SGS)
@@ -332,7 +335,9 @@ def get_json(
         série temporal univariada em formato JSON.
     """
     url, payload = _get_url_and_payload(code, start, end, last)
+    logger.debug(f"Fetching SGS time series code={code} from {url.split('/dados')[0]}")
     res = _CLIENT.get(url, params=payload)
+    logger.debug(f"SGS response: status={res.status_code}, length={len(res.text)}")
 
     # Check for rate limiting first
     if res.status_code == 429:
@@ -388,7 +393,13 @@ async def async_get_json(
         Se a API retorna um erro
     """
     url, payload = _get_url_and_payload(code, start, end, last)
+    logger.debug(
+        f"Fetching SGS time series (async) code={code} from {url.split('/dados')[0]}"
+    )
     res = await _ASYNC_CLIENT.get(url, params=payload)
+    logger.debug(
+        f"SGS (async) response: status={res.status_code}, length={len(res.text)}"
+    )
 
     # Check for rate limiting first
     if res.status_code == 429:

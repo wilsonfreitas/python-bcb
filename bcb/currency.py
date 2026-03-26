@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 import re
 import threading
 from datetime import date, timedelta
@@ -23,6 +24,8 @@ from bcb.utils import Date, DateInput
 
 if TYPE_CHECKING:
     import httpx
+
+logger = logging.getLogger(__name__)
 
 """
 O módulo :py:mod:`bcb.currency` tem como objetivo fazer consultas no site do conversor de moedas do BCB.
@@ -161,7 +164,11 @@ def _currency_id_list(
         "https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?"
         "method=exibeFormularioConsultaBoletim"
     )
+    logger.debug(f"Fetching currency ID list from {url1}")
     res = _CLIENT.get(url1)
+    logger.debug(
+        f"Currency ID list response: status={res.status_code}, length={len(res.content)}"
+    )
     if res.status_code == 429:
         raise BCBRateLimitError(
             "BCB API rate limit exceeded. Please try again later.",
@@ -228,18 +235,28 @@ def _get_valid_currency_list(
         )
 
     url2 = f"https://www4.bcb.gov.br/Download/fechamento/M{_date:%Y%m%d}.csv"
+    logger.debug(f"Fetching currency list from {url2}")
     try:
         res = _CLIENT.get(url2)
     except Exception as ex:
         # Connection error: retry same date up to 3 times
         if n >= 3:
             raise ex
+        logger.warning(
+            f"Connection error fetching {url2}, retrying (attempt {n + 1}/3)"
+        )
         return _get_valid_currency_list(_date, n + 1, max_rollback)
 
+    logger.debug(
+        f"Currency list response: status={res.status_code}, length={len(res.content)}"
+    )
     if res.status_code == 200:
         return res
     else:
         # Non-200 response (file not found for date): roll back to previous day
+        logger.debug(
+            f"Currency list not found for {_date}, rolling back to previous day"
+        )
         return _get_valid_currency_list(_date - timedelta(1), 0, max_rollback)
 
 
@@ -329,7 +346,11 @@ def _fetch_symbol_response(
     """
     cid = _get_currency_id(symbol)  # Raises CurrencyNotFoundError if not found
     url = _currency_url(cid, start_date, end_date)
+    logger.debug(f"Fetching currency data for {symbol} from {url.split('?')[0]}")
     res = _CLIENT.get(url)
+    logger.debug(
+        f"Currency data response: status={res.status_code}, length={len(res.content)}"
+    )
 
     # Handle HTML error response (e.g., no data for date range)
     if res.headers["Content-Type"].startswith("text/html"):

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import threading
 from io import BytesIO
 from typing import Any, Optional, Union
@@ -11,6 +12,8 @@ from typing_extensions import Self
 
 from bcb.http import _CLIENT, _ASYNC_CLIENT
 from bcb.exceptions import ODataError
+
+logger = logging.getLogger(__name__)
 
 # Module-level metadata cache for OData services
 # Maps service URL → ODataMetadata instance
@@ -279,7 +282,11 @@ class ODataMetadata:
         self._parse_function_imports(schema)
 
     def _load_document(self) -> None:
+        logger.debug(f"Fetching OData metadata from {self.url}")
         res = _CLIENT.get(self.url)
+        logger.debug(
+            f"OData metadata response: status={res.status_code}, length={len(res.content)}"
+        )
         self.doc = etree.parse(BytesIO(res.content))
 
     def _parse_entity(self, entity_element: Any, namespace: str) -> ODataEntity:
@@ -551,7 +558,12 @@ class ODataQuery:
                 params["@" + (p.name or "")] = p.format(val)
         qs = "&".join([f"{quote(k)}={quote(str(v))}" for k, v in params.items()])
         headers = {"OData-Version": "4.0", "OData-MaxVersion": "4.0"}
-        res = _CLIENT.get(self.odata_url() + "?" + qs, headers=headers)
+        url = self.odata_url()
+        logger.debug(f"Fetching OData query from {url}")
+        res = _CLIENT.get(url + "?" + qs, headers=headers)
+        logger.debug(
+            f"OData query response: status={res.status_code}, length={len(res.text)}"
+        )
         return res.text
 
     def show(self) -> None:
