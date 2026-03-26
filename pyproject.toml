@@ -9,6 +9,7 @@ dependencies = [
     "httpx >= 0.24.0",
     "lxml >= 4.9.2",
     "pandas >= 2.0.0",
+    "tenacity >= 8.0.0",
 ]
 
 [dependency-groups]

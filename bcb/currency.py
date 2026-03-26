@@ -2,15 +2,18 @@ import re
 import warnings
 from datetime import date, timedelta
 from io import BytesIO, StringIO
-from typing import Dict, List, Literal, Optional, Union, overload
+from typing import TYPE_CHECKING, Dict, List, Literal, Optional, Union, overload
 
-import httpx
 import numpy as np
 import pandas as pd
 from lxml import html
 
-from .exceptions import BCBAPIError, CurrencyNotFoundError
-from .utils import Date, DateInput
+from bcb.http import _CLIENT
+from bcb.exceptions import BCBAPIError, CurrencyNotFoundError
+from bcb.utils import Date, DateInput
+
+if TYPE_CHECKING:
+    import httpx
 
 """
 O módulo :py:mod:`bcb.currency` tem como objetivo fazer consultas no site do conversor de moedas do BCB.
@@ -50,7 +53,7 @@ def _currency_id_list() -> pd.DataFrame:
             "https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?"
             "method=exibeFormularioConsultaBoletim"
         )
-        res = httpx.get(url1, follow_redirects=True)
+        res = _CLIENT.get(url1)
         if res.status_code != 200:
             msg = f"BCB API Request error, status code = {res.status_code}"
             raise BCBAPIError(msg, res.status_code)
@@ -64,18 +67,57 @@ def _currency_id_list() -> pd.DataFrame:
         return df
 
 
-def _get_valid_currency_list(_date: date, n: int = 0) -> httpx.Response:
-    url2 = f"http://www4.bcb.gov.br/Download/fechamento/M{_date:%Y%m%d}.csv"
+def _get_valid_currency_list(
+    _date: date, n: int = 0, max_rollback: int = 30
+) -> "httpx.Response":
+    """Fetch currency list CSV, rolling back dates if necessary.
+
+    Attempts to fetch the currency master file for the given date.
+    If the file doesn't exist (common for weekends/holidays), rolls back
+    to the previous day and retries. Connection errors trigger retries
+    on the same date.
+
+    Parameters
+    ----------
+    _date : date
+        Target date to fetch
+    n : int
+        Current connection retry attempt (internal use)
+    max_rollback : int
+        Maximum number of days to roll back before giving up
+
+    Returns
+    -------
+    httpx.Response
+        Response object with CSV content
+
+    Raises
+    ------
+    BCBAPIError
+        If unable to fetch after max rollback days exceeded
+    """
+    # Check if we've rolled back too far
+    days_rolled_back = (date.today() - _date).days
+    if days_rolled_back > max_rollback:
+        raise BCBAPIError(
+            f"No currency list available in last {max_rollback} days",
+            status_code=None,
+        )
+
+    url2 = f"https://www4.bcb.gov.br/Download/fechamento/M{_date:%Y%m%d}.csv"
     try:
-        res = httpx.get(url2, follow_redirects=True)
-    except httpx.ConnectError as ex:
+        res = _CLIENT.get(url2)
+    except Exception as ex:
+        # Connection error: retry same date up to 3 times
         if n >= 3:
             raise ex
-        return _get_valid_currency_list(_date, n + 1)
+        return _get_valid_currency_list(_date, n + 1, max_rollback)
+
     if res.status_code == 200:
         return res
     else:
-        return _get_valid_currency_list(_date - timedelta(1), 0)
+        # Non-200 response (file not found for date): roll back to previous day
+        return _get_valid_currency_list(_date - timedelta(1), 0, max_rollback)
 
 
 def get_currency_list() -> pd.DataFrame:
@@ -123,13 +165,13 @@ def _get_currency_id(symbol: str) -> int:
 
 def _fetch_symbol_response(
     symbol: str, start_date: DateInput, end_date: DateInput
-) -> Optional[httpx.Response]:
+) -> Optional["httpx.Response"]:
     try:
         cid = _get_currency_id(symbol)
     except CurrencyNotFoundError:
         return None
     url = _currency_url(cid, start_date, end_date)
-    res = httpx.get(url, follow_redirects=True)
+    res = _CLIENT.get(url)
     if res.headers["Content-Type"].startswith("text/html"):
         doc = html.parse(BytesIO(res.content)).getroot()
         xpath = "//div[@class='msgErro']"

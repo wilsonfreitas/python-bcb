@@ -13,9 +13,9 @@ from typing import (
     overload,
 )
 
-import httpx
 import pandas as pd
 
+from bcb.http import _CLIENT
 from bcb.exceptions import SGSError
 from bcb.utils import Date, DateInput
 
@@ -246,7 +246,7 @@ def get_json(
         série temporal univariada em formato JSON.
     """
     url, payload = _get_url_and_payload(code, start, end, last)
-    res = httpx.get(url, params=payload, follow_redirects=True)
+    res = _CLIENT.get(url, params=payload)
     if res.status_code != 200:
         try:
             res_json = json.loads(res.text)

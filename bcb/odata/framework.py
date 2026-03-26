@@ -2,10 +2,10 @@ from io import BytesIO
 from typing import Any, Optional, Union
 from lxml import etree
 import json
-import httpx
 from urllib.parse import quote
 from typing_extensions import Self
 
+from bcb.http import _CLIENT
 from bcb.exceptions import ODataError
 
 # Edm.Boolean
@@ -270,7 +270,7 @@ class ODataMetadata:
         self._parse_function_imports(schema)
 
     def _load_document(self) -> None:
-        res = httpx.get(self.url, timeout=60.0)
+        res = _CLIENT.get(self.url)
         self.doc = etree.parse(BytesIO(res.content))
 
     def _parse_entity(self, entity_element: Any, namespace: str) -> ODataEntity:
@@ -354,7 +354,7 @@ class ODataMetadata:
 class ODataService:
     def __init__(self, url: str) -> None:
         self.url = url
-        res = httpx.get(self.url, timeout=60.0)
+        res = _CLIENT.get(self.url)
         self.api_data: dict[str, Any] = json.loads(res.text)
         self.endpoints: list[ODataEndPoint] = [
             ODataEndPoint(**x) for x in self.api_data["value"]
@@ -509,7 +509,7 @@ class ODataQuery:
                 params["@" + (p.name or "")] = p.format(val)
         qs = "&".join([f"{quote(k)}={quote(str(v))}" for k, v in params.items()])
         headers = {"OData-Version": "4.0", "OData-MaxVersion": "4.0"}
-        res = httpx.get(self.odata_url() + "?" + qs, headers=headers, timeout=60.0)
+        res = _CLIENT.get(self.odata_url() + "?" + qs, headers=headers)
         return res.text
 
     def show(self) -> None:
