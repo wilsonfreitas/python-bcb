@@ -1,15 +1,19 @@
 import re
-import warnings
 from datetime import date, timedelta
 from io import BytesIO, StringIO
-from typing import TYPE_CHECKING, Dict, List, Literal, Optional, Union, overload
+from typing import TYPE_CHECKING, Dict, List, Literal, Union, overload
 
 import numpy as np
 import pandas as pd
 from lxml import html
 
 from bcb.http import _CLIENT
-from bcb.exceptions import BCBAPIError, CurrencyNotFoundError
+from bcb.exceptions import (
+    BCBAPIError,
+    BCBAPINotFoundError,
+    BCBRateLimitError,
+    CurrencyNotFoundError,
+)
 from bcb.utils import Date, DateInput
 
 if TYPE_CHECKING:
@@ -54,6 +58,21 @@ def _currency_id_list() -> pd.DataFrame:
             "method=exibeFormularioConsultaBoletim"
         )
         res = _CLIENT.get(url1)
+        if res.status_code == 429:
+            raise BCBRateLimitError(
+                "BCB API rate limit exceeded. Please try again later.",
+                status_code=429,
+            )
+        if res.status_code == 404:
+            raise BCBAPINotFoundError(
+                "BCB API endpoint not found (404)",
+                status_code=404,
+            )
+        if res.status_code >= 500:
+            raise BCBAPIError(
+                f"BCB API server error (status {res.status_code})",
+                status_code=res.status_code,
+            )
         if res.status_code != 200:
             msg = f"BCB API Request error, status code = {res.status_code}"
             raise BCBAPIError(msg, res.status_code)
@@ -101,7 +120,7 @@ def _get_valid_currency_list(
     if days_rolled_back > max_rollback:
         raise BCBAPIError(
             f"No currency list available in last {max_rollback} days",
-            status_code=None,
+            status_code=503,  # Service Unavailable
         )
 
     url2 = f"https://www4.bcb.gov.br/Download/fechamento/M{_date:%Y%m%d}.csv"
@@ -165,13 +184,37 @@ def _get_currency_id(symbol: str) -> int:
 
 def _fetch_symbol_response(
     symbol: str, start_date: DateInput, end_date: DateInput
-) -> Optional["httpx.Response"]:
-    try:
-        cid = _get_currency_id(symbol)
-    except CurrencyNotFoundError:
-        return None
+) -> "httpx.Response":
+    """Fetch exchange rate CSV response for a symbol.
+
+    Parameters
+    ----------
+    symbol : str
+        Currency symbol (e.g., 'USD')
+    start_date : DateInput
+        Start date for the query
+    end_date : DateInput
+        End date for the query
+
+    Returns
+    -------
+    httpx.Response
+        Response object with CSV content
+
+    Raises
+    ------
+    CurrencyNotFoundError
+        If the currency symbol is not found
+    BCBRateLimitError
+        If API rate limit is exceeded (429)
+    BCBAPIError
+        If API returns other error status codes or HTML error page
+    """
+    cid = _get_currency_id(symbol)  # Raises CurrencyNotFoundError if not found
     url = _currency_url(cid, start_date, end_date)
     res = _CLIENT.get(url)
+
+    # Handle HTML error response (e.g., no data for date range)
     if res.headers["Content-Type"].startswith("text/html"):
         doc = html.parse(BytesIO(res.content)).getroot()
         xpath = "//div[@class='msgErro']"
@@ -180,17 +223,60 @@ def _fetch_symbol_response(
         x = re.sub(r"^\W+", "", x)
         x = re.sub(r"\W+$", "", x)
         msg = f"BCB API returned error: {x} - {symbol}"
-        warnings.warn(msg)
-        return None
+        raise BCBAPIError(msg, status_code=400)
+
+    # Handle HTTP error responses
+    if res.status_code == 429:
+        raise BCBRateLimitError(
+            "BCB API rate limit exceeded. Please try again later.",
+            status_code=429,
+        )
+    if res.status_code == 404:
+        raise BCBAPINotFoundError(
+            f"Currency data not found for {symbol}",
+            status_code=404,
+        )
+    if res.status_code >= 500:
+        raise BCBAPIError(
+            f"BCB API server error (status {res.status_code})",
+            status_code=res.status_code,
+        )
+    if res.status_code != 200:
+        raise BCBAPIError(
+            f"BCB API request failed with status {res.status_code}",
+            status_code=res.status_code,
+        )
+
     return res
 
 
 def _get_symbol(
     symbol: str, start_date: DateInput, end_date: DateInput
-) -> Optional[pd.DataFrame]:
+) -> pd.DataFrame:
+    """Fetch and parse exchange rate data for a symbol.
+
+    Parameters
+    ----------
+    symbol : str
+        Currency symbol
+    start_date : DateInput
+        Start date
+    end_date : DateInput
+        End date
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame with exchange rate data
+
+    Raises
+    ------
+    CurrencyNotFoundError
+        If currency not found
+    BCBAPIError
+        If API returns error
+    """
     res = _fetch_symbol_response(symbol, start_date, end_date)
-    if res is None:
-        return None
     columns = ["Date", "aa", "bb", "cc", "bid", "ask", "dd", "ee"]
     df = pd.read_csv(
         StringIO(res.text), delimiter=";", header=None, names=columns, dtype=str
@@ -208,11 +294,32 @@ def _get_symbol(
     return df1
 
 
-def _get_symbol_text(
-    symbol: str, start_date: DateInput, end_date: DateInput
-) -> Optional[str]:
+def _get_symbol_text(symbol: str, start_date: DateInput, end_date: DateInput) -> str:
+    """Fetch exchange rate data as CSV text for a symbol.
+
+    Parameters
+    ----------
+    symbol : str
+        Currency symbol
+    start_date : DateInput
+        Start date
+    end_date : DateInput
+        End date
+
+    Returns
+    -------
+    str
+        CSV text with exchange rate data
+
+    Raises
+    ------
+    CurrencyNotFoundError
+        If currency not found
+    BCBAPIError
+        If API returns error
+    """
     res = _fetch_symbol_response(symbol, start_date, end_date)
-    return res.text if res is not None else None
+    return res.text
 
 
 @overload

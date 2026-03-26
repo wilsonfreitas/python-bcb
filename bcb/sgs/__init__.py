@@ -16,7 +16,7 @@ from typing import (
 import pandas as pd
 
 from bcb.http import _CLIENT
-from bcb.exceptions import SGSError
+from bcb.exceptions import BCBRateLimitError, SGSError
 from bcb.utils import Date, DateInput
 
 """
@@ -247,11 +247,20 @@ def get_json(
     """
     url, payload = _get_url_and_payload(code, start, end, last)
     res = _CLIENT.get(url, params=payload)
+
+    # Check for rate limiting first
+    if res.status_code == 429:
+        raise BCBRateLimitError(
+            "BCB API rate limit exceeded. Please try again later.",
+            status_code=429,
+        )
+
     if res.status_code != 200:
         try:
             res_json = json.loads(res.text)
-        except Exception:
+        except json.JSONDecodeError:
             res_json = {}
+
         if "error" in res_json:
             raise SGSError(f"BCB error: {res_json['error']}")
         elif "erro" in res_json:

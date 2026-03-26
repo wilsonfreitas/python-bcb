@@ -3,6 +3,8 @@ import pytest
 from bcb.exceptions import (
     BCBError,
     BCBAPIError,
+    BCBAPINotFoundError,
+    BCBRateLimitError,
     CurrencyNotFoundError,
     SGSError,
     ODataError,
@@ -23,10 +25,24 @@ def test_bcb_api_error_with_status_code():
     assert "request failed" in str(err)
 
 
-def test_bcb_api_error_without_status_code():
-    err = BCBAPIError("request failed")
-    assert err.status_code is None
+def test_bcb_api_error_with_server_error():
+    err = BCBAPIError("request failed", 500)
+    assert err.status_code == 500
     assert "request failed" in str(err)
+
+
+def test_bcb_api_not_found_error():
+    err = BCBAPINotFoundError("endpoint not found", 404)
+    assert err.status_code == 404
+    assert isinstance(err, BCBAPIError)
+    assert "endpoint not found" in str(err)
+
+
+def test_bcb_rate_limit_error():
+    err = BCBRateLimitError("rate limit exceeded", 429)
+    assert err.status_code == 429
+    assert isinstance(err, BCBAPIError)
+    assert "rate limit exceeded" in str(err)
 
 
 def test_currency_not_found_error():

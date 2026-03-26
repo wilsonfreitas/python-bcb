@@ -5,9 +5,27 @@ class BCBError(Exception):
 class BCBAPIError(BCBError):
     """HTTP or API-level error from BCB."""
 
-    def __init__(self, message: str, status_code: int | None = None):
+    def __init__(self, message: str, status_code: int):
         super().__init__(message)
         self.status_code = status_code
+
+
+class BCBAPINotFoundError(BCBAPIError):
+    """Raised when API returns 404 Not Found."""
+
+    pass
+
+
+class BCBRateLimitError(BCBAPIError):
+    """Raised when API returns 429 Too Many Requests (rate limit exceeded)."""
+
+    pass
+
+
+class BCBAPIServerError(BCBAPIError):
+    """Raised when API returns 5xx Server Error."""
+
+    pass
 
 
 class CurrencyNotFoundError(BCBError):
