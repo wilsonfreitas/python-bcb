@@ -173,7 +173,7 @@ logger.setLevel(logging.DEBUG)
 
 ### P: Onde encontro documentação mais detalhada?
 **R:**
-- [Documentação de API](https://bcb-python.readthedocs.io/)
+- [Documentação de API](https://wilsonfreitas.github.io/python-bcb/)
 - [Diretório de Exemplos](./examples/)
 - Docstrings inline: `help(bcb.sgs.get)`, `help(bcb.currency.get)`, etc.
 - [Portal de Dados Abertos BCB](https://dadosabertos.bcb.gov.br/)

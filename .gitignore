@@ -13,3 +13,9 @@ build
 dist
 *checkpoint.ipynb
 docs/_build/
+
+# Environment files with secrets
+.env
+.env.local
+env.local
+*.env.local
