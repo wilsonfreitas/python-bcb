@@ -1,989 +1,559 @@
-# python-bcb Code Review Questions
+# QUESTIONS.md — Architectural & Technical Review
 
-This document contains architectural, technical, refactoring, and design questions identified during a comprehensive code review. These are organized by category to help you systematically address them.
-
----
-
-## HTTP Client & Connection Management
-
-### Q1: HTTP Connection Pooling & Reuse
-**What:** The code uses `httpx.get()` repeatedly throughout, but there's no explicit connection pooling or client reuse. Each `httpx.get()` call may create/close connections.
-
-**Why it matters:** Performance and resource efficiency, especially for long-running applications or when making many requests.
-
-**Affected code:**
-- `bcb/currency.py`: Lines 53, 70, 132, 273
-- `bcb/sgs/__init__.py`: Line 249
-- `bcb/odata/framework.py`: Lines 273, 357, 512
-
-**Questions:**
-- Should we use a session-based `httpx.Client()` instance to maintain connection pooling?
-    - What are the benefits of using connection pooling?
-    - Can I use connection pooling for different URLs on the same server?
-- If so, how should lifecycle (initialization/cleanup) be managed?
-    - Bring me examples.
-- Should different modules share the same client or have separate ones?
-    - Different modules use different URLs, can I use different URLs in the same client?
+This document captures all architectural, refactoring, performance, security, and correctness questions found during a full code review of **python-bcb**.
 
 ---
 
-### Q2: Timeout Configuration & Consistency
-**What:** Some HTTP calls use explicit timeout (60.0s), others rely on default.
+## 1. HTTP Client Lifecycle
 
-**Why it matters:** Prevents indefinite hangs, but inconsistent timeouts may cause unexpected failures.
+### Q1.1 — Module-level `httpx.Client` and `httpx.AsyncClient` are never closed
 
-**Affected code:**
-- `bcb/odata/framework.py` L273, L357, L512 have explicit `timeout=60.0`
-- `bcb/currency.py` and `bcb/sgs/__init__.py` have no explicit timeout
+In `bcb/http.py`, `_CLIENT` and `_ASYNC_CLIENT` are instantiated at module import time and live forever. `close_async_client()` exists but there is no `close_client()` for the sync client. The sync `httpx.Client` holds open TCP connections indefinitely.
 
-**Questions:**
-- Should all HTTP calls have a consistent timeout strategy?
-    - Yes, they should, to be consistent.
-- Should timeout be configurable globally or per-call?
-    - It should have a default value and allow a configuration per-call.
-- What's the appropriate timeout for different APIs (currency, SGS, OData)?
-    - I don´t know.
+**Should we add a `close_client()` function (and/or an `atexit` hook) for the sync client to mirror `close_async_client()`?**
 
----
+### Q1.2 — `close_async_client()` has fragile event-loop detection
 
-### Q3: Retry Logic & Exponential Backoff
-**What:** `_get_valid_currency_list()` implements manual retry with simple recursion. No exponential backoff or circuit breaker pattern.
+`close_async_client()` tries `asyncio.get_event_loop()`, then `loop.is_running()`, then `asyncio.run()`. On Python 3.10+ `get_event_loop()` in a non-async context emits a `DeprecationWarning` and will eventually stop working. Also, `asyncio.create_task()` does not block — the caller has no guarantee the client actually closed.
 
-**Why it matters:** Resilience to transient failures, but current implementation may hammer the API if it's truly down.
+**Should this be simplified (e.g. just expose an `async aclose()` and document that the user should call it in their async cleanup)?**
 
-**Affected code:**
-- `bcb/currency.py` L67–78
+### Q1.3 — Shared global clients are not safe for `fork()`
 
-**Questions:**
-- Should retry logic be standardized across all modules?
-    - Yes, it should.
-- Should we use a library like `tenacity` or `backoff` for more sophisticated retry strategies?
-    - Yes, we should.
-- Is exponential backoff with jitter needed?
-    - No, it is not.
-- Should there be a maximum retry count or total timeout?
-    - Yes, there should be a maximum retry count. It also can have a default value and be passed as an argument.
+If a process forks (e.g. `multiprocessing`), the child inherits the parent's `httpx.Client` with shared sockets. This can cause cryptic connection errors.
+
+**Is multiprocessing a supported use case? If so, should we document the limitation or re-create clients per-process?**
 
 ---
 
-### Q4: Error Response Handling Inconsistency
-**What:** Some endpoints check `res.status_code == 200`, others check `!= 200`. Some raise exceptions, others return `None` or warnings.
+## 2. Retry & Resilience
 
-**Why it matters:** Inconsistent error handling makes the API harder to use and may mask failures.
+### Q2.1 — `with_retry` is defined but never used
 
-**Affected code:**
-- `bcb/currency.py` L54–56 (raises `BCBAPIError`)
-- `bcb/currency.py` L133–142 (issues `warnings.warn()` and returns `None`)
-- `bcb/sgs/__init__.py` L250–259 (raises `SGSError`)
+`bcb/http.py` defines `with_retry()` wrapping `tenacity.retry`, but no call site in the codebase actually uses it. Meanwhile, `_get_valid_currency_list()` hand-rolls its own recursive retry logic with `n >= 3`.
 
-**Questions:**
-- Should all errors be raised as exceptions (fail-fast) or should some return `None`?
-    - All errors should be raised as exceptions.
-- Should warnings be replaced with exceptions or logging?
-    - Yes, warnings should be replaced with exceptions.
-- What's the intended behavior when an API returns a non-200 status?
-    - Show that request has failed.
+**Should we either (a) apply `with_retry` to all HTTP-calling functions, or (b) remove the dead code?**
 
----
+### Q2.2 — `_get_valid_currency_list` uses recursion for retry + rollback
 
-## Caching & State Management
+The function recurses up to `3 * 30 = 90` stack frames in the worst case (3 retries per day x 30 days rollback). Python's default recursion limit is 1000, but this is still unnecessarily deep.
 
-### Q5: Module-Level Mutable Global State
-**What:** `bcb/currency.py` uses a module-level `_CACHE` dictionary (line 30). This is shared across all imports and threads.
+**Should this be rewritten as iterative loops (one for day rollback, one for connection retries)?**
 
-**Why it matters:** Thread-safety issues, difficult to debug, potential memory leaks, and testing complications.
+### Q2.3 — No retry logic in SGS or OData modules
 
-**Affected code:**
-- `bcb/currency.py` L30, L46–48, L91–92, L110
+SGS (`get_json`) and OData (`ODataQuery.text`) make single HTTP requests with no retry. Transient 5xx or timeout errors cause immediate failure.
 
-**Questions:**
-- Is thread-safety a concern for this library? Should cache be thread-safe?
-    - Yes, absolutely.
-- Should cache be moved to an injectable dependency instead of a global?
-    - Yes, absolutely.
-- Should cache behavior be configurable (disable, TTL, max size)?
-    - No, it should not.
+**Should we add retry logic (via the existing `with_retry` decorator or similar) to SGS and OData HTTP calls?**
+
+### Q2.4 — `tenacity` is imported but only used to define `_retry_decorator`
+
+Since `_retry_decorator` / `with_retry` is never applied anywhere, `tenacity` is effectively an unused runtime dependency.
+
+**Should we either start using it or remove it from `[project.dependencies]`?**
 
 ---
 
-### Q6: Cache Invalidation Strategy
-**What:** Cache never expires. The only way to invalidate is calling `clear_cache()` explicitly.
+## 3. Error Handling
 
-**Why it matters:** Stale data may be served in long-running applications.
+### Q3.1 — `_fetch_symbol_response` checks Content-Type before status code
 
-**Affected code:**
-- `bcb/currency.py` L30–43
+In `bcb/currency.py:355-387`, the function first checks if `Content-Type` starts with `text/html` (to parse an error page), then checks `res.status_code`. If the server returns a 5xx with `text/html` content type, the code will try to parse the HTML error div first — and may crash with an `IndexError` on `doc.xpath(xpath)[0]` if the HTML structure doesn't match.
 
-**Questions:**
-- Should cache entries have a TTL (time-to-live)?
-    - No, it should not.
-- Should currency list be refreshed periodically (e.g., daily) even without explicit clearing?
-    - No, it should not.
-- Should cache size be bounded? (e.g., LRU cache with max entries)
-    - No, it should not.
-- Should different data types have different cache policies?
-    - No, it should not.
+**Should status code be checked first, and the HTML error parsing be a fallback only for 200 responses with unexpected content?**
 
----
+### Q3.2 — Bare `except Exception` in `_get_valid_currency_list` and async variant
 
-### Q7: Cache Key Collisions
-**What:** Cache uses string keys like `"TEMP_CURRENCY_ID_LIST"` and `"TEMP_FILE_CURRENCY_LIST"` without namespacing.
+Line 241 catches all exceptions including `KeyboardInterrupt` (via the `Exception` base). More importantly, it silently retries on any error (including programming bugs like `TypeError`), making debugging harder.
 
-**Why it matters:** Future changes could accidentally overwrite cache entries. Prefix `TEMP_` is unclear.
+**Should the except clause be narrowed to `httpx.TransportError` or similar network-specific exceptions?**
 
-**Affected code:**
-- `bcb/currency.py` L46, L63, L91, L110
+### Q3.3 — `get_non_performing_loans_codes` raises bare `Exception`
 
-**Questions:**
-- Why the `TEMP_` prefix? What does it signify?
-    - Probably it is a legacy.
-- Should we use a more structured cache key system (e.g., dataclass or namedtuple)?
-    - Yes, we use since it makes the code more robust.
-- Could cache be organized hierarchically (e.g., `{"currency_id_list": {...}, "currency_list": {...}}`)?
-    - No, it could not.
+In `bcb/sgs/regional_economy.py:150`, the function raises `Exception(...)` instead of a custom exception.
 
----
+**Should this use `ValueError` or a custom `BCBError` subclass for consistency?**
 
-### Q8: OData Metadata Caching
-**What:** `ODataService` fetches and parses metadata on every instantiation. No explicit caching of metadata.
+### Q3.4 — Mixing states and regions in `get_non_performing_loans_codes` silently fails
 
-**Why it matters:** Performance. Metadata rarely changes, but it's fetched every time an API instance is created.
+If the user passes `["BA", "N"]` (a state AND a region), the function checks `any(...)` for states first, enters the `is_state` branch, and then `codes[location] = non_performing_loans_by_location["N"]` raises `KeyError` because "N" is not in the state dict.
 
-**Affected code:**
-- `bcb/odata/framework.py` L354–363
+**Should this be validated upfront to give a clear error message about mixing states and regions?**
 
-**Questions:**
-- Should metadata be cached (e.g., on disk or in memory) between instances?
-    - Yes, absolutely, in memory.
-- Should there be an option to use cached metadata vs. fresh metadata?
-    - No, there should not.
-- How would cache invalidation work for OData metadata?
-    - Once it is in memory, it lives as long as the application lives.
+### Q3.5 — `_codes()` silently returns empty for unsupported types
+
+In `bcb/sgs/__init__.py:119`, if `codes` is an unexpected type (e.g. `float`, `set`), the generator simply yields nothing. Downstream, this causes a confusing `ValueError: No objects to concatenate` from pandas.
+
+**Should `_codes()` raise a `TypeError` for unsupported input types?**
+
+### Q3.6 — OData `text()` and `async_text()` don't check HTTP status codes
+
+In `bcb/odata/framework.py:551-567`, the OData query just returns `res.text` without checking `res.status_code`. A 404, 429, or 500 from the OData API is silently returned as if it were valid JSON, which then causes a confusing `json.JSONDecodeError` downstream.
+
+**Should we add status code validation (and raise `ODataError` or `BCBAPIError`) in the OData HTTP layer?**
+
+### Q3.7 — `async_get` in currency doesn't handle exceptions from `asyncio.gather`
+
+In `bcb/currency.py:909-912`, `asyncio.gather()` is called without `return_exceptions=True`. If any symbol fetch fails, the entire gather fails. The sync version uses try/except per symbol to skip missing currencies.
+
+**Should `return_exceptions=True` be used (with per-result error checking), or should individual tasks be wrapped in try/except?**
+
+### Q3.8 — `BCBAPIServerError` exception is defined but never raised
+
+`bcb/exceptions.py:28-31` defines `BCBAPIServerError` but the codebase always raises `BCBAPIError` for 5xx responses instead.
+
+**Should 5xx responses use `BCBAPIServerError`, or should the unused class be removed?**
 
 ---
 
-## Error Handling & Exceptions
+## 4. Caching
 
-### Q9: Bare Exception Handling
-**What:** `bcb/sgs/__init__.py` L253 catches bare `Exception` which could hide unexpected errors.
+### Q4.1 — Currency cache has no TTL/expiration
 
-**Why it matters:** Makes debugging harder; could mask programming errors.
+The `_ThreadSafeCache` stores currency ID lists and currency master data indefinitely (for the session lifetime). If a long-running process (e.g. a web server) uses the library, the cached data could become stale (new currencies added, old ones delisted).
 
-**Affected code:**
-- `bcb/sgs/__init__.py` L251–254
+**Should the cache support a configurable TTL, or is `clear_cache()` sufficient?**
 
-**Questions:**
-- Why is a bare `Exception` caught? What specific exceptions are expected?
-    - I don´t know.
-- Should this be more specific (e.g., `json.JSONDecodeError`)?
-    - Yes, this should.
-- Is there a fallback strategy if JSON parsing fails?
-    - No, there is not.
+### Q4.2 — OData metadata cache (`_METADATA_CACHE`) has no eviction
 
----
+`bcb/odata/framework.py:20-21` caches metadata per URL indefinitely. If the BCB changes the schema, the cache will serve stale metadata until the process restarts.
 
-### Q10: None Return vs. Exception Raising
-**What:** Some functions raise exceptions on error, others return `None`.
+**Should there be a `clear_metadata_cache()` public function, or a TTL?**
 
-**Why it matters:** Inconsistent API; callers must handle different patterns. `None` can be accidentally used without checking.
+### Q4.3 — `_ThreadSafeCache` uses `threading.RLock` but async code shares the same cache
 
-**Affected code:**
-- `bcb/currency.py` L126 (`_fetch_symbol_response` returns `Optional[httpx.Response]`)
-- `bcb/currency.py` L148 (`_get_symbol` returns `Optional[pd.DataFrame]`)
-- `bcb/currency.py` L171 (`_get_symbol_text` returns `Optional[str]`)
+The async currency functions (`_async_currency_id_list`, `_async_get_currency_list`) call `cache.get()` and `cache.set()` which acquire a `threading.RLock`. In an async context, this blocks the event loop while holding the lock.
 
-**Questions:**
-- Should all public/private functions follow the same error strategy?
-    - Yes, public API should, private API not 100%. For private API we should create a naming structure to accomodate the expected behavior.
-- Is returning `None` preferable to raising for "data not found" vs. "API error"?
-    - I believe returning 'None' is preferable, but I am not 100% sure.
-- Should we use `Result[T, E]` or `Optional[T]` types consistently?
-    - Yes, we should, that would be awesome.
+**Should the async code use `asyncio.Lock` instead, or is the lock contention negligible for the use case?**
+
+### Q4.4 — No cache for SGS responses
+
+SGS calls are never cached — repeated calls for the same series and date range hit the API every time.
+
+**Is this intentional? Would a simple response cache (similar to currency) be beneficial?**
 
 ---
 
-### Q11: Warning vs. Exception for API Errors
-**What:** `bcb/currency.py` L141 issues a warning for API errors and returns `None` instead of raising.
+## 5. `Date` Utility Class
 
-**Why it matters:** Callers may not see the warning. Downstream errors will be harder to trace.
+### Q5.1 — `Date.__init__` parameter shadows built-in `format`
 
-**Affected code:**
-- `bcb/currency.py` L133–142
+The `format` parameter in `Date.__init__` shadows the Python built-in `format()`. Similarly, the `Date.format()` method uses `fmts` as parameter name.
 
-**Questions:**
-- Why does this case use `warnings.warn()` instead of raising `CurrencyNotFoundError`?
-    - I don´t know.
-- Should this be an exception? If not, how should the caller detect this error?
-    - Yes, this should.
+**Should the init parameter be renamed to `fmt` or `date_format` for clarity?**
 
----
+### Q5.2 — `Date` doesn't support `pd.Timestamp`
 
-### Q12: BCBAPIError Status Code Handling
-**What:** `BCBAPIError` optionally stores `status_code`, but not all places pass it when raising.
+The docstrings for `sgs.get()` and `currency.get()` mention `Timestamp` as a valid input type. However, `Date.__init__` only handles `str`, `datetime`, `date`, and `Date`. A `pd.Timestamp` would fall through to the `else: raise ValueError` branch.
 
-**Why it matters:** Callers trying to differentiate errors by status code may get `None`.
+**Should `Date` handle `pd.Timestamp` (which is a `datetime` subclass, so it may already work — but worth verifying)?**
 
-**Affected code:**
-- `bcb/exceptions.py` L5–10
-- `bcb/currency.py` L56
+### Q5.3 — `Date` doesn't have a `__hash__` method
 
-**Questions:**
-- Should `status_code` be required or optional?
-    - It should be required, but we also should understand the details.
-- Should there be specialized subclasses (e.g., `BCBAPINotFoundError` for 404)?
-    - Yes, there should.
-- Should we raise on specific status codes (401, 403, 429) with different logic?
-    - No, we should not.
----
+`Date` implements `__eq__` but not `__hash__`, making it unhashable. This means `Date` objects can't be used as dict keys or in sets.
 
-## Data Parsing & Validation
-
-### Q13: Magic Column Names in CSV Parsing
-**What:** `bcb/currency.py` L152 defines columns as `["Date", "aa", "bb", "cc", "bid", "ask", "dd", "ee"]`. The "aa", "bb", etc. are mysterious.
-
-**Why it matters:** Unclear intent. Fragile if CSV format changes. Hard to maintain.
-
-**Affected code:**
-- `bcb/currency.py` L152–163
-
-**Questions:**
-- What do columns "aa", "bb", "cc", "dd", "ee" represent?
-    - These columns should be ignored.
-- Are they always 8 columns? What if the format changes?
-    - It won´t change.
-- Should these be constants with meaningful names?
-    - No, they should not.
-- Should we validate that the CSV has exactly 8 columns?
-    - Yes, we should.
+**Is this intentional, or should `__hash__` delegate to `self.date.__hash__()`?**
 
 ---
 
-### Q14: Date Format Assumptions
-**What:** Multiple hardcoded date formats throughout code. No validation that date parsing succeeds.
+## 6. Type Safety & API Design
 
-**Why it matters:** If BCB API changes format, silent failures could occur.
+### Q6.1 — `sgs.get()` return type is a union of 4 types
 
-**Affected code:**
-- `bcb/currency.py` L157 (`format="%d%m%Y"`)
-- `bcb/sgs/__init__.py` L96 (`format="%d/%m/%Y"`)
-- `bcb/odata/api.py` L34, L78 (endpoint-specific overrides)
+`sgs.get()` returns `Union[pd.DataFrame, List[pd.DataFrame], str, Dict[int, str]]` depending on `output`, `multi`, and the number of codes. This makes it hard for callers to know what they'll get without runtime checks.
 
-**Questions:**
-- Should date format be configurable?
-    - No, it should not.
-- Should we validate that date parsing succeeds and raise on malformed dates?
-    - Yes, we should.
-- Should regional_economy.py L148 raise a more informative error if location is invalid?
-    - No, it should not.
+**Would it be better to have separate functions (e.g. `get_text()`, `get_many()`) or at least narrow the overloads?**
 
----
+### Q6.2 — `side` and `groupby` in `currency.get()` are untyped strings
 
-### Q15: Implicit Type Conversions in Data Processing
-**What:** Many implicit conversions: string → int, float with comma → float, etc.
+`side` accepts `"ask"`, `"bid"`, `"both"` and `groupby` accepts `"symbol"`, `"side"`, but both are typed as `str`. Invalid values are only caught at runtime deep in the function.
 
-**Why it matters:** Silent failures if data is malformed.
+**Should these use `Literal` types and be validated early?**
 
-**Affected code:**
-- `bcb/currency.py` L62 (`.astype("int32")`)
-- `bcb/currency.py` L107–108 (`.astype("int32")`)
-- `bcb/currency.py` L158–159 (string replace + `.astype(np.float64)`)
+### Q6.3 — `output` parameter across all modules is untyped `str`
 
-**Questions:**
-- Should we validate data types before conversion?
-    - Yes, we should.
-- Should conversion failures be raised explicitly?
-    - Yes, we should.
-- Should there be a data validation step that warns about malformed records?
-    - Yes, there should.
+`output` accepts `"dataframe"` or `"text"` across sgs, currency, and odata, but is typed as plain `str`.
 
----
+**Should this use `Literal["dataframe", "text"]` consistently?**
 
-### Q16: Regional Economy Exception Handling
-**What:** `bcb/sgs/regional_economy.py` L148 raises generic `Exception` with a string message.
+### Q6.4 — `Endpoint.get()` and `Endpoint.async_get()` are mostly duplicated code
 
-**Why it matters:** Not a custom exception; harder to catch and handle programmatically.
+The two methods in `bcb/odata/api.py` (lines 149-226 and 248-326) are nearly identical except for the `await` keyword.
 
-**Affected code:**
-- `bcb/sgs/regional_economy.py` L148
+**Should the shared query-building logic be extracted into a private method?**
 
-**Questions:**
-- Should this raise a custom exception like `InvalidRegionError` or `InvalidStateError`?
-    - No, it should not.
-- Should the error message be more detailed (e.g., list valid regions/states)?
-    - No, it should not.
+### Q6.5 — `EndpointQuery.collect()` and `EndpointQuery.async_collect()` are duplicated
+
+Same pattern as above — the date column conversion logic is duplicated between sync and async versions (lines 62-111 in `bcb/odata/api.py`).
+
+**Should the date conversion be a separate method called by both?**
+
+### Q6.6 — `regional_economy` SGS code dicts use `str` values instead of `int`
+
+All the `NON_PERFORMING_LOANS_BY_*` dicts map state/region to string codes (e.g. `"15888"` instead of `15888`). These are then passed to `sgs.get()` which accepts `int | str`.
+
+**Should the constants be `int` for consistency with the rest of the API?**
 
 ---
 
-## Type Safety & Annotations
+## 7. OData Framework
 
-### Q17: Complex Metaclass Type Assignments
-**What:** `bcb/odata/api.py` uses metaclasses to dynamically set attributes on instances (lines 21–29, 23–28).
+### Q7.1 — `ODataQuery.reset()` doesn't reset `_select` or `_raw`
 
-**Why it matters:** Type checkers may not understand dynamic attributes. Runtime errors if assumptions are wrong.
+`reset()` clears `_filter`, `_orderby`, and `_params`, but leaves `_select` and `_raw` intact. After `Endpoint.get()` calls `_query.reset()`, these fields retain their values. Since a new `EndpointQuery` is created each time, this is harmless now — but `reset()` is misleading.
 
-**Affected code:**
-- `bcb/odata/api.py` L16–29 (`EndpointMeta`)
-- `bcb/odata/framework.py` L56–65 (`ODataEntitySetMeta`)
+**Should `reset()` clear all query state, or should it be removed entirely since queries are not reused?**
 
-**Questions:**
-- Is the metaclass complexity necessary?
-    - Yes, it is.
-- Could we use `__getattr__` instead of dynamically setting attributes?
-    - Yes, we could use that but once I know what to set it is not necessary.
-- Should we use `@property` methods or a `__getattribute__` override?
-    - No, we should not.
-- How does type checking handle these dynamic attributes?
-    - It doesn't handle, but it could.
+### Q7.2 — `ODataQuery._build_parameters()` always overrides `$format` from `_params`
 
----
+`_build_parameters()` starts with `params = {"$format": self._params.get("$format", "json")}`, then later does `params.update(self._params)`. This means `$format` is set twice if it was explicitly set. The logic works but is confusing.
 
-### Q18: Type Annotations for Dictionary Returns
-**What:** Some functions return `Dict[str, str]` but could be more specific about the keys/values.
+**Should this be simplified to just use `self._params` directly with a default?**
 
-**Why it matters:** Users can't know what keys to expect.
+### Q7.3 — Query string is built manually instead of using `httpx` params
 
-**Affected code:**
-- `bcb/currency.py` L205 (returns `Union[pd.DataFrame, str, Dict[str, str]]`)
-- `bcb/sgs/__init__.py` L137 (returns `Union[pd.DataFrame, List[pd.DataFrame], str, Dict[int, str]]`)
+In `ODataQuery.text()`, the query string is manually constructed with `urllib.parse.quote` and string concatenation instead of passing params to `httpx.Client.get(params=...)`.
 
-**Questions:**
-- Should we use `TypedDict` for more specific dictionary types?
-    - Yes, we should.
-- Should we have separate return types for different `output` parameter values?
-    - Yes, we should.
-- Could we use overloads more extensively to make return types clearer?
-    - Yes, we could.
+**Should we let httpx handle URL encoding for correctness and simplicity?**
 
----
+### Q7.4 — `ODataService.__init__` makes two HTTP requests eagerly
 
-### Q19: Union Types Overuse
-**What:** Several `Union` types are very long, making signatures hard to read.
+Instantiating any `BaseODataAPI` subclass (like `Expectativas()`) immediately fetches the service root JSON AND the `$metadata` XML. This means `api = Expectativas()` is a blocking network call.
 
-**Why it matters:** Harder to understand API contract. Users unsure what to expect.
+**Should metadata loading be lazy (on first query), to avoid network calls at import/construction time?**
 
-**Affected code:**
-- `bcb/sgs/__init__.py` L46–52 (`SGSCodeInput`)
-- `bcb/odata/framework.py` L165–167 (`ODataPropertyFilter.__init__`)
+### Q7.5 — `EndpointMeta` metaclass sets attributes on every `Endpoint.__call__`
 
-**Questions:**
-- Could some Union types be better expressed as Protocol or ABC?
-    - Yes, they could.
-- Could input validation normalize these types to a single canonical form?
-    - Yes, it could.
+The `EndpointMeta.__call__` method sets OData properties as attributes on the `Endpoint` instance. This uses `setattr` in a loop on every instantiation.
+
+**Is the metaclass necessary, or could this be done in `Endpoint.__init__`?**
+
+### Q7.6 — `str_types()` function uses a parameter named `type` shadowing built-in
+
+`bcb/odata/framework.py:38` defines `def str_types(type: str) -> str:` which shadows the built-in `type()`.
+
+**Should the parameter be renamed to `edm_type` or similar?**
+
+### Q7.7 — `ODataProperty.name` and `ODataProperty.type` return `Optional[str]`
+
+Properties have `Optional[str]` return types for `name` and `type`, but they're used everywhere without null checks (e.g. `f"{self.obj.name} {self.operator} ..."` in `ODataPropertyFilter.statement()`).
+
+**Should these be non-optional (validated at construction), or should callers handle `None`?**
+
+### Q7.8 — No pagination support in OData queries
+
+OData APIs typically return paginated results with `@odata.nextLink`. The current implementation fetches a single page and returns it. Large result sets are silently truncated.
+
+**Should the framework support automatic pagination (following `@odata.nextLink`) or at least document the limitation?**
 
 ---
 
-## Code Quality & Documentation
+## 8. Currency Module
 
-### Q20: Portuguese/English Mixing
-**What:** Docstrings and comments are mostly Portuguese; variable/function names are English.
+### Q8.1 — `_get_currency_id` merges two DataFrames on every call
 
-**Why it matters:** Inconsistent and harder for non-Portuguese speakers to understand.
+`_get_currency_id()` calls `_currency_id_list()` and `get_currency_list()`, then does `pd.merge(id_list, all_currencies, on=["name"])` to find the currency ID. This merge happens on every symbol lookup, even though the data is cached.
 
-**Affected code:**
-- Throughout `bcb/sgs/__init__.py`, `bcb/currency.py`, etc.
+**Should the merged result be cached as well?**
 
-**Questions:**
-- Should the codebase standardize on English or Portuguese?
-    - The codebase is in English, but the docstrings in Portuguese.
-- If English, should docstrings be translated?
-    - The codebase is in English, but the docstrings in Portuguese.
-- Should there be a convention for comments vs. docstrings?
-    - No, there should not.
+### Q8.2 — `_get_currency_id` returns `matches.max()` — why max?
 
----
+When there are multiple matching IDs for a symbol, `matches.max()` is used. This implies there can be duplicates and we want the highest ID.
 
-### Q21: Missing Docstrings
-**What:** Some functions lack docstrings or have minimal documentation.
+**Why `max()` specifically? Is this documented behavior from BCB, or a heuristic?**
 
-**Why it matters:** Users can't self-serve. IDE autocomplete lacks context.
+### Q8.3 — Currency CSV parsing assumes exactly 8 columns
 
-**Affected code:**
-- `bcb/odata/framework.py`: Many internal functions (e.g., `str_types`, `_parse_entity`)
-- `bcb/utils.py`: Limited docstrings on `Date` class methods
-- Private/internal functions generally lack docs
+`_validate_currency_csv()` hardcodes `len(df.columns) != 8`. If BCB adds or removes a column from their CSV format, the library breaks.
 
-**Questions:**
-- Should all public functions have full docstring (parameters, returns, raises)?
-    - Yes, they should.
-- Should internal functions be documented?
-    - Yes, they should.
-- Should we enforce docstring requirements in linting (e.g., `pydocstyle`)?
-    - Yes, we should.
+**Should the validation be more flexible (e.g. check for minimum required columns by position)?**
 
----
+### Q8.4 — The currency module mixes two different BCB data sources
 
-### Q22: Unclear Function Purposes
-**What:** Some helper functions have unclear purposes (e.g., `_codes()` generator, `_format_df()`).
+`_currency_id_list()` scrapes HTML from `ptax.bcb.gov.br`, while `get_currency_list()` downloads a CSV from `www4.bcb.gov.br`. These are joined by `name` field, which assumes the naming is consistent across both sources.
 
-**Why it matters:** Code harder to understand. Harder to modify without breaking things.
+**Is this fragile? Has the naming ever diverged?**
 
-**Affected code:**
-- `bcb/sgs/__init__.py` L55–68 (`_codes()` generator)
-- `bcb/sgs/__init__.py` L92–102 (`_format_df()`)
-- `bcb/currency.py` L169–173 (`_get_symbol_text()`)
+### Q8.5 — No Content-Type header check for the CSV download in `_get_valid_currency_list`
 
-**Questions:**
-- Should these helper functions have clearer names?
-    No, it should not.
-- Should they be documented with examples?
-    No, they should not.
-- Could they be refactored into a class/module for clarity?
-    No, they could not.
+The function checks status code but not Content-Type. A 200 response with HTML content (e.g. a redirect page) would be passed to `pd.read_csv` and cause a confusing error.
+
+**Should Content-Type be validated?**
+
+### Q8.6 — `currency.get()` silently skips `CurrencyNotFoundError` for individual symbols
+
+When fetching multiple symbols, `CurrencyNotFoundError` is caught and the symbol is silently skipped. But other exceptions (like `BCBAPIError` for network issues) would propagate and abort the whole call.
+
+**Is this the intended behavior? Should the user be warned about skipped symbols?**
 
 ---
 
-## Architecture & API Consistency
+## 9. SGS Module
 
-### Q23: Inconsistent API Between Modules
-**What:** Each module has different signatures and patterns:
-- `sgs.get(codes, start, end, last, multi, freq, output)`
-- `currency.get(symbols, start, end, side, groupby, output)`
-- `odata.get_endpoint().get(*args, **kwargs)`
+### Q9.1 — `sgs.get()` calls `get_json()` twice for DataFrame output
 
-**Why it matters:** Users must learn different patterns. Hard to create generic utilities.
+For each code, `get()` calls `get_json()` (which fetches JSON), then passes the text to `pd.read_json()`. But when `output="text"`, it also calls `get_json()`. The data flow is `get() -> get_json() -> HTTP -> text -> pd.read_json()`.
 
-**Affected code:**
-- `bcb/sgs/__init__.py` L129–205
-- `bcb/currency.py` L198–277
-- `bcb/odata/api.py` L120–166
+**This is fine for correctness, but the double text-to-JSON-to-DataFrame conversion could be avoided by passing the parsed JSON directly. Is this worth optimizing?**
 
-**Questions:**
-- Should all modules share a common interface?
-    - No, it is not necessary.
-- Should there be a unified `bcb.get()` function that dispatches to the right module?
-    - Good idea, I'd love to hear more on that.
-- Should parameter names be standardized (e.g., all use `start`/`end` or all use `from`/`to`)?
-    - Yes, they should.
+### Q9.2 — `sgs.get()` with `multi=False` returns `List[pd.DataFrame]` for multiple codes
 
----
+When `multi=False`, the function returns a bare list of DataFrames. This is a different return type than the single-code case (which returns a single DataFrame).
 
-### Q24: ODataQuery vs. Endpoint.query()
-**What:** Both `ODataQuery` and `Endpoint.query()` exist. Users can use either API. Unclear which is preferred.
+**Is this API surface confusing? Should `multi=False` always return a list (even for single codes) for consistency?**
 
-**Why it matters:** Cognitive overload. Inconsistent documentation.
+### Q9.3 — `_get_url_and_payload` accepts `None` for `start_date` but doesn't validate
 
-**Affected code:**
-- `bcb/odata/api.py` L120–166 vs. L168–176
+If `start_date` is `None` and `end_date` is also `None`, the function creates a URL with no date parameters (fetching the full series). But if `start_date` is `None` and `end_date` is provided, `Date(None)` will raise a `TypeError`.
 
-**Questions:**
-- Should `Endpoint.get()` be the primary API and `query()` be secondary?
-    - No, it is not necessary.
-- Should `query()` return an `EndpointQuery` that chains to `.collect()`, or `.get()`?
-    - No, it is not necessary.
-- Should there be examples showing both patterns?
-    - Yes, there should be more examples.
+**Should this validate the date combination explicitly?**
+
+### Q9.4 — SGS `valor` field is not cast to numeric
+
+`_format_df` renames `valor` to the series name but doesn't convert it from string to numeric. The JSON returns `"valor": "5.1234"` as a string. `pd.read_json()` may or may not auto-convert this depending on the pandas version.
+
+**Should there be an explicit `pd.to_numeric()` conversion for the value column?**
 
 ---
 
-### Q25: `raw()` Parameter Inconsistency
-**What:** Some modules have `output='text'` for raw data, but OData also has a `.raw()` method on queries.
+## 10. Async Implementation
 
-**Why it matters:** Inconsistent API. Users unsure how to get raw data.
+### Q10.1 — Async and sync code are fully duplicated
 
-**Affected code:**
-- `bcb/currency.py` L198–205 (output parameter)
-- `bcb/sgs/__init__.py` L129–174 (output parameter)
-- `bcb/odata/framework.py` L476–478 (`.raw()` method)
+Every async function is a near-copy of its sync counterpart. `_async_currency_id_list` duplicates `_currency_id_list`, `_async_get_valid_currency_list` duplicates `_get_valid_currency_list`, etc. This means every bug fix or feature must be applied twice.
 
-**Questions:**
-- Should all modules use the same pattern for raw output (parameter vs. method)?
-    - I like the idea, but how?
-- Should `.raw()` method exist on all query builders?
-    - I like the idea, but how?
+**Should we consider a pattern to reduce duplication (e.g. a shared core that accepts a client, or `asyncio.to_thread` for the sync versions)?**
 
----
+### Q10.2 — `ODataService.__init__` is synchronous — no async constructor
 
-## URL & Query Construction
+There's no way to instantiate `ODataService` (and thus any `BaseODataAPI` subclass) asynchronously. The constructor makes two blocking HTTP requests. Users who want fully async code must still call `Expectativas()` synchronously.
 
-### Q26: URL Construction Fragility
-**What:** URLs are built by string concatenation or f-strings. No URL validation.
+**Should there be an async factory method like `await Expectativas.create()`?**
 
-**Why it matters:** Easy to create malformed URLs. Potential for injection if user input is used.
+### Q10.3 — No `anyio` or `pytest-anyio` in dependencies but tests use `@pytest.mark.anyio`
 
-**Affected code:**
-- `bcb/currency.py` L23–27
-- `bcb/sgs/__init__.py` L83–86
-- `bcb/odata/framework.py` L510 (uses `quote()` for params, good)
+The async tests use `@pytest.mark.anyio` but the `pyproject.toml` test dependencies don't include `anyio` or `pytest-anyio`.
 
-**Questions:**
-- Should we use `urllib.parse` utilities for URL construction?
-    - Yes, we should.
-- Should URLs be validated before making requests?
-    - Yes, they should.
-- Should user-provided filter values be escaped/validated?
-    - Yes, they should.
+**How are these tests currently running? Is `anyio` a transitive dependency? Should it be explicit?**
 
 ---
 
-### Q27: OData Filter Injection Vulnerability
-**What:** `ODataPropertyFilter.statement()` builds filter strings. If a user constructs a filter with special characters, it could break the query.
+## 11. Testing
 
-**Why it matters:** While unlikely in practice (type checking), it's a potential security issue.
+### Q11.1 — Integration test `test_currency_get_symbol` expects `_get_symbol("ZAR")` to return `None`
 
-**Affected code:**
-- `bcb/odata/framework.py` L171–181
+In `tests/integration/test_currency.py:27`, the test asserts `x = currency._get_symbol("ZAR", ...) ; assert x is None`. But the current code raises `CurrencyNotFoundError` instead of returning `None`.
 
-**Questions:**
-- Should filter values be escaped/quoted for OData syntax?
-    - The values are OData standard.
-- Should we use a library like `odata-query` for safer query building?
-    - Yes, we should.
-- Are there SQL/NoSQL-like injection attacks possible with OData filters?
-    - No, there are not.
+**Is this integration test outdated / broken?**
 
----
+### Q11.2 — `test_if_all_regions_and_states_are_there` checks `item.values()` instead of `item.keys()`
 
-## Testing & Quality
+In `tests/sgs/test_regional_economy.py:66-68`, the test checks `list(item.values()) == list(BRAZILIAN_REGIONS.keys())`. This compares SGS *codes* (like `"15888"`) against region *keys* (like `"N"`), which will never match.
 
-### Q28: Flaky Tests
-**What:** Some tests use `@mark.flaky` annotation for transient failures.
+**Is this test incorrect, or am I misreading the assertion?**
 
-**Why it matters:** CI/CD reliability. Hard to know if a test failure is real or a fluke.
+### Q11.3 — No tests for `Endpoint.async_get()` with filters
 
-**Affected code:**
-- Multiple files (see with `grep -r "@mark.flaky"`)
+The async OData tests only test basic `limit(1).async_collect()` and `async_get(limit=1)`. There are no tests for async queries with filters, orderby, or select.
 
-**Questions:**
-- Which tests are flaky? Why?
-    - yes, the BCB network is unstable.
-- Should we improve network mocking in tests instead of allowing flakiness?
-    - Yes, we should.
-- What's the max retry count? Is that configurable?
-    - No, it is not configurable, bu it could.
-- Should flaky tests be separated into a different suite?
-    - Yes, they should.
+**Should async query building be tested as thoroughly as the sync path?**
 
----
+### Q11.4 — `tests/test_expectativas.py` is a stub redirecting to integration tests
 
-### Q29: Limited Negative Test Cases
-**What:** Most tests check the happy path. Few test error conditions.
+The file just contains a comment: `# Tests moved to tests/integration/test_expectativas.py`. This is a dead file.
 
-**Why it matters:** Errors might not be handled correctly in production.
+**Should it be deleted?**
 
-**Affected code:**
-- Tests generally lack "test_*_error", "test_*_invalid", etc.
+### Q11.5 — `httpx_mock` Content-Type defaults may mask bugs
 
-**Questions:**
-- Should we test each module's error handling more thoroughly?
-    - Yes, we should.
-- Should we test malformed input (bad dates, invalid symbols, etc.)?
-    - Yes, we should.
-- Should we test API failures (500s, timeouts, malformed responses)?
-    - Yes, we should.
+In some test mocks, `Content-Type` is not explicitly set (e.g. `add_currency_list_mock`). The default Content-Type from `pytest-httpx` may differ from what the real BCB API returns.
+
+**Should all mocks explicitly set Content-Type to match production?**
+
+### Q11.6 — No tests for `_get_valid_currency_list` rollback behavior
+
+There are no unit tests for the date-rollback logic when the CSV file doesn't exist for a given date (weekends/holidays).
+
+**Should the rollback logic be tested with mocked 404 responses?**
 
 ---
 
-### Q30: Test Isolation & Fixture Reuse
-**What:** `conftest.py` has many hardcoded mock data constants. Tests import and reuse them.
+## 12. Project Structure & Packaging
 
-**Why it matters:** Changes to mock data can break many tests. Hard to test edge cases.
+### Q12.1 — `build/` directory contains stale legacy code
 
-**Affected code:**
-- `tests/conftest.py` L8–74
+`build/lib/bcb/` contains old files (`series.py`, `sgs.py`) that don't exist in the current source tree. This directory is in `.gitignore` but `git status` shows it's not tracked.
 
-**Questions:**
-- Should mock data be generated dynamically (e.g., factory functions)?
-    - Yes, it should.
-- Should we use `pytest` fixtures for each mock data type?
-    - Yes, we should.
-- Should we test with both minimal and large datasets?
-    - Yes, it should.
+**Should `build/` be cleaned up (it may confuse IDEs and tooling)?**
 
----
+### Q12.2 — `pyproject.toml` has empty `description`
 
-## Performance & Scalability
+`description = ""` in `[project]`. PyPI shows this as empty.
 
-### Q31: No Pagination Support
-**What:** OData queries don't expose pagination controls clearly. Users might not know about `$top` and `$skip`.
+**Should a proper description be added?**
 
-**Why it matters:** Large result sets might be slow or fail. Users might not know how to fetch data in chunks.
+### Q12.3 — No `py.typed` marker file
 
-**Affected code:**
-- `bcb/odata/api.py` L120–166 (takes `limit` and `skip` but no clear pagination docs)
+The package has full type annotations and passes `mypy --strict`, but there's no `py.typed` marker file. This means downstream consumers using mypy won't get type checking for `bcb` imports.
 
-**Questions:**
-- Should pagination be documented more prominently?
-    - Yes, it should.
-- Should there be a convenience method for iterating through pages?
-    - Yes, it should.
-- Should there be a warning if a query returns a very large result set?
-    - Yes, there should.
+**Should `bcb/py.typed` be added?**
 
----
+### Q12.4 — `numpy` is used in currency but not in dependencies
 
-### Q32: No Async Support
-**What:** All I/O is synchronous. No async/await API.
+`bcb/currency.py` imports `numpy as np` (line 13) and uses `np.float64` (line 469). However, `numpy` is not in `[project.dependencies]` — it's presumably a transitive dependency of `pandas`.
 
-**Why it matters:** For async applications or heavy batch processing, sync I/O can be a bottleneck.
+**Should `numpy` be added to explicit dependencies, or should `np.float64` be replaced with `float`?**
 
-**Affected code:**
-- All HTTP calls throughout the codebase
+### Q12.5 — No `__all__` exports in any module
 
-**Questions:**
-- Is async support needed or planned?
-    - Yes, it is.
-- Would `httpx` async API be used? Or a separate async module?
-    - What is the best alternative? Pros and cons of each.
-- Should we design the current API to be easily async-compatible?
-    - Yes, we should.
+None of the public modules define `__all__`. This means `from bcb import *` pulls in everything, and tools like `pyright` / `pylance` can't determine the public API.
+
+**Should `__all__` be defined in `bcb/__init__.py` and the submodules?**
+
+### Q12.6 — `BCBAPINotFoundError`, `BCBRateLimitError`, `BCBAPIServerError` not re-exported from `bcb/__init__.py`
+
+The `__init__.py` exports `BCBError`, `BCBAPIError`, `CurrencyNotFoundError`, `SGSError`, `ODataError` but not the three newer subclasses.
+
+**Should these be added to the top-level exports for user convenience?**
 
 ---
 
-### Q33: No Batch Request Support
-**What:** Each request is independent. No bulk/batch endpoint for multiple queries.
+## 13. Performance
 
-**Why it matters:** Fetching multiple series one-by-one can be slow.
+### Q13.1 — `currency.get()` fetches symbols sequentially
 
-**Affected code:**
-- `bcb/sgs/__init__.py` (makes N requests for N series)
+When fetching multiple currency symbols, the sync `get()` loops through symbols one at a time. Each symbol requires up to 3 HTTP requests (id list, currency list, rate data).
 
-**Questions:**
-- Do BCB APIs support batch/bulk requests?
-    No, they don´t.
-- Could we optimize `sgs.get([code1, code2, ...])` to be faster?
-    - Yes, we could.
-- Should there be a batch context manager?
-    - Yes, there should.
+**Should we use `concurrent.futures.ThreadPoolExecutor` for parallel fetching in the sync API?**
 
----
+### Q13.2 — `sgs.get()` fetches codes sequentially
 
-## Configuration & Customization
+Same issue — multiple SGS codes are fetched one at a time in the sync version.
 
-### Q34: Magic Strings & Constants
-**What:** Hard-coded service URLs, column names, date formats, etc.
+**Same question: concurrent fetching for the sync path?**
 
-**Why it matters:** Changing format or API requires code changes. Not flexible for testing/mocking.
+### Q13.3 — `ODataMetadata._load_document()` parses full XML even if cached
 
-**Affected code:**
-- `bcb/odata/api.py` L13 (OLINDA_BASE_URL)
-- `bcb/sgs/__init__.py` L83 (hardcoded BCB URL)
-- Many magic numbers and strings throughout
+The metadata is cached at the `ODataMetadata` level, but the `ODataService.__init__` still makes an HTTP call to the service root on every instantiation.
 
-**Questions:**
-- Should configuration be externalizable (env vars, config files)?
-    - No, there should not.
-- Should there be a config class or module?
-    - No, there should not.
-- Should timeout, retry count, etc. be configurable?
-    - Yes, they should.
+**Should the service root response also be cached?**
+
+### Q13.4 — `pd.merge()` in `_get_currency_id` is O(n) per symbol
+
+For each symbol lookup, the entire currency ID list and master list are merged. With many symbols, this repeats the same merge.
+
+**Should the merge result be cached after the first call?**
 
 ---
 
-### Q35: No Logging
-**What:** No `logging` module usage anywhere. Errors are silent or use `warnings`.
+## 14. Security
 
-**Why it matters:** Hard to debug issues in production. No audit trail.
+### Q14.1 — HTML parsing with `lxml` on untrusted input
 
-**Affected code:**
-- Throughout (no logging imports)
+`bcb/currency.py` uses `lxml.html.parse()` on responses from BCB. While BCB is a trusted source, if a MITM attack or DNS hijack occurs, the library would parse arbitrary HTML.
 
-**Questions:**
-- Should we add structured logging?
-    Yes, we should.
-- Should HTTP requests/responses be logged (with PII scrubbing)?
-    - I have never heard about that.
-- Should there be debug-level logs for troubleshooting?
-    - Yes, there should.
+**Should `lxml` be configured with restricted parsing options, or is this an acceptable risk?**
 
----
+### Q14.2 — No TLS certificate pinning
 
-## API Design
+All HTTP requests go to `*.bcb.gov.br` without certificate pinning. This is standard practice but worth noting for security-conscious users.
 
-### Q36: Endpoint Access Pattern
-**What:** Users access endpoints via `api.get_endpoint("EntitySetName")`. Endpoint names are strings.
+**Is this acceptable, or should there be an option for custom CA bundles?**
 
-**Why it matters:** No IDE autocomplete. Easy to misspell endpoint names.
+### Q14.3 — OData query parameters are URL-encoded but not sanitized for injection
 
-**Affected code:**
-- `bcb/odata/api.py` L217–239
+`ODataPropertyFilter.statement()` directly interpolates user-provided values into OData filter strings (e.g. `f"{self.obj.name} {self.operator} '{str(self.other)}'"`. A value containing a single quote could break the filter syntax.
 
-**Questions:**
-- Could we expose endpoint names as constants or enums?
-    - No, we could not, these endpoint names are dynamic.
-- Could we generate a typed API with properties for each endpoint (like mypy plugin)?
-    - No, we could not, these endpoint names are dynamic.
-- Should there be a `.describe()` output that lists available endpoints?
-    - Yes, maybe.
+**Should filter values be escaped/validated to prevent OData injection?**
 
 ---
 
-### Q37: Filter/OrderBy Chaining
-**What:** Filters and order-by are passed to `.get()` as positional args. Chaining via `.query()` is less discoverable.
+## 15. Documentation
 
-**Why it matters:** Not obvious that chaining is possible.
+### Q15.1 — Mixed Portuguese and English in docstrings
 
-**Affected code:**
-- `bcb/odata/api.py` L120–166 vs. L168–176
+Some docstrings are in Portuguese (e.g. `currency.get()`, `regional_economy`), others in English (e.g. `http.py`, `exceptions.py`). The README and CHANGELOG are in Portuguese.
 
-**Questions:**
-- Should `.get()` and `.query()` be merged into a single fluent API?
-    - No, they should not.
-- Should `.get()` accept `filter=`, `orderby=`, etc. as keyword args?
-    - Yes, it should.
+**Should the codebase standardize on one language for docstrings?**
 
----
+### Q15.2 — `currency.get()` docstring says `end` is "Data de *início*"
 
-## Documentation & Examples
+Line 615 says `end : ... Data de início da série` — should be "Data final".
 
-### Q38: Missing Usage Examples
-**What:** README and docstrings have few real-world examples.
+**Typo to fix.**
 
-**Why it matters:** Users unsure how to use the API.
+### Q15.3 — `Date` accepts `int` per docstring but code doesn't handle it
 
-**Affected code:**
-- README.md has high-level examples but not detailed ones
-- Docstrings lack "See Also" or example sections
+The `sgs.get()` docstring says `start : str, int, date, datetime, Timestamp`, but `Date.__init__` doesn't handle `int`.
 
-**Questions:**
-- Should there be an `examples/` directory with notebooks or scripts?
-    - Yes, there should.
-- Should docstrings include code examples?
-    - Yes, they should.
-- Should there be a FAQ for common use cases?
-    - Yes, there should.
+**Should `Date` handle integer timestamps, or should the docstring be corrected?**
+
+### Q15.4 — No API reference in Sphinx docs for async functions
+
+The `docs/async.rst` documents usage but the auto-generated API reference may not include the async functions.
+
+**Should async functions be documented in the Sphinx API reference?**
 
 ---
 
-### Q39: Unclear Module Organization
-**What:** Three main modules (sgs, currency, odata) but no overview of when to use each.
+## 16. Miscellaneous
 
-**Why it matters:** Users may use the wrong module for a task.
+### Q16.1 — `BRAZILIAN_STATES` is built with a module-level loop
 
-**Affected code:**
-- Documentation doesn't clearly differentiate use cases
+`bcb/utils.py:13-15` uses a for-loop to build `BRAZILIAN_STATES` from `BRAZILIAN_REGIONS`. This works but is unusual for a constant.
 
-**Questions:**
-- Should README have a decision tree (e.g., "use sgs for time series", "use currency for exchange rates")?
-    - Yes, it should.
-- Should there be a "which API to use" guide?
-    - Yes, there should.
+**Should this be a list comprehension or tuple for clarity? Also, should it be a `tuple` (immutable) since it's a constant?**
 
----
+### Q16.2 — `_CacheKey` has only a `type` field
 
-## Maintenance & Dependencies
+`_CacheKey` is a `NamedTuple` with a single field `type`. It could just be a plain string.
 
-### Q40: Dependency on BCB API Format Stability
-**What:** Code assumes specific CSV/JSON formats from BCB APIs. Changes would require code updates.
+**Is the NamedTuple adding value here, or is it over-engineered?**
 
-**Why it matters:** If BCB changes format, the library breaks.
+### Q16.3 — `Endpoint.query()` and `Endpoint.async_query()` return the same thing
 
-**Affected code:**
-- Throughout (e.g., hardcoded column positions)
+Both methods return `EndpointQuery(self._entity, self._url, self._date_columns)` — they're identical.
 
-**Questions:**
-- Should we have a schema version or format detection?
-    - Yes, we should, but these formats difficultly change.
-- Should there be deprecation warnings for old formats?
-    - Yes, there should.
-- Should we monitor BCB API for breaking changes?
-    - Yes, we should.
+**Should `async_query()` be removed and users just use `query()` for both sync and async paths?**
 
----
+### Q16.4 — No `__version__` attribute on the package
 
-### Q41: Build & Distribution
-**What:** Using `uv` with hatchling. Good, but some concerns.
+There's no way to check `bcb.__version__` at runtime. The version is only in `pyproject.toml`.
 
-**Why it matters:** Users might have trouble installing with older tools.
+**Should `bcb/__init__.py` expose a `__version__` attribute (via `importlib.metadata` or similar)?**
 
-**Affected code:**
-- `pyproject.toml` L37–42
+### Q16.5 — `conftest.py` `make_currency_rate_csv` uses period (`.`) as decimal separator in f-string
 
-**Questions:**
-- Should we support older Python versions (< 3.10)?
-    - No, we should not.
-- Are there known compatibility issues with pip/conda?
-    - No, there are not.
-- Should there be Windows/macOS-specific build requirements?
-    - No, there should not.
+The function generates CSV like `{bid:.4f}` which uses `.` (period) as decimal separator. But the actual BCB CSV uses `,` (comma) as decimal separator. The `_parse_currency_types` function does `str.replace(",", ".")` before converting to float.
 
----
+**Are the test fixtures accurately representing the real CSV format? The mock CSV uses periods, while the real API uses commas.**
 
-## Security
+### Q16.6 — `asyncio` is imported in `currency.py` but only used by async functions
 
-### Q42: No Input Validation
-**What:** User inputs (dates, symbols, codes) are not validated before use.
+The `asyncio` import at the top of `currency.py` is only needed for the async functions at the bottom of the file.
 
-**Why it matters:** Garbage in, garbage out. Silent failures or confusing errors.
-
-**Affected code:**
-- Functions accept user inputs without validation
-
-**Questions:**
-- Should we validate date ranges (e.g., start <= end)?
-    - No, we should not.
-- Should we validate currency symbols against a whitelist?
-    - No, we should not.
-- Should we validate SGS codes (e.g., are they positive integers)?
-    - Yes, positive integers is ok, but that's all, I don't have a previous list to validate them.
-
----
-
-### Q43: No Rate Limiting / Quota Handling
-**What:** No protection against hitting BCB API rate limits.
-
-**Why it matters:** Users can accidentally hammer the API and get blocked.
-
-**Affected code:**
-- All HTTP request code
-
-**Questions:**
-- Should we implement client-side rate limiting?
-    - No, we should not.
-- Should we detect and handle 429 (Too Many Requests) responses?
-    - Yes, if the server answers 429 we should inform the user.
-- Should we warn users about API quotas?
-    - No, we should not.
-
----
-
-### Q44: Metadata URL Hardcoding
-**What:** OData metadata URL is constructed from service URL with a hardcoded `$metadata` suffix.
-
-**Why it matters:** If BCB changes this pattern, code breaks. Could be discovered dynamically.
-
-**Affected code:**
-- `bcb/odata/framework.py` L362
-
-**Questions:**
-- Could metadata URL be discovered from the service root response?
-    No, OData is a standard.
-- Should it be configurable?
-    - No, we should not.
-
----
-
-## Misc / Design Questions
-
-### Q45: Date Class Utility
-**What:** `bcb/utils.py` has a `Date` class that wraps Python `date` objects.
-
-**Why it matters:** Another abstraction to learn. Why not use `datetime`/`date` directly?
-
-**Affected code:**
-- `bcb/utils.py` L18–58
-- Throughout as `DateInput` type alias
-
-**Questions:**
-- Why was `Date` class created instead of using standard library `date`?
-    - `Date` and `DateInput` allow the users to provide date in different formats.
-- Does it add value over `datetime.date`?
-    - Yes, it does add  flexbility to the user.
-- Could we simplify by removing the class and using `date` directly?
-    - No, we could not.
-
----
-
-### Q46: Endpoint.describe() Output
-**What:** `.describe()` method prints to stdout. No structured output.
-
-**Why it matters:** Hard to parse programmatically. Can't redirect to file easily.
-
-**Affected code:**
-- `bcb/odata/framework.py` L75–82, L96–112
-- `bcb/odata/framework.py` L515–542 (in ODataQuery)
-- `bcb/odata/api.py` L195–215
-
-**Questions:**
-- Should `.describe()` return a dict/dataclass instead of printing?
-    - No, it should not.
-- Should there be a `.to_string()` method for formatting?
-    - No, there should not.
-- Should structured output be available in multiple formats (JSON, YAML, etc.)?
-    - No, it should not.
-
----
-
-### Q47: SGSCode Design
-**What:** `SGSCode` wraps int/str codes. Supports named codes but design is a bit awkward.
-
-**Why it matters:** API could be clearer.
-
-**Affected code:**
-- `bcb/sgs/__init__.py` L32–43
-
-**Questions:**
-- Should `SGSCode` be a dataclass?
-    - Yes, it should.
-- Should there be separate constructors for named vs. unnamed codes?
-    - Yes, there should.
-- Could `__repr__` be improved to clarify meaning?
-    - Yes, it could.
-
----
-
-### Q48: Overload Declarations Completeness
-**What:** Many functions use `@overload` but not exhaustively for all parameter combinations.
-
-**Why it matters:** Type checkers may not infer correct return types in all cases.
-
-**Affected code:**
-- `bcb/currency.py` L176–204
-- `bcb/sgs/__init__.py` L105–137
-- `bcb/odata/api.py` L53–62
-
-**Questions:**
-- Are all return type combinations covered?
-    - Yes, they are.
-- Should we test overload declarations with a type checker?
-    - No, we should not.
-- Are overloads necessary or could we simplify with Union types?
-    - You tell me.
-
----
-
-### Q49: Relative vs Absolute Imports
-**What:** Most imports are relative (from `bcb.exceptions import`). Some mix relative and absolute.
-
-**Why it matters:** Minor but affects readability and IDE support.
-
-**Affected code:**
-- Throughout, mostly consistent but worth reviewing
-
-**Questions:**
-- Should we standardize on absolute imports across the codebase?
-    - Yes, we should.
-- Should we use `from __future__ import annotations` for forward references?
-    - Yes, we should.
-
----
-
-### Q50: Future-Proofing
-**What:** Code is fairly rigid. Changes to BCB APIs would require refactoring.
-
-**Why it matters:** Library may need rapid updates for API changes.
-
-**Affected code:**
-- Architecture throughout
-
-**Questions:**
-- Should we design for easier versioning of API schemas?
-    - Yes, we should.
-- Should there be a plugin/provider system for different API versions?
-    - No, there should not.
-- Should we version APIs (e.g., `sgs_v1`, `sgs_v2`)?
-    - Yes, we should.
+**Should the import be inside the async functions, or is top-level fine?**
 
 ---
 
 ## Summary
 
-This document captures **50 questions/concerns** organized into **10 categories**:
-1. HTTP Client & Connection Management (4 questions)
-2. Caching & State Management (4 questions)
-3. Error Handling & Exceptions (5 questions)
-4. Data Parsing & Validation (4 questions)
-5. Type Safety & Annotations (3 questions)
-6. Code Quality & Documentation (3 questions)
-7. Architecture & API Consistency (3 questions)
-8. URL & Query Construction (2 questions)
-9. Testing & Quality (3 questions)
-10. Performance & Scalability (3 questions)
-11. Configuration & Customization (2 questions)
-12. API Design (2 questions)
-13. Documentation & Examples (2 questions)
-14. Maintenance & Dependencies (2 questions)
-15. Security (3 questions)
-16. Misc / Design Questions (6 questions)
-
-**Next Steps:** Please review and answer these questions in this document. Your answers will inform the implementation plan for improvements.
+| Category | Count |
+|---|---|
+| HTTP Client Lifecycle | 3 |
+| Retry & Resilience | 4 |
+| Error Handling | 8 |
+| Caching | 4 |
+| Date Utility | 3 |
+| Type Safety & API Design | 6 |
+| OData Framework | 8 |
+| Currency Module | 6 |
+| SGS Module | 4 |
+| Async Implementation | 3 |
+| Testing | 6 |
+| Project Structure | 6 |
+| Performance | 4 |
+| Security | 3 |
+| Documentation | 4 |
+| Miscellaneous | 6 |
+| **Total** | **78** |
