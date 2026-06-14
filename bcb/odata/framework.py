@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
+import math
 import threading
 from io import BytesIO
 from typing import Any, Optional, Union
@@ -49,6 +50,52 @@ def _load_xml_document(content: bytes, *, context: str) -> Any:
         return etree.parse(BytesIO(content))
     except etree.XMLSyntaxError as ex:
         raise ODataError(f"{context} returned invalid XML: {ex}") from ex
+
+
+def _format_odata_string_literal(value: Any) -> str:
+    if value is None:
+        raise ODataError("Edm.String filter values cannot be None")
+    escaped = str(value).replace("'", "''")
+    return f"'{escaped}'"
+
+
+def _format_odata_literal(edm_type: Optional[str], value: Any) -> str:
+    if value is None:
+        raise ODataError(f"{edm_type or 'Unknown'} filter values cannot be None")
+
+    if edm_type == "Edm.Decimal":
+        try:
+            decimal_value = float(value)
+        except (TypeError, ValueError) as ex:
+            raise ODataError(f"Invalid Edm.Decimal filter value: {value!r}") from ex
+        if not math.isfinite(decimal_value):
+            raise ODataError(f"Invalid Edm.Decimal filter value: {value!r}")
+        return f"{decimal_value}"
+
+    if edm_type in ("Edm.Int16", "Edm.Int32", "Edm.Int64"):
+        try:
+            return f"{int(value)}"
+        except (TypeError, ValueError) as ex:
+            raise ODataError(f"Invalid {edm_type} filter value: {value!r}") from ex
+
+    if edm_type == "Edm.String":
+        return _format_odata_string_literal(value)
+
+    if edm_type == "Edm.Date":
+        try:
+            formatted = value.strftime("%Y-%m-%d")
+        except AttributeError as ex:
+            raise ODataError(f"Invalid Edm.Date filter value: {value!r}") from ex
+        if not isinstance(formatted, str):
+            raise ODataError(f"Invalid Edm.Date filter value: {value!r}")
+        return formatted
+
+    if edm_type == "Edm.Boolean":
+        if not isinstance(value, bool):
+            raise ODataError(f"Invalid Edm.Boolean filter value: {value!r}")
+        return str(value).lower()
+
+    raise ODataError(f"Unsupported OData filter literal type: {edm_type or 'Unknown'}")
 
 
 # Edm.Boolean
@@ -212,16 +259,8 @@ class ODataPropertyFilter:
         self.operator = operator
 
     def statement(self) -> str:
-        if self.obj.type == "Edm.Decimal":
-            return f"{self.obj.name} {self.operator} {float(self.other)}"
-        elif self.obj.type == "Edm.Int32":
-            return f"{self.obj.name} {self.operator} {int(self.other)}"
-        elif self.obj.type == "Edm.String":
-            return f"{self.obj.name} {self.operator} '{str(self.other)}'"
-        elif self.obj.type == "Edm.Date":
-            return f"{self.obj.name} {self.operator} {self.other.strftime('%Y-%m-%d')}"
-        else:
-            return f"{self.obj.name} {self.operator} '{self.other}'"
+        literal = _format_odata_literal(self.obj.type, self.other)
+        return f"{self.obj.name} {self.operator} {literal}"
 
     def __str__(self) -> str:
         return self.statement()
