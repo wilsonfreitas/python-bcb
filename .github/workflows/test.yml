@@ -19,7 +19,7 @@ jobs:
         run: uv python install ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: uv sync --group test --group dev
+        run: uv sync --frozen --group test --group dev
 
       - name: Run tests
         run: uv run pytest --cov=bcb --cov-report=xml -m "not integration"
