@@ -207,6 +207,30 @@ async def test_odata_query_async_status_error_raises(httpx_mock):
         await ep.query().limit(1).async_text()
 
 
+async def test_odata_query_async_malformed_json_raises(httpx_mock):
+    httpx_mock.add_response(
+        url="https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/",
+        text=ODATA_SERVICE_ROOT_JSON,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url="https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/$metadata",
+        content=ODATA_METADATA_XML,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url=re.compile(r".*ExpectativasMercadoAnuais.*"),
+        text="not json",
+        status_code=200,
+    )
+
+    api = Expectativas()
+    ep = api.get_endpoint("ExpectativasMercadoAnuais")
+
+    with pytest.raises(ODataError, match="OData query.*invalid JSON"):
+        await ep.query().limit(1).async_collect()
+
+
 async def test_odata_query_async_collect(httpx_mock):
     """Test ODataQuery.async_collect() returns DataFrame."""
     httpx_mock.add_response(

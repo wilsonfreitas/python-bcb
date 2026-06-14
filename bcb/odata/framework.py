@@ -26,6 +26,31 @@ logger = logging.getLogger(__name__)
 _METADATA_CACHE: dict[str, "ODataMetadata"] = {}
 _METADATA_CACHE_LOCK = threading.RLock()
 
+
+def _load_json_object(text: str, *, context: str) -> dict[str, Any]:
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError as ex:
+        raise ODataError(f"{context} returned invalid JSON: {ex}") from ex
+    if not isinstance(data, dict):
+        raise ODataError(f"{context} returned invalid JSON payload: expected object")
+    return data
+
+
+def _required_field(data: dict[str, Any], field: str, *, context: str) -> Any:
+    try:
+        return data[field]
+    except KeyError as ex:
+        raise ODataError(f"{context} response missing required field {field!r}") from ex
+
+
+def _load_xml_document(content: bytes, *, context: str) -> Any:
+    try:
+        return etree.parse(BytesIO(content))
+    except etree.XMLSyntaxError as ex:
+        raise ODataError(f"{context} returned invalid XML: {ex}") from ex
+
+
 # Edm.Boolean
 # Edm.Byte
 # Edm.Date
@@ -278,14 +303,24 @@ class ODataMetadata:
     def __init__(self, url: str) -> None:
         self.url = url
         self._load_document()
-        _xpath = "edmx:DataServices/edm:Schema"
-        schema = self.doc.xpath(_xpath, namespaces=self.namespaces)[0]
-        self.namespace: str = schema.attrib["Namespace"]
-        self._used_elements: list[str] = []
-        self._parse_entities(schema)
-        self._parse_entity_sets(schema)
-        self._parse_functions(schema)
-        self._parse_function_imports(schema)
+        try:
+            _xpath = "edmx:DataServices/edm:Schema"
+            schemas = self.doc.xpath(_xpath, namespaces=self.namespaces)
+            if not schemas:
+                raise ODataError(f"OData metadata {self.url} missing schema")
+            schema = schemas[0]
+            self.namespace = schema.attrib["Namespace"]
+            self._used_elements: list[str] = []
+            self._parse_entities(schema)
+            self._parse_entity_sets(schema)
+            self._parse_functions(schema)
+            self._parse_function_imports(schema)
+        except ODataError:
+            raise
+        except (KeyError, IndexError, TypeError) as ex:
+            raise ODataError(
+                f"OData metadata {self.url} has invalid structure: {ex}"
+            ) from ex
 
     def _load_document(self) -> None:
         logger.debug(f"Fetching OData metadata from {self.url}")
@@ -306,7 +341,7 @@ class ODataMetadata:
             rate_limit_cls=ODataError,
             server_error_cls=ODataError,
         )
-        self.doc = etree.parse(BytesIO(res.content))
+        self.doc = _load_xml_document(res.content, context=f"OData metadata {self.url}")
 
     def _parse_entity(self, entity_element: Any, namespace: str) -> ODataEntity:
         name = entity_element.attrib["Name"]
@@ -411,11 +446,27 @@ class ODataService:
             rate_limit_cls=ODataError,
             server_error_cls=ODataError,
         )
-        self.api_data: dict[str, Any] = json.loads(res.text)
-        self.endpoints: list[ODataEndPoint] = [
-            ODataEndPoint(**x) for x in self.api_data["value"]
-        ]
-        self._odata_context_url: str = self.api_data["@odata.context"]
+        context = f"OData service {self.url}"
+        self.api_data = _load_json_object(res.text, context=context)
+        value = _required_field(self.api_data, "value", context=context)
+        if not isinstance(value, list):
+            raise ODataError("OData service response field 'value' must be a list")
+        endpoints = []
+        for endpoint in value:
+            if not isinstance(endpoint, dict):
+                raise ODataError(
+                    "OData service response field 'value' must contain objects"
+                )
+            endpoints.append(ODataEndPoint(**endpoint))
+        self.endpoints = endpoints
+        odata_context = _required_field(
+            self.api_data, "@odata.context", context=context
+        )
+        if not isinstance(odata_context, str):
+            raise ODataError(
+                "OData service response field '@odata.context' must be a string"
+            )
+        self._odata_context_url = odata_context
 
         # Use cached metadata if available, otherwise create and cache new one
         with _METADATA_CACHE_LOCK:
@@ -560,7 +611,10 @@ class ODataQuery:
         self._params = {}
 
     def collect(self) -> Any:
-        return json.loads(self.text())
+        url = self.odata_url()
+        data = _load_json_object(self.text(), context=f"OData query {url}")
+        _required_field(data, "value", context=f"OData query {url}")
+        return data
 
     async def async_text(self) -> str:
         """Async version of text(). Fetches OData response using shared client."""
@@ -592,7 +646,10 @@ class ODataQuery:
 
     async def async_collect(self) -> Any:
         """Async version of collect(). Awaits async_text() and parses JSON."""
-        return json.loads(await self.async_text())
+        url = self.odata_url()
+        data = _load_json_object(await self.async_text(), context=f"OData query {url}")
+        _required_field(data, "value", context=f"OData query {url}")
+        return data
 
     def text(self) -> str:
         params = self._build_parameters()
