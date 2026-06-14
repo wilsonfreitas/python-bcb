@@ -10,7 +10,7 @@ import pytest
 
 from bcb import currency, sgs
 from bcb.odata.api import Expectativas
-from bcb.exceptions import BCBRateLimitError, ODataError
+from bcb.exceptions import BCBRateLimitError, CurrencyNotFoundError, ODataError
 from tests.conftest import (
     CURRENCY_ID_LIST_HTML,
     CURRENCY_LIST_CSV,
@@ -30,6 +30,31 @@ PTAX_ID_LIST_URL = re.compile(r".*exibeFormularioConsultaBoletim.*")
 PTAX_CSV_DOWNLOAD_URL = re.compile(r".*www4\.bcb\.gov\.br.*\.csv")
 PTAX_RATE_URL = re.compile(r".*gerarCSVFechamento.*")
 SGS_CODE_URL = re.compile(r".*bcdata\.sgs\..*")
+
+
+def add_currency_base_mocks(httpx_mock):
+    httpx_mock.add_response(
+        url=PTAX_ID_LIST_URL,
+        content=CURRENCY_ID_LIST_HTML,
+        status_code=200,
+        is_reusable=True,
+    )
+    httpx_mock.add_response(
+        url=PTAX_CSV_DOWNLOAD_URL,
+        text=CURRENCY_LIST_CSV,
+        status_code=200,
+        is_reusable=True,
+    )
+
+
+def add_currency_rate_mock(httpx_mock):
+    httpx_mock.add_response(
+        url=PTAX_RATE_URL,
+        text=CURRENCY_RATE_CSV,
+        status_code=200,
+        headers={"Content-Type": "text/csv"},
+        is_reusable=True,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -110,22 +135,8 @@ async def test_async_get_json_rate_limit_raises(httpx_mock):
 
 async def test_async_get_symbol_returns_dataframe(httpx_mock):
     """Test async_get_symbol() returns DataFrame."""
-    httpx_mock.add_response(
-        url=PTAX_ID_LIST_URL,
-        content=CURRENCY_ID_LIST_HTML,
-        status_code=200,
-    )
-    httpx_mock.add_response(
-        url=PTAX_CSV_DOWNLOAD_URL,
-        text=CURRENCY_LIST_CSV,
-        status_code=200,
-    )
-    httpx_mock.add_response(
-        url=PTAX_RATE_URL,
-        text=CURRENCY_RATE_CSV,
-        status_code=200,
-        headers={"Content-Type": "text/csv"},
-    )
+    add_currency_base_mocks(httpx_mock)
+    add_currency_rate_mock(httpx_mock)
     df = await currency._async_get_symbol("USD", START, END)
     assert df is not None
     assert ("USD", "bid") in df.columns
@@ -134,24 +145,62 @@ async def test_async_get_symbol_returns_dataframe(httpx_mock):
 
 async def test_async_get_single_symbol_returns_dataframe(httpx_mock):
     """Test async_get() with single symbol returns DataFrame."""
-    httpx_mock.add_response(
-        url=PTAX_ID_LIST_URL,
-        content=CURRENCY_ID_LIST_HTML,
-        status_code=200,
-    )
-    httpx_mock.add_response(
-        url=PTAX_CSV_DOWNLOAD_URL,
-        text=CURRENCY_LIST_CSV,
-        status_code=200,
-    )
-    httpx_mock.add_response(
-        url=PTAX_RATE_URL,
-        text=CURRENCY_RATE_CSV,
-        status_code=200,
-        headers={"Content-Type": "text/csv"},
-    )
+    add_currency_base_mocks(httpx_mock)
+    add_currency_rate_mock(httpx_mock)
     df = await currency.async_get("USD", START, END)
     assert df is not None
+
+
+async def test_async_get_mixed_valid_invalid_symbols_returns_valid_dataframe(
+    httpx_mock,
+):
+    add_currency_base_mocks(httpx_mock)
+    add_currency_rate_mock(httpx_mock)
+
+    df = await currency.async_get(["USD", "ZAR"], START, END, side="both")
+
+    assert "USD" in df.columns.get_level_values(0)
+    assert "ZAR" not in df.columns.get_level_values(0)
+
+
+async def test_async_get_duplicate_symbols_returns_duplicate_columns(httpx_mock):
+    add_currency_base_mocks(httpx_mock)
+    add_currency_rate_mock(httpx_mock)
+
+    df = await currency.async_get(["USD", "USD"], START, END, side="both")
+
+    assert list(df.columns.get_level_values(0)).count("USD") == 4
+
+
+async def test_async_get_mixed_valid_invalid_text_returns_valid_dict(httpx_mock):
+    add_currency_base_mocks(httpx_mock)
+    add_currency_rate_mock(httpx_mock)
+
+    result = await currency.async_get(["USD", "ZAR"], START, END, output="text")
+
+    assert isinstance(result, dict)
+    assert list(result) == ["USD"]
+    assert "01122020" in result["USD"]
+
+
+async def test_async_get_all_invalid_symbols_raise_clear_error(httpx_mock):
+    add_currency_base_mocks(httpx_mock)
+
+    with pytest.raises(
+        CurrencyNotFoundError,
+        match="No valid currency symbols found: ZAR, ZZ1",
+    ):
+        await currency.async_get(["ZAR", "ZZ1"], START, END)
+
+
+async def test_async_get_all_invalid_text_symbols_raise_clear_error(httpx_mock):
+    add_currency_base_mocks(httpx_mock)
+
+    with pytest.raises(
+        CurrencyNotFoundError,
+        match="No valid currency symbols found: ZAR, ZZ1",
+    ):
+        await currency.async_get(["ZAR", "ZZ1"], START, END, output="text")
 
 
 # ---------------------------------------------------------------------------

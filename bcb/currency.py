@@ -6,7 +6,7 @@ import re
 import threading
 from datetime import date, timedelta
 from io import BytesIO, StringIO
-from typing import Dict, List, Literal, NamedTuple, Union, overload
+from typing import Dict, List, Literal, NamedTuple, NoReturn, Union, overload
 from urllib.parse import urlencode
 
 import httpx
@@ -302,6 +302,11 @@ def _get_currency_id(symbol: str) -> int:
     if matches.empty:
         raise CurrencyNotFoundError(f"Unknown currency symbol: {symbol}")
     return int(matches.max())
+
+
+def _raise_no_valid_currency_symbols(symbols: List[str]) -> NoReturn:
+    requested = ", ".join(symbols) if symbols else "<empty>"
+    raise CurrencyNotFoundError(f"No valid currency symbols found: {requested}")
 
 
 def _fetch_symbol_response(
@@ -620,7 +625,7 @@ def get(
             except CurrencyNotFoundError:
                 pass  # Skip missing currencies
         if not results:
-            raise CurrencyNotFoundError(f"Currency not found: {symbols}")
+            _raise_no_valid_currency_symbols(symbols)
         if len(symbols) == 1:
             return results[symbols[0]]
         return results
@@ -647,7 +652,7 @@ def get(
         else:
             raise ValueError("Unknown side value, use: bid, ask, both")
     else:
-        raise CurrencyNotFoundError(f"Currency not found: {symbols}")
+        _raise_no_valid_currency_symbols(symbols)
 
 
 async def _async_currency_id_list(
@@ -847,24 +852,35 @@ async def async_get(
     if output == "text":
         results: Dict[str, str] = {}
         texts = await asyncio.gather(
-            *[_async_get_symbol_text(symbol, start, end) for symbol in symbols]
+            *[_async_get_symbol_text(symbol, start, end) for symbol in symbols],
+            return_exceptions=True,
         )
         for symbol, text in zip(symbols, texts):
-            if text is not None:
-                results[symbol] = text
+            if isinstance(text, CurrencyNotFoundError):
+                continue
+            if isinstance(text, BaseException):
+                raise text
+            results[symbol] = text
         if not results:
-            raise CurrencyNotFoundError(f"Currency not found: {symbols}")
+            _raise_no_valid_currency_symbols(symbols)
         if len(symbols) == 1:
             return results[symbols[0]]
         return results
 
     dss = await asyncio.gather(
-        *[_async_get_symbol(symbol, start, end) for symbol in symbols]
+        *[_async_get_symbol(symbol, start, end) for symbol in symbols],
+        return_exceptions=True,
     )
-    dss = [df for df in dss if df is not None]
+    valid_dss = []
+    for df in dss:
+        if isinstance(df, CurrencyNotFoundError):
+            continue
+        if isinstance(df, BaseException):
+            raise df
+        valid_dss.append(df)
 
-    if len(dss) > 0:
-        df = pd.concat(dss, axis=1)
+    if len(valid_dss) > 0:
+        df = pd.concat(valid_dss, axis=1)
         if side in ("bid", "ask"):
             dx = df.reorder_levels([1, 0], axis=1).sort_index(axis=1)
             return dx[side]
@@ -878,4 +894,4 @@ async def async_get(
         else:
             raise ValueError("Unknown side value, use: bid, ask, both")
     else:
-        raise CurrencyNotFoundError(f"Currency not found: {symbols}")
+        _raise_no_valid_currency_symbols(symbols)
