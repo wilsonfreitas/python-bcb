@@ -11,7 +11,12 @@ import httpx
 from lxml import etree
 from typing_extensions import Self
 
-from bcb.http import _ASYNC_CLIENT, _CLIENT, raise_for_request_error, raise_for_status
+from bcb.http import (
+    get_async_client,
+    get_client,
+    raise_for_request_error,
+    raise_for_status,
+)
 from bcb.exceptions import ODataError
 
 logger = logging.getLogger(__name__)
@@ -285,7 +290,7 @@ class ODataMetadata:
     def _load_document(self) -> None:
         logger.debug(f"Fetching OData metadata from {self.url}")
         try:
-            res = _CLIENT.get(self.url)
+            res = get_client().get(self.url)
         except httpx.HTTPError as ex:
             raise_for_request_error(
                 ex, context=f"OData metadata {self.url}", error_cls=ODataError
@@ -393,7 +398,7 @@ class ODataService:
     def __init__(self, url: str) -> None:
         self.url = url
         try:
-            res = _CLIENT.get(self.url)
+            res = get_client().get(self.url)
         except httpx.HTTPError as ex:
             raise_for_request_error(
                 ex, context=f"OData service {self.url}", error_cls=ODataError
@@ -558,7 +563,7 @@ class ODataQuery:
         return json.loads(self.text())
 
     async def async_text(self) -> str:
-        """Async version of text(). Fetches OData response using _ASYNC_CLIENT."""
+        """Async version of text(). Fetches OData response using shared client."""
         params = self._build_parameters()
         if self.is_function and len(self.function_parameters):
             for p in self.entity.function.parameters:  # type: ignore[union-attr]
@@ -570,7 +575,7 @@ class ODataQuery:
         headers = {"OData-Version": "4.0", "OData-MaxVersion": "4.0"}
         url = self.odata_url()
         try:
-            res = await _ASYNC_CLIENT.get(url + "?" + qs, headers=headers)
+            res = await get_async_client().get(url + "?" + qs, headers=headers)
         except httpx.HTTPError as ex:
             raise_for_request_error(
                 ex, context=f"OData query {url}", error_cls=ODataError
@@ -602,7 +607,7 @@ class ODataQuery:
         url = self.odata_url()
         logger.debug(f"Fetching OData query from {url}")
         try:
-            res = _CLIENT.get(url + "?" + qs, headers=headers)
+            res = get_client().get(url + "?" + qs, headers=headers)
         except httpx.HTTPError as ex:
             raise_for_request_error(
                 ex, context=f"OData query {url}", error_cls=ODataError

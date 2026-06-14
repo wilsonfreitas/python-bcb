@@ -22,8 +22,8 @@ import httpx
 import pandas as pd
 
 from bcb.http import (
-    _CLIENT,
-    _ASYNC_CLIENT,
+    get_async_client,
+    get_client,
     raise_for_request_error,
     raise_for_status,
 )
@@ -367,7 +367,7 @@ def get_json(
     url, payload = _get_url_and_payload(code, start, end, last)
     logger.debug(f"Fetching SGS time series code={code} from {url.split('/dados')[0]}")
     try:
-        res = _CLIENT.get(url, params=payload)
+        res = get_client().get(url, params=payload)
     except httpx.HTTPError as ex:
         raise_for_request_error(
             ex, context=f"SGS time series code={code}", error_cls=SGSError
@@ -416,7 +416,7 @@ async def async_get_json(
         f"Fetching SGS time series (async) code={code} from {url.split('/dados')[0]}"
     )
     try:
-        res = await _ASYNC_CLIENT.get(url, params=payload)
+        res = await get_async_client().get(url, params=payload)
     except httpx.HTTPError as ex:
         raise_for_request_error(
             ex, context=f"SGS time series code={code}", error_cls=SGSError

@@ -15,8 +15,8 @@ import pandas as pd
 from lxml import html
 
 from bcb.http import (
-    _CLIENT,
-    _ASYNC_CLIENT,
+    get_async_client,
+    get_client,
     raise_for_request_error,
     raise_for_status,
 )
@@ -164,7 +164,7 @@ def _currency_id_list(
     )
     logger.debug(f"Fetching currency ID list from {url1}")
     try:
-        res = _CLIENT.get(url1)
+        res = get_client().get(url1)
     except httpx.HTTPError as ex:
         raise_for_request_error(ex, context="Currency ID list")
     logger.debug(
@@ -225,7 +225,7 @@ def _get_valid_currency_list(
     url2 = f"https://www4.bcb.gov.br/Download/fechamento/M{_date:%Y%m%d}.csv"
     logger.debug(f"Fetching currency list from {url2}")
     try:
-        res = _CLIENT.get(url2)
+        res = get_client().get(url2)
     except httpx.HTTPError as ex:
         # Connection error: retry same date up to 3 times
         if n >= 3:
@@ -336,7 +336,7 @@ def _fetch_symbol_response(
     url = _currency_url(cid, start_date, end_date)
     logger.debug(f"Fetching currency data for {symbol} from {url.split('?')[0]}")
     try:
-        res = _CLIENT.get(url)
+        res = get_client().get(url)
     except httpx.HTTPError as ex:
         raise_for_request_error(ex, context=f"Currency data for {symbol}")
     logger.debug(
@@ -665,7 +665,7 @@ async def _async_currency_id_list(
         "method=exibeFormularioConsultaBoletim"
     )
     try:
-        res = await _ASYNC_CLIENT.get(url1)
+        res = await get_async_client().get(url1)
     except httpx.HTTPError as ex:
         raise_for_request_error(ex, context="Currency ID list")
     raise_for_status(
@@ -696,7 +696,7 @@ async def _async_get_valid_currency_list(
 
     url2 = f"https://www4.bcb.gov.br/Download/fechamento/M{_date:%Y%m%d}.csv"
     try:
-        res = await _ASYNC_CLIENT.get(url2)
+        res = await get_async_client().get(url2)
     except httpx.HTTPError as ex:
         if n >= 3:
             raise_for_request_error(ex, context="Currency list")
@@ -759,7 +759,7 @@ async def _async_fetch_symbol_response(
     cid = await _async_get_currency_id(symbol)
     url = _currency_url(cid, start_date, end_date)
     try:
-        res = await _ASYNC_CLIENT.get(url)
+        res = await get_async_client().get(url)
     except httpx.HTTPError as ex:
         raise_for_request_error(ex, context=f"Currency data for {symbol}")
 
