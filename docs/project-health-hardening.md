@@ -58,6 +58,46 @@ For each implementation issue:
 6. Push the branch and open a PR against `project-health-hardening`.
 7. After merge, check off the item in issue #44.
 
+## Autonomous Execution Loop
+
+Use this loop when the goal is to keep executing issue #44 until all work is
+done or a human decision is required:
+
+```text
+Autonomous #44 execution loop:
+
+Repeat until #44 has no unchecked work items:
+
+1. Read issue #44.
+2. Pick the first unchecked work item.
+3. Read that implementation issue.
+4. Work from an up-to-date `project-health-hardening`.
+5. Create a branch named `hardening/<issue-number>-<short-title>`.
+6. Keep the implementation scoped to that issue.
+7. Run the Definition of Done from #44.
+8. Open a PR targeting `project-health-hardening`.
+9. Wait for GitHub checks.
+10. If checks pass and the PR is mergeable:
+    - merge the PR
+    - update #44
+    - close the implementation issue
+    - delete/prune the PR branch
+    - return to step 1
+11. Stop and ask for human input if a human decision is needed.
+
+Human-in-the-loop blockers include:
+- unclear product/API behavior
+- failing tests that require changing public behavior
+- merge conflicts that are not mechanical
+- CI failures that are not reproducible locally or not clearly transient
+- dependency, release, or security decisions
+- a task whose scope overlaps another unchecked issue
+- any destructive git action beyond deleting the completed PR branch
+
+Do not skip unchecked issues. Do not merge a PR with failing required checks
+unless the failure is confirmed unrelated/transient and documented.
+```
+
 ## Default Checks
 
 Run the targeted tests for the issue, then use the standard project checks:
@@ -67,6 +107,7 @@ uv run pytest -m "not integration"
 uv run ruff check bcb/ tests/
 uv run ruff format --check bcb/ tests/
 uv run mypy bcb/
+uv run --group docs sphinx-build -b html docs docs/_build/html
 ```
 
 For integration-test issues, also run:
