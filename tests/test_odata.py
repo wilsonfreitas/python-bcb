@@ -86,6 +86,28 @@ def test_service_root_connection_error_raises_odata_error(httpx_mock):
         Expectativas()
 
 
+def test_service_root_malformed_json_raises_odata_error(httpx_mock):
+    httpx_mock.add_response(
+        url=EXPECTATIVAS_BASE_URL,
+        text="not json",
+        status_code=200,
+    )
+
+    with pytest.raises(ODataError, match="OData service.*invalid JSON"):
+        Expectativas()
+
+
+def test_service_root_missing_required_fields_raises_odata_error(httpx_mock):
+    httpx_mock.add_response(
+        url=EXPECTATIVAS_BASE_URL,
+        text="{}",
+        status_code=200,
+    )
+
+    with pytest.raises(ODataError, match="missing required field 'value'"):
+        Expectativas()
+
+
 def test_metadata_status_error_raises_odata_error(httpx_mock):
     httpx_mock.add_response(
         url=EXPECTATIVAS_BASE_URL,
@@ -102,6 +124,38 @@ def test_metadata_status_error_raises_odata_error(httpx_mock):
         Expectativas()
 
 
+def test_metadata_malformed_xml_raises_odata_error(httpx_mock):
+    httpx_mock.add_response(
+        url=EXPECTATIVAS_BASE_URL,
+        text=ODATA_SERVICE_ROOT_JSON,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url=EXPECTATIVAS_METADATA_URL,
+        text="<edmx:Edmx><bad",
+        status_code=200,
+    )
+
+    with pytest.raises(ODataError, match="OData metadata.*invalid XML"):
+        Expectativas()
+
+
+def test_metadata_missing_schema_raises_odata_error(httpx_mock):
+    httpx_mock.add_response(
+        url=EXPECTATIVAS_BASE_URL,
+        text=ODATA_SERVICE_ROOT_JSON,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url=EXPECTATIVAS_METADATA_URL,
+        text='<?xml version="1.0"?><root />',
+        status_code=200,
+    )
+
+    with pytest.raises(ODataError, match="OData metadata.*missing schema"):
+        Expectativas()
+
+
 def test_query_status_error_raises_odata_error(httpx_mock):
     add_service_mocks(httpx_mock)
     httpx_mock.add_response(
@@ -114,6 +168,36 @@ def test_query_status_error_raises_odata_error(httpx_mock):
     ep = api.get_endpoint("ExpectativasMercadoAnuais")
 
     with pytest.raises(ODataError, match="rate limit"):
+        ep.query().limit(1).collect()
+
+
+def test_query_malformed_json_raises_odata_error(httpx_mock):
+    add_service_mocks(httpx_mock)
+    httpx_mock.add_response(
+        url=ENTITY_URL_PATTERN,
+        text="not json",
+        status_code=200,
+    )
+
+    api = Expectativas()
+    ep = api.get_endpoint("ExpectativasMercadoAnuais")
+
+    with pytest.raises(ODataError, match="OData query.*invalid JSON"):
+        ep.query().limit(1).collect()
+
+
+def test_query_missing_value_raises_odata_error(httpx_mock):
+    add_service_mocks(httpx_mock)
+    httpx_mock.add_response(
+        url=ENTITY_URL_PATTERN,
+        text='{"unexpected": []}',
+        status_code=200,
+    )
+
+    api = Expectativas()
+    ep = api.get_endpoint("ExpectativasMercadoAnuais")
+
+    with pytest.raises(ODataError, match="missing required field 'value'"):
         ep.query().limit(1).collect()
 
 
