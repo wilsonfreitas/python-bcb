@@ -6,24 +6,22 @@ import re
 import threading
 from datetime import date, timedelta
 from io import BytesIO, StringIO
-from typing import TYPE_CHECKING, Dict, List, Literal, NamedTuple, Union, overload
+from typing import Dict, List, Literal, NamedTuple, NoReturn, Union, overload
 from urllib.parse import urlencode
 
+import httpx
 import numpy as np
 import pandas as pd
-from lxml import html
+from lxml import etree, html
 
-from bcb.http import _CLIENT, _ASYNC_CLIENT
-from bcb.exceptions import (
-    BCBAPIError,
-    BCBAPINotFoundError,
-    BCBRateLimitError,
-    CurrencyNotFoundError,
+from bcb.http import (
+    get_async_client,
+    get_client,
+    raise_for_request_error,
+    raise_for_status,
 )
+from bcb.exceptions import BCBAPIError, CurrencyNotFoundError
 from bcb.utils import Date, DateInput
-
-if TYPE_CHECKING:
-    import httpx
 
 logger = logging.getLogger(__name__)
 
@@ -165,28 +163,18 @@ def _currency_id_list(
         "method=exibeFormularioConsultaBoletim"
     )
     logger.debug(f"Fetching currency ID list from {url1}")
-    res = _CLIENT.get(url1)
+    try:
+        res = get_client().get(url1)
+    except httpx.HTTPError as ex:
+        raise_for_request_error(ex, context="Currency ID list")
     logger.debug(
         f"Currency ID list response: status={res.status_code}, length={len(res.content)}"
     )
-    if res.status_code == 429:
-        raise BCBRateLimitError(
-            "BCB API rate limit exceeded. Please try again later.",
-            status_code=429,
-        )
-    if res.status_code == 404:
-        raise BCBAPINotFoundError(
-            "BCB API endpoint not found (404)",
-            status_code=404,
-        )
-    if res.status_code >= 500:
-        raise BCBAPIError(
-            f"BCB API server error (status {res.status_code})",
-            status_code=res.status_code,
-        )
-    if res.status_code != 200:
-        msg = f"BCB API Request error, status code = {res.status_code}"
-        raise BCBAPIError(msg, res.status_code)
+    raise_for_status(
+        res,
+        context="Currency ID list",
+        not_found_message="BCB API endpoint not found (404)",
+    )
 
     doc = html.parse(BytesIO(res.content)).getroot()
     xpath = "//select[@name='ChkMoeda']/option"
@@ -237,11 +225,11 @@ def _get_valid_currency_list(
     url2 = f"https://www4.bcb.gov.br/Download/fechamento/M{_date:%Y%m%d}.csv"
     logger.debug(f"Fetching currency list from {url2}")
     try:
-        res = _CLIENT.get(url2)
-    except Exception as ex:
+        res = get_client().get(url2)
+    except httpx.HTTPError as ex:
         # Connection error: retry same date up to 3 times
         if n >= 3:
-            raise ex
+            raise_for_request_error(ex, context="Currency list")
         logger.warning(
             f"Connection error fetching {url2}, retrying (attempt {n + 1}/3)"
         )
@@ -252,12 +240,12 @@ def _get_valid_currency_list(
     )
     if res.status_code == 200:
         return res
-    else:
-        # Non-200 response (file not found for date): roll back to previous day
-        logger.debug(
-            f"Currency list not found for {_date}, rolling back to previous day"
-        )
-        return _get_valid_currency_list(_date - timedelta(1), 0, max_rollback)
+    if res.status_code == 429 or res.status_code >= 500:
+        raise_for_status(res, context="Currency list")
+
+    # Non-200 response (file not found for date): roll back to previous day
+    logger.debug(f"Currency list not found for {_date}, rolling back to previous day")
+    return _get_valid_currency_list(_date - timedelta(1), 0, max_rollback)
 
 
 def get_currency_list(
@@ -316,6 +304,53 @@ def _get_currency_id(symbol: str) -> int:
     return int(matches.max())
 
 
+def _raise_no_valid_currency_symbols(symbols: List[str]) -> NoReturn:
+    requested = ", ".join(symbols) if symbols else "<empty>"
+    raise CurrencyNotFoundError(f"No valid currency symbols found: {requested}")
+
+
+def _is_html_response(response: httpx.Response) -> bool:
+    content_type = response.headers.get("Content-Type", "").lower()
+    if content_type.startswith("text/html"):
+        return True
+    body = response.content.lstrip().lower()
+    return body.startswith((b"<!doctype html", b"<html", b"<body", b"<div"))
+
+
+def _clean_currency_error_message(message: str) -> str:
+    message = re.sub(r"^\W+", "", message)
+    message = re.sub(r"\W+$", "", message)
+    message = re.sub(r"\s+", " ", message)
+    return message.strip()
+
+
+def _extract_currency_html_error(content: bytes) -> str | None:
+    try:
+        doc = html.parse(BytesIO(content)).getroot()
+    except (etree.ParserError, ValueError):
+        return None
+    xpath = "//div[@class='msgErro']"
+    for element in doc.xpath(xpath):
+        message = _clean_currency_error_message(str(element.text_content()))
+        if message:
+            return message
+    return None
+
+
+def _raise_currency_html_error(response: httpx.Response, symbol: str) -> NoReturn:
+    message = _extract_currency_html_error(response.content)
+    if message:
+        raise BCBAPIError(
+            f"BCB API returned error for {symbol}: {message}",
+            status_code=400,
+        )
+    raise BCBAPIError(
+        f"BCB API returned an HTML response for {symbol} "
+        "without a recognized BCB error message",
+        status_code=400,
+    )
+
+
 def _fetch_symbol_response(
     symbol: str, start_date: DateInput, end_date: DateInput
 ) -> "httpx.Response":
@@ -347,43 +382,23 @@ def _fetch_symbol_response(
     cid = _get_currency_id(symbol)  # Raises CurrencyNotFoundError if not found
     url = _currency_url(cid, start_date, end_date)
     logger.debug(f"Fetching currency data for {symbol} from {url.split('?')[0]}")
-    res = _CLIENT.get(url)
+    try:
+        res = get_client().get(url)
+    except httpx.HTTPError as ex:
+        raise_for_request_error(ex, context=f"Currency data for {symbol}")
     logger.debug(
         f"Currency data response: status={res.status_code}, length={len(res.content)}"
     )
 
-    # Handle HTML error response (e.g., no data for date range)
-    if res.headers["Content-Type"].startswith("text/html"):
-        doc = html.parse(BytesIO(res.content)).getroot()
-        xpath = "//div[@class='msgErro']"
-        elm = doc.xpath(xpath)[0]
-        x = elm.text
-        x = re.sub(r"^\W+", "", x)
-        x = re.sub(r"\W+$", "", x)
-        msg = f"BCB API returned error: {x} - {symbol}"
-        raise BCBAPIError(msg, status_code=400)
+    # Handle HTML error responses (e.g., no data for date range).
+    if _is_html_response(res):
+        _raise_currency_html_error(res, symbol)
 
-    # Handle HTTP error responses
-    if res.status_code == 429:
-        raise BCBRateLimitError(
-            "BCB API rate limit exceeded. Please try again later.",
-            status_code=429,
-        )
-    if res.status_code == 404:
-        raise BCBAPINotFoundError(
-            f"Currency data not found for {symbol}",
-            status_code=404,
-        )
-    if res.status_code >= 500:
-        raise BCBAPIError(
-            f"BCB API server error (status {res.status_code})",
-            status_code=res.status_code,
-        )
-    if res.status_code != 200:
-        raise BCBAPIError(
-            f"BCB API request failed with status {res.status_code}",
-            status_code=res.status_code,
-        )
+    raise_for_status(
+        res,
+        context=f"Currency data for {symbol}",
+        not_found_message=f"Currency data not found for {symbol}",
+    )
 
     return res
 
@@ -406,7 +421,12 @@ def _validate_currency_csv(csv_text: str) -> pd.DataFrame:
     BCBAPIError
         If CSV format is invalid (wrong column count)
     """
-    df = pd.read_csv(StringIO(csv_text), delimiter=";", header=None, dtype=str)
+    if not csv_text.strip():
+        raise BCBAPIError("Currency CSV response is empty", status_code=400)
+    try:
+        df = pd.read_csv(StringIO(csv_text), delimiter=";", header=None, dtype=str)
+    except (pd.errors.EmptyDataError, pd.errors.ParserError) as e:
+        raise BCBAPIError(f"Failed to parse currency CSV: {e}", status_code=400) from e
 
     # Validate column count
     if len(df.columns) != 8:
@@ -440,10 +460,10 @@ def _parse_currency_dates(df: pd.DataFrame) -> pd.DataFrame:
     """
     try:
         df["Date"] = pd.to_datetime(df["Date"], format="%d%m%Y")
-    except ValueError as e:
+    except (TypeError, ValueError) as e:
         raise BCBAPIError(
             f"Failed to parse currency date column: {str(e)}", status_code=400
-        )
+        ) from e
     return df
 
 
@@ -468,10 +488,10 @@ def _parse_currency_types(df: pd.DataFrame) -> pd.DataFrame:
     try:
         df["bid"] = df["bid"].str.replace(",", ".").astype(np.float64)
         df["ask"] = df["ask"].str.replace(",", ".").astype(np.float64)
-    except (ValueError, TypeError) as e:
+    except (TypeError, ValueError) as e:
         raise BCBAPIError(
             f"Failed to parse currency numeric columns: {str(e)}", status_code=400
-        )
+        ) from e
     return df
 
 
@@ -508,7 +528,7 @@ def _get_symbol(
     df1 = df.set_index("Date")
     n = ["bid", "ask"]
     df1 = df1[n]
-    tuples = list(zip([symbol] * len(n), n))
+    tuples = list(zip([symbol] * len(n), n, strict=True))
     df1.columns = pd.MultiIndex.from_tuples(tuples)
     return df1
 
@@ -543,6 +563,39 @@ def _get_symbol_text(symbol: str, start_date: DateInput, end_date: DateInput) ->
 
 # Type alias for text output with multiple symbols
 CurrencyTextResult = Dict[str, str]  # Maps symbol → CSV text
+CurrencySide = Literal["ask", "bid", "both"]
+CurrencyGroupBy = Literal["symbol", "side"]
+CurrencyOutput = Literal["dataframe", "text"]
+
+
+def _normalize_currency_symbols(symbols: Union[str, List[str]]) -> List[str]:
+    if isinstance(symbols, str):
+        symbols = [symbols]
+    if not symbols:
+        raise ValueError("At least one currency symbol must be provided")
+    for symbol in symbols:
+        if not isinstance(symbol, str) or not symbol.strip():
+            raise ValueError(f"Currency symbols must be non-empty strings: {symbol!r}")
+    return symbols
+
+
+def _validate_currency_query_inputs(
+    symbols: Union[str, List[str]],
+    start: DateInput,
+    end: DateInput,
+    side: str,
+    groupby: str,
+    output: str,
+) -> List[str]:
+    if output not in ("dataframe", "text"):
+        raise ValueError("Unknown output value, use: dataframe, text")
+    if side not in ("bid", "ask", "both"):
+        raise ValueError("Unknown side value, use: bid, ask, both")
+    if groupby not in ("symbol", "side"):
+        raise ValueError("Unknown groupby value, use: symbol, side")
+    Date(start)
+    Date(end)
+    return _normalize_currency_symbols(symbols)
 
 
 @overload
@@ -550,8 +603,8 @@ def get(
     symbols: str,
     start: DateInput,
     end: DateInput,
-    side: str = ...,
-    groupby: str = ...,
+    side: CurrencySide = ...,
+    groupby: CurrencyGroupBy = ...,
     output: Literal["dataframe"] = ...,
 ) -> pd.DataFrame: ...
 
@@ -561,8 +614,8 @@ def get(
     symbols: List[str],
     start: DateInput,
     end: DateInput,
-    side: str = ...,
-    groupby: str = ...,
+    side: CurrencySide = ...,
+    groupby: CurrencyGroupBy = ...,
     output: Literal["dataframe"] = ...,
 ) -> pd.DataFrame: ...
 
@@ -572,8 +625,8 @@ def get(
     symbols: str,
     start: DateInput,
     end: DateInput,
-    side: str = ...,
-    groupby: str = ...,
+    side: CurrencySide = ...,
+    groupby: CurrencyGroupBy = ...,
     output: Literal["text"] = ...,
 ) -> str: ...
 
@@ -583,8 +636,8 @@ def get(
     symbols: List[str],
     start: DateInput,
     end: DateInput,
-    side: str = ...,
-    groupby: str = ...,
+    side: CurrencySide = ...,
+    groupby: CurrencyGroupBy = ...,
     output: Literal["text"] = ...,
 ) -> CurrencyTextResult: ...
 
@@ -593,9 +646,9 @@ def get(
     symbols: Union[str, List[str]],
     start: DateInput,
     end: DateInput,
-    side: str = "ask",
-    groupby: str = "symbol",
-    output: str = "dataframe",
+    side: CurrencySide = "ask",
+    groupby: CurrencyGroupBy = "symbol",
+    output: CurrencyOutput = "dataframe",
 ) -> Union[pd.DataFrame, str, Dict[str, str]]:
     """
     Retorna um DataFrame pandas com séries temporais com taxas de câmbio.
@@ -607,18 +660,20 @@ def get(
         Códigos das moedas padrão ISO. O código de uma única moeda que
         retorna uma série temporal univariada e uma lista de códigos
         retorna uma série temporal multivariada.
-    start : str, int, date, datetime, Timestamp
-        Data de início da série.
-        Interpreta diferentes tipos e formatos de datas.
-    end : string, int, date, datetime, Timestamp
-        Data de início da série.
-        Interpreta diferentes tipos e formatos de datas.
-    side : str
+    start : str, date, datetime or bcb.utils.Date
+        Data de início da série. Strings usam o formato ``YYYY-MM-DD``;
+        ``'today'`` e ``'now'`` também são aceitos.
+    end : str, date, datetime or bcb.utils.Date
+        Data final da série. Strings usam o formato ``YYYY-MM-DD``;
+        ``'today'`` e ``'now'`` também são aceitos.
+    side : {"ask", "bid", "both"}, default "ask"
         Define se a série retornada vem com os ``ask`` prices,
         ``bid`` prices ou ``both`` para ambos.
-    groupby : str
+    groupby : {"symbol", "side"}, default "symbol"
         Define se os índices de coluna são agrupados por ``symbol`` ou
         por ``side``.
+    output : {"dataframe", "text"}, default "dataframe"
+        Define o formato de saída. Use ``"text"`` para retornar o CSV bruto.
 
     Returns
     -------
@@ -633,8 +688,9 @@ def get(
     DataFrame :
         Série temporal com cotações diárias das moedas solicitadas.
     """
-    if isinstance(symbols, str):
-        symbols = [symbols]
+    symbols = _validate_currency_query_inputs(
+        symbols, start, end, side, groupby, output
+    )
 
     if output == "text":
         results: Dict[str, str] = {}
@@ -645,7 +701,7 @@ def get(
             except CurrencyNotFoundError:
                 pass  # Skip missing currencies
         if not results:
-            raise CurrencyNotFoundError(f"Currency not found: {symbols}")
+            _raise_no_valid_currency_symbols(symbols)
         if len(symbols) == 1:
             return results[symbols[0]]
         return results
@@ -672,7 +728,7 @@ def get(
         else:
             raise ValueError("Unknown side value, use: bid, ask, both")
     else:
-        raise CurrencyNotFoundError(f"Currency not found: {symbols}")
+        _raise_no_valid_currency_symbols(symbols)
 
 
 async def _async_currency_id_list(
@@ -689,25 +745,15 @@ async def _async_currency_id_list(
         "https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?"
         "method=exibeFormularioConsultaBoletim"
     )
-    res = await _ASYNC_CLIENT.get(url1)
-    if res.status_code == 429:
-        raise BCBRateLimitError(
-            "BCB API rate limit exceeded. Please try again later.",
-            status_code=429,
-        )
-    if res.status_code == 404:
-        raise BCBAPINotFoundError(
-            "BCB API endpoint not found (404)",
-            status_code=404,
-        )
-    if res.status_code >= 500:
-        raise BCBAPIError(
-            f"BCB API server error (status {res.status_code})",
-            status_code=res.status_code,
-        )
-    if res.status_code != 200:
-        msg = f"BCB API Request error, status code = {res.status_code}"
-        raise BCBAPIError(msg, res.status_code)
+    try:
+        res = await get_async_client().get(url1)
+    except httpx.HTTPError as ex:
+        raise_for_request_error(ex, context="Currency ID list")
+    raise_for_status(
+        res,
+        context="Currency ID list",
+        not_found_message="BCB API endpoint not found (404)",
+    )
 
     doc = html.parse(BytesIO(res.content)).getroot()
     xpath = "//select[@name='ChkMoeda']/option"
@@ -731,18 +777,17 @@ async def _async_get_valid_currency_list(
 
     url2 = f"https://www4.bcb.gov.br/Download/fechamento/M{_date:%Y%m%d}.csv"
     try:
-        res = await _ASYNC_CLIENT.get(url2)
-    except Exception as ex:
+        res = await get_async_client().get(url2)
+    except httpx.HTTPError as ex:
         if n >= 3:
-            raise ex
+            raise_for_request_error(ex, context="Currency list")
         return await _async_get_valid_currency_list(_date, n + 1, max_rollback)
 
     if res.status_code == 200:
         return res
-    else:
-        return await _async_get_valid_currency_list(
-            _date - timedelta(1), 0, max_rollback
-        )
+    if res.status_code == 429 or res.status_code >= 500:
+        raise_for_status(res, context="Currency list")
+    return await _async_get_valid_currency_list(_date - timedelta(1), 0, max_rollback)
 
 
 async def _async_get_currency_list(
@@ -794,38 +839,19 @@ async def _async_fetch_symbol_response(
     """Async version of _fetch_symbol_response()."""
     cid = await _async_get_currency_id(symbol)
     url = _currency_url(cid, start_date, end_date)
-    res = await _ASYNC_CLIENT.get(url)
+    try:
+        res = await get_async_client().get(url)
+    except httpx.HTTPError as ex:
+        raise_for_request_error(ex, context=f"Currency data for {symbol}")
 
-    if res.headers["Content-Type"].startswith("text/html"):
-        doc = html.parse(BytesIO(res.content)).getroot()
-        xpath = "//div[@class='msgErro']"
-        elm = doc.xpath(xpath)[0]
-        x = elm.text
-        x = re.sub(r"^\W+", "", x)
-        x = re.sub(r"\W+$", "", x)
-        msg = f"BCB API returned error: {x} - {symbol}"
-        raise BCBAPIError(msg, status_code=400)
+    if _is_html_response(res):
+        _raise_currency_html_error(res, symbol)
 
-    if res.status_code == 429:
-        raise BCBRateLimitError(
-            "BCB API rate limit exceeded. Please try again later.",
-            status_code=429,
-        )
-    if res.status_code == 404:
-        raise BCBAPINotFoundError(
-            f"Currency data not found for {symbol}",
-            status_code=404,
-        )
-    if res.status_code >= 500:
-        raise BCBAPIError(
-            f"BCB API server error (status {res.status_code})",
-            status_code=res.status_code,
-        )
-    if res.status_code != 200:
-        raise BCBAPIError(
-            f"BCB API request failed with status {res.status_code}",
-            status_code=res.status_code,
-        )
+    raise_for_status(
+        res,
+        context=f"Currency data for {symbol}",
+        not_found_message=f"Currency data not found for {symbol}",
+    )
 
     return res
 
@@ -841,7 +867,7 @@ async def _async_get_symbol(
     df1 = df.set_index("Date")
     n = ["bid", "ask"]
     df1 = df1[n]
-    tuples = list(zip([symbol] * len(n), n))
+    tuples = list(zip([symbol] * len(n), n, strict=True))
     df1.columns = pd.MultiIndex.from_tuples(tuples)
     return df1
 
@@ -858,9 +884,9 @@ async def async_get(
     symbols: Union[str, List[str]],
     start: DateInput,
     end: DateInput,
-    side: str = "ask",
-    groupby: str = "symbol",
-    output: str = "dataframe",
+    side: CurrencySide = "ask",
+    groupby: CurrencyGroupBy = "symbol",
+    output: CurrencyOutput = "dataframe",
 ) -> Union[pd.DataFrame, str, Dict[str, str]]:
     """
     Retorna um DataFrame pandas com séries temporais com taxas de câmbio (async version).
@@ -873,15 +899,17 @@ async def async_get(
     ----------
     symbols : str, List[str]
         Códigos das moedas padrão ISO
-    start : str, int, date, datetime, Timestamp
-        Data de início da série
-    end : string, int, date, datetime, Timestamp
-        Data final da série
-    side : str
+    start : str, date, datetime or bcb.utils.Date
+        Data de início da série. Strings usam o formato ``YYYY-MM-DD``;
+        ``'today'`` e ``'now'`` também são aceitos.
+    end : str, date, datetime or bcb.utils.Date
+        Data final da série. Strings usam o formato ``YYYY-MM-DD``;
+        ``'today'`` e ``'now'`` também são aceitos.
+    side : {"ask", "bid", "both"}
         ``'ask'``, ``'bid'`` ou ``'both'``
-    groupby : str
+    groupby : {"symbol", "side"}
         ``'symbol'`` ou ``'side'``
-    output : str
+    output : {"dataframe", "text"}
         ``'dataframe'`` ou ``'text'``
 
     Returns
@@ -889,30 +917,42 @@ async def async_get(
     Union[pd.DataFrame, str, Dict[str, str]]
         Série temporal conforme especificado
     """
-    if isinstance(symbols, str):
-        symbols = [symbols]
+    symbols = _validate_currency_query_inputs(
+        symbols, start, end, side, groupby, output
+    )
 
     if output == "text":
         results: Dict[str, str] = {}
         texts = await asyncio.gather(
-            *[_async_get_symbol_text(symbol, start, end) for symbol in symbols]
+            *[_async_get_symbol_text(symbol, start, end) for symbol in symbols],
+            return_exceptions=True,
         )
-        for symbol, text in zip(symbols, texts):
-            if text is not None:
-                results[symbol] = text
+        for symbol, text in zip(symbols, texts, strict=True):
+            if isinstance(text, CurrencyNotFoundError):
+                continue
+            if isinstance(text, BaseException):
+                raise text
+            results[symbol] = text
         if not results:
-            raise CurrencyNotFoundError(f"Currency not found: {symbols}")
+            _raise_no_valid_currency_symbols(symbols)
         if len(symbols) == 1:
             return results[symbols[0]]
         return results
 
     dss = await asyncio.gather(
-        *[_async_get_symbol(symbol, start, end) for symbol in symbols]
+        *[_async_get_symbol(symbol, start, end) for symbol in symbols],
+        return_exceptions=True,
     )
-    dss = [df for df in dss if df is not None]
+    valid_dss = []
+    for df in dss:
+        if isinstance(df, CurrencyNotFoundError):
+            continue
+        if isinstance(df, BaseException):
+            raise df
+        valid_dss.append(df)
 
-    if len(dss) > 0:
-        df = pd.concat(dss, axis=1)
+    if len(valid_dss) > 0:
+        df = pd.concat(valid_dss, axis=1)
         if side in ("bid", "ask"):
             dx = df.reorder_levels([1, 0], axis=1).sort_index(axis=1)
             return dx[side]
@@ -926,4 +966,4 @@ async def async_get(
         else:
             raise ValueError("Unknown side value, use: bid, ask, both")
     else:
-        raise CurrencyNotFoundError(f"Currency not found: {symbols}")
+        _raise_no_valid_currency_symbols(symbols)

@@ -1,9 +1,11 @@
 SGS
 ===
 
-A função :py:func:`bcb.sgs.get` obtem os dados do webservice do Banco Central ,
-interface json do serviço BCData/SGS - 
+A função :py:func:`bcb.sgs.get` obtém os dados do webservice do Banco Central,
+interface JSON do serviço BCData/SGS -
 `Sistema Gerenciador de Séries Temporais (SGS) <https://www3.bcb.gov.br/sgspub/localizarseries/localizarSeries.do?method=prepararTelaLocalizarSeries>`_.
+
+Os parâmetros ``start`` e ``end`` aceitam strings ``YYYY-MM-DD``, ``datetime.date``, ``datetime.datetime`` ou :py:class:`bcb.utils.Date`. Também é possível usar ``last`` para buscar os últimos ``n`` pontos disponíveis.
 
 Exemplos
 --------
@@ -69,6 +71,8 @@ O comportamento padrão (retorno de DataFrame) é mantido quando o parâmetro n�
 
 Dados de Inadimplência de Operações de Crédito
 ==============================================
+
+Os modos aceitos são ``PF`` (pessoas físicas), ``PJ`` (pessoas jurídicas) e ``total``; ``all`` é aceito como alias de ``total``. Os locais devem ser todos estados ou todos regiões, sem misturar os dois tipos na mesma chamada.
 
 .. ipython:: python
 

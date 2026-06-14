@@ -77,12 +77,20 @@ Busca taxas de câmbio de forma assíncrona com a mesma interface que a versão 
 .. code-block:: python
 
     import asyncio
-    from bcb import currency
+    from bcb import currency, http
 
     async def main():
-        # Buscar taxas de câmbio
-        usd = await currency.async_get('USD', start='2024-01-01', end='2024-12-31')
-        print(usd.head())
+        try:
+            # Buscar múltiplas taxas de câmbio em paralelo
+            rates = await currency.async_get(
+                ['USD', 'EUR'],
+                start='2024-01-01',
+                end='2024-12-31',
+                side='both',
+            )
+            print(rates.head())
+        finally:
+            await http.aclose_async_client()
 
     asyncio.run(main())
 
@@ -202,7 +210,9 @@ Performance: Síncrono vs Assíncrono
 Limpeza de Recursos
 -------------------
 
-Para aplicações de longa duração, feche o cliente assíncrono quando terminar:
+Para aplicações de longa duração, feche o cliente assíncrono quando terminar.
+Em código assíncrono, use ``await http.aclose_async_client()`` dentro da
+função principal:
 
 .. code-block:: python
 
@@ -210,13 +220,17 @@ Para aplicações de longa duração, feche o cliente assíncrono quando termina
     from bcb import http
 
     async def main():
-        # ... suas operações assíncronas ...
-        pass
+        try:
+            # ... suas operações assíncronas ...
+            pass
+        finally:
+            await http.aclose_async_client()
 
     asyncio.run(main())
 
-    # Fechar cliente assíncrono
-    asyncio.run(http.close_async_client())
+Em código síncrono, quando não há uma event loop em execução, também é possível
+chamar ``http.close_async_client()`` diretamente após terminar as operações
+assíncronas.
 
 Limitações
 ----------
@@ -253,4 +267,4 @@ Veja Também
 * :ref:`SGS` — Documentação completa do módulo SGS
 * :ref:`Conversor de Moedas` — Documentação do módulo currency
 * :ref:`OData` — Documentação do cliente OData
-* `asyncio — asyncpython <https://docs.python.org/3/library/asyncio.html>`_
+* `asyncio — documentação Python <https://docs.python.org/3/library/asyncio.html>`_

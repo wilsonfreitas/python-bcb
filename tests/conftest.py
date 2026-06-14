@@ -57,7 +57,7 @@ def make_currency_list_csv(
 
     header = "Codigo;Nome;Simbolo;CodPais;NomePais;Tipo;DataExclusao\n"
     rows = []
-    for symbol, code in zip(symbols, codes):
+    for symbol, code in zip(symbols, codes, strict=True):
         rows.append(f"{code};{symbol.upper()} CURRENCY;{symbol};999;COUNTRY;A;\n")
     return header + "".join(rows)
 

@@ -6,10 +6,17 @@ Tests for async_get() functions in sgs, currency, and odata modules.
 import re
 from datetime import datetime
 
+import httpx
 import pytest
 
 from bcb import currency, sgs
 from bcb.odata.api import Expectativas
+from bcb.exceptions import (
+    BCBAPIError,
+    BCBRateLimitError,
+    CurrencyNotFoundError,
+    ODataError,
+)
 from tests.conftest import (
     CURRENCY_ID_LIST_HTML,
     CURRENCY_LIST_CSV,
@@ -29,6 +36,31 @@ PTAX_ID_LIST_URL = re.compile(r".*exibeFormularioConsultaBoletim.*")
 PTAX_CSV_DOWNLOAD_URL = re.compile(r".*www4\.bcb\.gov\.br.*\.csv")
 PTAX_RATE_URL = re.compile(r".*gerarCSVFechamento.*")
 SGS_CODE_URL = re.compile(r".*bcdata\.sgs\..*")
+
+
+def add_currency_base_mocks(httpx_mock):
+    httpx_mock.add_response(
+        url=PTAX_ID_LIST_URL,
+        content=CURRENCY_ID_LIST_HTML,
+        status_code=200,
+        is_reusable=True,
+    )
+    httpx_mock.add_response(
+        url=PTAX_CSV_DOWNLOAD_URL,
+        text=CURRENCY_LIST_CSV,
+        status_code=200,
+        is_reusable=True,
+    )
+
+
+def add_currency_rate_mock(httpx_mock):
+    httpx_mock.add_response(
+        url=PTAX_RATE_URL,
+        text=CURRENCY_RATE_CSV,
+        status_code=200,
+        headers={"Content-Type": "text/csv"},
+        is_reusable=True,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -92,6 +124,26 @@ async def test_async_get_text_output(httpx_mock):
     assert "data" in result
 
 
+async def test_async_get_json_rate_limit_raises(httpx_mock):
+    httpx_mock.add_response(
+        url=SGS_CODE_URL,
+        status_code=429,
+    )
+
+    with pytest.raises(BCBRateLimitError):
+        await sgs.async_get_json(1)
+
+
+async def test_async_get_empty_sgs_code_list_raises():
+    with pytest.raises(ValueError, match="At least one SGS code"):
+        await sgs.async_get([])
+
+
+async def test_async_get_invalid_sgs_output_raises():
+    with pytest.raises(ValueError, match="output"):
+        await sgs.async_get(1, output="xml")  # type: ignore[arg-type]
+
+
 # ---------------------------------------------------------------------------
 # Currency async tests
 # ---------------------------------------------------------------------------
@@ -99,22 +151,8 @@ async def test_async_get_text_output(httpx_mock):
 
 async def test_async_get_symbol_returns_dataframe(httpx_mock):
     """Test async_get_symbol() returns DataFrame."""
-    httpx_mock.add_response(
-        url=PTAX_ID_LIST_URL,
-        content=CURRENCY_ID_LIST_HTML,
-        status_code=200,
-    )
-    httpx_mock.add_response(
-        url=PTAX_CSV_DOWNLOAD_URL,
-        text=CURRENCY_LIST_CSV,
-        status_code=200,
-    )
-    httpx_mock.add_response(
-        url=PTAX_RATE_URL,
-        text=CURRENCY_RATE_CSV,
-        status_code=200,
-        headers={"Content-Type": "text/csv"},
-    )
+    add_currency_base_mocks(httpx_mock)
+    add_currency_rate_mock(httpx_mock)
     df = await currency._async_get_symbol("USD", START, END)
     assert df is not None
     assert ("USD", "bid") in df.columns
@@ -123,24 +161,98 @@ async def test_async_get_symbol_returns_dataframe(httpx_mock):
 
 async def test_async_get_single_symbol_returns_dataframe(httpx_mock):
     """Test async_get() with single symbol returns DataFrame."""
-    httpx_mock.add_response(
-        url=PTAX_ID_LIST_URL,
-        content=CURRENCY_ID_LIST_HTML,
-        status_code=200,
-    )
-    httpx_mock.add_response(
-        url=PTAX_CSV_DOWNLOAD_URL,
-        text=CURRENCY_LIST_CSV,
-        status_code=200,
-    )
+    add_currency_base_mocks(httpx_mock)
+    add_currency_rate_mock(httpx_mock)
+    df = await currency.async_get("USD", START, END)
+    assert df is not None
+
+
+async def test_async_get_invalid_currency_side_raises():
+    with pytest.raises(ValueError, match="Unknown side"):
+        await currency.async_get("USD", START, END, side="mid")  # type: ignore[arg-type]
+
+
+async def test_async_get_invalid_currency_output_raises():
+    with pytest.raises(ValueError, match="Unknown output"):
+        await currency.async_get("USD", START, END, output="json")  # type: ignore[arg-type]
+
+
+async def test_async_get_mixed_valid_invalid_symbols_returns_valid_dataframe(
+    httpx_mock,
+):
+    add_currency_base_mocks(httpx_mock)
+    add_currency_rate_mock(httpx_mock)
+
+    df = await currency.async_get(["USD", "ZAR"], START, END, side="both")
+
+    assert "USD" in df.columns.get_level_values(0)
+    assert "ZAR" not in df.columns.get_level_values(0)
+
+
+async def test_async_get_duplicate_symbols_returns_duplicate_columns(httpx_mock):
+    add_currency_base_mocks(httpx_mock)
+    add_currency_rate_mock(httpx_mock)
+
+    df = await currency.async_get(["USD", "USD"], START, END, side="both")
+
+    assert list(df.columns.get_level_values(0)).count("USD") == 4
+
+
+async def test_async_get_mixed_valid_invalid_text_returns_valid_dict(httpx_mock):
+    add_currency_base_mocks(httpx_mock)
+    add_currency_rate_mock(httpx_mock)
+
+    result = await currency.async_get(["USD", "ZAR"], START, END, output="text")
+
+    assert isinstance(result, dict)
+    assert list(result) == ["USD"]
+    assert "01122020" in result["USD"]
+
+
+async def test_async_get_all_invalid_symbols_raise_clear_error(httpx_mock):
+    add_currency_base_mocks(httpx_mock)
+
+    with pytest.raises(
+        CurrencyNotFoundError,
+        match="No valid currency symbols found: ZAR, ZZ1",
+    ):
+        await currency.async_get(["ZAR", "ZZ1"], START, END)
+
+
+async def test_async_get_all_invalid_text_symbols_raise_clear_error(httpx_mock):
+    add_currency_base_mocks(httpx_mock)
+
+    with pytest.raises(
+        CurrencyNotFoundError,
+        match="No valid currency symbols found: ZAR, ZZ1",
+    ):
+        await currency.async_get(["ZAR", "ZZ1"], START, END, output="text")
+
+
+async def test_async_get_symbol_unexpected_html_raises_bcb_error(httpx_mock):
+    add_currency_base_mocks(httpx_mock)
     httpx_mock.add_response(
         url=PTAX_RATE_URL,
-        text=CURRENCY_RATE_CSV,
+        text="<html><body><p>temporary failure</p></body></html>",
+        status_code=200,
+        headers={},
+    )
+
+    with pytest.raises(BCBAPIError, match="HTML response.*USD.*recognized"):
+        await currency._async_get_symbol("USD", START, END)
+
+
+async def test_async_get_symbol_empty_response_body_raises_bcb_error(httpx_mock):
+    add_currency_base_mocks(httpx_mock)
+    httpx_mock.add_response(
+        url=PTAX_RATE_URL,
+        text="",
         status_code=200,
         headers={"Content-Type": "text/csv"},
     )
-    df = await currency.async_get("USD", START, END)
-    assert df is not None
+
+    with pytest.raises(BCBAPIError, match="empty"):
+        await currency._async_get_symbol("USD", START, END)
 
 
 # ---------------------------------------------------------------------------
@@ -170,6 +282,77 @@ async def test_odata_query_async_text(httpx_mock):
     result = await ep.query().limit(1).async_text()
     assert isinstance(result, str)
     assert "value" in result
+
+
+async def test_odata_query_async_status_error_raises(httpx_mock):
+    httpx_mock.add_response(
+        url="https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/",
+        text=ODATA_SERVICE_ROOT_JSON,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url="https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/$metadata",
+        content=ODATA_METADATA_XML,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url=re.compile(r".*ExpectativasMercadoAnuais.*"),
+        text="server error",
+        status_code=500,
+    )
+
+    api = Expectativas()
+    ep = api.get_endpoint("ExpectativasMercadoAnuais")
+
+    with pytest.raises(ODataError, match="OData query"):
+        await ep.query().limit(1).async_text()
+
+
+async def test_odata_query_async_transport_error_raises(httpx_mock):
+    httpx_mock.add_response(
+        url="https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/",
+        text=ODATA_SERVICE_ROOT_JSON,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url="https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/$metadata",
+        content=ODATA_METADATA_XML,
+        status_code=200,
+    )
+    httpx_mock.add_exception(
+        httpx.ConnectError("network down"),
+        url=re.compile(r".*ExpectativasMercadoAnuais.*"),
+    )
+
+    api = Expectativas()
+    ep = api.get_endpoint("ExpectativasMercadoAnuais")
+
+    with pytest.raises(ODataError, match="OData query.*network down"):
+        await ep.query().limit(1).async_text()
+
+
+async def test_odata_query_async_malformed_json_raises(httpx_mock):
+    httpx_mock.add_response(
+        url="https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/",
+        text=ODATA_SERVICE_ROOT_JSON,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url="https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/$metadata",
+        content=ODATA_METADATA_XML,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url=re.compile(r".*ExpectativasMercadoAnuais.*"),
+        text="not json",
+        status_code=200,
+    )
+
+    api = Expectativas()
+    ep = api.get_endpoint("ExpectativasMercadoAnuais")
+
+    with pytest.raises(ODataError, match="OData query.*invalid JSON"):
+        await ep.query().limit(1).async_collect()
 
 
 async def test_odata_query_async_collect(httpx_mock):

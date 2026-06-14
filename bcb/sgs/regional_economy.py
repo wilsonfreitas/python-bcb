@@ -126,46 +126,69 @@ NON_PERFORMING_LOANS_BY_STATE_TOTAL = {
 }
 
 
+def _normalize_mode(mode: str) -> str:
+    if not isinstance(mode, str):
+        raise ValueError("mode must be one of: PF, PJ, total")
+    normalized = mode.upper()
+    if normalized == "ALL":
+        normalized = "TOTAL"
+    if normalized not in ("PF", "PJ", "TOTAL"):
+        raise ValueError("Unknown mode value, use: PF, PJ, total")
+    return normalized
+
+
+def _normalize_locations(states_or_region: Union[str, List[str]]) -> List[str]:
+    locations = (
+        [states_or_region] if isinstance(states_or_region, str) else states_or_region
+    )
+    if not isinstance(locations, list) or not locations:
+        raise ValueError("At least one state or region must be provided")
+
+    normalized = []
+    for location in locations:
+        if not isinstance(location, str) or not location.strip():
+            raise ValueError(f"Not a valid state or region: {location!r}")
+        normalized.append(location.upper())
+    return normalized
+
+
 def get_non_performing_loans_codes(
     states_or_region: Union[str, List[str]], mode: str = "total"
 ) -> Dict[str, str]:
-    is_state = False
-    is_region = False
-    states_or_region = (
-        [states_or_region] if isinstance(states_or_region, str) else states_or_region
-    )
-    states_or_region = [location.upper() for location in states_or_region]
-    if any(
-        location in list(NON_PERFORMING_LOANS_BY_STATE_TOTAL.keys())
-        for location in states_or_region
-    ):
-        is_state = True
-    elif any(
-        location in list(NON_PERFORMING_LOANS_BY_REGION_TOTAL.keys())
-        for location in states_or_region
-    ):
-        is_region = True
+    locations = _normalize_locations(states_or_region)
+    normalized_mode = _normalize_mode(mode)
 
-    if not is_state and not is_region:
-        raise Exception(f"Not a valid state or region: {states_or_region}")
+    states = set(NON_PERFORMING_LOANS_BY_STATE_TOTAL)
+    regions = set(NON_PERFORMING_LOANS_BY_REGION_TOTAL)
+    invalid_locations = [
+        location
+        for location in locations
+        if location not in states and location not in regions
+    ]
+    if invalid_locations:
+        raise ValueError(f"Not a valid state or region: {invalid_locations}")
 
-    codes = {}
-    non_performing_loans_by_location = NON_PERFORMING_LOANS_BY_STATE_TOTAL
-    if is_state:
-        if mode.upper() == "PF":
-            non_performing_loans_by_location = NON_PERFORMING_LOANS_BY_STATE_PF
-        elif mode.upper() == "PJ":
-            non_performing_loans_by_location = NON_PERFORMING_LOANS_BY_STATE_PJ
-    elif is_region:
-        non_performing_loans_by_location = NON_PERFORMING_LOANS_BY_REGION_TOTAL
-        if mode.upper() == "PF":
-            non_performing_loans_by_location = NON_PERFORMING_LOANS_BY_REGION_PF
-        elif mode.upper() == "PJ":
-            non_performing_loans_by_location = NON_PERFORMING_LOANS_BY_REGION_PJ
+    # Some codes are ambiguous: "SE" is both Sergipe and Sudeste.
+    # Preserve the historical state-first behavior for all-state requests.
+    if all(location in states for location in locations):
+        mappings = {
+            "PF": NON_PERFORMING_LOANS_BY_STATE_PF,
+            "PJ": NON_PERFORMING_LOANS_BY_STATE_PJ,
+            "TOTAL": NON_PERFORMING_LOANS_BY_STATE_TOTAL,
+        }
+    elif all(location in regions for location in locations):
+        mappings = {
+            "PF": NON_PERFORMING_LOANS_BY_REGION_PF,
+            "PJ": NON_PERFORMING_LOANS_BY_REGION_PJ,
+            "TOTAL": NON_PERFORMING_LOANS_BY_REGION_TOTAL,
+        }
+    else:
+        raise ValueError("Cannot mix states and regions in the same request")
 
-    for location in states_or_region:
-        codes[location] = non_performing_loans_by_location[location]
-    return codes
+    non_performing_loans_by_location = mappings[normalized_mode]
+    return {
+        location: non_performing_loans_by_location[location] for location in locations
+    }
 
 
 def get_non_performing_loans(
@@ -194,13 +217,14 @@ def get_non_performing_loans(
 
     states_or_region (List[str]): Uma lista com estado ou região.
     mode (str): O tipo de inadimplência. Pode ser "PF" (pessoas físicas),
-                "PJ" (pessoas jurídicas) ou "total" (inadimplência total).
-    start : str, int, date, datetime, Timestamp
-        Data de início da série.
-        Interpreta diferentes tipos e formatos de datas.
-    end : string, int, date, datetime, Timestamp
-        Data final da série.
-        Interpreta diferentes tipos e formatos de datas.
+                "PJ" (pessoas jurídicas), "total" ou "all"
+                (inadimplência total).
+    start : str, date, datetime or bcb.utils.Date
+        Data de início da série. Strings usam o formato ``YYYY-MM-DD``;
+        ``'today'`` e ``'now'`` também são aceitos.
+    end : str, date, datetime or bcb.utils.Date
+        Data final da série. Strings usam o formato ``YYYY-MM-DD``;
+        ``'today'`` e ``'now'`` também são aceitos.
     last : int
         Retorna os últimos ``last`` elementos disponíveis da série temporal
         solicitada. Se ``last`` for maior que 0 (zero) os argumentos ``start``

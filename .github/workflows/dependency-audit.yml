@@ -1,0 +1,31 @@
+name: Dependency Audit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 10 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Set up Python 3.12
+        run: uv python install 3.12
+
+      - name: Export locked dependencies
+        run: >-
+          uv export --frozen --format requirements-txt --all-groups
+          --no-emit-project --no-hashes -o requirements-audit.txt
+
+      - name: Run dependency audit
+        run: uvx pip-audit --requirement requirements-audit.txt

@@ -183,25 +183,44 @@ def test_currency_get_both_side_groupby(httpx_mock):
     assert ("ask", "USD") in df.columns
 
 
-def test_currency_get_invalid_side(httpx_mock):
-    add_id_list_mock(httpx_mock)
-    add_currency_list_mock(httpx_mock)
-    add_rate_mock(httpx_mock)
+def test_currency_get_invalid_side():
     with pytest.raises(ValueError, match="Unknown side"):
-        currency.get("USD", START, END, side="mid")
+        currency.get("USD", START, END, side="mid")  # type: ignore[arg-type]
+
+
+def test_currency_get_invalid_groupby():
+    with pytest.raises(ValueError, match="Unknown groupby"):
+        currency.get(
+            "USD",
+            START,
+            END,
+            side="both",
+            groupby="market",  # type: ignore[arg-type]
+        )
+
+
+def test_currency_get_invalid_output():
+    with pytest.raises(ValueError, match="Unknown output"):
+        currency.get("USD", START, END, output="json")  # type: ignore[arg-type]
 
 
 def test_currency_get_unknown_symbol_raises(httpx_mock):
     add_id_list_mock(httpx_mock)
     add_currency_list_mock(httpx_mock)
-    with pytest.raises(CurrencyNotFoundError):
+    with pytest.raises(
+        CurrencyNotFoundError,
+        match="No valid currency symbols found: ZAR",
+    ):
         currency.get("ZAR", START, END)
 
 
 def test_currency_get_list_all_unknown_raises(httpx_mock):
     add_id_list_mock(httpx_mock)
     add_currency_list_mock(httpx_mock)
-    with pytest.raises(CurrencyNotFoundError):
+    with pytest.raises(
+        CurrencyNotFoundError,
+        match="No valid currency symbols found: ZAR, ZZ1",
+    ):
         currency.get(["ZAR", "ZZ1"], START, END)
 
 
@@ -247,8 +266,23 @@ def test_currency_get_output_text_unknown_raises(httpx_mock):
     """get('ZAR', output='text') raises CurrencyNotFoundError."""
     add_id_list_mock(httpx_mock)
     add_currency_list_mock(httpx_mock)
-    with pytest.raises(CurrencyNotFoundError):
+    with pytest.raises(
+        CurrencyNotFoundError,
+        match="No valid currency symbols found: ZAR",
+    ):
         currency.get("ZAR", START, END, output="text")
+
+
+def test_currency_get_output_text_mixed_valid_invalid_returns_valid_dict(httpx_mock):
+    add_id_list_mock(httpx_mock)
+    add_currency_list_mock(httpx_mock)
+    add_rate_mock(httpx_mock)
+
+    result = currency.get(["USD", "ZAR"], START, END, output="text")
+
+    assert isinstance(result, dict)
+    assert list(result) == ["USD"]
+    assert "01122020" in result["USD"]
 
 
 def test_currency_get_output_dataframe_is_default(httpx_mock):

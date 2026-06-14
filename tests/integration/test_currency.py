@@ -23,8 +23,8 @@ def test_currency_get_symbol():
     end_date = datetime.strptime("2020-12-05", "%Y-%m-%d")
     x = currency._get_symbol("USD", start_date, end_date)
     assert isinstance(x, pd.DataFrame)
-    x = currency._get_symbol("ZAR", start_date, end_date)
-    assert x is None
+    with pytest.raises(CurrencyNotFoundError):
+        currency._get_symbol("ZAR", start_date, end_date)
     x = currency.get("USD", start_date, end_date)
     assert isinstance(x, pd.DataFrame)
     with pytest.raises(CurrencyNotFoundError):
