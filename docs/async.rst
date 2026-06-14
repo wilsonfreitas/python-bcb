@@ -202,7 +202,9 @@ Performance: Síncrono vs Assíncrono
 Limpeza de Recursos
 -------------------
 
-Para aplicações de longa duração, feche o cliente assíncrono quando terminar:
+Para aplicações de longa duração, feche o cliente assíncrono quando terminar.
+Em código assíncrono, use ``await http.aclose_async_client()`` dentro da
+função principal:
 
 .. code-block:: python
 
@@ -210,13 +212,17 @@ Para aplicações de longa duração, feche o cliente assíncrono quando termina
     from bcb import http
 
     async def main():
-        # ... suas operações assíncronas ...
-        pass
+        try:
+            # ... suas operações assíncronas ...
+            pass
+        finally:
+            await http.aclose_async_client()
 
     asyncio.run(main())
 
-    # Fechar cliente assíncrono
-    asyncio.run(http.close_async_client())
+Em código síncrono, quando não há uma event loop em execução, também é possível
+chamar ``http.close_async_client()`` diretamente após terminar as operações
+assíncronas.
 
 Limitações
 ----------

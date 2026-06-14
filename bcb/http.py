@@ -27,11 +27,16 @@ _CLIENT = httpx.Client(
     follow_redirects=True,
 )
 
-# Shared asynchronous HTTP client (for future async API)
-_ASYNC_CLIENT = httpx.AsyncClient(
-    timeout=DEFAULT_TIMEOUT,
-    follow_redirects=True,
-)
+
+def _make_async_client() -> httpx.AsyncClient:
+    return httpx.AsyncClient(
+        timeout=DEFAULT_TIMEOUT,
+        follow_redirects=True,
+    )
+
+
+# Shared asynchronous HTTP client
+_ASYNC_CLIENT = _make_async_client()
 
 
 # Retry decorator for transient failures
@@ -62,7 +67,16 @@ def get_async_client() -> httpx.AsyncClient:
     httpx.AsyncClient
         Shared async client with connection pooling and configured timeout.
     """
+    global _ASYNC_CLIENT
+    if _ASYNC_CLIENT.is_closed:
+        _ASYNC_CLIENT = _make_async_client()
     return _ASYNC_CLIENT
+
+
+async def aclose_async_client() -> None:
+    """Close the shared async client from async code."""
+    if not _ASYNC_CLIENT.is_closed:
+        await _ASYNC_CLIENT.aclose()
 
 
 def close_async_client() -> None:
@@ -74,16 +88,11 @@ def close_async_client() -> None:
     import asyncio
 
     try:
-        loop = asyncio.get_event_loop()
-        if loop.is_running():
-            # If called from async context, schedule closing
-            asyncio.create_task(_ASYNC_CLIENT.aclose())
-        else:
-            # If called from sync context, run the close
-            loop.run_until_complete(_ASYNC_CLIENT.aclose())
+        loop = asyncio.get_running_loop()
     except RuntimeError:
-        # No event loop, create one
-        asyncio.run(_ASYNC_CLIENT.aclose())
+        asyncio.run(aclose_async_client())
+    else:
+        loop.create_task(aclose_async_client())
 
 
 T = TypeVar("T")
