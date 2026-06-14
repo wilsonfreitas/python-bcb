@@ -257,6 +257,21 @@
 interface JSON do serviço BCData/SGS -
 <a class="reference external" href="https://www3.bcb.gov.br/sgspub/localizarseries/localizarSeries.do?method=prepararTelaLocalizarSeries">Sistema Gerenciador de Séries Temporais (SGS)</a>.</p>
 <p>Os parâmetros <code class="docutils literal notranslate"><span class="pre">start</span></code> e <code class="docutils literal notranslate"><span class="pre">end</span></code> aceitam strings <code class="docutils literal notranslate"><span class="pre">YYYY-MM-DD</span></code>, <code class="docutils literal notranslate"><span class="pre">datetime.date</span></code>, <code class="docutils literal notranslate"><span class="pre">datetime.datetime</span></code> ou <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.utils.Date</span></code>. Também é possível usar <code class="docutils literal notranslate"><span class="pre">last</span></code> para buscar os últimos <code class="docutils literal notranslate"><span class="pre">n</span></code> pontos disponíveis.</p>
+<section id="timeout-em-consultas-longas">
+<h2>Timeout em consultas longas<a class="headerlink" href="#timeout-em-consultas-longas" title="Link permanente para este cabeçalho">¶</a></h2>
+<p>Por padrão, as requisições usam o timeout global do cliente HTTP compartilhado.
+Para consultas SGS com janelas grandes ou respostas lentas, informe <code class="docutils literal notranslate"><span class="pre">timeout</span></code>
+na chamada. O valor é aplicado por tentativa HTTP; quando houver retry, cada
+tentativa usa o mesmo timeout.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb</span><span class="w"> </span><span class="kn">import</span> <span class="n">sgs</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">sgs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s2">&quot;1990-01-01&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2026-01-01&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+<span class="n">raw</span> <span class="o">=</span> <span class="n">sgs</span><span class="o">.</span><span class="n">get_json</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s2">&quot;1990-01-01&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Se a consulta continuar lenta mesmo com timeout maior, divida o período em
+janelas menores e concatene os resultados.</p>
+</section>
 <section id="exemplos">
 <h2>Exemplos<a class="headerlink" href="#exemplos" title="Link permanente para este cabeçalho">¶</a></h2>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb</span><span class="w"> </span><span class="kn">import</span> <span class="n">sgs</span>
@@ -476,6 +491,7 @@ O comportamento padrão (retorno de DataFrame) é mantido quando o parâmetro n�
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">SGS</a><ul>
+<li><a class="reference internal" href="#timeout-em-consultas-longas">Timeout em consultas longas</a></li>
 <li><a class="reference internal" href="#exemplos">Exemplos</a></li>
 <li><a class="reference internal" href="#obtendo-o-json-bruto">Obtendo o JSON bruto</a></li>
 </ul>

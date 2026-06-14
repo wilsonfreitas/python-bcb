@@ -60,6 +60,18 @@ Conversor de Moedas
 
 O módulo :py:mod:`bcb.currency` obtém dados de moedas do conversor de moedas do Banco Central através de webscraping. Os parâmetros ``start`` e ``end`` aceitam strings ``YYYY-MM-DD``, ``datetime.date``, ``datetime.datetime`` ou :py:class:`bcb.utils.Date`.
 
+Para consultas longas ou respostas lentas, informe ``timeout`` na chamada. O valor
+é usado em cada requisição HTTP feita por ``currency.get`` na chamada corrente,
+incluindo a busca inicial das listas de moedas quando elas ainda não estiverem
+em cache.
+
+.. code:: python
+
+    from bcb import currency
+
+    df = currency.get("USD", start="1980-01-01", end="2026-01-01", timeout=120)
+    moedas = currency.get_currency_list(timeout=120)
+
 .. ipython:: python
 
     from bcb import currency

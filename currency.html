@@ -369,6 +369,16 @@ são preenchidos com 0 para ter 2 dígitos.</p>
 <section id="conversor-de-moedas">
 <h2>Conversor de Moedas<a class="headerlink" href="#conversor-de-moedas" title="Link permanente para este cabeçalho">¶</a></h2>
 <p>O módulo <a class="reference internal" href="api.html#module-bcb.currency" title="bcb.currency"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bcb.currency</span></code></a> obtém dados de moedas do conversor de moedas do Banco Central através de webscraping. Os parâmetros <code class="docutils literal notranslate"><span class="pre">start</span></code> e <code class="docutils literal notranslate"><span class="pre">end</span></code> aceitam strings <code class="docutils literal notranslate"><span class="pre">YYYY-MM-DD</span></code>, <code class="docutils literal notranslate"><span class="pre">datetime.date</span></code>, <code class="docutils literal notranslate"><span class="pre">datetime.datetime</span></code> ou <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.utils.Date</span></code>.</p>
+<p>Para consultas longas ou respostas lentas, informe <code class="docutils literal notranslate"><span class="pre">timeout</span></code> na chamada. O valor
+é usado em cada requisição HTTP feita por <code class="docutils literal notranslate"><span class="pre">currency.get</span></code> na chamada corrente,
+incluindo a busca inicial das listas de moedas quando elas ainda não estiverem
+em cache.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb</span><span class="w"> </span><span class="kn">import</span> <span class="n">currency</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">currency</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;USD&quot;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s2">&quot;1980-01-01&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;2026-01-01&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+<span class="n">moedas</span> <span class="o">=</span> <span class="n">currency</span><span class="o">.</span><span class="n">get_currency_list</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+</pre></div>
+</div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [13]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb</span><span class="w"> </span><span class="kn">import</span> <span class="n">currency</span>
 
 <span class="gp">In [14]: </span><span class="n">df</span> <span class="o">=</span> <span class="n">currency</span><span class="o">.</span><span class="n">get</span><span class="p">([</span><span class="s1">&#39;USD&#39;</span><span class="p">,</span> <span class="s1">&#39;EUR&#39;</span><span class="p">],</span>
