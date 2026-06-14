@@ -1,12 +1,12 @@
 import re
-from datetime import datetime
+from datetime import date, datetime
 
 import httpx
 import pandas as pd
 import pytest
 
 from bcb.odata.api import Expectativas
-from bcb.odata.framework import ODataPropertyFilter, ODataPropertyOrderBy
+from bcb.odata.framework import ODataProperty, ODataPropertyFilter, ODataPropertyOrderBy
 from bcb.exceptions import ODataError
 from tests.conftest import (
     ODATA_SERVICE_ROOT_JSON,
@@ -215,6 +215,11 @@ def test_string_property_equality_filter(httpx_mock):
     assert str(f) == "Indicador eq 'IPCA'"
 
 
+def test_string_property_filter_escapes_apostrophes():
+    indicador = ODataProperty(Name="Indicador", Type="Edm.String")
+    assert str(indicador == "Focus's IPCA") == "Indicador eq 'Focus''s IPCA'"
+
+
 def test_decimal_property_comparison_filters(httpx_mock):
     add_service_mocks(httpx_mock)
     api = Expectativas()
@@ -224,6 +229,34 @@ def test_decimal_property_comparison_filters(httpx_mock):
     assert str(mediana >= 4.0) == "Mediana ge 4.0"
     assert str(mediana < 4.0) == "Mediana lt 4.0"
     assert str(mediana <= 4.0) == "Mediana le 4.0"
+
+
+def test_date_property_filter_formats_dates():
+    data = ODataProperty(Name="Data", Type="Edm.Date")
+    assert str(data == date(2024, 1, 31)) == "Data eq 2024-01-31"
+
+
+def test_int_property_filter_formats_ints():
+    prazo = ODataProperty(Name="Prazo", Type="Edm.Int32")
+    assert str(prazo == "12") == "Prazo eq 12"
+
+
+@pytest.mark.parametrize(
+    ("prop", "value", "message"),
+    [
+        (ODataProperty(Name="Indicador", Type="Edm.String"), None, "Edm.String"),
+        (
+            ODataProperty(Name="Mediana", Type="Edm.Decimal"),
+            "not-a-number",
+            "Edm.Decimal",
+        ),
+        (ODataProperty(Name="Data", Type="Edm.Date"), "2024-01-31", "Edm.Date"),
+        (ODataProperty(Name="Codigo", Type="Edm.Guid"), "abc", "Unsupported"),
+    ],
+)
+def test_property_filter_invalid_values_raise_odata_error(prop, value, message):
+    with pytest.raises(ODataError, match=message):
+        str(ODataPropertyFilter(prop, value, "eq"))
 
 
 def test_property_orderby(httpx_mock):
