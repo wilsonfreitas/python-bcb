@@ -1,5 +1,6 @@
 """Shared HTTP error handling tests."""
 
+import asyncio
 import ast
 from pathlib import Path
 
@@ -14,6 +15,7 @@ from bcb.exceptions import (
     ODataError,
     SGSError,
 )
+from bcb import http as http_module
 from bcb.http import raise_for_request_error, raise_for_status
 
 
@@ -103,3 +105,67 @@ def test_feature_modules_do_not_import_private_http_clients() -> None:
                     violations.append(f"{module_path}: {names}")
 
     assert violations == []
+
+
+class FakeAsyncClient:
+    def __init__(self, *, is_closed: bool = False) -> None:
+        self.is_closed = is_closed
+        self.close_count = 0
+
+    async def aclose(self) -> None:
+        self.is_closed = True
+        self.close_count += 1
+
+
+def test_get_async_client_recreates_closed_client(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    closed_client = FakeAsyncClient(is_closed=True)
+    replacement_client = FakeAsyncClient()
+    monkeypatch.setattr(http_module, "_ASYNC_CLIENT", closed_client)
+    monkeypatch.setattr(http_module, "_make_async_client", lambda: replacement_client)
+
+    assert http_module.get_async_client() is replacement_client
+
+
+def test_close_async_client_runs_from_sync_context(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client = FakeAsyncClient()
+    monkeypatch.setattr(http_module, "_ASYNC_CLIENT", client)
+
+    http_module.close_async_client()
+
+    assert client.is_closed
+    assert client.close_count == 1
+
+
+def test_documented_async_shutdown_example_runs(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client = FakeAsyncClient()
+    monkeypatch.setattr(http_module, "_ASYNC_CLIENT", client)
+
+    async def main() -> None:
+        await http_module.aclose_async_client()
+
+    asyncio.run(main())
+
+    assert client.is_closed
+    assert client.close_count == 1
+
+
+def test_close_async_client_schedules_from_running_loop(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    client = FakeAsyncClient()
+    monkeypatch.setattr(http_module, "_ASYNC_CLIENT", client)
+
+    async def main() -> None:
+        http_module.close_async_client()
+        await asyncio.sleep(0)
+
+    asyncio.run(main())
+
+    assert client.is_closed
+    assert client.close_count == 1
