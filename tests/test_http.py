@@ -28,6 +28,10 @@ def test_raise_for_status_allows_expected_status() -> None:
     raise_for_status(make_response(200), context="Example")
 
 
+def test_raise_for_status_allows_expected_status_tuple() -> None:
+    raise_for_status(make_response(202), context="Example", expected_status=(200, 202))
+
+
 @pytest.mark.parametrize(
     ("status_code", "error_cls"),
     [
@@ -61,6 +65,17 @@ def test_raise_for_status_supports_endpoint_specific_exceptions() -> None:
             server_error_cls=SGSError,
             server_error_message="SGS unavailable",
         )
+
+
+def test_raise_for_status_uses_custom_rate_limit_message() -> None:
+    with pytest.raises(BCBRateLimitError, match="Slow down") as exc_info:
+        raise_for_status(
+            make_response(429),
+            context="Example",
+            rate_limit_message="Slow down",
+        )
+
+    assert exc_info.value.status_code == 429
 
 
 @pytest.mark.parametrize(
@@ -169,3 +184,15 @@ def test_close_async_client_schedules_from_running_loop(
 
     assert client.is_closed
     assert client.close_count == 1
+
+
+def test_with_retry_decorator_returns_successful_result() -> None:
+    calls: list[int] = []
+
+    @http_module.with_retry
+    def sample(value: int) -> int:
+        calls.append(value)
+        return value * 2
+
+    assert sample(21) == 42
+    assert calls == [21]

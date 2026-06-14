@@ -6,6 +6,7 @@ Tests for async_get() functions in sgs, currency, and odata modules.
 import re
 from datetime import datetime
 
+import httpx
 import pytest
 
 from bcb import currency, sgs
@@ -304,6 +305,29 @@ async def test_odata_query_async_status_error_raises(httpx_mock):
     ep = api.get_endpoint("ExpectativasMercadoAnuais")
 
     with pytest.raises(ODataError, match="OData query"):
+        await ep.query().limit(1).async_text()
+
+
+async def test_odata_query_async_transport_error_raises(httpx_mock):
+    httpx_mock.add_response(
+        url="https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/",
+        text=ODATA_SERVICE_ROOT_JSON,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url="https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/$metadata",
+        content=ODATA_METADATA_XML,
+        status_code=200,
+    )
+    httpx_mock.add_exception(
+        httpx.ConnectError("network down"),
+        url=re.compile(r".*ExpectativasMercadoAnuais.*"),
+    )
+
+    api = Expectativas()
+    ep = api.get_endpoint("ExpectativasMercadoAnuais")
+
+    with pytest.raises(ODataError, match="OData query.*network down"):
         await ep.query().limit(1).async_text()
 
 
