@@ -11,8 +11,13 @@ import pytest
 
 from bcb import sgs
 from bcb.exceptions import SGSError
+from tests.conftest import SGS_JSON_5
 
 SGS_CODE_URL = re.compile(r".*bcdata\.sgs\..*")
+
+
+def _disable_sgs_retry_sleep(monkeypatch):
+    monkeypatch.setattr(sgs._get_sgs_response.retry, "sleep", lambda _: None)
 
 
 # ---------------------------------------------------------------------------
@@ -52,24 +57,56 @@ def test_get_json_500_raises(httpx_mock):
         sgs.get_json(1)
 
 
-def test_get_json_connection_error_raises(httpx_mock):
-    httpx_mock.add_exception(
-        httpx.ConnectError("network down"),
-        url=SGS_CODE_URL,
-    )
+def test_get_json_connection_error_raises(httpx_mock, monkeypatch):
+    _disable_sgs_retry_sleep(monkeypatch)
+    for _ in range(4):
+        httpx_mock.add_exception(
+            httpx.ConnectError("network down"),
+            url=SGS_CODE_URL,
+        )
 
     with pytest.raises(SGSError, match="SGS time series"):
         sgs.get_json(1)
 
 
-def test_get_json_timeout_error_raises(httpx_mock):
+def test_get_json_timeout_error_raises(httpx_mock, monkeypatch):
+    _disable_sgs_retry_sleep(monkeypatch)
+    for _ in range(4):
+        httpx_mock.add_exception(
+            httpx.TimeoutException("request timed out"),
+            url=SGS_CODE_URL,
+        )
+
+    with pytest.raises(SGSError, match="SGS time series"):
+        sgs.get_json(1)
+
+
+def test_get_json_retries_timeout_then_succeeds(httpx_mock, monkeypatch):
+    _disable_sgs_retry_sleep(monkeypatch)
     httpx_mock.add_exception(
         httpx.TimeoutException("request timed out"),
         url=SGS_CODE_URL,
     )
+    httpx_mock.add_response(
+        url=SGS_CODE_URL,
+        text=SGS_JSON_5,
+        status_code=200,
+    )
 
-    with pytest.raises(SGSError, match="SGS time series"):
+    assert sgs.get_json(1) == SGS_JSON_5
+
+
+def test_get_json_does_not_retry_http_status_errors(httpx_mock, monkeypatch):
+    _disable_sgs_retry_sleep(monkeypatch)
+    httpx_mock.add_response(
+        url=SGS_CODE_URL,
+        status_code=500,
+    )
+
+    with pytest.raises(SGSError):
         sgs.get_json(1)
+
+    assert len(httpx_mock.get_requests()) == 1
 
 
 # ---------------------------------------------------------------------------

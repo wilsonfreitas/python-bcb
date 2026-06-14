@@ -26,6 +26,7 @@ from bcb.http import (
     get_client,
     raise_for_request_error,
     raise_for_status,
+    with_retry,
 )
 from bcb.exceptions import SGSError
 from bcb.utils import Date, DateInput
@@ -229,6 +230,16 @@ def _raise_sgs_response_error(res: httpx.Response, code: int) -> None:
     )
 
 
+@with_retry
+def _get_sgs_response(url: str, payload: Dict[str, str]) -> httpx.Response:
+    return get_client().get(url, params=payload)
+
+
+@with_retry
+async def _async_get_sgs_response(url: str, payload: Dict[str, str]) -> httpx.Response:
+    return await get_async_client().get(url, params=payload)
+
+
 def _format_df(df: pd.DataFrame, code: SGSCode, freq: Optional[str]) -> pd.DataFrame:
     cns = {"data": "Date", "valor": code.name, "datafim": "enddate"}
     df = df.rename(columns=cns)
@@ -395,7 +406,7 @@ def get_json(
         f"Fetching SGS time series code={code_obj.value} from {url.split('/dados')[0]}"
     )
     try:
-        res = get_client().get(url, params=payload)
+        res = _get_sgs_response(url, payload)
     except httpx.HTTPError as ex:
         raise_for_request_error(
             ex, context=f"SGS time series code={code_obj.value}", error_cls=SGSError
@@ -449,7 +460,7 @@ async def async_get_json(
         f"from {url.split('/dados')[0]}"
     )
     try:
-        res = await get_async_client().get(url, params=payload)
+        res = await _async_get_sgs_response(url, payload)
     except httpx.HTTPError as ex:
         raise_for_request_error(
             ex, context=f"SGS time series code={code_obj.value}", error_cls=SGSError
