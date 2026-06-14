@@ -330,8 +330,14 @@ def test_get_symbol_malformed_csv_invalid_numeric_conversion_raises(httpx_mock):
 
 def test_get_empty_symbol_list_raises(httpx_mock):
     """Test that empty symbol list raises an error."""
-    with pytest.raises((ValueError, CurrencyNotFoundError)):
+    with pytest.raises(ValueError, match="At least one currency symbol"):
         currency.get([], START, END)
+
+
+def test_get_blank_symbol_raises():
+    """Blank currency symbols fail before HTTP requests."""
+    with pytest.raises(ValueError, match="non-empty"):
+        currency.get("", START, END)
 
 
 def test_get_invalid_date_input_raises():

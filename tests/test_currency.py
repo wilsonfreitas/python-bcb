@@ -183,12 +183,25 @@ def test_currency_get_both_side_groupby(httpx_mock):
     assert ("ask", "USD") in df.columns
 
 
-def test_currency_get_invalid_side(httpx_mock):
-    add_id_list_mock(httpx_mock)
-    add_currency_list_mock(httpx_mock)
-    add_rate_mock(httpx_mock)
+def test_currency_get_invalid_side():
     with pytest.raises(ValueError, match="Unknown side"):
-        currency.get("USD", START, END, side="mid")
+        currency.get("USD", START, END, side="mid")  # type: ignore[arg-type]
+
+
+def test_currency_get_invalid_groupby():
+    with pytest.raises(ValueError, match="Unknown groupby"):
+        currency.get(
+            "USD",
+            START,
+            END,
+            side="both",
+            groupby="market",  # type: ignore[arg-type]
+        )
+
+
+def test_currency_get_invalid_output():
+    with pytest.raises(ValueError, match="Unknown output"):
+        currency.get("USD", START, END, output="json")  # type: ignore[arg-type]
 
 
 def test_currency_get_unknown_symbol_raises(httpx_mock):

@@ -105,6 +105,16 @@ SGSCodeInput: TypeAlias = Union[
 ]
 
 
+def _validate_sgs_output(output: str) -> None:
+    if output not in ("dataframe", "text"):
+        raise ValueError("Unknown output value, use: dataframe, text")
+
+
+def _validate_last(last: int) -> None:
+    if not isinstance(last, int) or last < 0:
+        raise ValueError(f"last must be a non-negative integer, got {last!r}")
+
+
 def _validate_sgs_code(code: SGSCode) -> None:
     """Validate SGSCode value.
 
@@ -145,22 +155,32 @@ def _codes(codes: SGSCodeInput) -> Generator[SGSCode, None, None]:
         _validate_sgs_code(code_obj)
         yield code_obj
     elif isinstance(codes, tuple):
+        if len(codes) != 2:
+            raise ValueError("Named SGS code tuples must contain (name, code)")
         code_obj = SGSCode.from_named(codes[1], codes[0])
         _validate_sgs_code(code_obj)
         yield code_obj
     elif isinstance(codes, list):
+        if not codes:
+            raise ValueError("At least one SGS code must be provided")
         for cd in codes:
             if isinstance(cd, tuple):
+                if len(cd) != 2:
+                    raise ValueError("Named SGS code tuples must contain (name, code)")
                 code_obj = SGSCode.from_named(cd[1], cd[0])
             else:
                 code_obj = SGSCode.from_code(cd)
             _validate_sgs_code(code_obj)
             yield code_obj
     elif isinstance(codes, Mapping):
+        if not codes:
+            raise ValueError("At least one SGS code must be provided")
         for name, code in codes.items():
             code_obj = SGSCode.from_named(code, name)
             _validate_sgs_code(code_obj)
             yield code_obj
+    else:
+        raise ValueError(f"Unsupported SGS code input: {codes!r}")
 
 
 def _get_url_and_payload(
@@ -169,6 +189,7 @@ def _get_url_and_payload(
     end_date: Optional[DateInput],
     last: int,
 ) -> Tuple[str, Dict[str, str]]:
+    _validate_last(last)
     payload: Dict[str, str] = {"formato": "json"}
     if last == 0:
         if start_date is not None or end_date is not None:
@@ -252,7 +273,7 @@ def get(
     last: int = 0,
     multi: bool = True,
     freq: Optional[str] = None,
-    output: str = "dataframe",
+    output: Literal["dataframe", "text"] = "dataframe",
 ) -> Union[pd.DataFrame, List[pd.DataFrame], str, Dict[int, str]]:
     """
     Retorna um DataFrame pandas com séries temporais obtidas do SGS.
@@ -309,9 +330,12 @@ def get(
         Mapeamento de código → JSON bruto (quando ``output='text'`` e
         múltiplos códigos).
     """
+    _validate_sgs_output(output)
+    code_list = list(_codes(codes))
+
     if output == "text":
         results: Dict[int, str] = {}
-        for code in _codes(codes):
+        for code in code_list:
             results[code.value] = get_json(code.value, start, end, last)
         values = list(results.values())
         if len(values) == 1:
@@ -319,7 +343,7 @@ def get(
         return results
 
     dfs = []
-    for code in _codes(codes):
+    for code in code_list:
         text = get_json(code.value, start, end, last)
         df = pd.read_json(StringIO(text))
         df = _format_df(df, code, freq)
@@ -334,7 +358,7 @@ def get(
 
 
 def get_json(
-    code: int,
+    code: int | str,
     start: Optional[DateInput] = None,
     end: Optional[DateInput] = None,
     last: int = 0,
@@ -364,23 +388,27 @@ def get_json(
     JSON :
         série temporal univariada em formato JSON.
     """
-    url, payload = _get_url_and_payload(code, start, end, last)
-    logger.debug(f"Fetching SGS time series code={code} from {url.split('/dados')[0]}")
+    code_obj = SGSCode.from_code(code)
+    _validate_sgs_code(code_obj)
+    url, payload = _get_url_and_payload(code_obj.value, start, end, last)
+    logger.debug(
+        f"Fetching SGS time series code={code_obj.value} from {url.split('/dados')[0]}"
+    )
     try:
         res = get_client().get(url, params=payload)
     except httpx.HTTPError as ex:
         raise_for_request_error(
-            ex, context=f"SGS time series code={code}", error_cls=SGSError
+            ex, context=f"SGS time series code={code_obj.value}", error_cls=SGSError
         )
     logger.debug(f"SGS response: status={res.status_code}, length={len(res.text)}")
 
     if res.status_code != 200:
-        _raise_sgs_response_error(res, code)
+        _raise_sgs_response_error(res, code_obj.value)
     return str(res.text)
 
 
 async def async_get_json(
-    code: int,
+    code: int | str,
     start: Optional[DateInput] = None,
     end: Optional[DateInput] = None,
     last: int = 0,
@@ -411,22 +439,25 @@ async def async_get_json(
     SGSError
         Se a API retorna um erro
     """
-    url, payload = _get_url_and_payload(code, start, end, last)
+    code_obj = SGSCode.from_code(code)
+    _validate_sgs_code(code_obj)
+    url, payload = _get_url_and_payload(code_obj.value, start, end, last)
     logger.debug(
-        f"Fetching SGS time series (async) code={code} from {url.split('/dados')[0]}"
+        f"Fetching SGS time series (async) code={code_obj.value} "
+        f"from {url.split('/dados')[0]}"
     )
     try:
         res = await get_async_client().get(url, params=payload)
     except httpx.HTTPError as ex:
         raise_for_request_error(
-            ex, context=f"SGS time series code={code}", error_cls=SGSError
+            ex, context=f"SGS time series code={code_obj.value}", error_cls=SGSError
         )
     logger.debug(
         f"SGS (async) response: status={res.status_code}, length={len(res.text)}"
     )
 
     if res.status_code != 200:
-        _raise_sgs_response_error(res, code)
+        _raise_sgs_response_error(res, code_obj.value)
     return str(res.text)
 
 
@@ -437,7 +468,7 @@ async def async_get(
     last: int = 0,
     multi: bool = True,
     freq: Optional[str] = None,
-    output: str = "dataframe",
+    output: Literal["dataframe", "text"] = "dataframe",
 ) -> Union[pd.DataFrame, List[pd.DataFrame], str, Dict[int, str]]:
     """
     Retorna um DataFrame pandas com séries temporais obtidas do SGS (async version).
@@ -467,6 +498,7 @@ async def async_get(
     Union[pd.DataFrame, List[pd.DataFrame], str, Dict[int, str]]
         Série(s) temporal(is) conforme especificado
     """
+    _validate_sgs_output(output)
     code_list = list(_codes(codes))
 
     # Concurrent HTTP requests via asyncio.gather()

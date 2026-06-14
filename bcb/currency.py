@@ -563,6 +563,39 @@ def _get_symbol_text(symbol: str, start_date: DateInput, end_date: DateInput) ->
 
 # Type alias for text output with multiple symbols
 CurrencyTextResult = Dict[str, str]  # Maps symbol → CSV text
+CurrencySide = Literal["ask", "bid", "both"]
+CurrencyGroupBy = Literal["symbol", "side"]
+CurrencyOutput = Literal["dataframe", "text"]
+
+
+def _normalize_currency_symbols(symbols: Union[str, List[str]]) -> List[str]:
+    if isinstance(symbols, str):
+        symbols = [symbols]
+    if not symbols:
+        raise ValueError("At least one currency symbol must be provided")
+    for symbol in symbols:
+        if not isinstance(symbol, str) or not symbol.strip():
+            raise ValueError(f"Currency symbols must be non-empty strings: {symbol!r}")
+    return symbols
+
+
+def _validate_currency_query_inputs(
+    symbols: Union[str, List[str]],
+    start: DateInput,
+    end: DateInput,
+    side: str,
+    groupby: str,
+    output: str,
+) -> List[str]:
+    if output not in ("dataframe", "text"):
+        raise ValueError("Unknown output value, use: dataframe, text")
+    if side not in ("bid", "ask", "both"):
+        raise ValueError("Unknown side value, use: bid, ask, both")
+    if groupby not in ("symbol", "side"):
+        raise ValueError("Unknown groupby value, use: symbol, side")
+    Date(start)
+    Date(end)
+    return _normalize_currency_symbols(symbols)
 
 
 @overload
@@ -570,8 +603,8 @@ def get(
     symbols: str,
     start: DateInput,
     end: DateInput,
-    side: str = ...,
-    groupby: str = ...,
+    side: CurrencySide = ...,
+    groupby: CurrencyGroupBy = ...,
     output: Literal["dataframe"] = ...,
 ) -> pd.DataFrame: ...
 
@@ -581,8 +614,8 @@ def get(
     symbols: List[str],
     start: DateInput,
     end: DateInput,
-    side: str = ...,
-    groupby: str = ...,
+    side: CurrencySide = ...,
+    groupby: CurrencyGroupBy = ...,
     output: Literal["dataframe"] = ...,
 ) -> pd.DataFrame: ...
 
@@ -592,8 +625,8 @@ def get(
     symbols: str,
     start: DateInput,
     end: DateInput,
-    side: str = ...,
-    groupby: str = ...,
+    side: CurrencySide = ...,
+    groupby: CurrencyGroupBy = ...,
     output: Literal["text"] = ...,
 ) -> str: ...
 
@@ -603,8 +636,8 @@ def get(
     symbols: List[str],
     start: DateInput,
     end: DateInput,
-    side: str = ...,
-    groupby: str = ...,
+    side: CurrencySide = ...,
+    groupby: CurrencyGroupBy = ...,
     output: Literal["text"] = ...,
 ) -> CurrencyTextResult: ...
 
@@ -613,9 +646,9 @@ def get(
     symbols: Union[str, List[str]],
     start: DateInput,
     end: DateInput,
-    side: str = "ask",
-    groupby: str = "symbol",
-    output: str = "dataframe",
+    side: CurrencySide = "ask",
+    groupby: CurrencyGroupBy = "symbol",
+    output: CurrencyOutput = "dataframe",
 ) -> Union[pd.DataFrame, str, Dict[str, str]]:
     """
     Retorna um DataFrame pandas com séries temporais com taxas de câmbio.
@@ -633,12 +666,14 @@ def get(
     end : string, int, date, datetime, Timestamp
         Data de início da série.
         Interpreta diferentes tipos e formatos de datas.
-    side : str
+    side : {"ask", "bid", "both"}, default "ask"
         Define se a série retornada vem com os ``ask`` prices,
         ``bid`` prices ou ``both`` para ambos.
-    groupby : str
+    groupby : {"symbol", "side"}, default "symbol"
         Define se os índices de coluna são agrupados por ``symbol`` ou
         por ``side``.
+    output : {"dataframe", "text"}, default "dataframe"
+        Define o formato de saída. Use ``"text"`` para retornar o CSV bruto.
 
     Returns
     -------
@@ -653,8 +688,9 @@ def get(
     DataFrame :
         Série temporal com cotações diárias das moedas solicitadas.
     """
-    if isinstance(symbols, str):
-        symbols = [symbols]
+    symbols = _validate_currency_query_inputs(
+        symbols, start, end, side, groupby, output
+    )
 
     if output == "text":
         results: Dict[str, str] = {}
@@ -848,9 +884,9 @@ async def async_get(
     symbols: Union[str, List[str]],
     start: DateInput,
     end: DateInput,
-    side: str = "ask",
-    groupby: str = "symbol",
-    output: str = "dataframe",
+    side: CurrencySide = "ask",
+    groupby: CurrencyGroupBy = "symbol",
+    output: CurrencyOutput = "dataframe",
 ) -> Union[pd.DataFrame, str, Dict[str, str]]:
     """
     Retorna um DataFrame pandas com séries temporais com taxas de câmbio (async version).
@@ -867,11 +903,11 @@ async def async_get(
         Data de início da série
     end : string, int, date, datetime, Timestamp
         Data final da série
-    side : str
+    side : {"ask", "bid", "both"}
         ``'ask'``, ``'bid'`` ou ``'both'``
-    groupby : str
+    groupby : {"symbol", "side"}
         ``'symbol'`` ou ``'side'``
-    output : str
+    output : {"dataframe", "text"}
         ``'dataframe'`` ou ``'text'``
 
     Returns
@@ -879,8 +915,9 @@ async def async_get(
     Union[pd.DataFrame, str, Dict[str, str]]
         Série temporal conforme especificado
     """
-    if isinstance(symbols, str):
-        symbols = [symbols]
+    symbols = _validate_currency_query_inputs(
+        symbols, start, end, side, groupby, output
+    )
 
     if output == "text":
         results: Dict[str, str] = {}

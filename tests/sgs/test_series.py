@@ -88,9 +88,8 @@ def test_series_code_iter_dict():
 
 
 def test_series_code_iter_unknown_type():
-    # None falls through all isinstance checks → empty generator
-    x = list(sgs._codes(None))  # type: ignore[arg-type]
-    assert len(x) == 0
+    with pytest.raises(ValueError, match="Unsupported SGS code input"):
+        list(sgs._codes(None))  # type: ignore[arg-type]
 
 
 # ---------------------------------------------------------------------------

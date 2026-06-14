@@ -22,6 +22,21 @@ class TestGetNonPerformingLoansCodes:
     ):
         assert get_non_performing_loans_codes(states) == expected_codes
 
+    def test_get_non_performing_loans_codes_all_alias(self):
+        assert get_non_performing_loans_codes(["BA"], mode="all") == {"BA": "15929"}
+
+    def test_get_non_performing_loans_codes_invalid_mode_raises(self):
+        with pytest.raises(ValueError, match="mode"):
+            get_non_performing_loans_codes(["BA"], mode="company")
+
+    def test_get_non_performing_loans_codes_invalid_location_raises(self):
+        with pytest.raises(ValueError, match="Not a valid state or region"):
+            get_non_performing_loans_codes(["XX"])
+
+    def test_get_non_performing_loans_codes_mixed_state_region_raises(self):
+        with pytest.raises(ValueError, match="Cannot mix"):
+            get_non_performing_loans_codes(["BA", "N"])
+
 
 @pytest.mark.integration
 class TestGetNonPerformingLoans:
