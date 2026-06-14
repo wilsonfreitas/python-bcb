@@ -151,9 +151,32 @@ def test_sgs_code_string_non_numeric_raises(httpx_mock):
 
 def test_get_empty_code_list():
     """Test that empty code list raises ValueError."""
-    # Empty list results in no DataFrames to concat, which raises ValueError
-    with pytest.raises(ValueError, match="No objects to concatenate"):
+    with pytest.raises(ValueError, match="At least one SGS code"):
         sgs.get([])
+
+
+def test_get_empty_code_mapping():
+    """Test that empty code mappings raise ValueError."""
+    with pytest.raises(ValueError, match="At least one SGS code"):
+        sgs.get({})
+
+
+def test_get_invalid_output_raises():
+    """Unsupported output values fail before HTTP requests."""
+    with pytest.raises(ValueError, match="output"):
+        sgs.get(1, output="xml")  # type: ignore[arg-type]
+
+
+def test_get_negative_last_raises():
+    """Negative last values fail before HTTP requests."""
+    with pytest.raises(ValueError, match="last"):
+        sgs.get(1, last=-1)
+
+
+def test_get_json_negative_code_raises():
+    """get_json validates single public code inputs."""
+    with pytest.raises(ValueError, match="positive"):
+        sgs.get_json(-1)
 
 
 # ---------------------------------------------------------------------------

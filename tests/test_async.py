@@ -133,6 +133,16 @@ async def test_async_get_json_rate_limit_raises(httpx_mock):
         await sgs.async_get_json(1)
 
 
+async def test_async_get_empty_sgs_code_list_raises():
+    with pytest.raises(ValueError, match="At least one SGS code"):
+        await sgs.async_get([])
+
+
+async def test_async_get_invalid_sgs_output_raises():
+    with pytest.raises(ValueError, match="output"):
+        await sgs.async_get(1, output="xml")  # type: ignore[arg-type]
+
+
 # ---------------------------------------------------------------------------
 # Currency async tests
 # ---------------------------------------------------------------------------
@@ -154,6 +164,16 @@ async def test_async_get_single_symbol_returns_dataframe(httpx_mock):
     add_currency_rate_mock(httpx_mock)
     df = await currency.async_get("USD", START, END)
     assert df is not None
+
+
+async def test_async_get_invalid_currency_side_raises():
+    with pytest.raises(ValueError, match="Unknown side"):
+        await currency.async_get("USD", START, END, side="mid")  # type: ignore[arg-type]
+
+
+async def test_async_get_invalid_currency_output_raises():
+    with pytest.raises(ValueError, match="Unknown output"):
+        await currency.async_get("USD", START, END, output="json")  # type: ignore[arg-type]
 
 
 async def test_async_get_mixed_valid_invalid_symbols_returns_valid_dataframe(
