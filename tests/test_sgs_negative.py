@@ -6,6 +6,7 @@ Tests for error handling, malformed data, and edge cases.
 import json
 import re
 
+import httpx
 import pytest
 
 from bcb import sgs
@@ -48,6 +49,26 @@ def test_get_json_500_raises(httpx_mock):
         status_code=500,
     )
     with pytest.raises(SGSError):
+        sgs.get_json(1)
+
+
+def test_get_json_connection_error_raises(httpx_mock):
+    httpx_mock.add_exception(
+        httpx.ConnectError("network down"),
+        url=SGS_CODE_URL,
+    )
+
+    with pytest.raises(SGSError, match="SGS time series"):
+        sgs.get_json(1)
+
+
+def test_get_json_timeout_error_raises(httpx_mock):
+    httpx_mock.add_exception(
+        httpx.TimeoutException("request timed out"),
+        url=SGS_CODE_URL,
+    )
+
+    with pytest.raises(SGSError, match="SGS time series"):
         sgs.get_json(1)
 
 
