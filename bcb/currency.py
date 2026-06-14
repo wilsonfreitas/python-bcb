@@ -528,7 +528,7 @@ def _get_symbol(
     df1 = df.set_index("Date")
     n = ["bid", "ask"]
     df1 = df1[n]
-    tuples = list(zip([symbol] * len(n), n))
+    tuples = list(zip([symbol] * len(n), n, strict=True))
     df1.columns = pd.MultiIndex.from_tuples(tuples)
     return df1
 
@@ -867,7 +867,7 @@ async def _async_get_symbol(
     df1 = df.set_index("Date")
     n = ["bid", "ask"]
     df1 = df1[n]
-    tuples = list(zip([symbol] * len(n), n))
+    tuples = list(zip([symbol] * len(n), n, strict=True))
     df1.columns = pd.MultiIndex.from_tuples(tuples)
     return df1
 
@@ -927,7 +927,7 @@ async def async_get(
             *[_async_get_symbol_text(symbol, start, end) for symbol in symbols],
             return_exceptions=True,
         )
-        for symbol, text in zip(symbols, texts):
+        for symbol, text in zip(symbols, texts, strict=True):
             if isinstance(text, CurrencyNotFoundError):
                 continue
             if isinstance(text, BaseException):

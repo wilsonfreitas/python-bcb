@@ -20,7 +20,7 @@ jobs:
       run: uv python install 3.10
 
     - name: Install dependencies
-      run: uv sync --group docs
+      run: uv sync --frozen --group docs
 
     - name: Build docs
       run: |

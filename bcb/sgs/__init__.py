@@ -511,14 +511,17 @@ async def async_get(
     )
 
     if output == "text":
-        results: Dict[int, str] = {c.value: t for c, t in zip(code_list, texts)}
+        results: Dict[int, str] = {
+            c.value: t for c, t in zip(code_list, texts, strict=True)
+        }
         values = list(results.values())
         if len(values) == 1:
             return values[0]
         return results
 
     dfs = [
-        _format_df(pd.read_json(StringIO(t)), c, freq) for c, t in zip(code_list, texts)
+        _format_df(pd.read_json(StringIO(t)), c, freq)
+        for c, t in zip(code_list, texts, strict=True)
     ]
     if len(dfs) == 1:
         return dfs[0]
