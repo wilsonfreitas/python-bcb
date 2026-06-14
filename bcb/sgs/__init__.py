@@ -22,10 +22,12 @@ import httpx
 import pandas as pd
 
 from bcb.http import (
+    RequestTimeout,
     get_async_client,
     get_client,
     raise_for_request_error,
     raise_for_status,
+    timeout_kwargs,
     with_retry,
 )
 from bcb.exceptions import SGSError
@@ -231,13 +233,17 @@ def _raise_sgs_response_error(res: httpx.Response, code: int) -> None:
 
 
 @with_retry
-def _get_sgs_response(url: str, payload: Dict[str, str]) -> httpx.Response:
-    return get_client().get(url, params=payload)
+def _get_sgs_response(
+    url: str, payload: Dict[str, str], timeout: RequestTimeout
+) -> httpx.Response:
+    return get_client().get(url, params=payload, **timeout_kwargs(timeout))
 
 
 @with_retry
-async def _async_get_sgs_response(url: str, payload: Dict[str, str]) -> httpx.Response:
-    return await get_async_client().get(url, params=payload)
+async def _async_get_sgs_response(
+    url: str, payload: Dict[str, str], timeout: RequestTimeout
+) -> httpx.Response:
+    return await get_async_client().get(url, params=payload, **timeout_kwargs(timeout))
 
 
 def _format_df(df: pd.DataFrame, code: SGSCode, freq: Optional[str]) -> pd.DataFrame:
@@ -262,6 +268,8 @@ def get(
     multi: bool = ...,
     freq: Optional[str] = ...,
     output: Literal["dataframe"] = ...,
+    *,
+    timeout: RequestTimeout = ...,
 ) -> Union[pd.DataFrame, List[pd.DataFrame]]: ...
 
 
@@ -274,6 +282,8 @@ def get(
     multi: bool = ...,
     freq: Optional[str] = ...,
     output: Literal["text"] = ...,
+    *,
+    timeout: RequestTimeout = ...,
 ) -> Union[str, Dict[int, str]]: ...
 
 
@@ -285,6 +295,8 @@ def get(
     multi: bool = True,
     freq: Optional[str] = None,
     output: Literal["dataframe", "text"] = "dataframe",
+    *,
+    timeout: RequestTimeout = None,
 ) -> Union[pd.DataFrame, List[pd.DataFrame], str, Dict[int, str]]:
     """
     Retorna um DataFrame pandas com séries temporais obtidas do SGS.
@@ -322,6 +334,9 @@ def get(
         um DataFrame pandas, ou ``'text'`` para retornar o JSON bruto da API
         do BCB. Para um único código retorna uma string; para múltiplos
         códigos retorna um ``dict`` mapeando código inteiro → JSON string.
+    timeout : float or httpx.Timeout, optional
+        Timeout por tentativa HTTP, em segundos ou como ``httpx.Timeout``.
+        Quando omitido, usa o timeout padrão do cliente compartilhado.
 
     Returns
     -------
@@ -347,7 +362,9 @@ def get(
     if output == "text":
         results: Dict[int, str] = {}
         for code in code_list:
-            results[code.value] = get_json(code.value, start, end, last)
+            results[code.value] = get_json(
+                code.value, start, end, last, timeout=timeout
+            )
         values = list(results.values())
         if len(values) == 1:
             return values[0]
@@ -355,7 +372,7 @@ def get(
 
     dfs = []
     for code in code_list:
-        text = get_json(code.value, start, end, last)
+        text = get_json(code.value, start, end, last, timeout=timeout)
         df = pd.read_json(StringIO(text))
         df = _format_df(df, code, freq)
         dfs.append(df)
@@ -373,6 +390,8 @@ def get_json(
     start: Optional[DateInput] = None,
     end: Optional[DateInput] = None,
     last: int = 0,
+    *,
+    timeout: RequestTimeout = None,
 ) -> str:
     """
     Retorna um JSON com séries temporais obtidas do SGS.
@@ -392,6 +411,9 @@ def get_json(
         Retorna os últimos ``last`` elementos disponíveis da série temporal
         solicitada. Se ``last`` for maior que 0 (zero) os argumentos ``start``
         e ``end`` são ignorados.
+    timeout : float or httpx.Timeout, optional
+        Timeout por tentativa HTTP, em segundos ou como ``httpx.Timeout``.
+        Quando omitido, usa o timeout padrão do cliente compartilhado.
 
     Returns
     -------
@@ -406,7 +428,7 @@ def get_json(
         f"Fetching SGS time series code={code_obj.value} from {url.split('/dados')[0]}"
     )
     try:
-        res = _get_sgs_response(url, payload)
+        res = _get_sgs_response(url, payload, timeout)
     except httpx.HTTPError as ex:
         raise_for_request_error(
             ex, context=f"SGS time series code={code_obj.value}", error_cls=SGSError
@@ -423,6 +445,8 @@ async def async_get_json(
     start: Optional[DateInput] = None,
     end: Optional[DateInput] = None,
     last: int = 0,
+    *,
+    timeout: RequestTimeout = None,
 ) -> str:
     """
     Retorna um JSON com séries temporais obtidas do SGS (async version).
@@ -439,6 +463,9 @@ async def async_get_json(
         ``'today'`` e ``'now'`` também são aceitos.
     last : int
         Retorna os últimos ``last`` elementos disponíveis
+    timeout : float or httpx.Timeout, optional
+        Timeout por tentativa HTTP, em segundos ou como ``httpx.Timeout``.
+        Quando omitido, usa o timeout padrão do cliente compartilhado.
 
     Returns
     -------
@@ -460,7 +487,7 @@ async def async_get_json(
         f"from {url.split('/dados')[0]}"
     )
     try:
-        res = await _async_get_sgs_response(url, payload)
+        res = await _async_get_sgs_response(url, payload, timeout)
     except httpx.HTTPError as ex:
         raise_for_request_error(
             ex, context=f"SGS time series code={code_obj.value}", error_cls=SGSError
@@ -482,6 +509,8 @@ async def async_get(
     multi: bool = True,
     freq: Optional[str] = None,
     output: Literal["dataframe", "text"] = "dataframe",
+    *,
+    timeout: RequestTimeout = None,
 ) -> Union[pd.DataFrame, List[pd.DataFrame], str, Dict[int, str]]:
     """
     Retorna um DataFrame pandas com séries temporais obtidas do SGS (async version).
@@ -507,6 +536,9 @@ async def async_get(
         Frequência a ser utilizada na série temporal
     output : str
         Formato de saída: ``'dataframe'`` ou ``'text'``
+    timeout : float or httpx.Timeout, optional
+        Timeout por tentativa HTTP, em segundos ou como ``httpx.Timeout``.
+        Quando omitido, usa o timeout padrão do cliente compartilhado.
 
     Returns
     -------
@@ -518,7 +550,7 @@ async def async_get(
 
     # Concurrent HTTP requests via asyncio.gather()
     texts = await asyncio.gather(
-        *[async_get_json(c.value, start, end, last) for c in code_list]
+        *[async_get_json(c.value, start, end, last, timeout=timeout) for c in code_list]
     )
 
     if output == "text":

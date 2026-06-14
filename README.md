@@ -124,6 +124,28 @@ async def main():
 asyncio.run(main())
 ```
 
+### P: Como aumento o timeout de uma consulta lenta?
+**R:** Passe ``timeout`` na própria chamada. O valor é local daquela chamada e
+não altera o cliente HTTP compartilhado globalmente:
+
+```python
+from bcb import sgs, currency, Expectativas
+
+# SGS
+selic = sgs.get(11, start="1990-01-01", timeout=120)
+
+# Currency
+usd = currency.get("USD", start="1980-01-01", end="2026-01-01", timeout=120)
+
+# OData
+em = Expectativas(timeout=120)
+ep = em.get_endpoint("ExpectativasMercadoAnuais")
+df = ep.query().limit(1000).collect(timeout=120)
+```
+
+O padrão continua sendo 30 segundos. No SGS, o timeout vale por tentativa HTTP;
+quando houver retry, cada tentativa usa o mesmo valor.
+
 ### P: Como trato erros e dados faltantes?
 **R:** A biblioteca lança exceções específicas:
 - `CurrencyNotFoundError`: Símbolo de moeda não encontrado

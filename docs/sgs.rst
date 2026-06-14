@@ -7,6 +7,25 @@ interface JSON do serviço BCData/SGS -
 
 Os parâmetros ``start`` e ``end`` aceitam strings ``YYYY-MM-DD``, ``datetime.date``, ``datetime.datetime`` ou :py:class:`bcb.utils.Date`. Também é possível usar ``last`` para buscar os últimos ``n`` pontos disponíveis.
 
+Timeout em consultas longas
+---------------------------
+
+Por padrão, as requisições usam o timeout global do cliente HTTP compartilhado.
+Para consultas SGS com janelas grandes ou respostas lentas, informe ``timeout``
+na chamada. O valor é aplicado por tentativa HTTP; quando houver retry, cada
+tentativa usa o mesmo timeout.
+
+.. code:: python
+
+    from bcb import sgs
+
+    df = sgs.get(11, start="1990-01-01", end="2026-01-01", timeout=120)
+    raw = sgs.get_json(11, start="1990-01-01", timeout=120)
+
+Se a consulta continuar lenta mesmo com timeout maior, divida o período em
+janelas menores e concatene os resultados.
+
+
 Exemplos
 --------
 

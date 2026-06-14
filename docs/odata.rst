@@ -21,6 +21,29 @@ a API a partir da URL da API que está disponível no `portal de dados abertos <
 do Banco Central.
 Veja mais detalhes em :ref:`Classe ODataAPI`.
 
+Timeout por chamada
+-------------------
+
+As APIs OData também aceitam ``timeout`` para serviços lentos ou consultas com
+muitos registros. O timeout informado no construtor é usado na descoberta do
+serviço, no carregamento dos metadados e como padrão das queries criadas a
+partir dessa API. Métodos de execução podem receber outro valor para sobrescrever
+o padrão apenas naquela chamada.
+
+.. code:: python
+
+    from bcb import Expectativas
+
+    em = Expectativas(timeout=120)
+    ep = em.get_endpoint("ExpectativasMercadoAnuais")
+
+    df = ep.get(timeout=60)
+    raw = ep.query().limit(1000).text(timeout=60)
+    data = ep.query().limit(1000).collect(timeout=60)
+
+O mesmo parâmetro está disponível nas versões assíncronas ``async_get``,
+``async_text`` e ``async_collect``.
+
 Segue um exemplo de como acessar a API do PIX.
 
 .. ipython:: python

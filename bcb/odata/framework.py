@@ -13,10 +13,12 @@ from lxml import etree
 from typing_extensions import Self
 
 from bcb.http import (
+    RequestTimeout,
     get_async_client,
     get_client,
     raise_for_request_error,
     raise_for_status,
+    timeout_kwargs,
 )
 from bcb.exceptions import ODataError
 
@@ -339,9 +341,10 @@ class ODataMetadata:
         "edmx": "http://docs.oasis-open.org/odata/ns/edmx",
     }
 
-    def __init__(self, url: str) -> None:
+    def __init__(self, url: str, *, timeout: RequestTimeout = None) -> None:
         self.url = url
-        self._load_document()
+        self._timeout = timeout
+        self._load_document(timeout=timeout)
         try:
             _xpath = "edmx:DataServices/edm:Schema"
             schemas = self.doc.xpath(_xpath, namespaces=self.namespaces)
@@ -361,10 +364,10 @@ class ODataMetadata:
                 f"OData metadata {self.url} has invalid structure: {ex}"
             ) from ex
 
-    def _load_document(self) -> None:
+    def _load_document(self, *, timeout: RequestTimeout = None) -> None:
         logger.debug(f"Fetching OData metadata from {self.url}")
         try:
-            res = get_client().get(self.url)
+            res = get_client().get(self.url, **timeout_kwargs(timeout))
         except httpx.HTTPError as ex:
             raise_for_request_error(
                 ex, context=f"OData metadata {self.url}", error_cls=ODataError
@@ -469,10 +472,11 @@ class ODataService:
         OData service root URL
     """
 
-    def __init__(self, url: str) -> None:
+    def __init__(self, url: str, *, timeout: RequestTimeout = None) -> None:
         self.url = url
+        self._timeout = timeout
         try:
-            res = get_client().get(self.url)
+            res = get_client().get(self.url, **timeout_kwargs(timeout))
         except httpx.HTTPError as ex:
             raise_for_request_error(
                 ex, context=f"OData service {self.url}", error_cls=ODataError
@@ -512,7 +516,7 @@ class ODataService:
             if self._odata_context_url in _METADATA_CACHE:
                 self.metadata = _METADATA_CACHE[self._odata_context_url]
             else:
-                self.metadata = ODataMetadata(self._odata_context_url)
+                self.metadata = ODataMetadata(self._odata_context_url, timeout=timeout)
                 _METADATA_CACHE[self._odata_context_url] = self.metadata
 
     def __getitem__(self, item: str) -> Union[ODataEntitySet, ODataFunctionImport]:
@@ -556,15 +560,20 @@ class ODataService:
     def query(
         self, entity_set: Union[ODataEntitySet, ODataFunctionImport]
     ) -> "ODataQuery":
-        return ODataQuery(entity_set, self.url)
+        return ODataQuery(entity_set, self.url, timeout=self._timeout)
 
 
 class ODataQuery:
     def __init__(
-        self, entity: Union[ODataEntitySet, ODataFunctionImport], url: str
+        self,
+        entity: Union[ODataEntitySet, ODataFunctionImport],
+        url: str,
+        *,
+        timeout: RequestTimeout = None,
     ) -> None:
         self.entity = entity
         self.base_url = url
+        self._timeout = timeout
         self._params: dict[str, Any] = {}
         self.function_parameters: dict[str, Any] = {}
         self._filter: list[ODataPropertyFilter] = []
@@ -649,13 +658,20 @@ class ODataQuery:
         self._orderby = []
         self._params = {}
 
-    def collect(self) -> Any:
+    def _resolve_timeout(self, timeout: RequestTimeout) -> RequestTimeout:
+        if timeout is None:
+            return self._timeout
+        return timeout
+
+    def collect(self, *, timeout: RequestTimeout = None) -> Any:
         url = self.odata_url()
-        data = _load_json_object(self.text(), context=f"OData query {url}")
+        data = _load_json_object(
+            self.text(timeout=timeout), context=f"OData query {url}"
+        )
         _required_field(data, "value", context=f"OData query {url}")
         return data
 
-    async def async_text(self) -> str:
+    async def async_text(self, *, timeout: RequestTimeout = None) -> str:
         """Async version of text(). Fetches OData response using shared client."""
         params = self._build_parameters()
         if self.is_function and len(self.function_parameters):
@@ -668,7 +684,11 @@ class ODataQuery:
         headers = {"OData-Version": "4.0", "OData-MaxVersion": "4.0"}
         url = self.odata_url()
         try:
-            res = await get_async_client().get(url + "?" + qs, headers=headers)
+            res = await get_async_client().get(
+                url + "?" + qs,
+                headers=headers,
+                **timeout_kwargs(self._resolve_timeout(timeout)),
+            )
         except httpx.HTTPError as ex:
             raise_for_request_error(
                 ex, context=f"OData query {url}", error_cls=ODataError
@@ -683,14 +703,16 @@ class ODataQuery:
         )
         return res.text
 
-    async def async_collect(self) -> Any:
+    async def async_collect(self, *, timeout: RequestTimeout = None) -> Any:
         """Async version of collect(). Awaits async_text() and parses JSON."""
         url = self.odata_url()
-        data = _load_json_object(await self.async_text(), context=f"OData query {url}")
+        data = _load_json_object(
+            await self.async_text(timeout=timeout), context=f"OData query {url}"
+        )
         _required_field(data, "value", context=f"OData query {url}")
         return data
 
-    def text(self) -> str:
+    def text(self, *, timeout: RequestTimeout = None) -> str:
         params = self._build_parameters()
         if self.is_function and len(self.function_parameters):
             for p in self.entity.function.parameters:  # type: ignore[union-attr]
@@ -703,7 +725,11 @@ class ODataQuery:
         url = self.odata_url()
         logger.debug(f"Fetching OData query from {url}")
         try:
-            res = get_client().get(url + "?" + qs, headers=headers)
+            res = get_client().get(
+                url + "?" + qs,
+                headers=headers,
+                **timeout_kwargs(self._resolve_timeout(timeout)),
+            )
         except httpx.HTTPError as ex:
             raise_for_request_error(
                 ex, context=f"OData query {url}", error_cls=ODataError

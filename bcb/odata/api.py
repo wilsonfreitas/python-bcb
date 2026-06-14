@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Literal, Optional, Union, overload
 
+from bcb.http import RequestTimeout
 from bcb.odata.framework import (
     ODataEntitySet,
     ODataFunctionImport,
@@ -20,8 +21,8 @@ class EndpointMeta(type):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
 
-    def __call__(self, *args: Any) -> Any:
-        obj = super().__call__(*args)
+    def __call__(self, *args: Any, **kwargs: Any) -> Any:
+        obj = super().__call__(*args, **kwargs)
         entity = args[0]
         if isinstance(entity, ODataEntitySet):
             for name, prop in entity.entity.properties.items():
@@ -49,20 +50,31 @@ class EndpointQuery(ODataQuery):
         entity: Any,
         url: str,
         date_columns: Optional[list[str]] = None,
+        *,
+        timeout: RequestTimeout = None,
     ) -> None:
-        super().__init__(entity, url)
+        super().__init__(entity, url, timeout=timeout)
         self._date_columns: list[str] = date_columns or []
 
     @overload
-    def collect(self, output: Literal["dataframe"] = ...) -> pd.DataFrame: ...
+    def collect(
+        self,
+        output: Literal["dataframe"] = ...,
+        *,
+        timeout: RequestTimeout = ...,
+    ) -> pd.DataFrame: ...
 
     @overload
-    def collect(self, output: Literal["text"]) -> str: ...
+    def collect(
+        self, output: Literal["text"], *, timeout: RequestTimeout = ...
+    ) -> str: ...
 
-    def collect(self, output: str = "dataframe") -> Union[pd.DataFrame, str]:
+    def collect(
+        self, output: str = "dataframe", *, timeout: RequestTimeout = None
+    ) -> Union[pd.DataFrame, str]:
         if output == "text":
-            return self.text()
-        raw_data = super().collect()
+            return self.text(timeout=timeout)
+        raw_data = super().collect(timeout=timeout)
         data = pd.DataFrame(raw_data["value"])
         if not self._raw:
             if self._date_columns:
@@ -85,12 +97,12 @@ class EndpointQuery(ODataQuery):
         return data
 
     async def async_collect(
-        self, output: str = "dataframe"
+        self, output: str = "dataframe", *, timeout: RequestTimeout = None
     ) -> Union[pd.DataFrame, str]:
         """Async version of collect(). Awaits super().async_collect() for data fetch."""
         if output == "text":
-            return await self.async_text()
-        raw_data = await super().async_collect()
+            return await self.async_text(timeout=timeout)
+        raw_data = await super().async_collect(timeout=timeout)
         data = pd.DataFrame(raw_data["value"])
         if not self._raw:
             if self._date_columns:
@@ -126,7 +138,12 @@ class Endpoint(metaclass=EndpointMeta):
     """
 
     def __init__(
-        self, entity: Any, url: str, date_columns: Optional[list[str]] = None
+        self,
+        entity: Any,
+        url: str,
+        date_columns: Optional[list[str]] = None,
+        *,
+        timeout: RequestTimeout = None,
     ) -> None:
         """
         Construtor da classe Endpoint.
@@ -145,6 +162,7 @@ class Endpoint(metaclass=EndpointMeta):
         self._entity = entity
         self._url = url
         self._date_columns: list[str] = date_columns or []
+        self._timeout = timeout
 
     def get(
         self,
@@ -155,6 +173,7 @@ class Endpoint(metaclass=EndpointMeta):
         limit: Optional[int] = None,
         skip: Optional[int] = None,
         output: str = "dataframe",
+        timeout: RequestTimeout = None,
         verbose: bool = False,
         **kwargs: Any,
     ) -> Union[pd.DataFrame, str]:
@@ -186,7 +205,9 @@ class Endpoint(metaclass=EndpointMeta):
         pd.DataFrame or str: resultado da consulta. Returns a DataFrame by
             default; returns a raw JSON string when ``output='text'``.
         """
-        _query = EndpointQuery(self._entity, self._url, self._date_columns)
+        _query = EndpointQuery(
+            self._entity, self._url, self._date_columns, timeout=self._timeout
+        )
 
         # Apply explicit kwargs first
         if filter is not None:
@@ -218,9 +239,9 @@ class Endpoint(metaclass=EndpointMeta):
         if verbose:
             _query.show()
         if output == "text":
-            data = _query.collect(output="text")
+            data = _query.collect(output="text", timeout=timeout)
         else:
-            data = _query.collect()
+            data = _query.collect(timeout=timeout)
         _query.reset()
         return data
 
@@ -232,7 +253,9 @@ class Endpoint(metaclass=EndpointMeta):
         -------
         bcb.odata.api.EndpointQuery
         """
-        return EndpointQuery(self._entity, self._url, self._date_columns)
+        return EndpointQuery(
+            self._entity, self._url, self._date_columns, timeout=self._timeout
+        )
 
     def async_query(self) -> EndpointQuery:
         """
@@ -243,7 +266,9 @@ class Endpoint(metaclass=EndpointMeta):
         bcb.odata.api.EndpointQuery
             Same as query(); call async_collect() on the result
         """
-        return EndpointQuery(self._entity, self._url, self._date_columns)
+        return EndpointQuery(
+            self._entity, self._url, self._date_columns, timeout=self._timeout
+        )
 
     async def async_get(
         self,
@@ -254,6 +279,7 @@ class Endpoint(metaclass=EndpointMeta):
         limit: Optional[int] = None,
         skip: Optional[int] = None,
         output: str = "dataframe",
+        timeout: RequestTimeout = None,
         verbose: bool = False,
         **kwargs: Any,
     ) -> Union[pd.DataFrame, str]:
@@ -287,7 +313,9 @@ class Endpoint(metaclass=EndpointMeta):
         Union[pd.DataFrame, str]
             Resultado da consulta
         """
-        _query = EndpointQuery(self._entity, self._url, self._date_columns)
+        _query = EndpointQuery(
+            self._entity, self._url, self._date_columns, timeout=self._timeout
+        )
 
         # Apply explicit kwargs first
         if filter is not None:
@@ -319,9 +347,9 @@ class Endpoint(metaclass=EndpointMeta):
         if verbose:
             _query.show()
         if output == "text":
-            data = await _query.async_collect(output="text")
+            data = await _query.async_collect(output="text", timeout=timeout)
         else:
-            data = await _query.async_collect()
+            data = await _query.async_collect(timeout=timeout)
         _query.reset()
         return data
 
@@ -336,11 +364,12 @@ class BaseODataAPI:
     BASE_URL: str
     DATE_COLUMNS: list[str] = []
 
-    def __init__(self) -> None:
+    def __init__(self, *, timeout: RequestTimeout = None) -> None:
         """
         BaseODataAPI construtor
         """
-        self.service = ODataService(self.BASE_URL)
+        self._timeout = timeout
+        self.service = ODataService(self.BASE_URL, timeout=timeout)
 
     def describe(self, endpoint: Optional[str] = None) -> None:
         """
@@ -385,7 +414,10 @@ class BaseODataAPI:
             Se o *endpoint* fornecido é errado.
         """
         return Endpoint(
-            self.service[endpoint], self.service.url, self.DATE_COLUMNS or None
+            self.service[endpoint],
+            self.service.url,
+            self.DATE_COLUMNS or None,
+            timeout=self._timeout,
         )
 
 
@@ -400,7 +432,7 @@ class ODataAPI(BaseODataAPI):
     não possuem implementação específica.
     """
 
-    def __init__(self, url: str) -> None:
+    def __init__(self, url: str, *, timeout: RequestTimeout = None) -> None:
         """
         Parameters
         ----------
@@ -417,7 +449,8 @@ class ODataAPI(BaseODataAPI):
             - Expectativas
             - PTAX
         """
-        self.service = ODataService(url)
+        self._timeout = timeout
+        self.service = ODataService(url, timeout=timeout)
 
 
 class Expectativas(BaseODataAPI):

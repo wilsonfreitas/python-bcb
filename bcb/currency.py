@@ -15,10 +15,12 @@ import pandas as pd
 from lxml import etree, html
 
 from bcb.http import (
+    RequestTimeout,
     get_async_client,
     get_client,
     raise_for_request_error,
     raise_for_status,
+    timeout_kwargs,
 )
 from bcb.exceptions import BCBAPIError, CurrencyNotFoundError
 from bcb.utils import Date, DateInput
@@ -130,6 +132,8 @@ def clear_cache(cache: _ThreadSafeCache | None = None) -> None:
 
 def _currency_id_list(
     cache: _ThreadSafeCache | None = None,
+    *,
+    timeout: RequestTimeout = None,
 ) -> pd.DataFrame:
     """Fetch list of available currency IDs and names.
 
@@ -164,7 +168,7 @@ def _currency_id_list(
     )
     logger.debug(f"Fetching currency ID list from {url1}")
     try:
-        res = get_client().get(url1)
+        res = get_client().get(url1, **timeout_kwargs(timeout))
     except httpx.HTTPError as ex:
         raise_for_request_error(ex, context="Currency ID list")
     logger.debug(
@@ -186,7 +190,11 @@ def _currency_id_list(
 
 
 def _get_valid_currency_list(
-    _date: date, n: int = 0, max_rollback: int = 30
+    _date: date,
+    n: int = 0,
+    max_rollback: int = 30,
+    *,
+    timeout: RequestTimeout = None,
 ) -> "httpx.Response":
     """Fetch currency list CSV, rolling back dates if necessary.
 
@@ -225,7 +233,7 @@ def _get_valid_currency_list(
     url2 = f"https://www4.bcb.gov.br/Download/fechamento/M{_date:%Y%m%d}.csv"
     logger.debug(f"Fetching currency list from {url2}")
     try:
-        res = get_client().get(url2)
+        res = get_client().get(url2, **timeout_kwargs(timeout))
     except httpx.HTTPError as ex:
         # Connection error: retry same date up to 3 times
         if n >= 3:
@@ -233,7 +241,7 @@ def _get_valid_currency_list(
         logger.warning(
             f"Connection error fetching {url2}, retrying (attempt {n + 1}/3)"
         )
-        return _get_valid_currency_list(_date, n + 1, max_rollback)
+        return _get_valid_currency_list(_date, n + 1, max_rollback, timeout=timeout)
 
     logger.debug(
         f"Currency list response: status={res.status_code}, length={len(res.content)}"
@@ -245,11 +253,15 @@ def _get_valid_currency_list(
 
     # Non-200 response (file not found for date): roll back to previous day
     logger.debug(f"Currency list not found for {_date}, rolling back to previous day")
-    return _get_valid_currency_list(_date - timedelta(1), 0, max_rollback)
+    return _get_valid_currency_list(
+        _date - timedelta(1), 0, max_rollback, timeout=timeout
+    )
 
 
 def get_currency_list(
     cache: _ThreadSafeCache | None = None,
+    *,
+    timeout: RequestTimeout = None,
 ) -> pd.DataFrame:
     """Listagem com todas as moedas disponíveis na API e suas configurações de paridade.
 
@@ -274,7 +286,7 @@ def get_currency_list(
     if cached is not None:
         return cached
 
-    res = _get_valid_currency_list(date.today())
+    res = _get_valid_currency_list(date.today(), timeout=timeout)
     df = pd.read_csv(StringIO(res.text), delimiter=";")
     df.columns = [
         "code",
@@ -294,9 +306,9 @@ def get_currency_list(
     return df
 
 
-def _get_currency_id(symbol: str) -> int:
-    id_list = _currency_id_list()
-    all_currencies = get_currency_list()
+def _get_currency_id(symbol: str, *, timeout: RequestTimeout = None) -> int:
+    id_list = _currency_id_list(timeout=timeout)
+    all_currencies = get_currency_list(timeout=timeout)
     x = pd.merge(id_list, all_currencies, on=["name"])
     matches = x.loc[x["symbol"] == symbol, "id"]
     if matches.empty:
@@ -352,7 +364,11 @@ def _raise_currency_html_error(response: httpx.Response, symbol: str) -> NoRetur
 
 
 def _fetch_symbol_response(
-    symbol: str, start_date: DateInput, end_date: DateInput
+    symbol: str,
+    start_date: DateInput,
+    end_date: DateInput,
+    *,
+    timeout: RequestTimeout = None,
 ) -> "httpx.Response":
     """Fetch exchange rate CSV response for a symbol.
 
@@ -379,11 +395,13 @@ def _fetch_symbol_response(
     BCBAPIError
         If API returns other error status codes or HTML error page
     """
-    cid = _get_currency_id(symbol)  # Raises CurrencyNotFoundError if not found
+    cid = _get_currency_id(
+        symbol, timeout=timeout
+    )  # Raises CurrencyNotFoundError if not found
     url = _currency_url(cid, start_date, end_date)
     logger.debug(f"Fetching currency data for {symbol} from {url.split('?')[0]}")
     try:
-        res = get_client().get(url)
+        res = get_client().get(url, **timeout_kwargs(timeout))
     except httpx.HTTPError as ex:
         raise_for_request_error(ex, context=f"Currency data for {symbol}")
     logger.debug(
@@ -496,7 +514,11 @@ def _parse_currency_types(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def _get_symbol(
-    symbol: str, start_date: DateInput, end_date: DateInput
+    symbol: str,
+    start_date: DateInput,
+    end_date: DateInput,
+    *,
+    timeout: RequestTimeout = None,
 ) -> pd.DataFrame:
     """Fetch and parse exchange rate data for a symbol.
 
@@ -521,7 +543,7 @@ def _get_symbol(
     BCBAPIError
         If API returns error or data format is invalid
     """
-    res = _fetch_symbol_response(symbol, start_date, end_date)
+    res = _fetch_symbol_response(symbol, start_date, end_date, timeout=timeout)
     df = _validate_currency_csv(res.text)
     df = _parse_currency_dates(df)
     df = _parse_currency_types(df)
@@ -533,7 +555,13 @@ def _get_symbol(
     return df1
 
 
-def _get_symbol_text(symbol: str, start_date: DateInput, end_date: DateInput) -> str:
+def _get_symbol_text(
+    symbol: str,
+    start_date: DateInput,
+    end_date: DateInput,
+    *,
+    timeout: RequestTimeout = None,
+) -> str:
     """Fetch exchange rate data as CSV text for a symbol.
 
     Parameters
@@ -557,7 +585,7 @@ def _get_symbol_text(symbol: str, start_date: DateInput, end_date: DateInput) ->
     BCBAPIError
         If API returns error
     """
-    res = _fetch_symbol_response(symbol, start_date, end_date)
+    res = _fetch_symbol_response(symbol, start_date, end_date, timeout=timeout)
     return res.text
 
 
@@ -606,6 +634,8 @@ def get(
     side: CurrencySide = ...,
     groupby: CurrencyGroupBy = ...,
     output: Literal["dataframe"] = ...,
+    *,
+    timeout: RequestTimeout = ...,
 ) -> pd.DataFrame: ...
 
 
@@ -617,6 +647,8 @@ def get(
     side: CurrencySide = ...,
     groupby: CurrencyGroupBy = ...,
     output: Literal["dataframe"] = ...,
+    *,
+    timeout: RequestTimeout = ...,
 ) -> pd.DataFrame: ...
 
 
@@ -628,6 +660,8 @@ def get(
     side: CurrencySide = ...,
     groupby: CurrencyGroupBy = ...,
     output: Literal["text"] = ...,
+    *,
+    timeout: RequestTimeout = ...,
 ) -> str: ...
 
 
@@ -639,6 +673,8 @@ def get(
     side: CurrencySide = ...,
     groupby: CurrencyGroupBy = ...,
     output: Literal["text"] = ...,
+    *,
+    timeout: RequestTimeout = ...,
 ) -> CurrencyTextResult: ...
 
 
@@ -649,6 +685,8 @@ def get(
     side: CurrencySide = "ask",
     groupby: CurrencyGroupBy = "symbol",
     output: CurrencyOutput = "dataframe",
+    *,
+    timeout: RequestTimeout = None,
 ) -> Union[pd.DataFrame, str, Dict[str, str]]:
     """
     Retorna um DataFrame pandas com séries temporais com taxas de câmbio.
@@ -674,6 +712,9 @@ def get(
         por ``side``.
     output : {"dataframe", "text"}, default "dataframe"
         Define o formato de saída. Use ``"text"`` para retornar o CSV bruto.
+    timeout : float or httpx.Timeout, optional
+        Timeout por requisição HTTP, em segundos ou como ``httpx.Timeout``.
+        Quando omitido, usa o timeout padrão do cliente compartilhado.
 
     Returns
     -------
@@ -696,7 +737,7 @@ def get(
         results: Dict[str, str] = {}
         for symbol in symbols:
             try:
-                raw = _get_symbol_text(symbol, start, end)
+                raw = _get_symbol_text(symbol, start, end, timeout=timeout)
                 results[symbol] = raw
             except CurrencyNotFoundError:
                 pass  # Skip missing currencies
@@ -709,7 +750,7 @@ def get(
     dss = []
     for symbol in symbols:
         try:
-            df1 = _get_symbol(symbol, start, end)
+            df1 = _get_symbol(symbol, start, end, timeout=timeout)
             dss.append(df1)
         except CurrencyNotFoundError:
             pass  # Skip missing currencies
@@ -733,6 +774,8 @@ def get(
 
 async def _async_currency_id_list(
     cache: _ThreadSafeCache | None = None,
+    *,
+    timeout: RequestTimeout = None,
 ) -> pd.DataFrame:
     """Async version of _currency_id_list()."""
     cache = cache or _DEFAULT_CACHE
@@ -746,7 +789,7 @@ async def _async_currency_id_list(
         "method=exibeFormularioConsultaBoletim"
     )
     try:
-        res = await get_async_client().get(url1)
+        res = await get_async_client().get(url1, **timeout_kwargs(timeout))
     except httpx.HTTPError as ex:
         raise_for_request_error(ex, context="Currency ID list")
     raise_for_status(
@@ -765,7 +808,11 @@ async def _async_currency_id_list(
 
 
 async def _async_get_valid_currency_list(
-    _date: date, n: int = 0, max_rollback: int = 30
+    _date: date,
+    n: int = 0,
+    max_rollback: int = 30,
+    *,
+    timeout: RequestTimeout = None,
 ) -> "httpx.Response":
     """Async version of _get_valid_currency_list()."""
     days_rolled_back = (date.today() - _date).days
@@ -777,21 +824,27 @@ async def _async_get_valid_currency_list(
 
     url2 = f"https://www4.bcb.gov.br/Download/fechamento/M{_date:%Y%m%d}.csv"
     try:
-        res = await get_async_client().get(url2)
+        res = await get_async_client().get(url2, **timeout_kwargs(timeout))
     except httpx.HTTPError as ex:
         if n >= 3:
             raise_for_request_error(ex, context="Currency list")
-        return await _async_get_valid_currency_list(_date, n + 1, max_rollback)
+        return await _async_get_valid_currency_list(
+            _date, n + 1, max_rollback, timeout=timeout
+        )
 
     if res.status_code == 200:
         return res
     if res.status_code == 429 or res.status_code >= 500:
         raise_for_status(res, context="Currency list")
-    return await _async_get_valid_currency_list(_date - timedelta(1), 0, max_rollback)
+    return await _async_get_valid_currency_list(
+        _date - timedelta(1), 0, max_rollback, timeout=timeout
+    )
 
 
 async def _async_get_currency_list(
     cache: _ThreadSafeCache | None = None,
+    *,
+    timeout: RequestTimeout = None,
 ) -> pd.DataFrame:
     """Async version of get_currency_list()."""
     cache = cache or _DEFAULT_CACHE
@@ -800,7 +853,7 @@ async def _async_get_currency_list(
     if cached is not None:
         return cached
 
-    res = await _async_get_valid_currency_list(date.today())
+    res = await _async_get_valid_currency_list(date.today(), timeout=timeout)
     df = pd.read_csv(StringIO(res.text), delimiter=";")
     df.columns = [
         "code",
@@ -820,11 +873,11 @@ async def _async_get_currency_list(
     return df
 
 
-async def _async_get_currency_id(symbol: str) -> int:
+async def _async_get_currency_id(symbol: str, *, timeout: RequestTimeout = None) -> int:
     """Async version of _get_currency_id() with concurrent cache warming."""
     id_list, all_currencies = await asyncio.gather(
-        _async_currency_id_list(),
-        _async_get_currency_list(),
+        _async_currency_id_list(timeout=timeout),
+        _async_get_currency_list(timeout=timeout),
     )
     x = pd.merge(id_list, all_currencies, on=["name"])
     matches = x.loc[x["symbol"] == symbol, "id"]
@@ -834,13 +887,17 @@ async def _async_get_currency_id(symbol: str) -> int:
 
 
 async def _async_fetch_symbol_response(
-    symbol: str, start_date: DateInput, end_date: DateInput
+    symbol: str,
+    start_date: DateInput,
+    end_date: DateInput,
+    *,
+    timeout: RequestTimeout = None,
 ) -> "httpx.Response":
     """Async version of _fetch_symbol_response()."""
-    cid = await _async_get_currency_id(symbol)
+    cid = await _async_get_currency_id(symbol, timeout=timeout)
     url = _currency_url(cid, start_date, end_date)
     try:
-        res = await get_async_client().get(url)
+        res = await get_async_client().get(url, **timeout_kwargs(timeout))
     except httpx.HTTPError as ex:
         raise_for_request_error(ex, context=f"Currency data for {symbol}")
 
@@ -857,10 +914,16 @@ async def _async_fetch_symbol_response(
 
 
 async def _async_get_symbol(
-    symbol: str, start_date: DateInput, end_date: DateInput
+    symbol: str,
+    start_date: DateInput,
+    end_date: DateInput,
+    *,
+    timeout: RequestTimeout = None,
 ) -> pd.DataFrame:
     """Async version of _get_symbol()."""
-    res = await _async_fetch_symbol_response(symbol, start_date, end_date)
+    res = await _async_fetch_symbol_response(
+        symbol, start_date, end_date, timeout=timeout
+    )
     df = _validate_currency_csv(res.text)
     df = _parse_currency_dates(df)
     df = _parse_currency_types(df)
@@ -873,10 +936,16 @@ async def _async_get_symbol(
 
 
 async def _async_get_symbol_text(
-    symbol: str, start_date: DateInput, end_date: DateInput
+    symbol: str,
+    start_date: DateInput,
+    end_date: DateInput,
+    *,
+    timeout: RequestTimeout = None,
 ) -> str:
     """Async version of _get_symbol_text()."""
-    res = await _async_fetch_symbol_response(symbol, start_date, end_date)
+    res = await _async_fetch_symbol_response(
+        symbol, start_date, end_date, timeout=timeout
+    )
     return res.text
 
 
@@ -887,6 +956,8 @@ async def async_get(
     side: CurrencySide = "ask",
     groupby: CurrencyGroupBy = "symbol",
     output: CurrencyOutput = "dataframe",
+    *,
+    timeout: RequestTimeout = None,
 ) -> Union[pd.DataFrame, str, Dict[str, str]]:
     """
     Retorna um DataFrame pandas com séries temporais com taxas de câmbio (async version).
@@ -911,6 +982,9 @@ async def async_get(
         ``'symbol'`` ou ``'side'``
     output : {"dataframe", "text"}
         ``'dataframe'`` ou ``'text'``
+    timeout : float or httpx.Timeout, optional
+        Timeout por requisição HTTP, em segundos ou como ``httpx.Timeout``.
+        Quando omitido, usa o timeout padrão do cliente compartilhado.
 
     Returns
     -------
@@ -924,7 +998,10 @@ async def async_get(
     if output == "text":
         results: Dict[str, str] = {}
         texts = await asyncio.gather(
-            *[_async_get_symbol_text(symbol, start, end) for symbol in symbols],
+            *[
+                _async_get_symbol_text(symbol, start, end, timeout=timeout)
+                for symbol in symbols
+            ],
             return_exceptions=True,
         )
         for symbol, text in zip(symbols, texts, strict=True):
@@ -940,7 +1017,7 @@ async def async_get(
         return results
 
     dss = await asyncio.gather(
-        *[_async_get_symbol(symbol, start, end) for symbol in symbols],
+        *[_async_get_symbol(symbol, start, end, timeout=timeout) for symbol in symbols],
         return_exceptions=True,
     )
     valid_dss = []
