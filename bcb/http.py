@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Callable, NoReturn, TypeVar
+from typing import Any, Callable, NoReturn, TypeAlias, TypeVar
 
 import httpx
 from tenacity import (
@@ -20,6 +20,8 @@ from bcb.exceptions import (
 
 # Default timeout for all HTTP requests (seconds)
 DEFAULT_TIMEOUT = 30.0
+
+RequestTimeout: TypeAlias = float | httpx.Timeout | None
 
 # Shared synchronous HTTP client
 _CLIENT = httpx.Client(
@@ -93,6 +95,13 @@ def close_async_client() -> None:
         asyncio.run(aclose_async_client())
     else:
         loop.create_task(aclose_async_client())
+
+
+def timeout_kwargs(timeout: RequestTimeout) -> dict[str, Any]:
+    """Build request kwargs without overriding the client default timeout."""
+    if timeout is None:
+        return {}
+    return {"timeout": timeout}
 
 
 T = TypeVar("T")
