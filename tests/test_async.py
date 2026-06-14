@@ -38,6 +38,16 @@ PTAX_RATE_URL = re.compile(r".*gerarCSVFechamento.*")
 SGS_CODE_URL = re.compile(r".*bcdata\.sgs\..*")
 
 
+async def _async_no_retry_sleep(_):
+    return None
+
+
+def _disable_async_sgs_retry_sleep(monkeypatch):
+    monkeypatch.setattr(
+        sgs._async_get_sgs_response.retry, "sleep", _async_no_retry_sleep
+    )
+
+
 def add_currency_base_mocks(httpx_mock):
     httpx_mock.add_response(
         url=PTAX_ID_LIST_URL,
@@ -132,6 +142,23 @@ async def test_async_get_json_rate_limit_raises(httpx_mock):
 
     with pytest.raises(BCBRateLimitError):
         await sgs.async_get_json(1)
+
+
+async def test_async_get_json_retries_timeout_then_succeeds(httpx_mock, monkeypatch):
+    _disable_async_sgs_retry_sleep(monkeypatch)
+    httpx_mock.add_exception(
+        httpx.TimeoutException("request timed out"),
+        url=SGS_CODE_URL,
+    )
+    httpx_mock.add_response(
+        url=SGS_CODE_URL,
+        text=SGS_JSON_5,
+        status_code=200,
+    )
+
+    result = await sgs.async_get_json(1)
+
+    assert result == SGS_JSON_5
 
 
 async def test_async_get_empty_sgs_code_list_raises():
