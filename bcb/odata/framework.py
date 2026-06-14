@@ -254,7 +254,49 @@ class ODataPropertyOrderBy:
         return f"<{str(self)}>"
 
 
-class ODataPropertyFilter:
+class ODataFilterExpression:
+    def statement(self) -> str:
+        raise NotImplementedError
+
+    def __and__(self, other: object) -> Any:
+        if not isinstance(other, ODataFilterExpression):
+            return NotImplemented
+        return ODataCombinedFilter(self, other, "and")
+
+    def __or__(self, other: object) -> Any:
+        if not isinstance(other, ODataFilterExpression):
+            return NotImplemented
+        return ODataCombinedFilter(self, other, "or")
+
+    def __bool__(self) -> bool:
+        raise TypeError(
+            "OData filters cannot be evaluated as booleans. "
+            "Use & for AND and | for OR, with parentheses around comparisons."
+        )
+
+    def __str__(self) -> str:
+        return self.statement()
+
+    def __repr__(self) -> str:
+        return f"<filter: {str(self)}>"
+
+
+class ODataCombinedFilter(ODataFilterExpression):
+    def __init__(
+        self,
+        left: ODataFilterExpression,
+        right: ODataFilterExpression,
+        operator: str,
+    ) -> None:
+        self.left = left
+        self.right = right
+        self.operator = operator
+
+    def statement(self) -> str:
+        return f"({self.left.statement()} {self.operator} {self.right.statement()})"
+
+
+class ODataPropertyFilter(ODataFilterExpression):
     def __init__(self, obj: "ODataProperty", oth: Any, operator: str) -> None:
         self.obj = obj
         self.other = oth
@@ -263,12 +305,6 @@ class ODataPropertyFilter:
     def statement(self) -> str:
         literal = _format_odata_literal(self.obj.type, self.other)
         return f"{self.obj.name} {self.operator} {literal}"
-
-    def __str__(self) -> str:
-        return self.statement()
-
-    def __repr__(self) -> str:
-        return f"<filter: {str(self)}>"
 
 
 class ODataProperty:
@@ -576,7 +612,7 @@ class ODataQuery:
         self._timeout = timeout
         self._params: dict[str, Any] = {}
         self.function_parameters: dict[str, Any] = {}
-        self._filter: list[ODataPropertyFilter] = []
+        self._filter: list[ODataFilterExpression] = []
         self._select: list[ODataProperty] = []
         self._orderby: list[ODataPropertyOrderBy] = []
         self._raw = False
@@ -608,7 +644,7 @@ class ODataQuery:
                 raise ODataError(f"Unknown parameter: {arg}")
         return self
 
-    def filter(self, *args: ODataPropertyFilter) -> Self:
+    def filter(self, *args: ODataFilterExpression) -> Self:
         if len(args):
             self._filter.extend(args)
         return self

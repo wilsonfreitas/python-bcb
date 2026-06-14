@@ -220,6 +220,22 @@ Mais filtros podem ser adicionados ao método ``filter``, e também podemos anin
 
 Todos os filtros estão no atributo ``$filter`` da consulta e são concatenados com o operador booleano ``and``.
 
+Para combinar condições com ``or``, use o operador ``|`` entre filtros. Use
+parênteses em cada comparação, pois ``|`` tem precedência diferente dos
+operadores de comparação do Python.
+
+.. ipython:: python
+
+    query = (ep.query()
+               .filter((ep.Indicador == 'IPCA') | (ep.Indicador == 'IGP-M'))
+               .filter(ep.DataReferencia == 2023)
+               .limit(5))
+    query.show()
+
+Também é possível combinar filtros explicitamente com ``&``. O operador nativo
+``or`` do Python não deve ser usado, porque ele avalia objetos em contexto
+booleano em vez de construir uma expressão OData.
+
 É necessário conhecer o tipo da propriedade para saber como passar o objeto para a consulta.
 Os tipos de propriedade podem ser: str, float, int e datetime.
 Para propriedades OData ``Edm.Date``, passe um objeto ``datetime.date`` ou ``datetime.datetime`` para o método ``filter``; strings de data não são convertidas automaticamente pelo construtor de filtros.

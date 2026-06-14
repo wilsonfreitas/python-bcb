@@ -398,6 +398,29 @@ def test_boolean_property_filter_formats_booleans():
     assert str(ativo == True) == "Ativo eq true"  # noqa: E712
 
 
+def test_property_filters_support_explicit_and_or_composition():
+    indicador = ODataProperty(Name="Indicador", Type="Edm.String")
+    mediana = ODataProperty(Name="Mediana", Type="Edm.Decimal")
+
+    or_filter = (indicador == "IPCA") | (indicador == "IGP-M")
+    and_filter = (indicador == "IPCA") & (mediana > 4)
+    nested_filter = or_filter & (mediana > 4)
+
+    assert str(or_filter) == "(Indicador eq 'IPCA' or Indicador eq 'IGP-M')"
+    assert str(and_filter) == "(Indicador eq 'IPCA' and Mediana gt 4.0)"
+    assert (
+        str(nested_filter)
+        == "((Indicador eq 'IPCA' or Indicador eq 'IGP-M') and Mediana gt 4.0)"
+    )
+
+
+def test_property_filters_reject_python_boolean_context():
+    indicador = ODataProperty(Name="Indicador", Type="Edm.String")
+
+    with pytest.raises(TypeError, match="Use & for AND and \\| for OR"):
+        bool(indicador == "IPCA")
+
+
 @pytest.mark.parametrize(
     ("prop", "value", "message"),
     [
@@ -519,6 +542,29 @@ def test_query_serializes_filter_orderby_select_and_pagination(httpx_mock):
     assert request.url.params["$select"] == "Indicador,Mediana"
     assert request.url.params["$top"] == "5"
     assert request.url.params["$skip"] == "10"
+
+
+def test_query_serializes_or_filter_expression(httpx_mock):
+    add_service_mocks(httpx_mock)
+    httpx_mock.add_response(
+        url=ENTITY_URL_PATTERN,
+        text=ODATA_QUERY_RESPONSE_JSON,
+        status_code=200,
+    )
+    api = Expectativas()
+    entity = api.service["ExpectativasMercadoAnuais"]
+
+    query = api.service.query(entity).filter(
+        (entity.Indicador == "IPCA") | (entity.Indicador == "IGP-M"),
+        entity.Mediana > 4,
+    )
+    query.collect()
+
+    request = httpx_mock.get_requests()[-1]
+    assert (
+        request.url.params["$filter"]
+        == "(Indicador eq 'IPCA' or Indicador eq 'IGP-M') and Mediana gt 4.0"
+    )
 
 
 def test_query_reset_clears_filters_ordering_and_pagination(httpx_mock):

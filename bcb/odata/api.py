@@ -5,6 +5,7 @@ from typing import Any, Literal, Optional, Union, overload
 from bcb.http import RequestTimeout
 from bcb.odata.framework import (
     ODataEntitySet,
+    ODataFilterExpression,
     ODataFunctionImport,
     ODataQuery,
     ODataPropertyFilter,
@@ -167,7 +168,7 @@ class Endpoint(metaclass=EndpointMeta):
     def get(
         self,
         *args: Any,
-        filter: Optional[ODataPropertyFilter] = None,
+        filter: Optional[ODataFilterExpression] = None,
         orderby: Optional[ODataPropertyOrderBy] = None,
         select: Optional[ODataProperty] = None,
         limit: Optional[int] = None,
@@ -273,7 +274,7 @@ class Endpoint(metaclass=EndpointMeta):
     async def async_get(
         self,
         *args: Any,
-        filter: Optional[ODataPropertyFilter] = None,
+        filter: Optional[ODataFilterExpression] = None,
         orderby: Optional[ODataPropertyOrderBy] = None,
         select: Optional[ODataProperty] = None,
         limit: Optional[int] = None,
