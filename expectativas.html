@@ -363,16 +363,18 @@ indicador para que traga apenas informações do IPCA.</p>
 </div>
 <p>As consultas podem ficar ainda mais elaboradas, com diversos filtros,
 ordenando colunas e selecionando as colunas na saída.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [8]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [8]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span>
+
+<span class="gp">In [9]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
 <span class="gp">   ...: </span> <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Indicador</span> <span class="o">==</span> <span class="s1">&#39;IPCA&#39;</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">DataReferencia</span> <span class="o">==</span> <span class="mi">2023</span><span class="p">)</span>
-<span class="gp">   ...: </span> <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span> <span class="o">&gt;=</span> <span class="s1">&#39;2022-01-01&#39;</span><span class="p">)</span>
+<span class="gp">   ...: </span> <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span> <span class="o">&gt;=</span> <span class="n">date</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="gp">   ...: </span> <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">tipoCalculo</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span>
 <span class="gp">   ...: </span> <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">Media</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">Mediana</span><span class="p">)</span>
 <span class="gp">   ...: </span> <span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
 <span class="gp">   ...: </span> <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="gp">   ...: </span> <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
 <span class="gp">   ...: </span>
-<span class="gh">Out[8]: </span>
+<span class="gh">Out[9]: </span>
 <span class="go">        Data   Media  Mediana</span>
 <span class="go">0 2024-01-10  4.4984   4.4547</span>
 <span class="go">1 2024-01-09  4.4984   4.4547</span>

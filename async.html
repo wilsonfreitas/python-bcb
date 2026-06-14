@@ -316,12 +316,20 @@ Busca dados de múltiplos códigos SGS concorrentemente com a mesma interface qu
 Busca taxas de câmbio de forma assíncrona com a mesma interface que a versão síncrona.</p>
 <p><strong>Exemplo:</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">bcb</span><span class="w"> </span><span class="kn">import</span> <span class="n">currency</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bcb</span><span class="w"> </span><span class="kn">import</span> <span class="n">currency</span><span class="p">,</span> <span class="n">http</span>
 
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-    <span class="c1"># Buscar taxas de câmbio</span>
-    <span class="n">usd</span> <span class="o">=</span> <span class="k">await</span> <span class="n">currency</span><span class="o">.</span><span class="n">async_get</span><span class="p">(</span><span class="s1">&#39;USD&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2024-01-01&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2024-12-31&#39;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">usd</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Buscar múltiplas taxas de câmbio em paralelo</span>
+        <span class="n">rates</span> <span class="o">=</span> <span class="k">await</span> <span class="n">currency</span><span class="o">.</span><span class="n">async_get</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;USD&#39;</span><span class="p">,</span> <span class="s1">&#39;EUR&#39;</span><span class="p">],</span>
+            <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2024-01-01&#39;</span><span class="p">,</span>
+            <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2024-12-31&#39;</span><span class="p">,</span>
+            <span class="n">side</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">rates</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">http</span><span class="o">.</span><span class="n">aclose_async_client</span><span class="p">()</span>
 
 <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
 </pre></div>
@@ -432,20 +440,25 @@ Busca taxas de câmbio de forma assíncrona com a mesma interface que a versão 
 </section>
 <section id="limpeza-de-recursos">
 <h2>Limpeza de Recursos<a class="headerlink" href="#limpeza-de-recursos" title="Link permanente para este cabeçalho">¶</a></h2>
-<p>Para aplicações de longa duração, feche o cliente assíncrono quando terminar:</p>
+<p>Para aplicações de longa duração, feche o cliente assíncrono quando terminar.
+Em código assíncrono, use <code class="docutils literal notranslate"><span class="pre">await</span> <span class="pre">http.aclose_async_client()</span></code> dentro da
+função principal:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">bcb</span><span class="w"> </span><span class="kn">import</span> <span class="n">http</span>
 
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
-    <span class="c1"># ... suas operações assíncronas ...</span>
-    <span class="k">pass</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># ... suas operações assíncronas ...</span>
+        <span class="k">pass</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">http</span><span class="o">.</span><span class="n">aclose_async_client</span><span class="p">()</span>
 
 <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
-
-<span class="c1"># Fechar cliente assíncrono</span>
-<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">http</span><span class="o">.</span><span class="n">close_async_client</span><span class="p">())</span>
 </pre></div>
 </div>
+<p>Em código síncrono, quando não há uma event loop em execução, também é possível
+chamar <code class="docutils literal notranslate"><span class="pre">http.close_async_client()</span></code> diretamente após terminar as operações
+assíncronas.</p>
 </section>
 <section id="limitacoes">
 <h2>Limitações<a class="headerlink" href="#limitacoes" title="Link permanente para este cabeçalho">¶</a></h2>
@@ -481,7 +494,7 @@ Busca taxas de câmbio de forma assíncrona com a mesma interface que a versão 
 <li><p><a class="reference internal" href="sgs.html#sgs"><span class="std std-ref">SGS</span></a> — Documentação completa do módulo SGS</p></li>
 <li><p><a class="reference internal" href="currency.html#conversor-de-moedas"><span class="std std-ref">Conversor de Moedas</span></a> — Documentação do módulo currency</p></li>
 <li><p><a class="reference internal" href="odata.html#odata"><span class="std std-ref">OData</span></a> — Documentação do cliente OData</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/asyncio.html">asyncio — asyncpython</a></p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/asyncio.html">asyncio — documentação Python</a></p></li>
 </ul>
 </section>
 </section>

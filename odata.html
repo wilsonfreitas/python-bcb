@@ -355,11 +355,11 @@ Vamos ordernar pela propriedade <code class="docutils literal notranslate"><span
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [9]: </span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
 <span class="gh">Out[9]: </span>
 <span class="go">        Data  Quantidade  CanalPrimario  CanalSecundario         Total   Media</span>
-<span class="go">0 2026-03-25   209817266      208825826           991440  1.114498e+08  531.18</span>
-<span class="go">1 2026-03-24   198880432      198162416           718016  9.912195e+07  498.40</span>
-<span class="go">2 2026-03-23   204650082      203903502           746580  1.193682e+08  583.28</span>
-<span class="go">3 2026-03-22   165070259      164418447           651812  1.866940e+07  113.10</span>
-<span class="go">4 2026-03-21   225643754      224986712           657042  3.245386e+07  143.83</span>
+<span class="go">0 2026-06-13   235687895      235183852           504043  3.498526e+07  148.44</span>
+<span class="go">1 2026-06-12   254528967      253751905           777062  1.209410e+08  475.16</span>
+<span class="go">2 2026-06-11   239210494      238471195           739299  1.149050e+08  480.35</span>
+<span class="go">3 2026-06-10   258814871      257440361          1374510  1.546446e+08  597.51</span>
+<span class="go">4 2026-06-09   246592627      245853098           739529  1.255452e+08  509.12</span>
 </pre></div>
 </div>
 <p>Veja que a consulta retorna as datas mais recentes primeiro.</p>
@@ -375,16 +375,16 @@ Sigamos com um exemplo:</p>
 <p>Quero obter os 10 dias em 2023 que apresentam as maiores médias transacionadas no PIX.</p>
 <p>Para executar essa query utilizo o método <code class="docutils literal notranslate"><span class="pre">select</span></code> passando as propriedades Data e Media,
 encadeio o método <code class="docutils literal notranslate"><span class="pre">filter</span></code> filtrando a propriedade Data maiores que 2023-01-01, e note
-que aqui utilizo um objeto <code class="docutils literal notranslate"><span class="pre">datetime</span></code>, pois na descrição do <em>endpoint</em> <code class="docutils literal notranslate"><span class="pre">PixLiquidadosAtual</span></code>
-a propriedade Data é do tipo <code class="docutils literal notranslate"><span class="pre">datetime</span></code>.
+que aqui utilizo um objeto <code class="docutils literal notranslate"><span class="pre">date</span></code>; objetos <code class="docutils literal notranslate"><span class="pre">datetime</span></code> também são aceitos. Na descrição do <em>endpoint</em> <code class="docutils literal notranslate"><span class="pre">PixLiquidadosAtual</span></code>,
+a propriedade Data aparece como <code class="docutils literal notranslate"><span class="pre">datetime</span></code> porque representa um campo OData <code class="docutils literal notranslate"><span class="pre">Edm.Date</span></code>.
 Sigo com o método <code class="docutils literal notranslate"><span class="pre">orderby</span></code> passando a propriedade média e indicando que a ordenação é decrescente e concluo com
 o método <code class="docutils literal notranslate"><span class="pre">limit</span></code> para obter os 10 primeiros registros.
 Na última linha executo o método <code class="docutils literal notranslate"><span class="pre">collect</span></code> que executa a consulta e retorna um DataFrame com os resultados.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [10]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [10]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span>
 
 <span class="gp">In [11]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
 <span class="gp">   ....: </span>    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">Media</span><span class="p">)</span>
-<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span> <span class="o">&gt;=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span> <span class="o">&gt;=</span> <span class="n">date</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="gp">   ....: </span>    <span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Media</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
 <span class="gp">   ....: </span>    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="gp">   ....: </span>    <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
@@ -394,8 +394,8 @@ Na última linha executo o método <code class="docutils literal notranslate"><s
 <span class="go">0 2025-06-30  745.06</span>
 <span class="go">1 2026-02-18  712.83</span>
 <span class="go">2 2025-12-15  707.89</span>
-<span class="go">3 2025-10-20  687.37</span>
-<span class="go">4 2025-03-05  677.26</span>
+<span class="go">3 2026-03-30  701.97</span>
+<span class="go">4 2026-05-04  689.97</span>
 </pre></div>
 </div>
 <section id="visualizando-a-consulta">
@@ -405,7 +405,7 @@ Para ajudar na construção e na depuração da <em>query</em>, criamos o métod
 mas não a executa.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [12]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
 <span class="gp">   ....: </span>    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">Media</span><span class="p">)</span>
-<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span> <span class="o">&gt;=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span> <span class="o">&gt;=</span> <span class="n">date</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="gp">   ....: </span>    <span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Media</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
 <span class="gp">   ....: </span>    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="gp">   ....: </span>    <span class="o">.</span><span class="n">show</span><span class="p">())</span>
@@ -474,7 +474,7 @@ Podemos utilizar todos os operadores de comparação nos filtros.</p>
 <p>Mais filtros podem ser adicionados ao método <code class="docutils literal notranslate"><span class="pre">filter</span></code>, e também podemos aninhar chamadas do método <code class="docutils literal notranslate"><span class="pre">filter</span></code>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [20]: </span><span class="n">query</span> <span class="o">=</span> <span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
 <span class="gp">   ....: </span>           <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Indicador</span> <span class="o">==</span> <span class="s1">&#39;IPCA&#39;</span><span class="p">,</span> <span class="n">ep</span><span class="o">.</span><span class="n">DataReferencia</span> <span class="o">==</span> <span class="mi">2023</span><span class="p">)</span>
-<span class="gp">   ....: </span>           <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span> <span class="o">&gt;=</span> <span class="s1">&#39;2022-01-01&#39;</span><span class="p">)</span>
+<span class="gp">   ....: </span>           <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span> <span class="o">&gt;=</span> <span class="n">date</span><span class="p">(</span><span class="mi">2022</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="gp">   ....: </span>           <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">tipoCalculo</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span>
 <span class="gp">   ....: </span>           <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
 <span class="gp">   ....: </span>
@@ -503,12 +503,11 @@ Podemos utilizar todos os operadores de comparação nos filtros.</p>
 <p>Todos os filtros estão no atributo <code class="docutils literal notranslate"><span class="pre">$filter</span></code> da consulta e são concatenados com o operador booleano <code class="docutils literal notranslate"><span class="pre">and</span></code>.</p>
 <p>É necessário conhecer o tipo da propriedade para saber como passar o objeto para a consulta.
 Os tipos de propriedade podem ser: str, float, int e datetime.
-Por exemplo, na API do PIX, a propriedade <code class="docutils literal notranslate"><span class="pre">Data</span></code> é do tipo <code class="docutils literal notranslate"><span class="pre">datetime</span></code> e por isso é necessário passar um
-objeto <code class="docutils literal notranslate"><span class="pre">datetime</span></code> para o método <code class="docutils literal notranslate"><span class="pre">filter</span></code>.</p>
+Para propriedades OData <code class="docutils literal notranslate"><span class="pre">Edm.Date</span></code>, passe um objeto <code class="docutils literal notranslate"><span class="pre">datetime.date</span></code> ou <code class="docutils literal notranslate"><span class="pre">datetime.datetime</span></code> para o método <code class="docutils literal notranslate"><span class="pre">filter</span></code>; strings de data não são convertidas automaticamente pelo construtor de filtros.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [23]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">pix</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s2">&quot;PixLiquidadosAtual&quot;</span><span class="p">)</span>
 
 <span class="gp">In [24]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
-<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span> <span class="o">&gt;=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span> <span class="o">&gt;=</span> <span class="n">date</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">show</span><span class="p">())</span>
 <span class="gp">   ....: </span>
@@ -521,7 +520,7 @@ objeto <code class="docutils literal notranslate"><span class="pre">datetime</sp
 <span class="go">Return: Data&lt;datetime&gt;, Quantidade&lt;int&gt;, CanalPrimario&lt;int&gt;, CanalSecundario&lt;int&gt;, Total&lt;float&gt;, Media&lt;float&gt;</span>
 </pre></div>
 </div>
-<p>O objeto <code class="docutils literal notranslate"><span class="pre">datetime</span></code> é formatado como data na consulta, note que não há aspas na definição da data no filtro.</p>
+<p>O objeto <code class="docutils literal notranslate"><span class="pre">date</span></code> ou <code class="docutils literal notranslate"><span class="pre">datetime</span></code> é formatado como data na consulta; note que não há aspas na definição da data no filtro.</p>
 </section>
 <section id="ordenando-os-dados">
 <h3>Ordenando os Dados<a class="headerlink" href="#ordenando-os-dados" title="Link permanente para este cabeçalho">¶</a></h3>
@@ -607,12 +606,12 @@ objeto <code class="docutils literal notranslate"><span class="pre">datetime</sp
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
 <span class="gp">   ....: </span>
 <span class="gh">Out[36]: </span>
-<span class="go">  Indicador       Data DataReferencia tipoCalculo  Media</span>
-<span class="go">0    Câmbio 2026-03-20           2026           M  5.366</span>
-<span class="go">1    Câmbio 2026-03-20           2027           M  5.460</span>
-<span class="go">2    Câmbio 2026-03-20           2028           M  5.546</span>
-<span class="go">3    Câmbio 2026-03-20           2029           M  5.620</span>
-<span class="go">4    Câmbio 2026-03-20           2030           M  5.676</span>
+<span class="go">  Indicador       Data DataReferencia tipoCalculo   Media</span>
+<span class="go">0    Câmbio 2026-06-05           2026           M  5.0400</span>
+<span class="go">1    Câmbio 2026-06-05           2027           M  5.0090</span>
+<span class="go">2    Câmbio 2026-06-05           2028           M  5.0750</span>
+<span class="go">3    Câmbio 2026-06-05           2029           M  5.1753</span>
+<span class="go">4    Câmbio 2026-06-05           2030           M  5.2878</span>
 </pre></div>
 </div>
 <p>Selecionar as colunas é importante para reduzir o volume de dados trafegado, pois a API do BCB não tem um bom
@@ -625,7 +624,7 @@ Esse método é importante para investigar as consultas na API de forma rápida.
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [37]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">pix</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s2">&quot;PixLiquidadosAtual&quot;</span><span class="p">)</span>
 
 <span class="gp">In [38]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
-<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span> <span class="o">&gt;=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">   ....: </span>   <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">Data</span> <span class="o">&gt;=</span> <span class="n">date</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
 <span class="gp">   ....: </span>
@@ -751,7 +750,7 @@ esse texto bruto.</p>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">text</span><span class="p">())</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[47]: </span><span class="go">&#39;{&quot;@odata.context&quot;:&quot;https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTop5Anuais(Indicador,Data,DataReferencia,tipoCalculo,Media)&quot;,&quot;value&quot;:[{&quot;Indicador&quot;:&quot;Câmbio&quot;,&quot;Data&quot;:&quot;2026-03-20&quot;,&quot;DataReferencia&quot;:&quot;2026&quot;,&quot;tipoCalculo&quot;:&quot;M&quot;,&quot;Media&quot;:5.3660},{&quot;Indicador&quot;:&quot;Câmbio&quot;,&quot;Data&quot;:&quot;2026-03-20&quot;,&quot;DataReferencia&quot;:&quot;2027&quot;,&quot;tipoCalculo&quot;:&quot;M&quot;,&quot;Media&quot;:5.4600},{&quot;Indicador&quot;:&quot;Câmbio&quot;,&quot;Data&quot;:&quot;2026-03-20&quot;,&quot;DataReferencia&quot;:&quot;2028&quot;,&quot;tipoCalculo&quot;:&quot;M&quot;,&quot;Media&quot;:5.5460},{&quot;Indicador&quot;:&quot;Câmbio&quot;,&quot;Data&quot;:&quot;2026-03-20&quot;,&quot;DataReferencia&quot;:&quot;2029&quot;,&quot;tipoCalculo&quot;:&quot;M&quot;,&quot;Media&quot;:5.6200},{&quot;Indicador&quot;:&quot;Câmbio&quot;,&quot;Data&quot;:&quot;2026-03-20&quot;,&quot;DataReferencia&quot;:&quot;2030&quot;,&quot;tipoCalculo&quot;:&quot;M&quot;,&quot;Media&quot;:5.6760}]}&#39;</span>
+<span class="gh">Out[47]: </span><span class="go">&#39;{&quot;@odata.context&quot;:&quot;https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTop5Anuais(Indicador,Data,DataReferencia,tipoCalculo,Media)&quot;,&quot;value&quot;:[{&quot;Indicador&quot;:&quot;Câmbio&quot;,&quot;Data&quot;:&quot;2026-06-05&quot;,&quot;DataReferencia&quot;:&quot;2026&quot;,&quot;tipoCalculo&quot;:&quot;M&quot;,&quot;Media&quot;:5.0400},{&quot;Indicador&quot;:&quot;Câmbio&quot;,&quot;Data&quot;:&quot;2026-06-05&quot;,&quot;DataReferencia&quot;:&quot;2027&quot;,&quot;tipoCalculo&quot;:&quot;M&quot;,&quot;Media&quot;:5.0090},{&quot;Indicador&quot;:&quot;Câmbio&quot;,&quot;Data&quot;:&quot;2026-06-05&quot;,&quot;DataReferencia&quot;:&quot;2028&quot;,&quot;tipoCalculo&quot;:&quot;M&quot;,&quot;Media&quot;:5.0750},{&quot;Indicador&quot;:&quot;Câmbio&quot;,&quot;Data&quot;:&quot;2026-06-05&quot;,&quot;DataReferencia&quot;:&quot;2029&quot;,&quot;tipoCalculo&quot;:&quot;M&quot;,&quot;Media&quot;:5.1753},{&quot;Indicador&quot;:&quot;Câmbio&quot;,&quot;Data&quot;:&quot;2026-06-05&quot;,&quot;DataReferencia&quot;:&quot;2030&quot;,&quot;tipoCalculo&quot;:&quot;M&quot;,&quot;Media&quot;:5.2878}]}&#39;</span>
 </pre></div>
 </div>
 <p>O texto retornado está no formato JSON.
@@ -766,7 +765,7 @@ Para isso incluímos o método <code class="docutils literal notranslate"><span 
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">text</span><span class="p">())</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[49]: </span><span class="go">&#39;&lt;?xml version=\&#39;1.0\&#39; encoding=\&#39;UTF-8\&#39;?&gt;&lt;a:feed xmlns:a=&quot;http://www.w3.org/2005/Atom&quot; xmlns:m=&quot;http://docs.oasis-open.org/odata/ns/metadata&quot; xmlns:d=&quot;http://docs.oasis-open.org/odata/ns/data&quot; m:context=&quot;https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTop5Anuais(Indicador,Data,DataReferencia,tipoCalculo,Media)&quot;&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-03-26T08:32:10Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-03-20&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2026&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.3660&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-03-26T08:32:10Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-03-20&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2027&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.4600&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-03-26T08:32:10Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-03-20&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2028&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.5460&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-03-26T08:32:10Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-03-20&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2029&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.6200&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-03-26T08:32:10Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-03-20&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2030&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.6760&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;/a:feed&gt;&#39;</span>
+<span class="gh">Out[49]: </span><span class="go">&#39;&lt;?xml version=\&#39;1.0\&#39; encoding=\&#39;UTF-8\&#39;?&gt;&lt;a:feed xmlns:a=&quot;http://www.w3.org/2005/Atom&quot; xmlns:m=&quot;http://docs.oasis-open.org/odata/ns/metadata&quot; xmlns:d=&quot;http://docs.oasis-open.org/odata/ns/data&quot; m:context=&quot;https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTop5Anuais(Indicador,Data,DataReferencia,tipoCalculo,Media)&quot;&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-06-14T19:10:40Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-06-05&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2026&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.0400&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-06-14T19:10:40Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-06-05&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2027&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.0090&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-06-14T19:10:40Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-06-05&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2028&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.0750&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-06-14T19:10:40Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-06-05&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2029&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.1753&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-06-14T19:10:40Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-06-05&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2030&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.2878&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;/a:feed&gt;&#39;</span>
 </pre></div>
 </div>
 </section>
@@ -798,10 +797,10 @@ O comportamento padrão (retorno de DataFrame) é mantido quando o parâmetro n�
 </section>
 <section id="classe-odataapi">
 <h2>Classe ODataAPI<a class="headerlink" href="#classe-odataapi" title="Link permanente para este cabeçalho">¶</a></h2>
-<p>O portal de Dados Abertos to Banco Central apresenta diversas APIs OData, são
+<p>O portal de Dados Abertos do Banco Central apresenta diversas APIs OData, são
 dezenas de APIs disponíveis.
 A URL com metadados de cada API pode ser obtida no <a class="reference external" href="https://dadosabertos.bcb.gov.br">portal</a>.
-A classe <a class="reference internal" href="api.html#bcb.odata.api.ODataAPI" title="bcb.odata.api.ODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.ODataAPI</span></code></a> permite acessar qualquer API Odata de posse da sua URL.</p>
+A classe <a class="reference internal" href="api.html#bcb.odata.api.ODataAPI" title="bcb.odata.api.ODataAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.odata.api.ODataAPI</span></code></a> permite acessar qualquer API OData de posse da sua URL.</p>
 <p>Por exemplo, a API de estatísticas de operações registradas no Selic tem a seguinte URL:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">olinda</span><span class="o">.</span><span class="n">bcb</span><span class="o">.</span><span class="n">gov</span><span class="o">.</span><span class="n">br</span><span class="o">/</span><span class="n">olinda</span><span class="o">/</span><span class="n">servico</span><span class="o">/</span><span class="n">selic_operacoes</span><span class="o">/</span><span class="n">versao</span><span class="o">/</span><span class="n">v1</span><span class="o">/</span><span class="n">odata</span><span class="o">/</span>
 </pre></div>
@@ -817,9 +816,15 @@ A classe <a class="reference internal" href="api.html#bcb.odata.api.ODataAPI" ti
 <span class="gp">In [53]: </span><span class="n">service</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 <span class="go">EntitySets:</span>
 <span class="go">  DatasOperacoesSelic</span>
+<span class="go">  OperacoesDisponiveis</span>
+<span class="go">  DataMesAnoUltimoMovimentoSelic</span>
+<span class="go">  OperacoesRegistradas</span>
 <span class="go">FunctionImports:</span>
 <span class="go">  OperacoesEmUmAno</span>
+<span class="go">  EvolucaoTipoOperacaoMensal</span>
 <span class="go">  OperacoesEmUmaData</span>
+<span class="go">  EvolucaoTipoOperacaoDiaria</span>
+<span class="go">  OperacoesEmUmMes</span>
 </pre></div>
 </div>
 </section>

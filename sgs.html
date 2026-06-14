@@ -253,9 +253,10 @@
         <article role="main" id="furo-main-content">
           <section id="sgs">
 <h1>SGS<a class="headerlink" href="#sgs" title="Link permanente para este cabeçalho">¶</a></h1>
-<p>A função <a class="reference internal" href="api.html#bcb.sgs.get" title="bcb.sgs.get"><code class="xref py py-func docutils literal notranslate"><span class="pre">bcb.sgs.get()</span></code></a> obtem os dados do webservice do Banco Central ,
-interface json do serviço BCData/SGS -
+<p>A função <a class="reference internal" href="api.html#bcb.sgs.get" title="bcb.sgs.get"><code class="xref py py-func docutils literal notranslate"><span class="pre">bcb.sgs.get()</span></code></a> obtém os dados do webservice do Banco Central,
+interface JSON do serviço BCData/SGS -
 <a class="reference external" href="https://www3.bcb.gov.br/sgspub/localizarseries/localizarSeries.do?method=prepararTelaLocalizarSeries">Sistema Gerenciador de Séries Temporais (SGS)</a>.</p>
+<p>Os parâmetros <code class="docutils literal notranslate"><span class="pre">start</span></code> e <code class="docutils literal notranslate"><span class="pre">end</span></code> aceitam strings <code class="docutils literal notranslate"><span class="pre">YYYY-MM-DD</span></code>, <code class="docutils literal notranslate"><span class="pre">datetime.date</span></code>, <code class="docutils literal notranslate"><span class="pre">datetime.datetime</span></code> ou <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.utils.Date</span></code>. Também é possível usar <code class="docutils literal notranslate"><span class="pre">last</span></code> para buscar os últimos <code class="docutils literal notranslate"><span class="pre">n</span></code> pontos disponíveis.</p>
 <section id="exemplos">
 <h2>Exemplos<a class="headerlink" href="#exemplos" title="Link permanente para este cabeçalho">¶</a></h2>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb</span><span class="w"> </span><span class="kn">import</span> <span class="n">sgs</span>
@@ -345,6 +346,7 @@ O comportamento padrão (retorno de DataFrame) é mantido quando o parâmetro n�
 </section>
 <section id="dados-de-inadimplencia-de-operacoes-de-credito">
 <h1>Dados de Inadimplência de Operações de Crédito<a class="headerlink" href="#dados-de-inadimplencia-de-operacoes-de-credito" title="Link permanente para este cabeçalho">¶</a></h1>
+<p>Os modos aceitos são <code class="docutils literal notranslate"><span class="pre">PF</span></code> (pessoas físicas), <code class="docutils literal notranslate"><span class="pre">PJ</span></code> (pessoas jurídicas) e <code class="docutils literal notranslate"><span class="pre">total</span></code>; <code class="docutils literal notranslate"><span class="pre">all</span></code> é aceito como alias de <code class="docutils literal notranslate"><span class="pre">total</span></code>. Os locais devem ser todos estados ou todos regiões, sem misturar os dois tipos na mesma chamada.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [17]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb.sgs.regional_economy</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_non_performing_loans</span>
 
 <span class="gp">In [18]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">BRAZILIAN_REGIONS</span><span class="p">,</span> <span class="n">BRAZILIAN_STATES</span>
@@ -355,16 +357,16 @@ O comportamento padrão (retorno de DataFrame) é mantido quando o parâmetro n�
 <span class="gh">Out[20]: </span>
 <span class="go">              RR</span>
 <span class="go">Date            </span>
-<span class="go">2025-04-01  4.46</span>
-<span class="go">2025-05-01  4.59</span>
-<span class="go">2025-06-01  4.77</span>
 <span class="go">2025-07-01  5.06</span>
 <span class="go">2025-08-01  5.21</span>
-<span class="go">2025-09-01  5.07</span>
-<span class="go">2025-10-01  5.28</span>
-<span class="go">2025-11-01  5.28</span>
-<span class="go">2025-12-01  5.19</span>
-<span class="go">2026-01-01  5.43</span>
+<span class="go">2025-09-01  5.02</span>
+<span class="go">2025-10-01  5.24</span>
+<span class="go">2025-11-01  5.24</span>
+<span class="go">2025-12-01  5.17</span>
+<span class="go">2026-01-01  5.42</span>
+<span class="go">2026-02-01  5.64</span>
+<span class="go">2026-03-01  5.49</span>
+<span class="go">2026-04-01  5.96</span>
 </pre></div>
 </div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [21]: </span><span class="n">northeast_states</span> <span class="o">=</span> <span class="n">BRAZILIAN_REGIONS</span><span class="p">[</span><span class="s2">&quot;NE&quot;</span><span class="p">]</span>
@@ -373,11 +375,11 @@ O comportamento padrão (retorno de DataFrame) é mantido quando o parâmetro n�
 <span class="gh">Out[22]: </span>
 <span class="go">              AL    BA    CE    MA    PB    PE    PI    RN    SE</span>
 <span class="go">Date                                                            </span>
-<span class="go">2025-09-01  2.58  3.07  3.62  6.03  4.89  3.29  2.45  4.48  4.82</span>
-<span class="go">2025-10-01  2.82  3.14  3.74  6.32  8.56  3.31  2.30  4.47  4.80</span>
-<span class="go">2025-11-01  2.85  3.10  3.73  6.10  8.40  3.17  2.24  4.25  4.71</span>
-<span class="go">2025-12-01  2.65  2.94  3.47  5.83  8.31  2.97  2.12  3.82  4.21</span>
-<span class="go">2026-01-01  3.14  3.18  3.71  6.11  8.58  3.22  2.13  3.77  4.54</span>
+<span class="go">2025-12-01  2.65  2.94  3.47  5.83  8.31  2.96  2.11  3.82  4.22</span>
+<span class="go">2026-01-01  3.14  3.18  3.70  6.12  8.61  3.22  2.12  3.77  4.55</span>
+<span class="go">2026-02-01  3.36  4.22  3.81  6.23  8.76  3.35  2.33  3.98  4.76</span>
+<span class="go">2026-03-01  3.46  3.17  3.64  6.16  8.67  3.30  2.38  3.79  4.64</span>
+<span class="go">2026-04-01  3.46  3.67  3.71  6.56  8.96  3.52  2.56  3.91  4.68</span>
 </pre></div>
 </div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [23]: </span><span class="n">get_non_performing_loans</span><span class="p">(</span><span class="n">BRAZILIAN_STATES</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;PF&quot;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2024-01-01&quot;</span><span class="p">)</span>
@@ -404,13 +406,16 @@ O comportamento padrão (retorno de DataFrame) é mantido quando o parâmetro n�
 <span class="go">2025-06-01  4.30  5.19  5.44  5.03  4.23  ...  5.45  3.91  3.51  3.44  3.43</span>
 <span class="go">2025-07-01  4.51  5.34  5.69  5.27  4.65  ...  5.59  4.06  3.76  3.66  3.59</span>
 <span class="go">2025-08-01  4.73  5.39  5.82  5.45  4.99  ...  5.67  4.19  4.08  3.94  3.72</span>
-<span class="go">2025-09-01  4.64  5.35  5.84  5.46  5.07  ...  5.62  4.13  4.05  4.15  3.61</span>
-<span class="go">2025-10-01  4.91  5.54  5.95  5.84  5.46  ...  5.74  4.24  4.18  4.58  3.74</span>
-<span class="go">2025-11-01  4.97  5.51  5.96  5.89  5.73  ...  5.74  4.26  4.29  4.69  3.78</span>
-<span class="go">2025-12-01  5.09  5.67  6.06  5.92  5.70  ...  5.71  4.22  4.17  4.68  3.77</span>
-<span class="go">2026-01-01  5.38  5.79  6.29  6.22  6.05  ...  5.93  4.47  4.50  4.99  3.99</span>
+<span class="go">2025-09-01  4.63  5.34  5.82  5.46  5.08  ...  5.62  4.13  4.05  4.15  3.61</span>
+<span class="go">2025-10-01  4.90  5.53  5.94  5.84  5.47  ...  5.75  4.24  4.18  4.58  3.73</span>
+<span class="go">2025-11-01  4.96  5.51  5.95  5.90  5.75  ...  5.74  4.26  4.29  4.68  3.77</span>
+<span class="go">2025-12-01  5.20  5.64  6.06  5.92  5.70  ...  5.71  4.21  4.17  4.67  3.76</span>
+<span class="go">2026-01-01  5.56  5.92  6.34  6.26  6.09  ...  5.99  4.50  4.52  5.00  4.01</span>
+<span class="go">2026-02-01  5.66  6.63  6.71  6.44  6.40  ...  6.36  4.73  4.74  5.33  4.17</span>
+<span class="go">2026-03-01  5.82  6.64  6.68  6.44  6.32  ...  6.23  4.63  4.62  5.26  4.07</span>
+<span class="go">2026-04-01  6.37  6.70  6.78  6.76  6.52  ...  6.38  4.78  4.82  5.40  4.21</span>
 
-<span class="go">[25 rows x 27 columns]</span>
+<span class="go">[28 rows x 27 columns]</span>
 </pre></div>
 </div>
 </section>
