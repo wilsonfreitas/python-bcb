@@ -10,7 +10,12 @@ import pytest
 
 from bcb import currency, sgs
 from bcb.odata.api import Expectativas
-from bcb.exceptions import BCBRateLimitError, CurrencyNotFoundError, ODataError
+from bcb.exceptions import (
+    BCBAPIError,
+    BCBRateLimitError,
+    CurrencyNotFoundError,
+    ODataError,
+)
 from tests.conftest import (
     CURRENCY_ID_LIST_HTML,
     CURRENCY_LIST_CSV,
@@ -201,6 +206,32 @@ async def test_async_get_all_invalid_text_symbols_raise_clear_error(httpx_mock):
         match="No valid currency symbols found: ZAR, ZZ1",
     ):
         await currency.async_get(["ZAR", "ZZ1"], START, END, output="text")
+
+
+async def test_async_get_symbol_unexpected_html_raises_bcb_error(httpx_mock):
+    add_currency_base_mocks(httpx_mock)
+    httpx_mock.add_response(
+        url=PTAX_RATE_URL,
+        text="<html><body><p>temporary failure</p></body></html>",
+        status_code=200,
+        headers={},
+    )
+
+    with pytest.raises(BCBAPIError, match="HTML response.*USD.*recognized"):
+        await currency._async_get_symbol("USD", START, END)
+
+
+async def test_async_get_symbol_empty_response_body_raises_bcb_error(httpx_mock):
+    add_currency_base_mocks(httpx_mock)
+    httpx_mock.add_response(
+        url=PTAX_RATE_URL,
+        text="",
+        status_code=200,
+        headers={"Content-Type": "text/csv"},
+    )
+
+    with pytest.raises(BCBAPIError, match="empty"):
+        await currency._async_get_symbol("USD", START, END)
 
 
 # ---------------------------------------------------------------------------

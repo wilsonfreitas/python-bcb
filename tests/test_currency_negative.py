@@ -143,6 +143,111 @@ def test_fetch_symbol_429_rate_limit_raises(httpx_mock):
 # ---------------------------------------------------------------------------
 
 
+def test_fetch_symbol_html_error_extracts_message(httpx_mock):
+    """HTML error pages with the expected element raise BCBAPIError."""
+    from tests.conftest import CURRENCY_ID_LIST_HTML, CURRENCY_LIST_CSV
+
+    httpx_mock.add_response(
+        url=PTAX_ID_LIST_URL,
+        content=CURRENCY_ID_LIST_HTML,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url=PTAX_CSV_DOWNLOAD_URL,
+        text=CURRENCY_LIST_CSV,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url=PTAX_RATE_URL,
+        text="<html><body><div class='msgErro'> No data available </div></body></html>",
+        status_code=200,
+        headers={"Content-Type": "text/html"},
+    )
+
+    with pytest.raises(BCBAPIError, match="No data available"):
+        currency._fetch_symbol_response("USD", START, END)
+
+
+def test_fetch_symbol_unexpected_html_without_content_type_raises(httpx_mock):
+    """HTML bodies without Content-Type or msgErro still raise BCBAPIError."""
+    from tests.conftest import CURRENCY_ID_LIST_HTML, CURRENCY_LIST_CSV
+
+    httpx_mock.add_response(
+        url=PTAX_ID_LIST_URL,
+        content=CURRENCY_ID_LIST_HTML,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url=PTAX_CSV_DOWNLOAD_URL,
+        text=CURRENCY_LIST_CSV,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url=PTAX_RATE_URL,
+        text="<html><body><p>temporary failure</p></body></html>",
+        status_code=200,
+        headers={},
+    )
+
+    with pytest.raises(BCBAPIError, match="HTML response.*USD.*recognized"):
+        currency._fetch_symbol_response("USD", START, END)
+
+
+def test_get_symbol_missing_content_type_valid_csv_parses(httpx_mock):
+    """Missing Content-Type alone does not reject a valid CSV response."""
+    from tests.conftest import (
+        CURRENCY_ID_LIST_HTML,
+        CURRENCY_LIST_CSV,
+        CURRENCY_RATE_CSV,
+    )
+
+    httpx_mock.add_response(
+        url=PTAX_ID_LIST_URL,
+        content=CURRENCY_ID_LIST_HTML,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url=PTAX_CSV_DOWNLOAD_URL,
+        text=CURRENCY_LIST_CSV,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url=PTAX_RATE_URL,
+        text=CURRENCY_RATE_CSV,
+        status_code=200,
+        headers={},
+    )
+
+    df = currency._get_symbol("USD", START, END)
+
+    assert ("USD", "bid") in df.columns
+
+
+def test_get_symbol_empty_response_body_raises(httpx_mock):
+    """Empty CSV responses raise BCBAPIError."""
+    from tests.conftest import CURRENCY_ID_LIST_HTML, CURRENCY_LIST_CSV
+
+    httpx_mock.add_response(
+        url=PTAX_ID_LIST_URL,
+        content=CURRENCY_ID_LIST_HTML,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url=PTAX_CSV_DOWNLOAD_URL,
+        text=CURRENCY_LIST_CSV,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url=PTAX_RATE_URL,
+        text="",
+        status_code=200,
+        headers={"Content-Type": "text/csv"},
+    )
+
+    with pytest.raises(BCBAPIError, match="empty"):
+        currency._get_symbol("USD", START, END)
+
+
 def test_get_symbol_malformed_csv_wrong_column_count_raises(httpx_mock):
     """Test that CSV with wrong column count raises BCBAPIError."""
     from tests.conftest import CURRENCY_ID_LIST_HTML, CURRENCY_LIST_CSV
@@ -189,7 +294,7 @@ def test_get_symbol_malformed_csv_invalid_date_format_raises(httpx_mock):
         text=malformed_csv,
         status_code=200,
     )
-    with pytest.raises(BCBAPIError):
+    with pytest.raises(BCBAPIError, match="date column"):
         currency._get_symbol("USD", START, END)
 
 
@@ -214,7 +319,7 @@ def test_get_symbol_malformed_csv_invalid_numeric_conversion_raises(httpx_mock):
         text=malformed_csv,
         status_code=200,
     )
-    with pytest.raises(BCBAPIError):
+    with pytest.raises(BCBAPIError, match="numeric columns"):
         currency._get_symbol("USD", START, END)
 
 
