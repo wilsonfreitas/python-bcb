@@ -660,12 +660,12 @@ def get(
         Códigos das moedas padrão ISO. O código de uma única moeda que
         retorna uma série temporal univariada e uma lista de códigos
         retorna uma série temporal multivariada.
-    start : str, int, date, datetime, Timestamp
-        Data de início da série.
-        Interpreta diferentes tipos e formatos de datas.
-    end : string, int, date, datetime, Timestamp
-        Data de início da série.
-        Interpreta diferentes tipos e formatos de datas.
+    start : str, date, datetime or bcb.utils.Date
+        Data de início da série. Strings usam o formato ``YYYY-MM-DD``;
+        ``'today'`` e ``'now'`` também são aceitos.
+    end : str, date, datetime or bcb.utils.Date
+        Data final da série. Strings usam o formato ``YYYY-MM-DD``;
+        ``'today'`` e ``'now'`` também são aceitos.
     side : {"ask", "bid", "both"}, default "ask"
         Define se a série retornada vem com os ``ask`` prices,
         ``bid`` prices ou ``both`` para ambos.
@@ -899,10 +899,12 @@ async def async_get(
     ----------
     symbols : str, List[str]
         Códigos das moedas padrão ISO
-    start : str, int, date, datetime, Timestamp
-        Data de início da série
-    end : string, int, date, datetime, Timestamp
-        Data final da série
+    start : str, date, datetime or bcb.utils.Date
+        Data de início da série. Strings usam o formato ``YYYY-MM-DD``;
+        ``'today'`` e ``'now'`` também são aceitos.
+    end : str, date, datetime or bcb.utils.Date
+        Data final da série. Strings usam o formato ``YYYY-MM-DD``;
+        ``'today'`` e ``'now'`` também são aceitos.
     side : {"ask", "bid", "both"}
         ``'ask'``, ``'bid'`` ou ``'both'``
     groupby : {"symbol", "side"}

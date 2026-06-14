@@ -118,18 +118,18 @@ Quero obter os 10 dias em 2023 que apresentam as maiores médias transacionadas 
 
 Para executar essa query utilizo o método ``select`` passando as propriedades Data e Media,
 encadeio o método ``filter`` filtrando a propriedade Data maiores que 2023-01-01, e note
-que aqui utilizo um objeto ``datetime``, pois na descrição do *endpoint* ``PixLiquidadosAtual``
-a propriedade Data é do tipo ``datetime``.
+que aqui utilizo um objeto ``date``; objetos ``datetime`` também são aceitos. Na descrição do *endpoint* ``PixLiquidadosAtual``,
+a propriedade Data aparece como ``datetime`` porque representa um campo OData ``Edm.Date``.
 Sigo com o método ``orderby`` passando a propriedade média e indicando que a ordenação é decrescente e concluo com
 o método ``limit`` para obter os 10 primeiros registros.
 Na última linha executo o método ``collect`` que executa a consulta e retorna um DataFrame com os resultados.
 
 .. ipython:: python
 
-    from datetime import datetime
+    from datetime import date
     (ep.query()
         .select(ep.Data, ep.Media)
-        .filter(ep.Data >= datetime(2023, 1, 1))
+        .filter(ep.Data >= date(2023, 1, 1))
         .orderby(ep.Media.desc())
         .limit(5)
         .collect())
@@ -145,7 +145,7 @@ mas não a executa.
 
     (ep.query()
         .select(ep.Data, ep.Media)
-        .filter(ep.Data >= datetime(2023, 1, 1))
+        .filter(ep.Data >= date(2023, 1, 1))
         .orderby(ep.Media.desc())
         .limit(5)
         .show())
@@ -189,7 +189,7 @@ Mais filtros podem ser adicionados ao método ``filter``, e também podemos anin
 
     query = (ep.query()
                .filter(ep.Indicador == 'IPCA', ep.DataReferencia == 2023)
-               .filter(ep.Data >= '2022-01-01')
+               .filter(ep.Data >= date(2022, 1, 1))
                .filter(ep.tipoCalculo == 'C')
                .limit(5))
     query.show()
@@ -199,18 +199,17 @@ Todos os filtros estão no atributo ``$filter`` da consulta e são concatenados 
 
 É necessário conhecer o tipo da propriedade para saber como passar o objeto para a consulta.
 Os tipos de propriedade podem ser: str, float, int e datetime.
-Por exemplo, na API do PIX, a propriedade ``Data`` é do tipo ``datetime`` e por isso é necessário passar um
-objeto ``datetime`` para o método ``filter``.
+Para propriedades OData ``Edm.Date``, passe um objeto ``datetime.date`` ou ``datetime.datetime`` para o método ``filter``; strings de data não são convertidas automaticamente pelo construtor de filtros.
 
 .. ipython:: python
 
     ep = pix.get_endpoint("PixLiquidadosAtual")
     (ep.query()
-       .filter(ep.Data >= datetime(2023, 1, 1))
+       .filter(ep.Data >= date(2023, 1, 1))
        .limit(5)
        .show())
 
-O objeto ``datetime`` é formatado como data na consulta, note que não há aspas na definição da data no filtro.
+O objeto ``date`` ou ``datetime`` é formatado como data na consulta; note que não há aspas na definição da data no filtro.
 
 Ordenando os Dados
 ^^^^^^^^^^^^^^^^^^
@@ -284,7 +283,7 @@ Esse método é importante para investigar as consultas na API de forma rápida.
 
     ep = pix.get_endpoint("PixLiquidadosAtual")
     (ep.query()
-       .filter(ep.Data >= datetime(2023, 1, 1))
+       .filter(ep.Data >= date(2023, 1, 1))
        .limit(5)
        .collect())
 
@@ -419,10 +418,10 @@ O comportamento padrão (retorno de DataFrame) é mantido quando o parâmetro n�
 Classe ODataAPI
 ---------------
 
-O portal de Dados Abertos to Banco Central apresenta diversas APIs OData, são
+O portal de Dados Abertos do Banco Central apresenta diversas APIs OData, são
 dezenas de APIs disponíveis.
 A URL com metadados de cada API pode ser obtida no `portal <https://dadosabertos.bcb.gov.br>`_.
-A classe :py:class:`bcb.odata.api.ODataAPI` permite acessar qualquer API Odata de posse da sua URL.
+A classe :py:class:`bcb.odata.api.ODataAPI` permite acessar qualquer API OData de posse da sua URL.
 
 Por exemplo, a API de estatísticas de operações registradas no Selic tem a seguinte URL::
 

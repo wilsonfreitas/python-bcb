@@ -77,12 +77,20 @@ Busca taxas de câmbio de forma assíncrona com a mesma interface que a versão 
 .. code-block:: python
 
     import asyncio
-    from bcb import currency
+    from bcb import currency, http
 
     async def main():
-        # Buscar taxas de câmbio
-        usd = await currency.async_get('USD', start='2024-01-01', end='2024-12-31')
-        print(usd.head())
+        try:
+            # Buscar múltiplas taxas de câmbio em paralelo
+            rates = await currency.async_get(
+                ['USD', 'EUR'],
+                start='2024-01-01',
+                end='2024-12-31',
+                side='both',
+            )
+            print(rates.head())
+        finally:
+            await http.aclose_async_client()
 
     asyncio.run(main())
 
@@ -259,4 +267,4 @@ Veja Também
 * :ref:`SGS` — Documentação completa do módulo SGS
 * :ref:`Conversor de Moedas` — Documentação do módulo currency
 * :ref:`OData` — Documentação do cliente OData
-* `asyncio — asyncpython <https://docs.python.org/3/library/asyncio.html>`_
+* `asyncio — documentação Python <https://docs.python.org/3/library/asyncio.html>`_

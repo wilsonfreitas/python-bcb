@@ -40,7 +40,7 @@ Implementado no módulo `currency`, realiza webscraping no site do [Conversor de
 ### OData - APIs Estruturadas
 
 O Banco Central disponibiliza diversas informações em APIs que seguem o padrão [OData](https://odata.org). Inclui:
-- **PTAX**: Boletins diários de taxas de câmbio com dados institucionalmentedetalhados
+- **PTAX**: Boletins diários de taxas de câmbio com dados institucionalmente detalhados
 - **Expectativas**: Expectativas de mercado coletadas do Boletim FOCUS
 - **TaxaJuros**: Diversas taxas de juros (Selic, CDI, Cheque especial, etc.)
 - **MercadoImobiliario**: Dados de financiamento imobiliário
@@ -60,7 +60,7 @@ Use esta tabela para escolher o módulo certo para seu caso de uso:
 | Dados de financiamento imobiliário | `bcb.odata` (MercadoImobiliario) | Originações, taxas médias, volumes |
 | Informações de instituições financeiras | `bcb.odata` (IFDATA) | Dados de balanço, informações regulatórias |
 | Análise de dados avançada com filtros | `bcb.odata` (qualquer serviço) | API encadeável, filtragem tipo SQL, ordenação, seleção |
-| Busca concorrente de dados | Qualquer módulo com `async_get()` | Requisições não-bloqueantes, melhor performance para operações em massa |
+| Busca concorrente de dados | APIs assíncronas (`sgs`, `currency` e OData) | Requisições não-bloqueantes com `async_get()`, `Endpoint.async_get()` e `ODataQuery.async_collect()` |
 
 ## Início Rápido
 
@@ -106,16 +106,20 @@ df = endpoint.query().filter(endpoint.Indicador == "IPCA").limit(100).collect()
 - Serviços OData: Varia; consulte documentação BCB para endpoints específicos
 
 ### P: Posso buscar dados de forma assíncrona?
-**R:** Sim! Todos os módulos têm métodos `async_get()` ou similares. Use-os para requisições concorrentes:
+**R:** Sim. SGS e currency oferecem `async_get()`, e os endpoints OData oferecem `async_get()` e `async_collect()`. Feche o cliente assíncrono ao final de aplicações de longa duração:
 ```python
 import asyncio
-from bcb import sgs
+from bcb import http, sgs
 
 async def main():
-    results = await asyncio.gather(
-        sgs.async_get(1),  # SELIC
-        sgs.async_get(433),  # IPCA
-    )
+    try:
+        results = await asyncio.gather(
+            sgs.async_get(1),  # SELIC
+            sgs.async_get(433),  # IPCA
+        )
+        return results
+    finally:
+        await http.aclose_async_client()
 
 asyncio.run(main())
 ```
@@ -162,7 +166,7 @@ logger.setLevel(logging.DEBUG)
 - Limites de requisições: APIs BCB podem ter limites; implemente backoff se necessário
 - Cache: Cache de moedas persiste em memória; limpe se atualizações de dados importarem
 - Pool de conexões: Usa httpx com connection pooling por padrão
-- API Assíncrona: Use métodos async para comportamento verdadeiramente não-bloqueante
+- API Assíncrona: use métodos async para comportamento verdadeiramente não-bloqueante e chame `await bcb.http.aclose_async_client()` no encerramento de aplicações assíncronas longas
 
 ### P: Como contribuo ou reporto problemas?
 **R:** Visite o [repositório GitHub](https://github.com/wilsonfreitas/python-bcb) para:
@@ -170,6 +174,14 @@ logger.setLevel(logging.DEBUG)
 - Solicitar features
 - Enviar pull requests
 - Ver documentação
+
+### P: Como gero a documentação localmente?
+**R:** As dependências de documentação ficam no grupo `docs` do `uv`:
+```shell
+uv run --group docs sphinx-build -b html docs docs/_build/html
+```
+
+A saída HTML é gerada em `docs/_build/html`. Edite os arquivos fonte em `docs/`; não edite os arquivos gerados em `docs/_build`.
 
 ### P: Onde encontro documentação mais detalhada?
 **R:**

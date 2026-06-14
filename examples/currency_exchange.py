@@ -5,7 +5,8 @@ Este exemplo demonstra como buscar dados de taxa de câmbio do
 sistema PTAX do Banco Central (cotações diárias de câmbio).
 """
 
-from datetime import datetime
+import datetime as dt
+
 from bcb import currency
 
 # Buscar uma única moeda (USD)
@@ -60,11 +61,9 @@ print()
 
 # Limpar o cache se executando múltiplas requisições
 currency.clear_cache()
-print("Cache limpo para requisições fresgas")
+print("Cache limpo para requisições frescas")
 
 # Obter taxa de câmbio de hoje (aproximada)
-import datetime as dt
-
 today = dt.date.today()
 today_rates = currency.get("USD", start=today - dt.timedelta(days=30), end=today)
 print("\nTaxas de Câmbio Recentes do USD")
