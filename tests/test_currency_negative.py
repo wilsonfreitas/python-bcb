@@ -6,6 +6,7 @@ Tests for error handling, malformed data, and edge cases.
 import re
 from datetime import datetime
 
+import httpx
 import pytest
 
 from bcb import currency
@@ -54,6 +55,38 @@ def test_get_currency_id_list_500_raises(httpx_mock):
     )
     with pytest.raises(BCBAPIError):
         currency._currency_id_list()
+
+
+def test_get_currency_id_list_connection_error_raises(httpx_mock):
+    httpx_mock.add_exception(
+        httpx.ConnectError("network down"),
+        url=PTAX_ID_LIST_URL,
+    )
+
+    with pytest.raises(BCBAPIError, match="Currency ID list"):
+        currency._currency_id_list()
+
+
+def test_fetch_symbol_timeout_error_raises(httpx_mock):
+    from tests.conftest import CURRENCY_ID_LIST_HTML, CURRENCY_LIST_CSV
+
+    httpx_mock.add_response(
+        url=PTAX_ID_LIST_URL,
+        content=CURRENCY_ID_LIST_HTML,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url=PTAX_CSV_DOWNLOAD_URL,
+        text=CURRENCY_LIST_CSV,
+        status_code=200,
+    )
+    httpx_mock.add_exception(
+        httpx.TimeoutException("request timed out"),
+        url=PTAX_RATE_URL,
+    )
+
+    with pytest.raises(BCBAPIError, match="Currency data for USD"):
+        currency._fetch_symbol_response("USD", START, END)
 
 
 def test_fetch_symbol_404_raises(httpx_mock):

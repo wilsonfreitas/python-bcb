@@ -18,10 +18,16 @@ from typing import (
     overload,
 )
 
+import httpx
 import pandas as pd
 
-from bcb.http import _CLIENT, _ASYNC_CLIENT
-from bcb.exceptions import BCBRateLimitError, SGSError
+from bcb.http import (
+    _CLIENT,
+    _ASYNC_CLIENT,
+    raise_for_request_error,
+    raise_for_status,
+)
+from bcb.exceptions import SGSError
 from bcb.utils import Date, DateInput
 
 logger = logging.getLogger(__name__)
@@ -176,6 +182,30 @@ def _get_url_and_payload(
         )
 
     return url, payload
+
+
+def _raise_sgs_response_error(res: httpx.Response, code: int) -> None:
+    if res.status_code == 429:
+        raise_for_status(res, context=f"SGS time series code={code}")
+
+    try:
+        res_json = json.loads(res.text)
+    except json.JSONDecodeError:
+        res_json = {}
+
+    if "error" in res_json:
+        raise SGSError(f"BCB error: {res_json['error']}")
+    if "erro" in res_json:
+        raise SGSError(f"BCB error: {res_json['erro']['detail']}")
+
+    raise_for_status(
+        res,
+        context=f"SGS time series code={code}",
+        error_cls=SGSError,
+        not_found_cls=SGSError,
+        server_error_cls=SGSError,
+        error_message=f"Download error: code = {code}",
+    )
 
 
 def _format_df(df: pd.DataFrame, code: SGSCode, freq: Optional[str]) -> pd.DataFrame:
@@ -336,27 +366,16 @@ def get_json(
     """
     url, payload = _get_url_and_payload(code, start, end, last)
     logger.debug(f"Fetching SGS time series code={code} from {url.split('/dados')[0]}")
-    res = _CLIENT.get(url, params=payload)
+    try:
+        res = _CLIENT.get(url, params=payload)
+    except httpx.HTTPError as ex:
+        raise_for_request_error(
+            ex, context=f"SGS time series code={code}", error_cls=SGSError
+        )
     logger.debug(f"SGS response: status={res.status_code}, length={len(res.text)}")
 
-    # Check for rate limiting first
-    if res.status_code == 429:
-        raise BCBRateLimitError(
-            "BCB API rate limit exceeded. Please try again later.",
-            status_code=429,
-        )
-
     if res.status_code != 200:
-        try:
-            res_json = json.loads(res.text)
-        except json.JSONDecodeError:
-            res_json = {}
-
-        if "error" in res_json:
-            raise SGSError(f"BCB error: {res_json['error']}")
-        elif "erro" in res_json:
-            raise SGSError(f"BCB error: {res_json['erro']['detail']}")
-        raise SGSError(f"Download error: code = {code}")
+        _raise_sgs_response_error(res, code)
     return str(res.text)
 
 
@@ -396,29 +415,18 @@ async def async_get_json(
     logger.debug(
         f"Fetching SGS time series (async) code={code} from {url.split('/dados')[0]}"
     )
-    res = await _ASYNC_CLIENT.get(url, params=payload)
+    try:
+        res = await _ASYNC_CLIENT.get(url, params=payload)
+    except httpx.HTTPError as ex:
+        raise_for_request_error(
+            ex, context=f"SGS time series code={code}", error_cls=SGSError
+        )
     logger.debug(
         f"SGS (async) response: status={res.status_code}, length={len(res.text)}"
     )
 
-    # Check for rate limiting first
-    if res.status_code == 429:
-        raise BCBRateLimitError(
-            "BCB API rate limit exceeded. Please try again later.",
-            status_code=429,
-        )
-
     if res.status_code != 200:
-        try:
-            res_json = json.loads(res.text)
-        except json.JSONDecodeError:
-            res_json = {}
-
-        if "error" in res_json:
-            raise SGSError(f"BCB error: {res_json['error']}")
-        elif "erro" in res_json:
-            raise SGSError(f"BCB error: {res_json['erro']['detail']}")
-        raise SGSError(f"Download error: code = {code}")
+        _raise_sgs_response_error(res, code)
     return str(res.text)
 
 

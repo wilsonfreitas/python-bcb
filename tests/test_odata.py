@@ -1,6 +1,7 @@
 import re
 from datetime import datetime
 
+import httpx
 import pandas as pd
 import pytest
 
@@ -62,6 +63,58 @@ def test_invalid_endpoint_raises(httpx_mock):
     api = Expectativas()
     with pytest.raises(ODataError, match="Invalid name"):
         api.get_endpoint("DoesNotExist")
+
+
+def test_service_root_status_error_raises_odata_error(httpx_mock):
+    httpx_mock.add_response(
+        url=EXPECTATIVAS_BASE_URL,
+        text="service unavailable",
+        status_code=503,
+    )
+
+    with pytest.raises(ODataError, match="OData service"):
+        Expectativas()
+
+
+def test_service_root_connection_error_raises_odata_error(httpx_mock):
+    httpx_mock.add_exception(
+        httpx.ConnectError("network down"),
+        url=EXPECTATIVAS_BASE_URL,
+    )
+
+    with pytest.raises(ODataError, match="OData service"):
+        Expectativas()
+
+
+def test_metadata_status_error_raises_odata_error(httpx_mock):
+    httpx_mock.add_response(
+        url=EXPECTATIVAS_BASE_URL,
+        text=ODATA_SERVICE_ROOT_JSON,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url=EXPECTATIVAS_METADATA_URL,
+        text="metadata unavailable",
+        status_code=404,
+    )
+
+    with pytest.raises(ODataError, match="OData metadata"):
+        Expectativas()
+
+
+def test_query_status_error_raises_odata_error(httpx_mock):
+    add_service_mocks(httpx_mock)
+    httpx_mock.add_response(
+        url=ENTITY_URL_PATTERN,
+        text="too many requests",
+        status_code=429,
+    )
+
+    api = Expectativas()
+    ep = api.get_endpoint("ExpectativasMercadoAnuais")
+
+    with pytest.raises(ODataError, match="rate limit"):
+        ep.query().limit(1).collect()
 
 
 # ---------------------------------------------------------------------------

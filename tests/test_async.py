@@ -10,6 +10,7 @@ import pytest
 
 from bcb import currency, sgs
 from bcb.odata.api import Expectativas
+from bcb.exceptions import BCBRateLimitError, ODataError
 from tests.conftest import (
     CURRENCY_ID_LIST_HTML,
     CURRENCY_LIST_CSV,
@@ -92,6 +93,16 @@ async def test_async_get_text_output(httpx_mock):
     assert "data" in result
 
 
+async def test_async_get_json_rate_limit_raises(httpx_mock):
+    httpx_mock.add_response(
+        url=SGS_CODE_URL,
+        status_code=429,
+    )
+
+    with pytest.raises(BCBRateLimitError):
+        await sgs.async_get_json(1)
+
+
 # ---------------------------------------------------------------------------
 # Currency async tests
 # ---------------------------------------------------------------------------
@@ -170,6 +181,30 @@ async def test_odata_query_async_text(httpx_mock):
     result = await ep.query().limit(1).async_text()
     assert isinstance(result, str)
     assert "value" in result
+
+
+async def test_odata_query_async_status_error_raises(httpx_mock):
+    httpx_mock.add_response(
+        url="https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/",
+        text=ODATA_SERVICE_ROOT_JSON,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url="https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/$metadata",
+        content=ODATA_METADATA_XML,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url=re.compile(r".*ExpectativasMercadoAnuais.*"),
+        text="server error",
+        status_code=500,
+    )
+
+    api = Expectativas()
+    ep = api.get_endpoint("ExpectativasMercadoAnuais")
+
+    with pytest.raises(ODataError, match="OData query"):
+        await ep.query().limit(1).async_text()
 
 
 async def test_odata_query_async_collect(httpx_mock):

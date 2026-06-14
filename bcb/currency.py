@@ -6,24 +6,22 @@ import re
 import threading
 from datetime import date, timedelta
 from io import BytesIO, StringIO
-from typing import TYPE_CHECKING, Dict, List, Literal, NamedTuple, Union, overload
+from typing import Dict, List, Literal, NamedTuple, Union, overload
 from urllib.parse import urlencode
 
+import httpx
 import numpy as np
 import pandas as pd
 from lxml import html
 
-from bcb.http import _CLIENT, _ASYNC_CLIENT
-from bcb.exceptions import (
-    BCBAPIError,
-    BCBAPINotFoundError,
-    BCBRateLimitError,
-    CurrencyNotFoundError,
+from bcb.http import (
+    _CLIENT,
+    _ASYNC_CLIENT,
+    raise_for_request_error,
+    raise_for_status,
 )
+from bcb.exceptions import BCBAPIError, CurrencyNotFoundError
 from bcb.utils import Date, DateInput
-
-if TYPE_CHECKING:
-    import httpx
 
 logger = logging.getLogger(__name__)
 
@@ -165,28 +163,18 @@ def _currency_id_list(
         "method=exibeFormularioConsultaBoletim"
     )
     logger.debug(f"Fetching currency ID list from {url1}")
-    res = _CLIENT.get(url1)
+    try:
+        res = _CLIENT.get(url1)
+    except httpx.HTTPError as ex:
+        raise_for_request_error(ex, context="Currency ID list")
     logger.debug(
         f"Currency ID list response: status={res.status_code}, length={len(res.content)}"
     )
-    if res.status_code == 429:
-        raise BCBRateLimitError(
-            "BCB API rate limit exceeded. Please try again later.",
-            status_code=429,
-        )
-    if res.status_code == 404:
-        raise BCBAPINotFoundError(
-            "BCB API endpoint not found (404)",
-            status_code=404,
-        )
-    if res.status_code >= 500:
-        raise BCBAPIError(
-            f"BCB API server error (status {res.status_code})",
-            status_code=res.status_code,
-        )
-    if res.status_code != 200:
-        msg = f"BCB API Request error, status code = {res.status_code}"
-        raise BCBAPIError(msg, res.status_code)
+    raise_for_status(
+        res,
+        context="Currency ID list",
+        not_found_message="BCB API endpoint not found (404)",
+    )
 
     doc = html.parse(BytesIO(res.content)).getroot()
     xpath = "//select[@name='ChkMoeda']/option"
@@ -238,10 +226,10 @@ def _get_valid_currency_list(
     logger.debug(f"Fetching currency list from {url2}")
     try:
         res = _CLIENT.get(url2)
-    except Exception as ex:
+    except httpx.HTTPError as ex:
         # Connection error: retry same date up to 3 times
         if n >= 3:
-            raise ex
+            raise_for_request_error(ex, context="Currency list")
         logger.warning(
             f"Connection error fetching {url2}, retrying (attempt {n + 1}/3)"
         )
@@ -252,12 +240,12 @@ def _get_valid_currency_list(
     )
     if res.status_code == 200:
         return res
-    else:
-        # Non-200 response (file not found for date): roll back to previous day
-        logger.debug(
-            f"Currency list not found for {_date}, rolling back to previous day"
-        )
-        return _get_valid_currency_list(_date - timedelta(1), 0, max_rollback)
+    if res.status_code == 429 or res.status_code >= 500:
+        raise_for_status(res, context="Currency list")
+
+    # Non-200 response (file not found for date): roll back to previous day
+    logger.debug(f"Currency list not found for {_date}, rolling back to previous day")
+    return _get_valid_currency_list(_date - timedelta(1), 0, max_rollback)
 
 
 def get_currency_list(
@@ -347,13 +335,16 @@ def _fetch_symbol_response(
     cid = _get_currency_id(symbol)  # Raises CurrencyNotFoundError if not found
     url = _currency_url(cid, start_date, end_date)
     logger.debug(f"Fetching currency data for {symbol} from {url.split('?')[0]}")
-    res = _CLIENT.get(url)
+    try:
+        res = _CLIENT.get(url)
+    except httpx.HTTPError as ex:
+        raise_for_request_error(ex, context=f"Currency data for {symbol}")
     logger.debug(
         f"Currency data response: status={res.status_code}, length={len(res.content)}"
     )
 
     # Handle HTML error response (e.g., no data for date range)
-    if res.headers["Content-Type"].startswith("text/html"):
+    if res.headers.get("Content-Type", "").startswith("text/html"):
         doc = html.parse(BytesIO(res.content)).getroot()
         xpath = "//div[@class='msgErro']"
         elm = doc.xpath(xpath)[0]
@@ -363,27 +354,11 @@ def _fetch_symbol_response(
         msg = f"BCB API returned error: {x} - {symbol}"
         raise BCBAPIError(msg, status_code=400)
 
-    # Handle HTTP error responses
-    if res.status_code == 429:
-        raise BCBRateLimitError(
-            "BCB API rate limit exceeded. Please try again later.",
-            status_code=429,
-        )
-    if res.status_code == 404:
-        raise BCBAPINotFoundError(
-            f"Currency data not found for {symbol}",
-            status_code=404,
-        )
-    if res.status_code >= 500:
-        raise BCBAPIError(
-            f"BCB API server error (status {res.status_code})",
-            status_code=res.status_code,
-        )
-    if res.status_code != 200:
-        raise BCBAPIError(
-            f"BCB API request failed with status {res.status_code}",
-            status_code=res.status_code,
-        )
+    raise_for_status(
+        res,
+        context=f"Currency data for {symbol}",
+        not_found_message=f"Currency data not found for {symbol}",
+    )
 
     return res
 
@@ -689,25 +664,15 @@ async def _async_currency_id_list(
         "https://ptax.bcb.gov.br/ptax_internet/consultaBoletim.do?"
         "method=exibeFormularioConsultaBoletim"
     )
-    res = await _ASYNC_CLIENT.get(url1)
-    if res.status_code == 429:
-        raise BCBRateLimitError(
-            "BCB API rate limit exceeded. Please try again later.",
-            status_code=429,
-        )
-    if res.status_code == 404:
-        raise BCBAPINotFoundError(
-            "BCB API endpoint not found (404)",
-            status_code=404,
-        )
-    if res.status_code >= 500:
-        raise BCBAPIError(
-            f"BCB API server error (status {res.status_code})",
-            status_code=res.status_code,
-        )
-    if res.status_code != 200:
-        msg = f"BCB API Request error, status code = {res.status_code}"
-        raise BCBAPIError(msg, res.status_code)
+    try:
+        res = await _ASYNC_CLIENT.get(url1)
+    except httpx.HTTPError as ex:
+        raise_for_request_error(ex, context="Currency ID list")
+    raise_for_status(
+        res,
+        context="Currency ID list",
+        not_found_message="BCB API endpoint not found (404)",
+    )
 
     doc = html.parse(BytesIO(res.content)).getroot()
     xpath = "//select[@name='ChkMoeda']/option"
@@ -732,17 +697,16 @@ async def _async_get_valid_currency_list(
     url2 = f"https://www4.bcb.gov.br/Download/fechamento/M{_date:%Y%m%d}.csv"
     try:
         res = await _ASYNC_CLIENT.get(url2)
-    except Exception as ex:
+    except httpx.HTTPError as ex:
         if n >= 3:
-            raise ex
+            raise_for_request_error(ex, context="Currency list")
         return await _async_get_valid_currency_list(_date, n + 1, max_rollback)
 
     if res.status_code == 200:
         return res
-    else:
-        return await _async_get_valid_currency_list(
-            _date - timedelta(1), 0, max_rollback
-        )
+    if res.status_code == 429 or res.status_code >= 500:
+        raise_for_status(res, context="Currency list")
+    return await _async_get_valid_currency_list(_date - timedelta(1), 0, max_rollback)
 
 
 async def _async_get_currency_list(
@@ -794,9 +758,12 @@ async def _async_fetch_symbol_response(
     """Async version of _fetch_symbol_response()."""
     cid = await _async_get_currency_id(symbol)
     url = _currency_url(cid, start_date, end_date)
-    res = await _ASYNC_CLIENT.get(url)
+    try:
+        res = await _ASYNC_CLIENT.get(url)
+    except httpx.HTTPError as ex:
+        raise_for_request_error(ex, context=f"Currency data for {symbol}")
 
-    if res.headers["Content-Type"].startswith("text/html"):
+    if res.headers.get("Content-Type", "").startswith("text/html"):
         doc = html.parse(BytesIO(res.content)).getroot()
         xpath = "//div[@class='msgErro']"
         elm = doc.xpath(xpath)[0]
@@ -806,26 +773,11 @@ async def _async_fetch_symbol_response(
         msg = f"BCB API returned error: {x} - {symbol}"
         raise BCBAPIError(msg, status_code=400)
 
-    if res.status_code == 429:
-        raise BCBRateLimitError(
-            "BCB API rate limit exceeded. Please try again later.",
-            status_code=429,
-        )
-    if res.status_code == 404:
-        raise BCBAPINotFoundError(
-            f"Currency data not found for {symbol}",
-            status_code=404,
-        )
-    if res.status_code >= 500:
-        raise BCBAPIError(
-            f"BCB API server error (status {res.status_code})",
-            status_code=res.status_code,
-        )
-    if res.status_code != 200:
-        raise BCBAPIError(
-            f"BCB API request failed with status {res.status_code}",
-            status_code=res.status_code,
-        )
+    raise_for_status(
+        res,
+        context=f"Currency data for {symbol}",
+        not_found_message=f"Currency data not found for {symbol}",
+    )
 
     return res
 

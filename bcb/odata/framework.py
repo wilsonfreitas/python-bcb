@@ -1,16 +1,17 @@
 from __future__ import annotations
 
+import json
 import logging
 import threading
 from io import BytesIO
 from typing import Any, Optional, Union
-
-from lxml import etree
-import json
 from urllib.parse import quote
+
+import httpx
+from lxml import etree
 from typing_extensions import Self
 
-from bcb.http import _CLIENT, _ASYNC_CLIENT
+from bcb.http import _ASYNC_CLIENT, _CLIENT, raise_for_request_error, raise_for_status
 from bcb.exceptions import ODataError
 
 logger = logging.getLogger(__name__)
@@ -283,9 +284,22 @@ class ODataMetadata:
 
     def _load_document(self) -> None:
         logger.debug(f"Fetching OData metadata from {self.url}")
-        res = _CLIENT.get(self.url)
+        try:
+            res = _CLIENT.get(self.url)
+        except httpx.HTTPError as ex:
+            raise_for_request_error(
+                ex, context=f"OData metadata {self.url}", error_cls=ODataError
+            )
         logger.debug(
             f"OData metadata response: status={res.status_code}, length={len(res.content)}"
+        )
+        raise_for_status(
+            res,
+            context=f"OData metadata {self.url}",
+            error_cls=ODataError,
+            not_found_cls=ODataError,
+            rate_limit_cls=ODataError,
+            server_error_cls=ODataError,
         )
         self.doc = etree.parse(BytesIO(res.content))
 
@@ -378,7 +392,20 @@ class ODataService:
 
     def __init__(self, url: str) -> None:
         self.url = url
-        res = _CLIENT.get(self.url)
+        try:
+            res = _CLIENT.get(self.url)
+        except httpx.HTTPError as ex:
+            raise_for_request_error(
+                ex, context=f"OData service {self.url}", error_cls=ODataError
+            )
+        raise_for_status(
+            res,
+            context=f"OData service {self.url}",
+            error_cls=ODataError,
+            not_found_cls=ODataError,
+            rate_limit_cls=ODataError,
+            server_error_cls=ODataError,
+        )
         self.api_data: dict[str, Any] = json.loads(res.text)
         self.endpoints: list[ODataEndPoint] = [
             ODataEndPoint(**x) for x in self.api_data["value"]
@@ -541,7 +568,21 @@ class ODataQuery:
                 params["@" + (p.name or "")] = p.format(val)
         qs = "&".join([f"{quote(k)}={quote(str(v))}" for k, v in params.items()])
         headers = {"OData-Version": "4.0", "OData-MaxVersion": "4.0"}
-        res = await _ASYNC_CLIENT.get(self.odata_url() + "?" + qs, headers=headers)
+        url = self.odata_url()
+        try:
+            res = await _ASYNC_CLIENT.get(url + "?" + qs, headers=headers)
+        except httpx.HTTPError as ex:
+            raise_for_request_error(
+                ex, context=f"OData query {url}", error_cls=ODataError
+            )
+        raise_for_status(
+            res,
+            context=f"OData query {url}",
+            error_cls=ODataError,
+            not_found_cls=ODataError,
+            rate_limit_cls=ODataError,
+            server_error_cls=ODataError,
+        )
         return res.text
 
     async def async_collect(self) -> Any:
@@ -560,9 +601,22 @@ class ODataQuery:
         headers = {"OData-Version": "4.0", "OData-MaxVersion": "4.0"}
         url = self.odata_url()
         logger.debug(f"Fetching OData query from {url}")
-        res = _CLIENT.get(url + "?" + qs, headers=headers)
+        try:
+            res = _CLIENT.get(url + "?" + qs, headers=headers)
+        except httpx.HTTPError as ex:
+            raise_for_request_error(
+                ex, context=f"OData query {url}", error_cls=ODataError
+            )
         logger.debug(
             f"OData query response: status={res.status_code}, length={len(res.text)}"
+        )
+        raise_for_status(
+            res,
+            context=f"OData query {url}",
+            error_cls=ODataError,
+            not_found_cls=ODataError,
+            rate_limit_cls=ODataError,
+            server_error_cls=ODataError,
         )
         return res.text
 
