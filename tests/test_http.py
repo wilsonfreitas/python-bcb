@@ -1,5 +1,8 @@
 """Shared HTTP error handling tests."""
 
+import ast
+from pathlib import Path
+
 import httpx
 import pytest
 
@@ -82,3 +85,21 @@ def test_raise_for_request_error_supports_endpoint_specific_exceptions() -> None
             context="OData",
             error_cls=ODataError,
         )
+
+
+def test_feature_modules_do_not_import_private_http_clients() -> None:
+    private_names = {"_CLIENT", "_ASYNC_CLIENT"}
+    violations: list[str] = []
+    for module_path in Path("bcb").rglob("*.py"):
+        if module_path == Path("bcb/http.py"):
+            continue
+        tree = ast.parse(module_path.read_text(), filename=str(module_path))
+        for node in ast.walk(tree):
+            if isinstance(node, ast.ImportFrom) and node.module == "bcb.http":
+                imported = {alias.name for alias in node.names}
+                private_imports = sorted(imported & private_names)
+                if private_imports:
+                    names = ", ".join(private_imports)
+                    violations.append(f"{module_path}: {names}")
+
+    assert violations == []
