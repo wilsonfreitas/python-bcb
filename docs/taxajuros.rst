@@ -4,14 +4,14 @@ Taxas de Juros
 A API de taxas de juros de operações de crédito pode ser acessada através da
 classe :py:class:`bcb.TaxaJuros`.
 
-.. _documentacao: https://olinda.bcb.gov.br/olinda/servico/TaxaJuros/versao/v1/documentacao
+.. _documentacao: https://olinda.bcb.gov.br/olinda/servico/taxaJuros/versao/v2/documentacao
 
 __ documentacao_
 
 Os dados são obtidos a partir da `API de Taxas de Juros`__.
 
 
-Esta API tem os ``EntitySets``:
+Esta API usa o serviço ``taxaJuros`` versão ``v2`` e tem os ``EntitySets``:
 
 .. ipython:: python
 

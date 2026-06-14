@@ -91,9 +91,11 @@ ordenando colunas e selecionando as colunas na saída.
 
 .. ipython:: python
 
+    from datetime import date
+
     (ep.query()
      .filter(ep.Indicador == 'IPCA', ep.DataReferencia == 2023)
-     .filter(ep.Data >= '2022-01-01')
+     .filter(ep.Data >= date(2022, 1, 1))
      .filter(ep.tipoCalculo == 'C')
      .select(ep.Data, ep.Media, ep.Mediana)
      .orderby(ep.Data.desc())

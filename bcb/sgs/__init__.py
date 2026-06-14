@@ -291,12 +291,12 @@ def get(
 
         Com códigos numéricos é interessante utilizar os nomes com os códigos
         para definir os nomes nas colunas das séries temporais.
-    start : str, int, date, datetime, Timestamp
-        Data de início da série.
-        Interpreta diferentes tipos e formatos de datas.
-    end : string, int, date, datetime, Timestamp
-        Data final da série.
-        Interpreta diferentes tipos e formatos de datas.
+    start : str, date, datetime or bcb.utils.Date
+        Data de início da série. Strings usam o formato ``YYYY-MM-DD``;
+        ``'today'`` e ``'now'`` também são aceitos.
+    end : str, date, datetime or bcb.utils.Date
+        Data final da série. Strings usam o formato ``YYYY-MM-DD``;
+        ``'today'`` e ``'now'`` também são aceitos.
     last : int
         Retorna os últimos ``last`` elementos disponíveis da série temporal
         solicitada. Se ``last`` for maior que 0 (zero) os argumentos ``start``
@@ -371,12 +371,12 @@ def get_json(
 
     code : int
         Código da série temporal
-    start : str, int, date, datetime, Timestamp
-        Data de início da série.
-        Interpreta diferentes tipos e formatos de datas.
-    end : string, int, date, datetime, Timestamp
-        Data final da série.
-        Interpreta diferentes tipos e formatos de datas.
+    start : str, date, datetime or bcb.utils.Date
+        Data de início da série. Strings usam o formato ``YYYY-MM-DD``;
+        ``'today'`` e ``'now'`` também são aceitos.
+    end : str, date, datetime or bcb.utils.Date
+        Data final da série. Strings usam o formato ``YYYY-MM-DD``;
+        ``'today'`` e ``'now'`` também são aceitos.
     last : int
         Retorna os últimos ``last`` elementos disponíveis da série temporal
         solicitada. Se ``last`` for maior que 0 (zero) os argumentos ``start``
@@ -420,10 +420,12 @@ async def async_get_json(
     ----------
     code : int
         Código da série temporal
-    start : str, int, date, datetime, Timestamp, optional
-        Data de início da série
-    end : string, int, date, datetime, Timestamp, optional
-        Data final da série
+    start : str, date, datetime or bcb.utils.Date, optional
+        Data de início da série. Strings usam o formato ``YYYY-MM-DD``;
+        ``'today'`` e ``'now'`` também são aceitos.
+    end : str, date, datetime or bcb.utils.Date, optional
+        Data final da série. Strings usam o formato ``YYYY-MM-DD``;
+        ``'today'`` e ``'now'`` também são aceitos.
     last : int
         Retorna os últimos ``last`` elementos disponíveis
 
@@ -480,10 +482,12 @@ async def async_get(
     ----------
     codes : {int, List[int], List[str], Dict[str:int]}
         Código(s) da série temporal
-    start : str, int, date, datetime, Timestamp, optional
-        Data de início da série
-    end : string, int, date, datetime, Timestamp, optional
-        Data final da série
+    start : str, date, datetime or bcb.utils.Date, optional
+        Data de início da série. Strings usam o formato ``YYYY-MM-DD``;
+        ``'today'`` e ``'now'`` também são aceitos.
+    end : str, date, datetime or bcb.utils.Date, optional
+        Data final da série. Strings usam o formato ``YYYY-MM-DD``;
+        ``'today'`` e ``'now'`` também são aceitos.
     last : int
         Retorna os últimos ``last`` elementos disponíveis
     multi : bool

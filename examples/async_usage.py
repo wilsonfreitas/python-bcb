@@ -6,7 +6,7 @@ para busca de dados concorrente (útil para buscar múltiplas séries).
 """
 
 import asyncio
-from bcb import sgs, currency
+from bcb import http, sgs, currency
 from bcb.odata.api import Expectativas
 
 
@@ -27,9 +27,13 @@ async def fetch_multiple_currencies():
     """Buscar taxas de câmbio concorrentemente."""
     print("Exemplo 2: Buscando taxas de câmbio concorrentemente")
 
-    # Buscar taxa do USD (nota: você precisaria implementar async multi-símbolo
-    # para isso ser verdadeiramente concorrente para diferentes símbolos)
-    df = await currency.async_get("USD", start="2024-01-01", end="2024-12-31")
+    # Buscar múltiplos símbolos em paralelo
+    df = await currency.async_get(
+        ["USD", "EUR"],
+        start="2024-01-01",
+        end="2024-12-31",
+        side="both",
+    )
     print("Busca de câmbio assíncrona concluída")
     print(df.head())
     print()
@@ -78,9 +82,11 @@ async def main():
         await concurrent_operations()
     except Exception as e:
         print(f"Erro: {type(e).__name__}: {e}")
+    finally:
+        await http.aclose_async_client()
 
 
 if __name__ == "__main__":
     # Executar os exemplos assíncronos
-    # Nota: Isso requer Python 3.7+ com asyncio
+    # Nota: o pacote requer Python 3.10+
     asyncio.run(main())

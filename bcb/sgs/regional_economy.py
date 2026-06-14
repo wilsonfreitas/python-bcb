@@ -219,12 +219,12 @@ def get_non_performing_loans(
     mode (str): O tipo de inadimplência. Pode ser "PF" (pessoas físicas),
                 "PJ" (pessoas jurídicas), "total" ou "all"
                 (inadimplência total).
-    start : str, int, date, datetime, Timestamp
-        Data de início da série.
-        Interpreta diferentes tipos e formatos de datas.
-    end : string, int, date, datetime, Timestamp
-        Data final da série.
-        Interpreta diferentes tipos e formatos de datas.
+    start : str, date, datetime or bcb.utils.Date
+        Data de início da série. Strings usam o formato ``YYYY-MM-DD``;
+        ``'today'`` e ``'now'`` também são aceitos.
+    end : str, date, datetime or bcb.utils.Date
+        Data final da série. Strings usam o formato ``YYYY-MM-DD``;
+        ``'today'`` e ``'now'`` também são aceitos.
     last : int
         Retorna os últimos ``last`` elementos disponíveis da série temporal
         solicitada. Se ``last`` for maior que 0 (zero) os argumentos ``start``

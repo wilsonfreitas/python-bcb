@@ -15,7 +15,7 @@ API OData de Moedas
 
 __ documentacao_
 
-A classe :py:class:`bcb.PTAX` retorna cotações de moedas os obtidas a partir da `API de Moedas`__ do BCB.
+A classe :py:class:`bcb.PTAX` retorna cotações de moedas obtidas a partir da `API de Moedas`__ do BCB.
 Esta implementação é mais estável que a do :ref:`Conversor de Moedas`.
 
 .. ipython:: python
@@ -47,7 +47,7 @@ são preenchidos com 0 para ter 2 dígitos.
 .. ipython:: python
 
     ptax.describe('CotacaoMoedaPeriodo')
-    
+
     ep = ptax.get_endpoint('CotacaoMoedaPeriodo')
     (ep.query()
        .parameters(moeda='AUD',
@@ -58,7 +58,7 @@ são preenchidos com 0 para ter 2 dígitos.
 Conversor de Moedas
 -------------------
 
-O módulo :py:mod:`bcb.currency` obtem dados de moedas do conversor de moedas do Banco Central através de webscraping.
+O módulo :py:mod:`bcb.currency` obtém dados de moedas do conversor de moedas do Banco Central através de webscraping. Os parâmetros ``start`` e ``end`` aceitam strings ``YYYY-MM-DD``, ``datetime.date``, ``datetime.datetime`` ou :py:class:`bcb.utils.Date`.
 
 .. ipython:: python
 
@@ -103,6 +103,6 @@ retornado um ``dict`` mapeando símbolo ISO → CSV string.
         f.write(raw)
 
 O CSV retornado usa ponto-e-vírgula como separador, datas no formato ``DDMMYYYY`` e vírgula
-como separador decimal — exatamente como devolvido pela API PTAX do BCB.
+como separador decimal — exatamente como devolvido pelo serviço de câmbio do BCB.
 O comportamento padrão (retorno de DataFrame) é mantido quando o parâmetro não é informado.
 

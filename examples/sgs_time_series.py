@@ -5,7 +5,6 @@ Este exemplo demonstra como buscar e trabalhar com dados de séries temporais
 do SGS (Sistema Gerenciador de Séries Temporais) do Banco Central.
 """
 
-import pandas as pd
 from bcb import sgs
 
 # Buscar uma única série temporal
@@ -23,7 +22,9 @@ print()
 
 # Buscar múltiplas séries temporais de uma vez
 # SELIC (1) e IPCA (433)
-multi_series = sgs.get([("SELIC", 1), ("IPCA", 433)], start="2023-01-01", end="2024-12-31")
+multi_series = sgs.get(
+    [("SELIC", 1), ("IPCA", 433)], start="2023-01-01", end="2024-12-31"
+)
 print("Múltiplas Séries Temporais (SELIC + IPCA)")
 print(multi_series.head())
 print()
