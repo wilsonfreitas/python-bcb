@@ -12,7 +12,7 @@ from urllib.parse import urlencode
 import httpx
 import numpy as np
 import pandas as pd
-from lxml import html
+from lxml import etree, html
 
 from bcb.http import (
     get_async_client,
@@ -309,6 +309,48 @@ def _raise_no_valid_currency_symbols(symbols: List[str]) -> NoReturn:
     raise CurrencyNotFoundError(f"No valid currency symbols found: {requested}")
 
 
+def _is_html_response(response: httpx.Response) -> bool:
+    content_type = response.headers.get("Content-Type", "").lower()
+    if content_type.startswith("text/html"):
+        return True
+    body = response.content.lstrip().lower()
+    return body.startswith((b"<!doctype html", b"<html", b"<body", b"<div"))
+
+
+def _clean_currency_error_message(message: str) -> str:
+    message = re.sub(r"^\W+", "", message)
+    message = re.sub(r"\W+$", "", message)
+    message = re.sub(r"\s+", " ", message)
+    return message.strip()
+
+
+def _extract_currency_html_error(content: bytes) -> str | None:
+    try:
+        doc = html.parse(BytesIO(content)).getroot()
+    except (etree.ParserError, ValueError):
+        return None
+    xpath = "//div[@class='msgErro']"
+    for element in doc.xpath(xpath):
+        message = _clean_currency_error_message(str(element.text_content()))
+        if message:
+            return message
+    return None
+
+
+def _raise_currency_html_error(response: httpx.Response, symbol: str) -> NoReturn:
+    message = _extract_currency_html_error(response.content)
+    if message:
+        raise BCBAPIError(
+            f"BCB API returned error for {symbol}: {message}",
+            status_code=400,
+        )
+    raise BCBAPIError(
+        f"BCB API returned an HTML response for {symbol} "
+        "without a recognized BCB error message",
+        status_code=400,
+    )
+
+
 def _fetch_symbol_response(
     symbol: str, start_date: DateInput, end_date: DateInput
 ) -> "httpx.Response":
@@ -348,16 +390,9 @@ def _fetch_symbol_response(
         f"Currency data response: status={res.status_code}, length={len(res.content)}"
     )
 
-    # Handle HTML error response (e.g., no data for date range)
-    if res.headers.get("Content-Type", "").startswith("text/html"):
-        doc = html.parse(BytesIO(res.content)).getroot()
-        xpath = "//div[@class='msgErro']"
-        elm = doc.xpath(xpath)[0]
-        x = elm.text
-        x = re.sub(r"^\W+", "", x)
-        x = re.sub(r"\W+$", "", x)
-        msg = f"BCB API returned error: {x} - {symbol}"
-        raise BCBAPIError(msg, status_code=400)
+    # Handle HTML error responses (e.g., no data for date range).
+    if _is_html_response(res):
+        _raise_currency_html_error(res, symbol)
 
     raise_for_status(
         res,
@@ -386,7 +421,12 @@ def _validate_currency_csv(csv_text: str) -> pd.DataFrame:
     BCBAPIError
         If CSV format is invalid (wrong column count)
     """
-    df = pd.read_csv(StringIO(csv_text), delimiter=";", header=None, dtype=str)
+    if not csv_text.strip():
+        raise BCBAPIError("Currency CSV response is empty", status_code=400)
+    try:
+        df = pd.read_csv(StringIO(csv_text), delimiter=";", header=None, dtype=str)
+    except (pd.errors.EmptyDataError, pd.errors.ParserError) as e:
+        raise BCBAPIError(f"Failed to parse currency CSV: {e}", status_code=400) from e
 
     # Validate column count
     if len(df.columns) != 8:
@@ -420,10 +460,10 @@ def _parse_currency_dates(df: pd.DataFrame) -> pd.DataFrame:
     """
     try:
         df["Date"] = pd.to_datetime(df["Date"], format="%d%m%Y")
-    except ValueError as e:
+    except (TypeError, ValueError) as e:
         raise BCBAPIError(
             f"Failed to parse currency date column: {str(e)}", status_code=400
-        )
+        ) from e
     return df
 
 
@@ -448,10 +488,10 @@ def _parse_currency_types(df: pd.DataFrame) -> pd.DataFrame:
     try:
         df["bid"] = df["bid"].str.replace(",", ".").astype(np.float64)
         df["ask"] = df["ask"].str.replace(",", ".").astype(np.float64)
-    except (ValueError, TypeError) as e:
+    except (TypeError, ValueError) as e:
         raise BCBAPIError(
             f"Failed to parse currency numeric columns: {str(e)}", status_code=400
-        )
+        ) from e
     return df
 
 
@@ -768,15 +808,8 @@ async def _async_fetch_symbol_response(
     except httpx.HTTPError as ex:
         raise_for_request_error(ex, context=f"Currency data for {symbol}")
 
-    if res.headers.get("Content-Type", "").startswith("text/html"):
-        doc = html.parse(BytesIO(res.content)).getroot()
-        xpath = "//div[@class='msgErro']"
-        elm = doc.xpath(xpath)[0]
-        x = elm.text
-        x = re.sub(r"^\W+", "", x)
-        x = re.sub(r"\W+$", "", x)
-        msg = f"BCB API returned error: {x} - {symbol}"
-        raise BCBAPIError(msg, status_code=400)
+    if _is_html_response(res):
+        _raise_currency_html_error(res, symbol)
 
     raise_for_status(
         res,
