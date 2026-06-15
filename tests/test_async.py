@@ -122,6 +122,25 @@ async def test_async_get_multiple_codes_concurrent(httpx_mock):
     assert df.shape[1] == 2
 
 
+async def test_async_get_tidy_multiple_codes(httpx_mock):
+    httpx_mock.add_response(
+        url=SGS_CODE_URL,
+        text=SGS_JSON_5,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url=SGS_CODE_URL,
+        text=SGS_JSON_5,
+        status_code=200,
+    )
+
+    df = await sgs.async_get([1, 11], tidy=True)
+
+    assert list(df.columns) == ["Date", "series", "value"]
+    assert set(df["series"]) == {"1", "11"}
+    assert len(df) == 10
+
+
 async def test_async_get_text_output(httpx_mock):
     """Test async_get() with output='text' returns JSON string."""
     httpx_mock.add_response(
@@ -192,6 +211,18 @@ async def test_async_get_single_symbol_returns_dataframe(httpx_mock):
     add_currency_rate_mock(httpx_mock)
     df = await currency.async_get("USD", START, END)
     assert df is not None
+
+
+async def test_async_get_tidy_single_symbol(httpx_mock):
+    add_currency_base_mocks(httpx_mock)
+    add_currency_rate_mock(httpx_mock)
+
+    df = await currency.async_get("USD", START, END, side="both", tidy=True)
+
+    assert list(df.columns) == ["Date", "symbol", "side", "value"]
+    assert df["symbol"].unique().tolist() == ["USD"]
+    assert set(df["side"]) == {"bid", "ask"}
+    assert len(df) == 10
 
 
 async def test_async_get_invalid_currency_side_raises():

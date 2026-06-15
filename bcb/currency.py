@@ -596,6 +596,27 @@ CurrencyGroupBy = Literal["symbol", "side"]
 CurrencyOutput = Literal["dataframe", "text"]
 
 
+def _tidy_df(df: pd.DataFrame, side: CurrencySide) -> pd.DataFrame:
+    frames = []
+    for position, column in enumerate(df.columns):
+        symbol, rate_side = column
+        if side != "both" and rate_side != side:
+            continue
+        frames.append(
+            pd.DataFrame(
+                {
+                    "Date": df.index,
+                    "symbol": symbol,
+                    "side": rate_side,
+                    "value": df.iloc[:, position].to_numpy(),
+                }
+            )
+        )
+    if not frames:
+        return pd.DataFrame(columns=["Date", "symbol", "side", "value"])
+    return pd.concat(frames, ignore_index=True)
+
+
 def _normalize_currency_symbols(symbols: Union[str, List[str]]) -> List[str]:
     if isinstance(symbols, str):
         symbols = [symbols]
@@ -634,6 +655,7 @@ def get(
     side: CurrencySide = ...,
     groupby: CurrencyGroupBy = ...,
     output: Literal["dataframe"] = ...,
+    tidy: bool = ...,
     *,
     timeout: RequestTimeout = ...,
 ) -> pd.DataFrame: ...
@@ -647,6 +669,7 @@ def get(
     side: CurrencySide = ...,
     groupby: CurrencyGroupBy = ...,
     output: Literal["dataframe"] = ...,
+    tidy: bool = ...,
     *,
     timeout: RequestTimeout = ...,
 ) -> pd.DataFrame: ...
@@ -660,6 +683,7 @@ def get(
     side: CurrencySide = ...,
     groupby: CurrencyGroupBy = ...,
     output: Literal["text"] = ...,
+    tidy: bool = ...,
     *,
     timeout: RequestTimeout = ...,
 ) -> str: ...
@@ -673,6 +697,7 @@ def get(
     side: CurrencySide = ...,
     groupby: CurrencyGroupBy = ...,
     output: Literal["text"] = ...,
+    tidy: bool = ...,
     *,
     timeout: RequestTimeout = ...,
 ) -> CurrencyTextResult: ...
@@ -685,6 +710,7 @@ def get(
     side: CurrencySide = "ask",
     groupby: CurrencyGroupBy = "symbol",
     output: CurrencyOutput = "dataframe",
+    tidy: bool = False,
     *,
     timeout: RequestTimeout = None,
 ) -> Union[pd.DataFrame, str, Dict[str, str]]:
@@ -712,6 +738,11 @@ def get(
         por ``side``.
     output : {"dataframe", "text"}, default "dataframe"
         Define o formato de saída. Use ``"text"`` para retornar o CSV bruto.
+    tidy : bool, default False
+        Quando ``True`` e ``output='dataframe'``, retorna um DataFrame em
+        formato tidy com colunas ``Date``, ``symbol``, ``side`` e ``value``.
+        Quando ``False``, mantém o formato largo padrão. Não altera
+        ``output='text'``.
     timeout : float or httpx.Timeout, optional
         Timeout por requisição HTTP, em segundos ou como ``httpx.Timeout``.
         Quando omitido, usa o timeout padrão do cliente compartilhado.
@@ -756,6 +787,8 @@ def get(
             pass  # Skip missing currencies
     if len(dss) > 0:
         df = pd.concat(dss, axis=1)
+        if tidy:
+            return _tidy_df(df, side)
         if side in ("bid", "ask"):
             dx = df.reorder_levels([1, 0], axis=1).sort_index(axis=1)
             return dx[side]
@@ -956,6 +989,7 @@ async def async_get(
     side: CurrencySide = "ask",
     groupby: CurrencyGroupBy = "symbol",
     output: CurrencyOutput = "dataframe",
+    tidy: bool = False,
     *,
     timeout: RequestTimeout = None,
 ) -> Union[pd.DataFrame, str, Dict[str, str]]:
@@ -982,6 +1016,11 @@ async def async_get(
         ``'symbol'`` ou ``'side'``
     output : {"dataframe", "text"}
         ``'dataframe'`` ou ``'text'``
+    tidy : bool, default False
+        Quando ``True`` e ``output='dataframe'``, retorna um DataFrame em
+        formato tidy com colunas ``Date``, ``symbol``, ``side`` e ``value``.
+        Quando ``False``, mantém o formato largo padrão. Não altera
+        ``output='text'``.
     timeout : float or httpx.Timeout, optional
         Timeout por requisição HTTP, em segundos ou como ``httpx.Timeout``.
         Quando omitido, usa o timeout padrão do cliente compartilhado.
@@ -1030,6 +1069,8 @@ async def async_get(
 
     if len(valid_dss) > 0:
         df = pd.concat(valid_dss, axis=1)
+        if tidy:
+            return _tidy_df(df, side)
         if side in ("bid", "ask"):
             dx = df.reorder_levels([1, 0], axis=1).sort_index(axis=1)
             return dx[side]

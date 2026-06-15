@@ -93,6 +93,24 @@ em cache.
 
     currency.get_currency_list().head()
 
+Formato tidy em moedas
+^^^^^^^^^^^^^^^^^^^^^^
+
+Por padrão, :py:func:`bcb.currency.get` retorna um DataFrame no formato largo.
+Para retornar uma tabela longa, use ``tidy=True``. Nesse modo, o DataFrame tem
+as colunas ``Date``, ``symbol``, ``side`` e ``value``.
+
+.. ipython:: python
+
+    currency.get(['USD', 'EUR'],
+                 start='2024-01-01',
+                 end='2024-01-31',
+                 side='both',
+                 tidy=True).head()
+
+O parâmetro ``tidy`` só afeta o retorno ``output='dataframe'``. Quando
+``output='text'`` é usado, a função continua retornando o CSV bruto.
+
 Obtendo o CSV bruto
 ^^^^^^^^^^^^^^^^^^^
 

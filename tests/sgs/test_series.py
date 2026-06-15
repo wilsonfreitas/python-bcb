@@ -11,6 +11,9 @@ SGS_CODE_1_URL = re.compile(
     r".*bcdata\.sgs\.1[^0-9].*|.*bcdata\.sgs\.1$|.*bcdata\.sgs\.1/.*"
 )
 SGS_CODE_99999_URL = re.compile(r".*bcdata\.sgs\.99999.*")
+SGS_CODE_2_URL = re.compile(
+    r".*bcdata\.sgs\.2[^0-9].*|.*bcdata\.sgs\.2$|.*bcdata\.sgs\.2/.*"
+)
 
 
 # ---------------------------------------------------------------------------
@@ -131,6 +134,53 @@ def test_get_with_named_code(httpx_mock):
     assert isinstance(df, pd.DataFrame)
     assert "SELIC" in df.columns
     assert len(df) == 5
+
+
+def test_get_tidy_single_code(httpx_mock):
+    httpx_mock.add_response(
+        url=SGS_CODE_1_URL,
+        text=SGS_JSON_5,
+        status_code=200,
+    )
+
+    df = sgs.get(1, last=5, tidy=True)
+
+    assert isinstance(df, pd.DataFrame)
+    assert list(df.columns) == ["Date", "series", "value"]
+    assert df["series"].unique().tolist() == ["1"]
+    assert len(df) == 5
+
+
+def test_get_tidy_multiple_codes(httpx_mock):
+    httpx_mock.add_response(
+        url=SGS_CODE_1_URL,
+        text=SGS_JSON_5,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url=SGS_CODE_2_URL,
+        text=SGS_JSON_5,
+        status_code=200,
+    )
+
+    df = sgs.get([1, 2], last=5, tidy=True)
+
+    assert list(df.columns) == ["Date", "series", "value"]
+    assert set(df["series"]) == {"1", "2"}
+    assert len(df) == 10
+
+
+def test_get_tidy_ignores_text_output(httpx_mock):
+    httpx_mock.add_response(
+        url=SGS_CODE_1_URL,
+        text=SGS_JSON_5,
+        status_code=200,
+    )
+
+    result = sgs.get(1, last=5, output="text", tidy=True)
+
+    assert isinstance(result, str)
+    assert result == SGS_JSON_5
 
 
 def test_get_json_error_response(httpx_mock):
