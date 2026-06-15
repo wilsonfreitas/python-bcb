@@ -259,6 +259,23 @@ def _format_df(df: pd.DataFrame, code: SGSCode, freq: Optional[str]) -> pd.DataF
     return df
 
 
+def _tidy_df(df: pd.DataFrame) -> pd.DataFrame:
+    frames = []
+    for position, series_name in enumerate(df.columns):
+        frames.append(
+            pd.DataFrame(
+                {
+                    "Date": df.index,
+                    "series": series_name,
+                    "value": df.iloc[:, position].to_numpy(),
+                }
+            )
+        )
+    if not frames:
+        return pd.DataFrame(columns=["Date", "series", "value"])
+    return pd.concat(frames, ignore_index=True)
+
+
 @overload
 def get(
     codes: SGSCodeInput,
@@ -268,6 +285,7 @@ def get(
     multi: bool = ...,
     freq: Optional[str] = ...,
     output: Literal["dataframe"] = ...,
+    tidy: bool = ...,
     *,
     timeout: RequestTimeout = ...,
 ) -> Union[pd.DataFrame, List[pd.DataFrame]]: ...
@@ -282,6 +300,7 @@ def get(
     multi: bool = ...,
     freq: Optional[str] = ...,
     output: Literal["text"] = ...,
+    tidy: bool = ...,
     *,
     timeout: RequestTimeout = ...,
 ) -> Union[str, Dict[int, str]]: ...
@@ -295,6 +314,7 @@ def get(
     multi: bool = True,
     freq: Optional[str] = None,
     output: Literal["dataframe", "text"] = "dataframe",
+    tidy: bool = False,
     *,
     timeout: RequestTimeout = None,
 ) -> Union[pd.DataFrame, List[pd.DataFrame], str, Dict[int, str]]:
@@ -334,6 +354,10 @@ def get(
         um DataFrame pandas, ou ``'text'`` para retornar o JSON bruto da API
         do BCB. Para um único código retorna uma string; para múltiplos
         códigos retorna um ``dict`` mapeando código inteiro → JSON string.
+    tidy : bool, default False
+        Quando ``True`` e ``output='dataframe'``, retorna um DataFrame em
+        formato tidy com colunas ``Date``, ``series`` e ``value``. Quando
+        ``False``, mantém o formato largo padrão. Não altera ``output='text'``.
     timeout : float or httpx.Timeout, optional
         Timeout por tentativa HTTP, em segundos ou como ``httpx.Timeout``.
         Quando omitido, usa o timeout padrão do cliente compartilhado.
@@ -376,6 +400,9 @@ def get(
         df = pd.read_json(StringIO(text))
         df = _format_df(df, code, freq)
         dfs.append(df)
+
+    if tidy:
+        return _tidy_df(pd.concat(dfs, axis=1))
     if len(dfs) == 1:
         return dfs[0]
     else:
@@ -509,6 +536,7 @@ async def async_get(
     multi: bool = True,
     freq: Optional[str] = None,
     output: Literal["dataframe", "text"] = "dataframe",
+    tidy: bool = False,
     *,
     timeout: RequestTimeout = None,
 ) -> Union[pd.DataFrame, List[pd.DataFrame], str, Dict[int, str]]:
@@ -536,6 +564,10 @@ async def async_get(
         Frequência a ser utilizada na série temporal
     output : str
         Formato de saída: ``'dataframe'`` ou ``'text'``
+    tidy : bool, default False
+        Quando ``True`` e ``output='dataframe'``, retorna um DataFrame em
+        formato tidy com colunas ``Date``, ``series`` e ``value``. Quando
+        ``False``, mantém o formato largo padrão. Não altera ``output='text'``.
     timeout : float or httpx.Timeout, optional
         Timeout por tentativa HTTP, em segundos ou como ``httpx.Timeout``.
         Quando omitido, usa o timeout padrão do cliente compartilhado.
@@ -566,6 +598,8 @@ async def async_get(
         _format_df(pd.read_json(StringIO(t)), c, freq)
         for c, t in zip(code_list, texts, strict=True)
     ]
+    if tidy:
+        return _tidy_df(pd.concat(dfs, axis=1))
     if len(dfs) == 1:
         return dfs[0]
     else:

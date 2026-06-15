@@ -183,6 +183,44 @@ def test_currency_get_both_side_groupby(httpx_mock):
     assert ("ask", "USD") in df.columns
 
 
+def test_currency_get_tidy_ask(httpx_mock):
+    add_id_list_mock(httpx_mock)
+    add_currency_list_mock(httpx_mock)
+    add_rate_mock(httpx_mock)
+
+    df = currency.get("USD", START, END, side="ask", tidy=True)
+
+    assert isinstance(df, pd.DataFrame)
+    assert list(df.columns) == ["Date", "symbol", "side", "value"]
+    assert df["symbol"].unique().tolist() == ["USD"]
+    assert df["side"].unique().tolist() == ["ask"]
+    assert len(df) == 5
+
+
+def test_currency_get_tidy_both_sides(httpx_mock):
+    add_id_list_mock(httpx_mock)
+    add_currency_list_mock(httpx_mock)
+    add_rate_mock(httpx_mock)
+
+    df = currency.get("USD", START, END, side="both", tidy=True)
+
+    assert list(df.columns) == ["Date", "symbol", "side", "value"]
+    assert df["symbol"].unique().tolist() == ["USD"]
+    assert set(df["side"]) == {"bid", "ask"}
+    assert len(df) == 10
+
+
+def test_currency_get_tidy_ignores_text_output(httpx_mock):
+    add_id_list_mock(httpx_mock)
+    add_currency_list_mock(httpx_mock)
+    add_rate_mock(httpx_mock)
+
+    result = currency.get("USD", START, END, output="text", tidy=True)
+
+    assert isinstance(result, str)
+    assert "01122020" in result
+
+
 def test_currency_get_invalid_side():
     with pytest.raises(ValueError, match="Unknown side"):
         currency.get("USD", START, END, side="mid")  # type: ignore[arg-type]

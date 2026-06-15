@@ -94,6 +94,11 @@ Busca taxas de câmbio de forma assíncrona com a mesma interface que a versão 
 
     asyncio.run(main())
 
+As versões assíncronas aceitam os mesmos formatos de saída das versões
+síncronas. Em ``sgs.async_get(..., tidy=True)``, o DataFrame tem colunas
+``Date``, ``series`` e ``value``. Em ``currency.async_get(..., tidy=True)``, o
+DataFrame tem colunas ``Date``, ``symbol``, ``side`` e ``value``.
+
 OData: async_collect()
 ----------------------
 
