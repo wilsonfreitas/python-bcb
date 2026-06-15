@@ -272,22 +272,44 @@ tentativa usa o mesmo timeout.</p>
 <p>Se a consulta continuar lenta mesmo com timeout maior, divida o período em
 janelas menores e concatene os resultados.</p>
 </section>
-<section id="exemplos">
-<h2>Exemplos<a class="headerlink" href="#exemplos" title="Link permanente para este cabeçalho">¶</a></h2>
+<section id="formato-tidy-no-sgs">
+<h2>Formato tidy no SGS<a class="headerlink" href="#formato-tidy-no-sgs" title="Link permanente para este cabeçalho">¶</a></h2>
+<p>Por padrão, <a class="reference internal" href="api.html#bcb.sgs.get" title="bcb.sgs.get"><code class="xref py py-func docutils literal notranslate"><span class="pre">bcb.sgs.get()</span></code></a> retorna um DataFrame no formato largo. Para
+retornar uma tabela longa, use <code class="docutils literal notranslate"><span class="pre">tidy=True</span></code>. Nesse modo, o DataFrame tem as
+colunas <code class="docutils literal notranslate"><span class="pre">Date</span></code>, <code class="docutils literal notranslate"><span class="pre">series</span></code> e <code class="docutils literal notranslate"><span class="pre">value</span></code>. A coluna <code class="docutils literal notranslate"><span class="pre">series</span></code> usa o nome
+informado em <code class="docutils literal notranslate"><span class="pre">codes</span></code>; quando nenhum nome é informado, usa o código numérico
+da série.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb</span><span class="w"> </span><span class="kn">import</span> <span class="n">sgs</span>
 
-<span class="gp">In [2]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="gp">In [2]: </span><span class="n">sgs</span><span class="o">.</span><span class="n">get</span><span class="p">({</span><span class="s1">&#39;SELIC&#39;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="s1">&#39;IPCA&#39;</span><span class="p">:</span> <span class="mi">433</span><span class="p">},</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2024-01-01&#39;</span><span class="p">,</span> <span class="n">tidy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gh">Out[2]: </span>
+<span class="go">        Date series     value</span>
+<span class="go">0 2024-01-01  SELIC       NaN</span>
+<span class="go">1 2024-01-02  SELIC  0.043739</span>
+<span class="go">2 2024-01-03  SELIC  0.043739</span>
+<span class="go">3 2024-01-04  SELIC  0.043739</span>
+<span class="go">4 2024-01-05  SELIC  0.043739</span>
+</pre></div>
+</div>
+<p>O parâmetro <code class="docutils literal notranslate"><span class="pre">tidy</span></code> só afeta o retorno <code class="docutils literal notranslate"><span class="pre">output='dataframe'</span></code>. Quando
+<code class="docutils literal notranslate"><span class="pre">output='text'</span></code> é usado, a função continua retornando o JSON bruto.</p>
+</section>
+<section id="exemplos">
+<h2>Exemplos<a class="headerlink" href="#exemplos" title="Link permanente para este cabeçalho">¶</a></h2>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [3]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb</span><span class="w"> </span><span class="kn">import</span> <span class="n">sgs</span>
 
-<span class="gp">In [3]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
+<span class="gp">In [4]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
-<span class="gp">In [4]: </span><span class="n">mpl</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;bmh&#39;</span><span class="p">)</span>
+<span class="gp">In [5]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
 
-<span class="gp">In [5]: </span><span class="n">df</span> <span class="o">=</span> <span class="n">sgs</span><span class="o">.</span><span class="n">get</span><span class="p">({</span><span class="s1">&#39;IPCA&#39;</span><span class="p">:</span> <span class="mi">433</span><span class="p">},</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2002-02-01&#39;</span><span class="p">)</span>
+<span class="gp">In [6]: </span><span class="n">mpl</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;bmh&#39;</span><span class="p">)</span>
 
-<span class="gp">In [6]: </span><span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_period</span><span class="p">(</span><span class="s1">&#39;M&#39;</span><span class="p">)</span>
+<span class="gp">In [7]: </span><span class="n">df</span> <span class="o">=</span> <span class="n">sgs</span><span class="o">.</span><span class="n">get</span><span class="p">({</span><span class="s1">&#39;IPCA&#39;</span><span class="p">:</span> <span class="mi">433</span><span class="p">},</span> <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2002-02-01&#39;</span><span class="p">)</span>
 
-<span class="gp">In [7]: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-<span class="gh">Out[7]: </span>
+<span class="gp">In [8]: </span><span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_period</span><span class="p">(</span><span class="s1">&#39;M&#39;</span><span class="p">)</span>
+
+<span class="gp">In [9]: </span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gh">Out[9]: </span>
 <span class="go">         IPCA</span>
 <span class="go">Date         </span>
 <span class="go">2002-02  0.36</span>
@@ -297,12 +319,12 @@ janelas menores e concatene os resultados.</p>
 <span class="go">2002-06  0.42</span>
 </pre></div>
 </div>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [8]: </span><span class="n">dfr</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [10]: </span><span class="n">dfr</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
 
-<span class="gp">In [9]: </span><span class="n">i12</span> <span class="o">=</span> <span class="n">dfr</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">x</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">prod</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span>
+<span class="gp">In [11]: </span><span class="n">i12</span> <span class="o">=</span> <span class="n">dfr</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">x</span><span class="o">/</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">prod</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span>
 
-<span class="gp">In [10]: </span><span class="n">i12</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-<span class="gh">Out[10]: </span>
+<span class="gp">In [12]: </span><span class="n">i12</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gh">Out[12]: </span>
 <span class="go">              IPCA</span>
 <span class="go">Date              </span>
 <span class="go">2003-01  14.467041</span>
@@ -312,22 +334,22 @@ janelas menores e concatene os resultados.</p>
 <span class="go">2003-05  17.235307</span>
 </pre></div>
 </div>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [11]: </span><span class="n">i12</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
-<span class="gh">Out[11]: </span><span class="go">&lt;Axes: xlabel=&#39;Date&#39;&gt;</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [13]: </span><span class="n">i12</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="gh">Out[13]: </span><span class="go">&lt;Axes: xlabel=&#39;Date&#39;&gt;</span>
 
-<span class="gp">In [12]: </span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Fonte: https://dadosabertos.bcb.gov.br&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-<span class="gh">Out[12]: </span><span class="go">Text(0.5, 1.0, &#39;Fonte: https://dadosabertos.bcb.gov.br&#39;)</span>
+<span class="gp">In [14]: </span><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Fonte: https://dadosabertos.bcb.gov.br&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="gh">Out[14]: </span><span class="go">Text(0.5, 1.0, &#39;Fonte: https://dadosabertos.bcb.gov.br&#39;)</span>
 
-<span class="gp">In [13]: </span><span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;IPCA acumulado 12 meses - Janela Móvel&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
-<span class="gh">Out[13]: </span><span class="go">Text(0.5, 0.98, &#39;IPCA acumulado 12 meses - Janela Móvel&#39;)</span>
+<span class="gp">In [15]: </span><span class="n">plt</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span><span class="s1">&#39;IPCA acumulado 12 meses - Janela Móvel&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+<span class="gh">Out[15]: </span><span class="go">Text(0.5, 0.98, &#39;IPCA acumulado 12 meses - Janela Móvel&#39;)</span>
 
-<span class="gp">In [14]: </span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Data&#39;</span><span class="p">)</span>
-<span class="gh">Out[14]: </span><span class="go">Text(0.5, 0, &#39;Data&#39;)</span>
+<span class="gp">In [16]: </span><span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Data&#39;</span><span class="p">)</span>
+<span class="gh">Out[16]: </span><span class="go">Text(0.5, 0, &#39;Data&#39;)</span>
 
-<span class="gp">In [15]: </span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;%&#39;</span><span class="p">)</span>
-<span class="gh">Out[15]: </span><span class="go">Text(0, 0.5, &#39;%&#39;)</span>
+<span class="gp">In [17]: </span><span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;%&#39;</span><span class="p">)</span>
+<span class="gh">Out[17]: </span><span class="go">Text(0, 0.5, &#39;%&#39;)</span>
 
-<span class="gp">In [16]: </span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">In [18]: </span><span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="_images/sgs1.png" src="_images/sgs1.png" />
@@ -362,14 +384,14 @@ O comportamento padrão (retorno de DataFrame) é mantido quando o parâmetro n�
 <section id="dados-de-inadimplencia-de-operacoes-de-credito">
 <h1>Dados de Inadimplência de Operações de Crédito<a class="headerlink" href="#dados-de-inadimplencia-de-operacoes-de-credito" title="Link permanente para este cabeçalho">¶</a></h1>
 <p>Os modos aceitos são <code class="docutils literal notranslate"><span class="pre">PF</span></code> (pessoas físicas), <code class="docutils literal notranslate"><span class="pre">PJ</span></code> (pessoas jurídicas) e <code class="docutils literal notranslate"><span class="pre">total</span></code>; <code class="docutils literal notranslate"><span class="pre">all</span></code> é aceito como alias de <code class="docutils literal notranslate"><span class="pre">total</span></code>. Os locais devem ser todos estados ou todos regiões, sem misturar os dois tipos na mesma chamada.</p>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [17]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb.sgs.regional_economy</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_non_performing_loans</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [19]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb.sgs.regional_economy</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_non_performing_loans</span>
 
-<span class="gp">In [18]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">BRAZILIAN_REGIONS</span><span class="p">,</span> <span class="n">BRAZILIAN_STATES</span>
+<span class="gp">In [20]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">BRAZILIAN_REGIONS</span><span class="p">,</span> <span class="n">BRAZILIAN_STATES</span>
 
-<span class="gp">In [19]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">In [21]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
-<span class="gp">In [20]: </span><span class="n">get_non_performing_loans</span><span class="p">([</span><span class="s2">&quot;RR&quot;</span><span class="p">],</span> <span class="n">last</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
-<span class="gh">Out[20]: </span>
+<span class="gp">In [22]: </span><span class="n">get_non_performing_loans</span><span class="p">([</span><span class="s2">&quot;RR&quot;</span><span class="p">],</span> <span class="n">last</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+<span class="gh">Out[22]: </span>
 <span class="go">              RR</span>
 <span class="go">Date            </span>
 <span class="go">2025-07-01  5.06</span>
@@ -384,10 +406,10 @@ O comportamento padrão (retorno de DataFrame) é mantido quando o parâmetro n�
 <span class="go">2026-04-01  5.96</span>
 </pre></div>
 </div>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [21]: </span><span class="n">northeast_states</span> <span class="o">=</span> <span class="n">BRAZILIAN_REGIONS</span><span class="p">[</span><span class="s2">&quot;NE&quot;</span><span class="p">]</span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [23]: </span><span class="n">northeast_states</span> <span class="o">=</span> <span class="n">BRAZILIAN_REGIONS</span><span class="p">[</span><span class="s2">&quot;NE&quot;</span><span class="p">]</span>
 
-<span class="gp">In [22]: </span><span class="n">get_non_performing_loans</span><span class="p">(</span><span class="n">northeast_states</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;pj&quot;</span><span class="p">)</span>
-<span class="gh">Out[22]: </span>
+<span class="gp">In [24]: </span><span class="n">get_non_performing_loans</span><span class="p">(</span><span class="n">northeast_states</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;pj&quot;</span><span class="p">)</span>
+<span class="gh">Out[24]: </span>
 <span class="go">              AL    BA    CE    MA    PB    PE    PI    RN    SE</span>
 <span class="go">Date                                                            </span>
 <span class="go">2025-12-01  2.65  2.94  3.47  5.83  8.31  2.96  2.11  3.82  4.22</span>
@@ -397,8 +419,8 @@ O comportamento padrão (retorno de DataFrame) é mantido quando o parâmetro n�
 <span class="go">2026-04-01  3.46  3.67  3.71  6.56  8.96  3.52  2.56  3.91  4.68</span>
 </pre></div>
 </div>
-<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [23]: </span><span class="n">get_non_performing_loans</span><span class="p">(</span><span class="n">BRAZILIAN_STATES</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;PF&quot;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2024-01-01&quot;</span><span class="p">)</span>
-<span class="gh">Out[23]: </span>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [25]: </span><span class="n">get_non_performing_loans</span><span class="p">(</span><span class="n">BRAZILIAN_STATES</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;PF&quot;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s2">&quot;2024-01-01&quot;</span><span class="p">)</span>
+<span class="gh">Out[25]: </span>
 <span class="go">              AC    AP    AM    PA    RO  ...    RJ    SP    PR    RS    SC</span>
 <span class="go">Date                                      ...                              </span>
 <span class="go">2024-01-01  3.49  4.09  5.40  4.16  2.76  ...  5.33  3.45  2.76  2.48  2.85</span>
@@ -492,6 +514,7 @@ O comportamento padrão (retorno de DataFrame) é mantido quando o parâmetro n�
             <ul>
 <li><a class="reference internal" href="#">SGS</a><ul>
 <li><a class="reference internal" href="#timeout-em-consultas-longas">Timeout em consultas longas</a></li>
+<li><a class="reference internal" href="#formato-tidy-no-sgs">Formato tidy no SGS</a></li>
 <li><a class="reference internal" href="#exemplos">Exemplos</a></li>
 <li><a class="reference internal" href="#obtendo-o-json-bruto">Obtendo o JSON bruto</a></li>
 </ul>

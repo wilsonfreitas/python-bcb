@@ -26,6 +26,24 @@ Se a consulta continuar lenta mesmo com timeout maior, divida o período em
 janelas menores e concatene os resultados.
 
 
+Formato tidy no SGS
+-------------------
+
+Por padrão, :py:func:`bcb.sgs.get` retorna um DataFrame no formato largo. Para
+retornar uma tabela longa, use ``tidy=True``. Nesse modo, o DataFrame tem as
+colunas ``Date``, ``series`` e ``value``. A coluna ``series`` usa o nome
+informado em ``codes``; quando nenhum nome é informado, usa o código numérico
+da série.
+
+.. ipython:: python
+
+    from bcb import sgs
+    sgs.get({'SELIC': 11, 'IPCA': 433}, start='2024-01-01', tidy=True).head()
+
+O parâmetro ``tidy`` só afeta o retorno ``output='dataframe'``. Quando
+``output='text'`` é usado, a função continua retornando o JSON bruto.
+
+
 Exemplos
 --------
 

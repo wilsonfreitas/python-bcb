@@ -346,7 +346,7 @@ O método <code class="docutils literal notranslate"><span class="pre">describe<
 <span class="gp">In [8]: </span><span class="n">ep</span> <span class="o">=</span> <span class="n">ptax</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s1">&#39;CotacaoMoedaDia&#39;</span><span class="p">)</span>
 
 <span class="gp">In [9]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
-<span class="gp">   ...: </span>   <span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">moeda</span><span class="o">=</span><span class="s1">&#39;AUD&#39;</span><span class="p">,</span> <span class="n">dataCotacao</span><span class="o">=</span><span class="s1">&#39;1/31/2022&#39;</span><span class="p">)</span>
+<span class="gp">   ...: </span>   <span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">moeda</span><span class="o">=</span><span class="s1">&#39;AUD&#39;</span><span class="p">,</span> <span class="n">dataCotacao</span><span class="o">=</span><span class="s1">&#39;2022-01-31&#39;</span><span class="p">)</span>
 <span class="gp">   ...: </span>   <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
 <span class="gp">   ...: </span>
 <span class="gh">Out[9]: </span>
@@ -360,8 +360,11 @@ O método <code class="docutils literal notranslate"><span class="pre">describe<
 <span class="go">[5 rows x 6 columns]</span>
 </pre></div>
 </div>
-<p>É importante notar que as datas estão no formato mês/dia/ano e os números não
-são preenchidos com 0 para ter 2 dígitos.</p>
+<p>Os parâmetros de data da PTAX aceitam strings ISO (<code class="docutils literal notranslate"><span class="pre">YYYY-MM-DD</span></code>),
+<code class="docutils literal notranslate"><span class="pre">datetime.date</span></code>, <code class="docutils literal notranslate"><span class="pre">datetime.datetime</span></code> e <code class="docutils literal notranslate"><span class="pre">pandas.Timestamp</span></code>. Strings já no
+formato PTAX também continuam aceitas. A biblioteca converte os valores
+generalizados para o formato aceito pelo serviço PTAX: <code class="docutils literal notranslate"><span class="pre">M/D/YYYY</span></code>
+(mês/dia/ano, sem zero à esquerda).</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [10]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s1">&#39;CotacaoMoedaPeriodo&#39;</span><span class="p">)</span>
 
 <span class="go">Function: CotacaoMoedaPeriodo</span>
@@ -374,8 +377,8 @@ são preenchidos com 0 para ter 2 dígitos.</p>
 
 <span class="gp">In [12]: </span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">moeda</span><span class="o">=</span><span class="s1">&#39;AUD&#39;</span><span class="p">,</span>
-<span class="gp">   ....: </span>               <span class="n">dataInicial</span><span class="o">=</span><span class="s1">&#39;1/1/2022&#39;</span><span class="p">,</span>
-<span class="gp">   ....: </span>               <span class="n">dataFinalCotacao</span><span class="o">=</span><span class="s1">&#39;1/5/2022&#39;</span><span class="p">)</span>
+<span class="gp">   ....: </span>               <span class="n">dataInicial</span><span class="o">=</span><span class="s1">&#39;2022-01-01&#39;</span><span class="p">,</span>
+<span class="gp">   ....: </span>               <span class="n">dataFinalCotacao</span><span class="o">=</span><span class="s1">&#39;2022-01-05&#39;</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">collect</span><span class="p">())</span>
 <span class="gp">   ....: </span>
 <span class="gh">Out[12]: </span>
@@ -447,6 +450,29 @@ em cache.</p>
 <span class="go">[5 rows x 7 columns]</span>
 </pre></div>
 </div>
+<section id="formato-tidy-em-moedas">
+<h3>Formato tidy em moedas<a class="headerlink" href="#formato-tidy-em-moedas" title="Link permanente para este cabeçalho">¶</a></h3>
+<p>Por padrão, <a class="reference internal" href="api.html#bcb.currency.get" title="bcb.currency.get"><code class="xref py py-func docutils literal notranslate"><span class="pre">bcb.currency.get()</span></code></a> retorna um DataFrame no formato largo.
+Para retornar uma tabela longa, use <code class="docutils literal notranslate"><span class="pre">tidy=True</span></code>. Nesse modo, o DataFrame tem
+as colunas <code class="docutils literal notranslate"><span class="pre">Date</span></code>, <code class="docutils literal notranslate"><span class="pre">symbol</span></code>, <code class="docutils literal notranslate"><span class="pre">side</span></code> e <code class="docutils literal notranslate"><span class="pre">value</span></code>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [18]: </span><span class="n">currency</span><span class="o">.</span><span class="n">get</span><span class="p">([</span><span class="s1">&#39;USD&#39;</span><span class="p">,</span> <span class="s1">&#39;EUR&#39;</span><span class="p">],</span>
+<span class="gp">   ....: </span>             <span class="n">start</span><span class="o">=</span><span class="s1">&#39;2024-01-01&#39;</span><span class="p">,</span>
+<span class="gp">   ....: </span>             <span class="n">end</span><span class="o">=</span><span class="s1">&#39;2024-01-31&#39;</span><span class="p">,</span>
+<span class="gp">   ....: </span>             <span class="n">side</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span>
+<span class="gp">   ....: </span>             <span class="n">tidy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="gp">   ....: </span>
+<span class="gh">Out[18]: </span>
+<span class="go">        Date symbol side   value</span>
+<span class="go">0 2024-01-02    USD  bid  4.8910</span>
+<span class="go">1 2024-01-03    USD  bid  4.9206</span>
+<span class="go">2 2024-01-04    USD  bid  4.9182</span>
+<span class="go">3 2024-01-05    USD  bid  4.8893</span>
+<span class="go">4 2024-01-08    USD  bid  4.8844</span>
+</pre></div>
+</div>
+<p>O parâmetro <code class="docutils literal notranslate"><span class="pre">tidy</span></code> só afeta o retorno <code class="docutils literal notranslate"><span class="pre">output='dataframe'</span></code>. Quando
+<code class="docutils literal notranslate"><span class="pre">output='text'</span></code> é usado, a função continua retornando o CSV bruto.</p>
+</section>
 <section id="obtendo-o-csv-bruto">
 <h3>Obtendo o CSV bruto<a class="headerlink" href="#obtendo-o-csv-bruto" title="Link permanente para este cabeçalho">¶</a></h3>
 <p>Para pipelines de dados onde o dado bruto deve ser persistido antes de qualquer transformação,
@@ -533,6 +559,7 @@ O comportamento padrão (retorno de DataFrame) é mantido quando o parâmetro n�
 <li><a class="reference internal" href="#">Moedas</a><ul>
 <li><a class="reference internal" href="#api-odata-de-moedas">API OData de Moedas</a></li>
 <li><a class="reference internal" href="#conversor-de-moedas">Conversor de Moedas</a><ul>
+<li><a class="reference internal" href="#formato-tidy-em-moedas">Formato tidy em moedas</a></li>
 <li><a class="reference internal" href="#obtendo-o-csv-bruto">Obtendo o CSV bruto</a></li>
 </ul>
 </li>

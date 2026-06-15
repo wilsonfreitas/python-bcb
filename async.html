@@ -334,6 +334,10 @@ Busca taxas de câmbio de forma assíncrona com a mesma interface que a versão 
 <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
 </pre></div>
 </div>
+<p>As versões assíncronas aceitam os mesmos formatos de saída das versões
+síncronas. Em <code class="docutils literal notranslate"><span class="pre">sgs.async_get(...,</span> <span class="pre">tidy=True)</span></code>, o DataFrame tem colunas
+<code class="docutils literal notranslate"><span class="pre">Date</span></code>, <code class="docutils literal notranslate"><span class="pre">series</span></code> e <code class="docutils literal notranslate"><span class="pre">value</span></code>. Em <code class="docutils literal notranslate"><span class="pre">currency.async_get(...,</span> <span class="pre">tidy=True)</span></code>, o
+DataFrame tem colunas <code class="docutils literal notranslate"><span class="pre">Date</span></code>, <code class="docutils literal notranslate"><span class="pre">symbol</span></code>, <code class="docutils literal notranslate"><span class="pre">side</span></code> e <code class="docutils literal notranslate"><span class="pre">value</span></code>.</p>
 </section>
 <section id="odata-async-collect">
 <h2>OData: async_collect()<a class="headerlink" href="#odata-async-collect" title="Link permanente para este cabeçalho">¶</a></h2>
