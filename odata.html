@@ -296,18 +296,33 @@ o padrão apenas naquela chamada.</p>
 </pre></div>
 </div>
 <p>É necessário importar e criar um objeto da classe que implementa a API, neste caso a classe <code class="docutils literal notranslate"><span class="pre">SPI</span></code>.
-Tendo o objeto, executar o método <code class="docutils literal notranslate"><span class="pre">describe</span></code> para visualizar o <em>endpoints</em> disponíveis na API.</p>
+Tendo o objeto, executar o método <code class="docutils literal notranslate"><span class="pre">describe</span></code> para visualizar os <em>endpoints</em> disponíveis na API e suas propriedades. Para obter apenas a listagem curta dos nomes, use <code class="docutils literal notranslate"><span class="pre">describe(full=False)</span></code>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [3]: </span><span class="n">pix</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 <span class="go">EntitySets:</span>
-<span class="go">  PixLiquidadosAtual</span>
-<span class="go">  PixRemuneracaoContaPI</span>
-<span class="go">  PixInterrupcaoSPI</span>
-<span class="go">  PixLiquidadosIntradia</span>
-<span class="go">  PixDisponibilidadeSPI</span>
+
+<span class="go">EntitySet (Endpoint): PixLiquidadosAtual</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.SPI.PixLiquidadosAtual</span>
+<span class="go">Properties: Data&lt;datetime&gt;, Quantidade&lt;int&gt;, CanalPrimario&lt;int&gt;, CanalSecundario&lt;int&gt;, Total&lt;float&gt;, Media&lt;float&gt;</span>
+
+<span class="go">EntitySet (Endpoint): PixRemuneracaoContaPI</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.SPI.PixRemuneracaoContaPI</span>
+<span class="go">Properties: DataBase&lt;datetime&gt;, BaseRemuneracaoIF&lt;float&gt;, ValorRemuneradoIF&lt;float&gt;, BaseRemuneracaoTotal&lt;float&gt;, ValorRemuneradoTotal&lt;float&gt;, SelicAnual&lt;float&gt;</span>
+
+<span class="go">EntitySet (Endpoint): PixInterrupcaoSPI</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.SPI.PixInterrupcaoSPI</span>
+<span class="go">Properties: DataHoraInicioInt&lt;str&gt;, DataHoraTerminoInt&lt;str&gt;, Interrupcao&lt;str&gt;</span>
+
+<span class="go">EntitySet (Endpoint): PixLiquidadosIntradia</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.SPI.PixLiquidadosIntradia</span>
+<span class="go">Properties: Horario&lt;str&gt;, QuantidadeMedia&lt;int&gt;, TotalMedio&lt;float&gt;</span>
+
+<span class="go">EntitySet (Endpoint): PixDisponibilidadeSPI</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.SPI.PixDisponibilidadeSPI</span>
+<span class="go">Properties: DataBase&lt;datetime&gt;, Indice&lt;float&gt;, MinimoNormativo&lt;float&gt;</span>
 </pre></div>
 </div>
 <p>Como vemos, a API do PIX tem 4 <em>endpoints</em> (<code class="docutils literal notranslate"><span class="pre">EntitySets</span></code>).
-Para ver as informações retornadas por cada <em>endpoint</em> é só executar o método <code class="docutils literal notranslate"><span class="pre">describe</span></code> passando como argumento
+Para restringir a saída a um <em>endpoint</em>, execute o método <code class="docutils literal notranslate"><span class="pre">describe</span></code> passando como argumento
 o nome do <em>endpoint</em>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [4]: </span><span class="n">pix</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">&quot;PixLiquidadosAtual&quot;</span><span class="p">)</span>
 
@@ -691,14 +706,47 @@ A API do PTAX, por exemplo</p>
 
 <span class="gp">In [43]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 <span class="go">EntitySets:</span>
-<span class="go">  Moedas</span>
+
+<span class="go">EntitySet (Endpoint): Moedas</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.PTAX.TipoMoeda</span>
+<span class="go">Properties: simbolo&lt;str&gt;, nomeFormatado&lt;str&gt;, tipoMoeda&lt;str&gt;</span>
 <span class="go">FunctionImports:</span>
-<span class="go">  CotacaoMoedaPeriodoFechamento</span>
-<span class="go">  CotacaoMoedaAberturaOuIntermediario</span>
-<span class="go">  CotacaoMoedaDia</span>
-<span class="go">  CotacaoMoedaPeriodo</span>
-<span class="go">  CotacaoDolarDia</span>
-<span class="go">  CotacaoDolarPeriodo</span>
+
+<span class="go">Function: CotacaoMoedaPeriodoFechamento</span>
+<span class="go">Parameters: codigoMoeda &lt;str&gt;, dataInicialCotacao &lt;str&gt;, dataFinalCotacao &lt;str&gt;</span>
+<span class="go">EntitySet: _CotacaoMoedaPeriodoFechamento</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.PTAX.TipoCotacaoDolarAberturaOuIntermediario</span>
+<span class="go">Properties: cotacaoCompra &lt;float&gt;, cotacaoVenda &lt;float&gt;, dataHoraCotacao &lt;str&gt;, tipoBoletim &lt;str&gt;</span>
+
+<span class="go">Function: CotacaoMoedaAberturaOuIntermediario</span>
+<span class="go">Parameters: codigoMoeda &lt;str&gt;, dataCotacao &lt;str&gt;</span>
+<span class="go">EntitySet: _CotacaoMoedaAberturaOuIntermediario</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.PTAX.TipoCotacaoDolarAberturaOuIntermediario</span>
+<span class="go">Properties: cotacaoCompra &lt;float&gt;, cotacaoVenda &lt;float&gt;, dataHoraCotacao &lt;str&gt;, tipoBoletim &lt;str&gt;</span>
+
+<span class="go">Function: CotacaoMoedaDia</span>
+<span class="go">Parameters: moeda &lt;str&gt;, dataCotacao &lt;str&gt;</span>
+<span class="go">EntitySet: _CotacaoMoedaDia</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.PTAX.TipoCotacaoMoeda</span>
+<span class="go">Properties: paridadeCompra &lt;float&gt;, paridadeVenda &lt;float&gt;, cotacaoCompra &lt;float&gt;, cotacaoVenda &lt;float&gt;, dataHoraCotacao &lt;str&gt;, tipoBoletim &lt;str&gt;</span>
+
+<span class="go">Function: CotacaoMoedaPeriodo</span>
+<span class="go">Parameters: moeda &lt;str&gt;, dataInicial &lt;str&gt;, dataFinalCotacao &lt;str&gt;</span>
+<span class="go">EntitySet: _CotacaoMoedaPeriodo</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.PTAX.TipoCotacaoMoeda</span>
+<span class="go">Properties: paridadeCompra &lt;float&gt;, paridadeVenda &lt;float&gt;, cotacaoCompra &lt;float&gt;, cotacaoVenda &lt;float&gt;, dataHoraCotacao &lt;str&gt;, tipoBoletim &lt;str&gt;</span>
+
+<span class="go">Function: CotacaoDolarDia</span>
+<span class="go">Parameters: dataCotacao &lt;str&gt;</span>
+<span class="go">EntitySet: _CotacaoDolarDia</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.PTAX.TipoCotacaoDolar</span>
+<span class="go">Properties: cotacaoCompra &lt;float&gt;, cotacaoVenda &lt;float&gt;, dataHoraCotacao &lt;str&gt;</span>
+
+<span class="go">Function: CotacaoDolarPeriodo</span>
+<span class="go">Parameters: dataInicial &lt;str&gt;, dataFinalCotacao &lt;str&gt;</span>
+<span class="go">EntitySet: _CotacaoDolarPeriodo</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.PTAX.TipoCotacaoDolar</span>
+<span class="go">Properties: cotacaoCompra &lt;float&gt;, cotacaoVenda &lt;float&gt;, dataHoraCotacao &lt;str&gt;</span>
 </pre></div>
 </div>
 <p>Esta API tem 1 <code class="docutils literal notranslate"><span class="pre">EntitySet</span></code> e 6 <code class="docutils literal notranslate"><span class="pre">FunctionImports</span></code>.
@@ -807,7 +855,7 @@ Para isso incluímos o método <code class="docutils literal notranslate"><span 
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="gp">   ....: </span>   <span class="o">.</span><span class="n">text</span><span class="p">())</span>
 <span class="gp">   ....: </span>
-<span class="gh">Out[51]: </span><span class="go">&#39;&lt;?xml version=\&#39;1.0\&#39; encoding=\&#39;UTF-8\&#39;?&gt;&lt;a:feed xmlns:a=&quot;http://www.w3.org/2005/Atom&quot; xmlns:m=&quot;http://docs.oasis-open.org/odata/ns/metadata&quot; xmlns:d=&quot;http://docs.oasis-open.org/odata/ns/data&quot; m:context=&quot;https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTop5Anuais(Indicador,Data,DataReferencia,tipoCalculo,Media)&quot;&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-06-14T21:00:37Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-06-05&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2026&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.0400&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-06-14T21:00:37Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-06-05&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2027&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.0090&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-06-14T21:00:37Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-06-05&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2028&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.0750&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-06-14T21:00:37Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-06-05&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2029&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.1753&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-06-14T21:00:37Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-06-05&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2030&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.2878&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;/a:feed&gt;&#39;</span>
+<span class="gh">Out[51]: </span><span class="go">&#39;&lt;?xml version=\&#39;1.0\&#39; encoding=\&#39;UTF-8\&#39;?&gt;&lt;a:feed xmlns:a=&quot;http://www.w3.org/2005/Atom&quot; xmlns:m=&quot;http://docs.oasis-open.org/odata/ns/metadata&quot; xmlns:d=&quot;http://docs.oasis-open.org/odata/ns/data&quot; m:context=&quot;https://was-p.bcnet.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata$metadata#ExpectativasMercadoTop5Anuais(Indicador,Data,DataReferencia,tipoCalculo,Media)&quot;&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-06-14T21:38:24Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-06-05&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2026&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.0400&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-06-14T21:38:24Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-06-05&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2027&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.0090&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-06-14T21:38:24Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-06-05&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2028&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.0750&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-06-14T21:38:24Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-06-05&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2029&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.1753&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;a:entry&gt;&lt;a:title/&gt;&lt;a:summary/&gt;&lt;a:updated&gt;2026-06-14T21:38:24Z&lt;/a:updated&gt;&lt;a:author&gt;&lt;a:name/&gt;&lt;/a:author&gt;&lt;a:category scheme=&quot;http://docs.oasis-open.org/odata/ns/scheme&quot; term=&quot;#br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual&quot;/&gt;&lt;a:content type=&quot;application/xml&quot;&gt;&lt;m:properties&gt;&lt;d:Indicador&gt;Câmbio&lt;/d:Indicador&gt;&lt;d:Data&gt;2026-06-05&lt;/d:Data&gt;&lt;d:DataReferencia&gt;2030&lt;/d:DataReferencia&gt;&lt;d:tipoCalculo&gt;M&lt;/d:tipoCalculo&gt;&lt;d:Media m:type=&quot;Decimal&quot;&gt;5.2878&lt;/d:Media&gt;&lt;/m:properties&gt;&lt;/a:content&gt;&lt;/a:entry&gt;&lt;/a:feed&gt;&#39;</span>
 </pre></div>
 </div>
 </section>
@@ -857,16 +905,53 @@ A classe <a class="reference internal" href="api.html#bcb.odata.api.ODataAPI" ti
 
 <span class="gp">In [55]: </span><span class="n">service</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 <span class="go">EntitySets:</span>
-<span class="go">  DatasOperacoesSelic</span>
-<span class="go">  OperacoesDisponiveis</span>
-<span class="go">  DataMesAnoUltimoMovimentoSelic</span>
-<span class="go">  OperacoesRegistradas</span>
+
+<span class="go">EntitySet (Endpoint): DatasOperacoesSelic</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.selic_operacoes.DataMov</span>
+<span class="go">Properties: DataMovimento&lt;str&gt;</span>
+
+<span class="go">EntitySet (Endpoint): OperacoesDisponiveis</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.selic_operacoes.OperacoesDisponiveis</span>
+<span class="go">Properties: Codigo&lt;str&gt;, Categoria&lt;str&gt;, Descricao&lt;str&gt;</span>
+
+<span class="go">EntitySet (Endpoint): DataMesAnoUltimoMovimentoSelic</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.selic_operacoes.DataUltimoMovimentoSelic</span>
+<span class="go">Properties: DataUltimoMovimento&lt;str&gt;, MesUltimoMovimento&lt;str&gt;, AnoUltimoMovimento&lt;str&gt;</span>
+
+<span class="go">EntitySet (Endpoint): OperacoesRegistradas</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.selic_operacoes.OperacoesRegistradas</span>
+<span class="go">Properties: Codigo&lt;str&gt;, Categoria&lt;str&gt;</span>
 <span class="go">FunctionImports:</span>
-<span class="go">  OperacoesEmUmAno</span>
-<span class="go">  EvolucaoTipoOperacaoMensal</span>
-<span class="go">  OperacoesEmUmaData</span>
-<span class="go">  EvolucaoTipoOperacaoDiaria</span>
-<span class="go">  OperacoesEmUmMes</span>
+
+<span class="go">Function: OperacoesEmUmAno</span>
+<span class="go">Parameters: Ano &lt;str&gt;</span>
+<span class="go">EntitySet: _OperacoesEmUmAno</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.selic_operacoes.OperacoesEmUmAno</span>
+<span class="go">Properties: Data &lt;datetime&gt;, Codigo &lt;str&gt;, Categoria &lt;str&gt;, Quantidade &lt;int&gt;, Valor &lt;float&gt;</span>
+
+<span class="go">Function: EvolucaoTipoOperacaoMensal</span>
+<span class="go">Parameters: Codigo &lt;str&gt;</span>
+<span class="go">EntitySet: _EvolucaoTipoOperacaoMensal</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.selic_operacoes.EvolucaoTipoOperacaoMensal</span>
+<span class="go">Properties: Mes &lt;str&gt;, Codigo &lt;str&gt;, QuantidadeAcumulada &lt;int&gt;, ValorAcumulado &lt;float&gt;, QuantidadeMediaDiaria &lt;int&gt;, ValorMedioDiario &lt;float&gt;</span>
+
+<span class="go">Function: OperacoesEmUmaData</span>
+<span class="go">Parameters: Data &lt;str&gt;</span>
+<span class="go">EntitySet: _OperacoesEmUmaData</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.selic_operacoes.OperacoesEmUmaData</span>
+<span class="go">Properties: Data &lt;datetime&gt;, Codigo &lt;str&gt;, Categoria &lt;str&gt;, Quantidade &lt;int&gt;, Valor &lt;float&gt;</span>
+
+<span class="go">Function: EvolucaoTipoOperacaoDiaria</span>
+<span class="go">Parameters: Codigo &lt;str&gt;, Ano &lt;str&gt;</span>
+<span class="go">EntitySet: _EvolucaoTipoOperacaoDiaria</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.selic_operacoes.EvolucaoTipoOperacaoDiaria</span>
+<span class="go">Properties: Data &lt;datetime&gt;, Codigo &lt;str&gt;, Quantidade &lt;int&gt;, Valor &lt;float&gt;</span>
+
+<span class="go">Function: OperacoesEmUmMes</span>
+<span class="go">Parameters: Mes &lt;str&gt;</span>
+<span class="go">EntitySet: _OperacoesEmUmMes</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.selic_operacoes.OperacoesEmUmMes</span>
+<span class="go">Properties: Mes &lt;str&gt;, Codigo &lt;str&gt;, Categoria &lt;str&gt;, QuantidadeAcumulada &lt;int&gt;, ValorAcumulado &lt;float&gt;, QuantidadeMediaDiaria &lt;int&gt;, ValorMedioDiario &lt;float&gt;</span>
 </pre></div>
 </div>
 </section>

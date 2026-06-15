@@ -256,21 +256,37 @@
 <p>A API de taxas de juros de operações de crédito pode ser acessada através da
 classe <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.TaxaJuros</span></code>.</p>
 <p>Os dados são obtidos a partir da <a class="reference external" href="https://olinda.bcb.gov.br/olinda/servico/taxaJuros/versao/v2/documentacao">API de Taxas de Juros</a>.</p>
-<p>Esta API usa o serviço <code class="docutils literal notranslate"><span class="pre">taxaJuros</span></code> versão <code class="docutils literal notranslate"><span class="pre">v2</span></code> e tem os <code class="docutils literal notranslate"><span class="pre">EntitySets</span></code>:</p>
+<p>Esta API usa o serviço <code class="docutils literal notranslate"><span class="pre">taxaJuros</span></code> versão <code class="docutils literal notranslate"><span class="pre">v2</span></code>. O método <code class="docutils literal notranslate"><span class="pre">describe</span></code>
+mostra os <code class="docutils literal notranslate"><span class="pre">EntitySets</span></code> e suas propriedades:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb</span><span class="w"> </span><span class="kn">import</span> <span class="n">TaxaJuros</span>
 
 <span class="gp">In [2]: </span><span class="n">em</span> <span class="o">=</span> <span class="n">TaxaJuros</span><span class="p">()</span>
 
 <span class="gp">In [3]: </span><span class="n">em</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 <span class="go">EntitySets:</span>
-<span class="go">  TaxasJurosMensalPorMes</span>
-<span class="go">  ParametrosConsulta</span>
-<span class="go">  TaxasJurosDiariaPorInicioPeriodo</span>
-<span class="go">  ConsultaUnificada</span>
-<span class="go">  ConsultaDatas</span>
+
+<span class="go">EntitySet (Endpoint): TaxasJurosMensalPorMes</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.taxaJuros.TaxaJurosMensal</span>
+<span class="go">Properties: Mes&lt;str&gt;, Modalidade&lt;str&gt;, Posicao&lt;int&gt;, InstituicaoFinanceira&lt;str&gt;, TaxaJurosAoMes&lt;float&gt;, TaxaJurosAoAno&lt;float&gt;, cnpj8&lt;str&gt;, anoMes&lt;str&gt;</span>
+
+<span class="go">EntitySet (Endpoint): ParametrosConsulta</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.taxaJuros.ParametrosConsulta</span>
+<span class="go">Properties: codigoSegmento&lt;str&gt;, segmento&lt;str&gt;, codigoModalidade&lt;str&gt;, modalidade&lt;str&gt;, tipoModalidade&lt;str&gt;</span>
+
+<span class="go">EntitySet (Endpoint): TaxasJurosDiariaPorInicioPeriodo</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.taxaJuros.TaxaJurosDiaria</span>
+<span class="go">Properties: InicioPeriodo&lt;str&gt;, FimPeriodo&lt;str&gt;, codigoSegmento&lt;str&gt;, Segmento&lt;str&gt;, codigoModalidade&lt;str&gt;, Modalidade&lt;str&gt;, Posicao&lt;int&gt;, InstituicaoFinanceira&lt;str&gt;, TaxaJurosAoMes&lt;float&gt;, TaxaJurosAoAno&lt;float&gt;, cnpj8&lt;str&gt;</span>
+
+<span class="go">EntitySet (Endpoint): ConsultaUnificada</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.taxaJuros.TaxaJurosDiaria</span>
+<span class="go">Properties: InicioPeriodo&lt;str&gt;, FimPeriodo&lt;str&gt;, codigoSegmento&lt;str&gt;, Segmento&lt;str&gt;, codigoModalidade&lt;str&gt;, Modalidade&lt;str&gt;, Posicao&lt;int&gt;, InstituicaoFinanceira&lt;str&gt;, TaxaJurosAoMes&lt;float&gt;, TaxaJurosAoAno&lt;float&gt;, cnpj8&lt;str&gt;</span>
+
+<span class="go">EntitySet (Endpoint): ConsultaDatas</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.taxaJuros.Datas</span>
+<span class="go">Properties: inicioPeriodo&lt;str&gt;, fimPeriodo&lt;str&gt;, tipoModalidade&lt;str&gt;</span>
 </pre></div>
 </div>
-<p>As características do <code class="docutils literal notranslate"><span class="pre">EntitySets</span></code> podem ser visualizadas por:</p>
+<p>Para restringir a saída a um <code class="docutils literal notranslate"><span class="pre">EntitySet</span></code> específico, informe o seu nome:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [4]: </span><span class="n">em</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s2">&quot;TaxasJurosDiariaPorInicioPeriodo&quot;</span><span class="p">)</span>
 
 <span class="go">EntitySet (Endpoint): TaxasJurosDiariaPorInicioPeriodo</span>

@@ -261,21 +261,55 @@
 <section id="api-odata-de-moedas">
 <h2>API OData de Moedas<a class="headerlink" href="#api-odata-de-moedas" title="Link permanente para este cabeçalho">¶</a></h2>
 <p>A classe <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.PTAX</span></code> retorna cotações de moedas obtidas a partir da <a class="reference external" href="https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/documentacao">API de Moedas</a> do BCB.
-Esta implementação é mais estável que a do <a class="reference internal" href="#conversor-de-moedas"><span class="std std-ref">Conversor de Moedas</span></a>.</p>
+Esta implementação é mais estável que a do <a class="reference internal" href="#conversor-de-moedas"><span class="std std-ref">Conversor de Moedas</span></a>.
+O método <code class="docutils literal notranslate"><span class="pre">describe</span></code> mostra os <em>endpoints</em>, parâmetros e propriedades disponíveis.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb</span><span class="w"> </span><span class="kn">import</span> <span class="n">PTAX</span>
 
 <span class="gp">In [2]: </span><span class="n">ptax</span> <span class="o">=</span> <span class="n">PTAX</span><span class="p">()</span>
 
 <span class="gp">In [3]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 <span class="go">EntitySets:</span>
-<span class="go">  Moedas</span>
+
+<span class="go">EntitySet (Endpoint): Moedas</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.PTAX.TipoMoeda</span>
+<span class="go">Properties: simbolo&lt;str&gt;, nomeFormatado&lt;str&gt;, tipoMoeda&lt;str&gt;</span>
 <span class="go">FunctionImports:</span>
-<span class="go">  CotacaoMoedaPeriodoFechamento</span>
-<span class="go">  CotacaoMoedaAberturaOuIntermediario</span>
-<span class="go">  CotacaoMoedaDia</span>
-<span class="go">  CotacaoMoedaPeriodo</span>
-<span class="go">  CotacaoDolarDia</span>
-<span class="go">  CotacaoDolarPeriodo</span>
+
+<span class="go">Function: CotacaoMoedaPeriodoFechamento</span>
+<span class="go">Parameters: codigoMoeda &lt;str&gt;, dataInicialCotacao &lt;str&gt;, dataFinalCotacao &lt;str&gt;</span>
+<span class="go">EntitySet: _CotacaoMoedaPeriodoFechamento</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.PTAX.TipoCotacaoDolarAberturaOuIntermediario</span>
+<span class="go">Properties: cotacaoCompra &lt;float&gt;, cotacaoVenda &lt;float&gt;, dataHoraCotacao &lt;str&gt;, tipoBoletim &lt;str&gt;</span>
+
+<span class="go">Function: CotacaoMoedaAberturaOuIntermediario</span>
+<span class="go">Parameters: codigoMoeda &lt;str&gt;, dataCotacao &lt;str&gt;</span>
+<span class="go">EntitySet: _CotacaoMoedaAberturaOuIntermediario</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.PTAX.TipoCotacaoDolarAberturaOuIntermediario</span>
+<span class="go">Properties: cotacaoCompra &lt;float&gt;, cotacaoVenda &lt;float&gt;, dataHoraCotacao &lt;str&gt;, tipoBoletim &lt;str&gt;</span>
+
+<span class="go">Function: CotacaoMoedaDia</span>
+<span class="go">Parameters: moeda &lt;str&gt;, dataCotacao &lt;str&gt;</span>
+<span class="go">EntitySet: _CotacaoMoedaDia</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.PTAX.TipoCotacaoMoeda</span>
+<span class="go">Properties: paridadeCompra &lt;float&gt;, paridadeVenda &lt;float&gt;, cotacaoCompra &lt;float&gt;, cotacaoVenda &lt;float&gt;, dataHoraCotacao &lt;str&gt;, tipoBoletim &lt;str&gt;</span>
+
+<span class="go">Function: CotacaoMoedaPeriodo</span>
+<span class="go">Parameters: moeda &lt;str&gt;, dataInicial &lt;str&gt;, dataFinalCotacao &lt;str&gt;</span>
+<span class="go">EntitySet: _CotacaoMoedaPeriodo</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.PTAX.TipoCotacaoMoeda</span>
+<span class="go">Properties: paridadeCompra &lt;float&gt;, paridadeVenda &lt;float&gt;, cotacaoCompra &lt;float&gt;, cotacaoVenda &lt;float&gt;, dataHoraCotacao &lt;str&gt;, tipoBoletim &lt;str&gt;</span>
+
+<span class="go">Function: CotacaoDolarDia</span>
+<span class="go">Parameters: dataCotacao &lt;str&gt;</span>
+<span class="go">EntitySet: _CotacaoDolarDia</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.PTAX.TipoCotacaoDolar</span>
+<span class="go">Properties: cotacaoCompra &lt;float&gt;, cotacaoVenda &lt;float&gt;, dataHoraCotacao &lt;str&gt;</span>
+
+<span class="go">Function: CotacaoDolarPeriodo</span>
+<span class="go">Parameters: dataInicial &lt;str&gt;, dataFinalCotacao &lt;str&gt;</span>
+<span class="go">EntitySet: _CotacaoDolarPeriodo</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.PTAX.TipoCotacaoDolar</span>
+<span class="go">Properties: cotacaoCompra &lt;float&gt;, cotacaoVenda &lt;float&gt;, dataHoraCotacao &lt;str&gt;</span>
 </pre></div>
 </div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [4]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s1">&#39;Moedas&#39;</span><span class="p">)</span>

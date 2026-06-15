@@ -268,32 +268,72 @@ autorizaram a divulgação. As expectativas divulgadas possuem
 defasagem de 1 ano.</p>
 <p>Ao instanciar a classe <code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.Expectativas</span></code> diversas informações
 são obtidas e a melhor maneira de interagir com a API é
-através do método <code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.Expectativas.describe()</span></code>.</p>
+através do método <code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.Expectativas.describe()</span></code>, que mostra os
+<em>endpoints</em> e suas propriedades. Para obter apenas a listagem curta dos nomes,
+use <code class="docutils literal notranslate"><span class="pre">describe(full=False)</span></code>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb</span><span class="w"> </span><span class="kn">import</span> <span class="n">Expectativas</span>
 
 <span class="gp">In [2]: </span><span class="n">em</span> <span class="o">=</span> <span class="n">Expectativas</span><span class="p">()</span>
 
 <span class="gp">In [3]: </span><span class="n">em</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
 <span class="go">EntitySets:</span>
-<span class="go">  ExpectativasMercadoTop5Anuais</span>
-<span class="go">  ExpectativaMercadoMensais</span>
-<span class="go">  ExpectativasMercadoTop5Inflacao12Meses</span>
-<span class="go">  ExpectativasMercadoInflacao24Meses</span>
-<span class="go">  ExpectativasMercadoSelic</span>
-<span class="go">  DatasReferencia</span>
-<span class="go">  ExpectativasMercadoTop5Selic</span>
-<span class="go">  ExpectativasMercadoTop5Mensais</span>
-<span class="go">  ExpectativasMercadoTrimestrais</span>
-<span class="go">  ExpectativasMercadoTop5Inflacao24Meses</span>
-<span class="go">  ExpectativaMercadoTop5Trimestral</span>
-<span class="go">  ExpectativasMercadoInflacao12Meses</span>
-<span class="go">  ExpectativasMercadoAnuais</span>
+
+<span class="go">EntitySet (Endpoint): ExpectativasMercadoTop5Anuais</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Anual</span>
+<span class="go">Properties: Indicador&lt;str&gt;, Data&lt;str&gt;, DataReferencia&lt;str&gt;, tipoCalculo&lt;str&gt;, Media&lt;float&gt;, Mediana&lt;float&gt;, DesvioPadrao&lt;float&gt;, Minimo&lt;float&gt;, Maximo&lt;float&gt;</span>
+
+<span class="go">EntitySet (Endpoint): ExpectativaMercadoMensais</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.Expectativas.ExpectativaMercadoMensal</span>
+<span class="go">Properties: Indicador&lt;str&gt;, Data&lt;str&gt;, DataReferencia&lt;str&gt;, Media&lt;float&gt;, Mediana&lt;float&gt;, DesvioPadrao&lt;float&gt;, Minimo&lt;float&gt;, Maximo&lt;float&gt;, numeroRespondentes&lt;int&gt;, baseCalculo&lt;int&gt;</span>
+
+<span class="go">EntitySet (Endpoint): ExpectativasMercadoTop5Inflacao12Meses</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.Expectativas.ExpectativaMercadoInflacaoH12</span>
+<span class="go">Properties: Indicador&lt;str&gt;, Data&lt;str&gt;, Suavizada&lt;str&gt;, Media&lt;float&gt;, Mediana&lt;float&gt;, DesvioPadrao&lt;float&gt;, Minimo&lt;float&gt;, Maximo&lt;float&gt;, numeroRespondentes&lt;int&gt;, tipoCalculo&lt;str&gt;</span>
+
+<span class="go">EntitySet (Endpoint): ExpectativasMercadoInflacao24Meses</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.Expectativas.ExpectativaMercadoInflacao12Meses</span>
+<span class="go">Properties: Indicador&lt;str&gt;, Data&lt;str&gt;, Suavizada&lt;str&gt;, Media&lt;float&gt;, Mediana&lt;float&gt;, DesvioPadrao&lt;float&gt;, Minimo&lt;float&gt;, Maximo&lt;float&gt;, numeroRespondentes&lt;int&gt;, baseCalculo&lt;int&gt;</span>
+
+<span class="go">EntitySet (Endpoint): ExpectativasMercadoSelic</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.Expectativas.ExpectativaMercadoSelic</span>
+<span class="go">Properties: Indicador&lt;str&gt;, Data&lt;str&gt;, Reuniao&lt;str&gt;, Media&lt;float&gt;, Mediana&lt;float&gt;, DesvioPadrao&lt;float&gt;, Minimo&lt;float&gt;, Maximo&lt;float&gt;, numeroRespondentes&lt;int&gt;, baseCalculo&lt;int&gt;</span>
+
+<span class="go">EntitySet (Endpoint): DatasReferencia</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.Expectativas.DatasReferencia</span>
+<span class="go">Properties: Indicador&lt;str&gt;, periodo&lt;str&gt;, DataReferencia1&lt;str&gt;, DataReferencia2&lt;str&gt;</span>
+
+<span class="go">EntitySet (Endpoint): ExpectativasMercadoTop5Selic</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoSelicTop5</span>
+<span class="go">Properties: indicador&lt;str&gt;, Data&lt;str&gt;, reuniao&lt;str&gt;, tipoCalculo&lt;str&gt;, media&lt;float&gt;, mediana&lt;float&gt;, desvioPadrao&lt;float&gt;, coeficienteVariacao&lt;float&gt;, minimo&lt;float&gt;, maximo&lt;float&gt;</span>
+
+<span class="go">EntitySet (Endpoint): ExpectativasMercadoTop5Mensais</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.Expectativas.ExpectativasMercadoTop5Mensal</span>
+<span class="go">Properties: Indicador&lt;str&gt;, Data&lt;str&gt;, DataReferencia&lt;str&gt;, tipoCalculo&lt;str&gt;, Media&lt;float&gt;, Mediana&lt;float&gt;, DesvioPadrao&lt;float&gt;, Minimo&lt;float&gt;, Maximo&lt;float&gt;</span>
+
+<span class="go">EntitySet (Endpoint): ExpectativasMercadoTrimestrais</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.Expectativas.ExpectativaMercadoTrimestral</span>
+<span class="go">Properties: Indicador&lt;str&gt;, Data&lt;str&gt;, DataReferencia&lt;str&gt;, Media&lt;float&gt;, Mediana&lt;float&gt;, DesvioPadrao&lt;float&gt;, Minimo&lt;float&gt;, Maximo&lt;float&gt;, numeroRespondentes&lt;int&gt;, baseCalculo&lt;int&gt;</span>
+
+<span class="go">EntitySet (Endpoint): ExpectativasMercadoTop5Inflacao24Meses</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.Expectativas.ExpectativaMercadoInflacaoH24</span>
+<span class="go">Properties: Indicador&lt;str&gt;, Data&lt;str&gt;, Suavizada&lt;str&gt;, Media&lt;float&gt;, Mediana&lt;float&gt;, DesvioPadrao&lt;float&gt;, Minimo&lt;float&gt;, Maximo&lt;float&gt;, numeroRespondentes&lt;int&gt;, tipoCalculo&lt;str&gt;</span>
+
+<span class="go">EntitySet (Endpoint): ExpectativaMercadoTop5Trimestral</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.Expectativas.ExpectativaMercadoTop5Trimestral</span>
+<span class="go">Properties: Indicador&lt;str&gt;, Data&lt;str&gt;, DataReferencia&lt;str&gt;, tipoCalculo&lt;str&gt;, Media&lt;float&gt;, Mediana&lt;float&gt;, DesvioPadrao&lt;float&gt;, Minimo&lt;float&gt;, Maximo&lt;float&gt;, numeroRespondentes&lt;int&gt;</span>
+
+<span class="go">EntitySet (Endpoint): ExpectativasMercadoInflacao12Meses</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.Expectativas.ExpectativaMercadoInflacao12Meses</span>
+<span class="go">Properties: Indicador&lt;str&gt;, Data&lt;str&gt;, Suavizada&lt;str&gt;, Media&lt;float&gt;, Mediana&lt;float&gt;, DesvioPadrao&lt;float&gt;, Minimo&lt;float&gt;, Maximo&lt;float&gt;, numeroRespondentes&lt;int&gt;, baseCalculo&lt;int&gt;</span>
+
+<span class="go">EntitySet (Endpoint): ExpectativasMercadoAnuais</span>
+<span class="go">EntityType: br.gov.bcb.olinda.servico.Expectativas.ExpectativaMercadoAnual</span>
+<span class="go">Properties: Indicador&lt;str&gt;, IndicadorDetalhe&lt;str&gt;, Data&lt;str&gt;, DataReferencia&lt;str&gt;, Media&lt;float&gt;, Mediana&lt;float&gt;, DesvioPadrao&lt;float&gt;, Minimo&lt;float&gt;, Maximo&lt;float&gt;, numeroRespondentes&lt;int&gt;, baseCalculo&lt;int&gt;</span>
 </pre></div>
 </div>
-<p>O método <code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.Expectativas.describe()</span></code> também recebe o nomes dos
-<em>endpoints</em> e apresenta uma descrição do <em>endpoint</em> trazendo o seu tipo
-<cite>EntityType</cite> e as propriedades retornadas <cite>Properties</cite> e os seus respectivos
-tipos.</p>
+<p>O método <code class="xref py py-meth docutils literal notranslate"><span class="pre">bcb.Expectativas.describe()</span></code> também recebe o nome de um
+<em>endpoint</em> para restringir a saída, apresentando o seu tipo <cite>EntityType</cite> e as
+propriedades retornadas <cite>Properties</cite> com os seus respectivos tipos.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [4]: </span><span class="n">em</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s1">&#39;ExpectativasMercadoTop5Anuais&#39;</span><span class="p">)</span>
 
 <span class="go">EntitySet (Endpoint): ExpectativasMercadoTop5Anuais</span>
