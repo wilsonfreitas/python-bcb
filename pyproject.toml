@@ -1,7 +1,7 @@
 [project]
 name = "python-bcb"
 version = "0.4.0"
-description = ""
+description = "Interface Python para APIs de dados abertos do Banco Central do Brasil."
 authors = [{ name = "wilsonfreitas", email = "wilson.freitas@gmail.com" }]
 readme = "README.md"
 requires-python = ">= 3.10"
