@@ -26,7 +26,9 @@ defasagem de 1 ano.
 
 Ao instanciar a classe :py:class:`bcb.Expectativas` diversas informações
 são obtidas e a melhor maneira de interagir com a API é
-através do método :py:meth:`bcb.Expectativas.describe`.
+através do método :py:meth:`bcb.Expectativas.describe`, que mostra os
+*endpoints* e suas propriedades. Para obter apenas a listagem curta dos nomes,
+use ``describe(full=False)``.
 
 
 .. ipython:: python
@@ -35,10 +37,9 @@ através do método :py:meth:`bcb.Expectativas.describe`.
     em = Expectativas()
     em.describe()
 
-O método :py:meth:`bcb.Expectativas.describe` também recebe o nomes dos
-*endpoints* e apresenta uma descrição do *endpoint* trazendo o seu tipo
-`EntityType` e as propriedades retornadas `Properties` e os seus respectivos
-tipos.
+O método :py:meth:`bcb.Expectativas.describe` também recebe o nome de um
+*endpoint* para restringir a saída, apresentando o seu tipo `EntityType` e as
+propriedades retornadas `Properties` com os seus respectivos tipos.
 
 .. ipython:: python
 

@@ -578,20 +578,36 @@ class ODataService:
     def entity_sets(self) -> dict[str, ODataEntitySet]:
         return self.metadata.entity_sets
 
-    def describe(self) -> None:
-        es_names = []
-        for es in self.entity_sets.keys():
-            k = f"{self.metadata.namespace}.{es}"
-            if k not in self.metadata._used_elements:
-                es_names.append(es)
-        if len(es_names):
+    def _standalone_entity_sets(self) -> list[ODataEntitySet]:
+        return [
+            entity_set
+            for name, entity_set in self.entity_sets.items()
+            if f"{self.metadata.namespace}.{name}" not in self.metadata._used_elements
+        ]
+
+    def describe(self, *, full: bool = False) -> None:
+        entity_sets = self._standalone_entity_sets()
+        function_imports = list(self.function_imports.values())
+
+        if full:
+            if entity_sets:
+                print("EntitySets:")
+                for entity_set in entity_sets:
+                    entity_set.describe()
+            if function_imports:
+                print("FunctionImports:")
+                for function_import in function_imports:
+                    function_import.describe()
+            return
+
+        if entity_sets:
             print("EntitySets:")
-            for es in es_names:
-                print(" ", es)
-        if len(self.function_imports):
+            for entity_set in entity_sets:
+                print(" ", entity_set.name)
+        if function_imports:
             print("FunctionImports:")
-            for es in self.function_imports.keys():
-                print(" ", es)
+            for function_import in function_imports:
+                print(" ", function_import.name)
 
     def query(
         self, entity_set: Union[ODataEntitySet, ODataFunctionImport]

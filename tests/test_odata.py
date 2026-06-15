@@ -5,7 +5,7 @@ import httpx
 import pandas as pd
 import pytest
 
-from bcb.odata.api import Expectativas
+from bcb.odata.api import Expectativas, ODataAPI
 from bcb.odata.framework import (
     ODataParameter,
     ODataProperty,
@@ -118,6 +118,56 @@ def test_invalid_endpoint_raises(httpx_mock):
     api = Expectativas()
     with pytest.raises(ODataError, match="Invalid name"):
         api.get_endpoint("DoesNotExist")
+
+
+def test_api_describe_shows_all_endpoint_details_by_default(httpx_mock, capsys):
+    add_service_mocks(httpx_mock)
+    api = Expectativas()
+
+    api.describe()
+
+    output = capsys.readouterr().out
+    assert "EntitySets:" in output
+    assert "EntitySet (Endpoint): ExpectativasMercadoAnuais" in output
+    assert "EntityType: IFBCB_DadosSeries_v2.Expectativa" in output
+    assert "Properties: Indicador<str>, Data<datetime>, Mediana<float>" in output
+
+
+def test_api_describe_can_show_summary_only(httpx_mock, capsys):
+    add_service_mocks(httpx_mock)
+    api = Expectativas()
+
+    api.describe(full=False)
+
+    output = capsys.readouterr().out
+    assert "EntitySets:" in output
+    assert "  ExpectativasMercadoAnuais" in output
+    assert "Properties:" not in output
+
+
+def test_api_describe_specific_endpoint_is_preserved(httpx_mock, capsys):
+    add_service_mocks(httpx_mock)
+    api = Expectativas()
+
+    api.describe("ExpectativasMercadoAnuais")
+
+    output = capsys.readouterr().out
+    assert "EntitySet (Endpoint): ExpectativasMercadoAnuais" in output
+    assert "Properties: Indicador<str>, Data<datetime>, Mediana<float>" in output
+
+
+def test_api_describe_shows_function_import_details_by_default(httpx_mock, capsys):
+    add_function_service_mocks(httpx_mock)
+    api = ODataAPI(FUNCTION_BASE_URL)
+
+    api.describe()
+
+    output = capsys.readouterr().out
+    assert "FunctionImports:" in output
+    assert "Function: CotacaoMoedaPeriodo" in output
+    assert "Parameters: moeda <str>, dataInicial <str>, limite <int>" in output
+    assert "EntitySet: CotacoesMoedaPeriodo" in output
+    assert "Properties: Moeda <str>, Data <datetime>, CotacaoCompra <float>" in output
 
 
 def test_service_root_status_error_raises_odata_error(httpx_mock):

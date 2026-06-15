@@ -17,6 +17,7 @@ __ documentacao_
 
 A classe :py:class:`bcb.PTAX` retorna cotações de moedas obtidas a partir da `API de Moedas`__ do BCB.
 Esta implementação é mais estável que a do :ref:`Conversor de Moedas`.
+O método ``describe`` mostra os *endpoints*, parâmetros e propriedades disponíveis.
 
 .. ipython:: python
 

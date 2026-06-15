@@ -52,7 +52,7 @@ Segue um exemplo de como acessar a API do PIX.
     pix = SPI()
 
 É necessário importar e criar um objeto da classe que implementa a API, neste caso a classe ``SPI``.
-Tendo o objeto, executar o método ``describe`` para visualizar o *endpoints* disponíveis na API.
+Tendo o objeto, executar o método ``describe`` para visualizar os *endpoints* disponíveis na API e suas propriedades. Para obter apenas a listagem curta dos nomes, use ``describe(full=False)``.
 
 
 .. ipython:: python
@@ -60,7 +60,7 @@ Tendo o objeto, executar o método ``describe`` para visualizar o *endpoints* di
     pix.describe()
 
 Como vemos, a API do PIX tem 4 *endpoints* (``EntitySets``).
-Para ver as informações retornadas por cada *endpoint* é só executar o método ``describe`` passando como argumento
+Para restringir a saída a um *endpoint*, execute o método ``describe`` passando como argumento
 o nome do *endpoint*.
 
 .. ipython:: python

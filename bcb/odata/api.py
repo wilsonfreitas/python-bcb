@@ -372,7 +372,7 @@ class BaseODataAPI:
         self._timeout = timeout
         self.service = ODataService(self.BASE_URL, timeout=timeout)
 
-    def describe(self, endpoint: Optional[str] = None) -> None:
+    def describe(self, endpoint: Optional[str] = None, *, full: bool = True) -> None:
         """
         Mostra a descrição de uma API ou de um *endpoint*
         específico.
@@ -381,7 +381,12 @@ class BaseODataAPI:
         ----------
 
         endpoint : None (padrão) ou str
-            nome do *endpoint*
+            Nome do *endpoint*. Quando informado, mostra apenas a descrição
+            desse *endpoint*.
+        full : bool, default True
+            Quando ``endpoint`` não é informado, mostra os detalhes de todos
+            os *endpoints*. Use ``False`` para imprimir apenas a listagem curta
+            com os nomes dos *endpoints*.
 
         Returns
         -------
@@ -392,7 +397,7 @@ class BaseODataAPI:
         if endpoint:
             self.service[endpoint].describe()
         else:
-            self.service.describe()
+            self.service.describe(full=full)
 
     def get_endpoint(self, endpoint: str) -> Endpoint:
         """
