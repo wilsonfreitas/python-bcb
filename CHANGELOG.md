@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.4.0] - 2026-06-15
+
+### Added
+- Added `tidy=True` to `sgs.get()`, `sgs.async_get()`, `currency.get()`, and `currency.async_get()` for long-form DataFrame output. SGS tidy output uses `Date`, `series`, and `value`; currency tidy output uses `Date`, `symbol`, `side`, and `value`. The default wide DataFrame output and `output="text"` behavior are unchanged.
+- Added per-call `timeout` support across SGS, currency, and OData APIs, including sync and async paths, so slow calls can override the shared HTTP client timeout without changing global defaults.
+- Added explicit OR composition for OData filters with the `|` operator, including nested combinations with `&`.
+- Added retry handling for transient SGS request failures.
+
+### Changed
+- Improved OData `describe()` output: detailed endpoint information is now shown by default, while `describe(full=False)` keeps the compact endpoint summary.
+- PTAX date parameters now accept ISO date strings, `datetime.date`, `datetime.datetime`, and `pandas.Timestamp`; generalized inputs are converted to the PTAX service format `M/D/YYYY`.
+- Strengthened public API validation, OData literal serialization, HTTP error mapping, currency response parsing, and async currency missing-symbol behavior.
+
+### Fixed
+- Fixed documentation drift around async client shutdown, timeout usage, raw text output, PTAX date parameters, and tidy DataFrame schemas.
+- Fixed brittle currency integration expectations for missing symbols.
+
 ## [0.3.6] - 2026-03-26
 
 ### Added
