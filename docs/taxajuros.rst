@@ -11,7 +11,8 @@ __ documentacao_
 Os dados são obtidos a partir da `API de Taxas de Juros`__.
 
 
-Esta API usa o serviço ``taxaJuros`` versão ``v2`` e tem os ``EntitySets``:
+Esta API usa o serviço ``taxaJuros`` versão ``v2``. O método ``describe``
+mostra os ``EntitySets`` e suas propriedades:
 
 .. ipython:: python
 
@@ -19,7 +20,7 @@ Esta API usa o serviço ``taxaJuros`` versão ``v2`` e tem os ``EntitySets``:
     em = TaxaJuros()
     em.describe()
 
-As características do ``EntitySets`` podem ser visualizadas por:
+Para restringir a saída a um ``EntitySet`` específico, informe o seu nome:
 
 .. ipython:: python
 
