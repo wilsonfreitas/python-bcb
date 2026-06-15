@@ -1,0 +1,788 @@
+<!doctype html>
+<html class="no-js" lang="pt-br" data-content_root="">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+<link rel="index" title="Índice" href="genindex.html" /><link rel="search" title="Buscar" href="search.html" /><link rel="next" title="OData" href="odata.html" /><link rel="prev" title="Taxas de Juros" href="taxajuros.html" />
+
+    <!-- Generated with Sphinx 6.2.1 and Furo 2024.08.06 -->
+        <title>IFData - documentação python-bcb</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=04c057b233f3c8d71940eee6080f658a04e2027d" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=cf727022eb7470bc603c08d2e55c3247faec75c9" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">documentação python-bcb </div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">documentação python-bcb </span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Buscar" name="q" aria-label="Buscar">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="sgs.html">SGS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sgs.html#dados-de-inadimplencia-de-operacoes-de-credito">Dados de Inadimplência de Operações de Crédito</a></li>
+<li class="toctree-l1"><a class="reference internal" href="currency.html">Moedas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="expectativas.html">Expectativas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="taxajuros.html">Taxas de Juros</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">IFData</a></li>
+<li class="toctree-l1"><a class="reference internal" href="odata.html">OData</a></li>
+<li class="toctree-l1"><a class="reference internal" href="async.html">APIs Assíncronas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+</ul>
+
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/wilsonfreitas/python-bcb/blob/main/docs/ifdata.rst?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/wilsonfreitas/python-bcb/edit/main/docs/ifdata.rst" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="ifdata">
+<h1>IFData<a class="headerlink" href="#ifdata" title="Link permanente para este cabeçalho">¶</a></h1>
+<p>A API IFData do Banco Central do Brasil pode ser acessada pela classe
+<code class="xref py py-class docutils literal notranslate"><span class="pre">bcb.IFDATA</span></code>.</p>
+<p>Os dados são obtidos a partir do conjunto <a class="reference external" href="https://dadosabertos.bcb.gov.br/dataset/ifdata---dados-selecionados-de-instituies-financeiras">IFData - Dados selecionados
+de instituições financeiras</a> do portal de dados abertos do BCB. A
+documentação oficial informa que o IFData divulga, em formato aberto,
+relatórios trimestrais de instituições autorizadas a funcionar e em
+operação normal. As bases de origem citadas pelo BCB são o SCR
+(<code class="docutils literal notranslate"><span class="pre">Sistema</span> <span class="pre">de</span> <span class="pre">Informações</span> <span class="pre">de</span> <span class="pre">Créditos</span></code>) e o Cosif
+(<code class="docutils literal notranslate"><span class="pre">Plano</span> <span class="pre">Contábil</span> <span class="pre">das</span> <span class="pre">Instituições</span> <span class="pre">do</span> <span class="pre">Sistema</span> <span class="pre">Financeiro</span> <span class="pre">Nacional</span></code>).</p>
+<p>Segundo a metodologia do IFData, os relatórios trimestrais são
+disponibilizados 60 dias após as datas-bases de março, junho e setembro,
+e 90 dias após a data-base de dezembro. O portal informa início em
+março de 2000 e periodicidade trimestral.</p>
+<section id="primeiro-acesso">
+<h2>Primeiro acesso<a class="headerlink" href="#primeiro-acesso" title="Link permanente para este cabeçalho">¶</a></h2>
+<p>O serviço IFData é uma API OData com três <code class="docutils literal notranslate"><span class="pre">FunctionImports</span></code>. O método
+<code class="docutils literal notranslate"><span class="pre">describe</span></code> mostra os nomes dos endpoints, parâmetros e colunas.</p>
+<p>Os blocos <code class="docutils literal notranslate"><span class="pre">ipython</span></code> desta página são executados no build da
+documentação. Blocos <code class="docutils literal notranslate"><span class="pre">code</span></code> são exemplos para copiar e
+adaptar, mas não são executados durante o build.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb</span><span class="w"> </span><span class="kn">import</span> <span class="n">IFDATA</span>
+
+<span class="gp">In [2]: </span><span class="n">ifdata</span> <span class="o">=</span> <span class="n">IFDATA</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+
+<span class="gp">In [3]: </span><span class="n">ifdata</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="n">full</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="go">FunctionImports:</span>
+<span class="go">  ListaDeRelatorio</span>
+<span class="go">  IfDataCadastro</span>
+<span class="go">  IfDataValores</span>
+</pre></div>
+</div>
+<p>Os endpoints disponíveis são:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">ListaDeRelatorio</span></code></dt><dd><p>Lista os relatórios existentes no serviço. Retorna <code class="docutils literal notranslate"><span class="pre">NomeRelatorio</span></code>
+e <code class="docutils literal notranslate"><span class="pre">NumeroRelatorio</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">IfDataCadastro</span></code></dt><dd><p>Retorna o cadastro de instituições e conglomerados para uma data-base.
+Recebe o parâmetro <code class="docutils literal notranslate"><span class="pre">AnoMes</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">IfDataValores</span></code></dt><dd><p>Retorna os valores de um relatório em formato longo. Recebe os
+parâmetros <code class="docutils literal notranslate"><span class="pre">AnoMes</span></code>, <code class="docutils literal notranslate"><span class="pre">TipoInstituicao</span></code> e <code class="docutils literal notranslate"><span class="pre">Relatorio</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="listando-relatorios">
+<h2>Listando relatórios<a class="headerlink" href="#listando-relatorios" title="Link permanente para este cabeçalho">¶</a></h2>
+<p>O primeiro passo prático é obter o catálogo de relatórios e usar a coluna
+<code class="docutils literal notranslate"><span class="pre">NumeroRelatorio</span></code> como parâmetro <code class="docutils literal notranslate"><span class="pre">Relatorio</span></code> em <code class="docutils literal notranslate"><span class="pre">IfDataValores</span></code>.
+Apesar de o parâmetro se chamar <code class="docutils literal notranslate"><span class="pre">Relatorio</span></code>, o valor esperado é o
+número retornado em <code class="docutils literal notranslate"><span class="pre">NumeroRelatorio</span></code> como string.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [4]: </span><span class="n">relatorios</span> <span class="o">=</span> <span class="p">(</span>
+<span class="gp">   ...: </span>    <span class="n">ifdata</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s2">&quot;ListaDeRelatorio&quot;</span><span class="p">)</span>
+<span class="gp">   ...: </span>    <span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<span class="gp">   ...: </span>    <span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<span class="gp">   ...: </span><span class="p">)</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [5]: </span><span class="n">relatorios</span><span class="p">[[</span><span class="s2">&quot;NumeroRelatorio&quot;</span><span class="p">,</span> <span class="s2">&quot;NomeRelatorio&quot;</span><span class="p">]]</span>
+<span class="gh">Out[5]: </span>
+<span class="go">   NumeroRelatorio                                      NomeRelatorio</span>
+<span class="go">0                1                                             Resumo</span>
+<span class="go">1                2                                              Ativo</span>
+<span class="go">2                3                                            Passivo</span>
+<span class="go">3                4                          Demonstração de Resultado</span>
+<span class="go">4                5                             Informações de Capital</span>
+<span class="go">5                6                                        Segmentação</span>
+<span class="go">6                7          Carteira de Crédito Ativa - Por indexador</span>
+<span class="go">7                8  Carteira de crédito ativa - por nível de risco...</span>
+<span class="go">8                9  Carteira de crédito ativa - por região geográfica</span>
+<span class="go">9               10  Carteira de crédito ativa - quantidade de clie...</span>
+<span class="go">10              11  Carteira de crédito ativa Pessoa Física - moda...</span>
+<span class="go">11              12  Carteira de crédito ativa Pessoa Jurídica -  p...</span>
+<span class="go">12              13  Carteira de crédito ativa Pessoa Jurídica - mo...</span>
+<span class="go">13              14  Carteira de crédito ativa Pessoa Jurídica - po...</span>
+<span class="go">14              15                Movimentação de Câmbio no Trimestre</span>
+<span class="go">15              16  Carteira de crédito ativa - por carteiras de i...</span>
+</pre></div>
+</div>
+<p>Na versão atual do serviço, alguns relatórios relevantes são:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;1&quot;</span></code>: Resumo</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;7&quot;</span></code>: Carteira de Crédito Ativa - Por indexador</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;8&quot;</span></code>: Carteira de crédito ativa - por nível de risco da operação</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;9&quot;</span></code>: Carteira de crédito ativa - por região geográfica</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;10&quot;</span></code>: Carteira de crédito ativa - quantidade de clientes e de operações</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;11&quot;</span></code>: Carteira de crédito ativa Pessoa Física - modalidade e prazo de vencimento</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;12&quot;</span></code>: Carteira de crédito ativa Pessoa Jurídica - por atividade econômica (CNAE)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;13&quot;</span></code>: Carteira de crédito ativa Pessoa Jurídica - modalidade e prazo de vencimento</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;14&quot;</span></code>: Carteira de crédito ativa Pessoa Jurídica - por porte do tomador</p></li>
+</ul>
+<p>Use sempre <code class="docutils literal notranslate"><span class="pre">ListaDeRelatorio</span></code> quando for construir uma análise nova,
+pois a disponibilidade de relatórios pode mudar ao longo do tempo.</p>
+</section>
+<section id="parametros-principais">
+<h2>Parâmetros principais<a class="headerlink" href="#parametros-principais" title="Link permanente para este cabeçalho">¶</a></h2>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">AnoMes</span></code></dt><dd><p>Data-base no formato <code class="docutils literal notranslate"><span class="pre">AAAAMM</span></code>, por exemplo <code class="docutils literal notranslate"><span class="pre">202403</span></code> para março
+de 2024. O IFData é trimestral; na prática, use meses <code class="docutils literal notranslate"><span class="pre">03</span></code>, <code class="docutils literal notranslate"><span class="pre">06</span></code>,
+<code class="docutils literal notranslate"><span class="pre">09</span></code> e <code class="docutils literal notranslate"><span class="pre">12</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">TipoInstituicao</span></code></dt><dd><p>Nível de consolidação usado no relatório. No endpoint OData, os
+códigos práticos são:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">1</span></code>: Conglomerados Prudenciais e Instituições Independentes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">2</span></code>: Conglomerados Financeiros e Instituições Independentes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">3</span></code>: Instituições Individuais.</p></li>
+</ul>
+<p>A interface web do IFData usa ids internos diferentes nos seus
+arquivos, como <code class="docutils literal notranslate"><span class="pre">1009</span></code>, <code class="docutils literal notranslate"><span class="pre">1005</span></code> e <code class="docutils literal notranslate"><span class="pre">1006</span></code>. Esses ids não são os
+códigos esperados por <code class="docutils literal notranslate"><span class="pre">IfDataValores</span></code> no <code class="docutils literal notranslate"><span class="pre">python-bcb</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">Relatorio</span></code></dt><dd><p>Código do relatório, como string, retornado por <code class="docutils literal notranslate"><span class="pre">ListaDeRelatorio</span></code>.
+Exemplo: <code class="docutils literal notranslate"><span class="pre">&quot;1&quot;</span></code> para <code class="docutils literal notranslate"><span class="pre">Resumo</span></code> e <code class="docutils literal notranslate"><span class="pre">&quot;11&quot;</span></code> para o relatório de
+carteira de crédito ativa de pessoa física por modalidade e prazo.</p>
+</dd>
+</dl>
+</section>
+<section id="consultando-cadastro">
+<h2>Consultando cadastro<a class="headerlink" href="#consultando-cadastro" title="Link permanente para este cabeçalho">¶</a></h2>
+<p>O cadastro ajuda a interpretar <code class="docutils literal notranslate"><span class="pre">CodInst</span></code> e a distinguir instituições
+individuais de conglomerados. A coluna <code class="docutils literal notranslate"><span class="pre">Data</span></code> é convertida para
+<code class="docutils literal notranslate"><span class="pre">datetime64</span></code> pelo <code class="docutils literal notranslate"><span class="pre">python-bcb</span></code>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [6]: </span><span class="n">cadastro_ep</span> <span class="o">=</span> <span class="n">ifdata</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s2">&quot;IfDataCadastro&quot;</span><span class="p">)</span>
+
+<span class="gp">In [7]: </span><span class="n">cadastro</span> <span class="o">=</span> <span class="p">(</span>
+<span class="gp">   ...: </span>    <span class="n">cadastro_ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<span class="gp">   ...: </span>    <span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">AnoMes</span><span class="o">=</span><span class="mi">202403</span><span class="p">)</span>
+<span class="gp">   ...: </span>    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">   ...: </span>    <span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<span class="gp">   ...: </span><span class="p">)</span>
+<span class="gp">   ...: </span>
+
+<span class="gp">In [8]: </span><span class="n">cadastro</span><span class="p">[</span>
+<span class="gp">   ...: </span>    <span class="p">[</span>
+<span class="gp">   ...: </span>        <span class="s2">&quot;Data&quot;</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="s2">&quot;CodInst&quot;</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="s2">&quot;NomeInstituicao&quot;</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="s2">&quot;Td&quot;</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="s2">&quot;CodConglomeradoFinanceiro&quot;</span><span class="p">,</span>
+<span class="gp">   ...: </span>        <span class="s2">&quot;CodConglomeradoPrudencial&quot;</span><span class="p">,</span>
+<span class="gp">   ...: </span>    <span class="p">]</span>
+<span class="gp">   ...: </span><span class="p">]</span>
+<span class="gp">   ...: </span>
+<span class="gh">Out[8]: </span>
+<span class="go">        Data   CodInst  ... CodConglomeradoFinanceiro CodConglomeradoPrudencial</span>
+<span class="go">0 2024-03-01  C0041856  ...                  C0041856                  C0080312</span>
+<span class="go">1 2024-03-01  C0080312  ...                  C0041856                  C0080312</span>
+<span class="go">2 2024-03-01  C0052302  ...                  C0052302                  C0081579</span>
+<span class="go">3 2024-03-01  C0051956  ...                  C0051956                  C0083694</span>
+<span class="go">4 2024-03-01  C0083694  ...                  C0051956                  C0083694</span>
+<span class="go">5 2024-03-01  01542356  ...                       NaN                       NaN</span>
+<span class="go">6 2024-03-01  C0051949  ...                  C0051949                  C0081256</span>
+<span class="go">7 2024-03-01  C0081256  ...                  C0051949                  C0081256</span>
+<span class="go">8 2024-03-01  09978168  ...                       NaN                       NaN</span>
+<span class="go">9 2024-03-01  28195667  ...                  C0041856                  C0080312</span>
+
+<span class="go">[10 rows x 6 columns]</span>
+</pre></div>
+</div>
+<p>Na versão atual do pacote, se você usar <code class="docutils literal notranslate"><span class="pre">select</span></code> em <code class="docutils literal notranslate"><span class="pre">IfDataCadastro</span></code>,
+mantenha a coluna <code class="docutils literal notranslate"><span class="pre">Data</span></code> na seleção. A conversão automática de datas
+desse endpoint espera essa coluna no resultado.</p>
+</section>
+<section id="consultando-valores">
+<h2>Consultando valores<a class="headerlink" href="#consultando-valores" title="Link permanente para este cabeçalho">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">IfDataValores</span></code> retorna os dados em formato longo: cada linha identifica
+instituição, relatório, conta/coluna e valor em <code class="docutils literal notranslate"><span class="pre">Saldo</span></code>. Para montar uma
+tabela analítica, normalmente é necessário filtrar <code class="docutils literal notranslate"><span class="pre">NomeColuna</span></code> ou
+<code class="docutils literal notranslate"><span class="pre">Conta</span></code> e depois fazer <code class="docutils literal notranslate"><span class="pre">pivot</span></code> ou <code class="docutils literal notranslate"><span class="pre">merge</span></code> com o cadastro.</p>
+<p>O exemplo abaixo obtém a métrica <code class="docutils literal notranslate"><span class="pre">Carteira</span> <span class="pre">de</span> <span class="pre">Crédito</span> <span class="pre">Classificada</span></code> do
+relatório <code class="docutils literal notranslate"><span class="pre">Resumo</span></code> para conglomerados prudenciais e instituições
+independentes na data-base de março de 2024.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [9]: </span><span class="n">valores_ep</span> <span class="o">=</span> <span class="n">ifdata</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s2">&quot;IfDataValores&quot;</span><span class="p">)</span>
+
+<span class="gp">In [10]: </span><span class="n">credito_resumo</span> <span class="o">=</span> <span class="p">(</span>
+<span class="gp">   ....: </span>    <span class="n">valores_ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">AnoMes</span><span class="o">=</span><span class="mi">202403</span><span class="p">,</span> <span class="n">TipoInstituicao</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">Relatorio</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">)</span>
+<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">valores_ep</span><span class="o">.</span><span class="n">NomeColuna</span> <span class="o">==</span> <span class="s2">&quot;Carteira de Crédito Classificada&quot;</span><span class="p">)</span>
+<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">valores_ep</span><span class="o">.</span><span class="n">Saldo</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
+<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<span class="gp">   ....: </span><span class="p">)</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [11]: </span><span class="n">cadastro_completo</span> <span class="o">=</span> <span class="n">cadastro_ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">AnoMes</span><span class="o">=</span><span class="mi">202403</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+
+<span class="gp">In [12]: </span><span class="n">credito_resumo</span> <span class="o">=</span> <span class="n">credito_resumo</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+<span class="gp">   ....: </span>    <span class="n">cadastro_completo</span><span class="p">[[</span><span class="s2">&quot;CodInst&quot;</span><span class="p">,</span> <span class="s2">&quot;NomeInstituicao&quot;</span><span class="p">]],</span>
+<span class="gp">   ....: </span>    <span class="n">on</span><span class="o">=</span><span class="s2">&quot;CodInst&quot;</span><span class="p">,</span>
+<span class="gp">   ....: </span>    <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span>
+<span class="gp">   ....: </span><span class="p">)</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [13]: </span><span class="n">credito_resumo</span><span class="p">[[</span><span class="s2">&quot;NomeInstituicao&quot;</span><span class="p">,</span> <span class="s2">&quot;AnoMes&quot;</span><span class="p">,</span> <span class="s2">&quot;NomeColuna&quot;</span><span class="p">,</span> <span class="s2">&quot;Saldo&quot;</span><span class="p">]]</span>
+<span class="gh">Out[13]: </span>
+<span class="go">                        NomeInstituicao  ...         Saldo</span>
+<span class="go">0  CAIXA ECONÔMICA FEDERAL - PRUDENCIAL  ...  1.145327e+12</span>
+<span class="go">1                       BB - PRUDENCIAL  ...  1.002459e+12</span>
+<span class="go">2                     ITAU - PRUDENCIAL  ...  9.035385e+11</span>
+<span class="go">3                 BRADESCO - PRUDENCIAL  ...  6.367062e+11</span>
+<span class="go">4                SANTANDER - PRUDENCIAL  ...  5.280337e+11</span>
+<span class="go">5                    BNDES - PRUDENCIAL  ...  3.158338e+11</span>
+<span class="go">6              BTG PACTUAL - PRUDENCIAL  ...  1.326218e+11</span>
+<span class="go">7                    SAFRA - PRUDENCIAL  ...  1.199716e+11</span>
+<span class="go">8            NU PAGAMENTOS - PRUDENCIAL  ...  9.427453e+10</span>
+<span class="go">9               VOTORANTIM - PRUDENCIAL  ...  7.469943e+10</span>
+
+<span class="go">[10 rows x 4 columns]</span>
+</pre></div>
+</div>
+</section>
+<section id="diferencas-entre-datasets">
+<h2>Diferenças entre datasets<a class="headerlink" href="#diferencas-entre-datasets" title="Link permanente para este cabeçalho">¶</a></h2>
+<p>O resultado de <code class="docutils literal notranslate"><span class="pre">IfDataValores</span></code> muda conforme a combinação de
+<code class="docutils literal notranslate"><span class="pre">AnoMes</span></code>, <code class="docutils literal notranslate"><span class="pre">TipoInstituicao</span></code> e <code class="docutils literal notranslate"><span class="pre">Relatorio</span></code>. A lista de relatórios é
+um catálogo geral; ela não garante que toda combinação de tipo de
+instituição e data-base terá dados.</p>
+<p>Por exemplo, para <code class="docutils literal notranslate"><span class="pre">AnoMes=202403</span></code> a chamada abaixo retornava dados para
+<code class="docutils literal notranslate"><span class="pre">TipoInstituicao=2</span></code> no relatório <code class="docutils literal notranslate"><span class="pre">&quot;11&quot;</span></code>, mas retornava <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>
+vazio para <code class="docutils literal notranslate"><span class="pre">TipoInstituicao=1</span></code> e <code class="docutils literal notranslate"><span class="pre">TipoInstituicao=3</span></code>. Isso não indica
+necessariamente erro de rede; normalmente indica que aquela combinação de
+parâmetros não existe no conjunto divulgado.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [14]: </span><span class="n">pf_tipo_2</span> <span class="o">=</span> <span class="p">(</span>
+<span class="gp">   ....: </span>    <span class="n">valores_ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">AnoMes</span><span class="o">=</span><span class="mi">202403</span><span class="p">,</span> <span class="n">TipoInstituicao</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">Relatorio</span><span class="o">=</span><span class="s2">&quot;11&quot;</span><span class="p">)</span>
+<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">valores_ep</span><span class="o">.</span><span class="n">NomeColuna</span> <span class="o">==</span> <span class="s2">&quot;Total da Carteira de Pessoa Física&quot;</span><span class="p">)</span>
+<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+<span class="gp">   ....: </span>        <span class="n">cadastro_completo</span><span class="p">[[</span><span class="s2">&quot;CodInst&quot;</span><span class="p">,</span> <span class="s2">&quot;NomeInstituicao&quot;</span><span class="p">]],</span>
+<span class="gp">   ....: </span>        <span class="n">on</span><span class="o">=</span><span class="s2">&quot;CodInst&quot;</span><span class="p">,</span>
+<span class="gp">   ....: </span>        <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span>
+<span class="gp">   ....: </span>    <span class="p">)</span>
+<span class="gp">   ....: </span><span class="p">)</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [15]: </span><span class="n">pf_tipo_2</span><span class="p">[</span>
+<span class="gp">   ....: </span>    <span class="p">[</span><span class="s2">&quot;TipoInstituicao&quot;</span><span class="p">,</span> <span class="s2">&quot;NomeInstituicao&quot;</span><span class="p">,</span> <span class="s2">&quot;NomeRelatorio&quot;</span><span class="p">,</span> <span class="s2">&quot;NomeColuna&quot;</span><span class="p">,</span> <span class="s2">&quot;Saldo&quot;</span><span class="p">]</span>
+<span class="gp">   ....: </span><span class="p">]</span>
+<span class="gp">   ....: </span>
+<span class="gh">Out[15]: </span>
+<span class="go">   TipoInstituicao  ...         Saldo</span>
+<span class="go">0                2  ...  2.712441e+08</span>
+<span class="go">1                2  ...  6.148027e+08</span>
+<span class="go">2                2  ...  0.000000e+00</span>
+<span class="go">3                2  ...  2.496343e+08</span>
+<span class="go">4                2  ...  8.293921e+05</span>
+<span class="go">5                2  ...  2.427435e+06</span>
+<span class="go">6                2  ...  0.000000e+00</span>
+<span class="go">7                2  ...  7.439081e+07</span>
+<span class="go">8                2  ...  0.000000e+00</span>
+<span class="go">9                2  ...  7.978122e+07</span>
+
+<span class="go">[10 rows x 5 columns]</span>
+</pre></div>
+</div>
+<p>Ao explorar um relatório novo, comece com <code class="docutils literal notranslate"><span class="pre">limit</span></code> e filtros seletivos.
+Depois verifique <code class="docutils literal notranslate"><span class="pre">NomeRelatorio</span></code>, <code class="docutils literal notranslate"><span class="pre">NumeroRelatorio</span></code>, <code class="docutils literal notranslate"><span class="pre">NomeColuna</span></code>
+e <code class="docutils literal notranslate"><span class="pre">DescricaoColuna</span></code> antes de agregar valores.</p>
+</section>
+<section id="comparando-instituicoes-com-dados-de-credito">
+<h2>Comparando instituições com dados de crédito<a class="headerlink" href="#comparando-instituicoes-com-dados-de-credito" title="Link permanente para este cabeçalho">¶</a></h2>
+<p>O exemplo abaixo compara as maiores carteiras de crédito classificadas
+entre instituições individuais em março de 2024. Usamos
+<code class="docutils literal notranslate"><span class="pre">TipoInstituicao=3</span></code> para evitar misturar CNPJs individuais com
+conglomerados.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [16]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="gp">In [17]: </span><span class="n">ANO_MES</span> <span class="o">=</span> <span class="mi">202403</span>
+
+<span class="gp">In [18]: </span><span class="n">TIPO_INSTITUICAO</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="gp">In [19]: </span><span class="n">RELATORIO_RESUMO</span> <span class="o">=</span> <span class="s2">&quot;1&quot;</span>
+
+<span class="gp">In [20]: </span><span class="n">valores_ep</span> <span class="o">=</span> <span class="n">ifdata</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s2">&quot;IfDataValores&quot;</span><span class="p">)</span>
+
+<span class="gp">In [21]: </span><span class="n">cadastro_ep</span> <span class="o">=</span> <span class="n">ifdata</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s2">&quot;IfDataCadastro&quot;</span><span class="p">)</span>
+
+<span class="gp">In [22]: </span><span class="n">credito</span> <span class="o">=</span> <span class="p">(</span>
+<span class="gp">   ....: </span>    <span class="n">valores_ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span>
+<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">parameters</span><span class="p">(</span>
+<span class="gp">   ....: </span>        <span class="n">AnoMes</span><span class="o">=</span><span class="n">ANO_MES</span><span class="p">,</span>
+<span class="gp">   ....: </span>        <span class="n">TipoInstituicao</span><span class="o">=</span><span class="n">TIPO_INSTITUICAO</span><span class="p">,</span>
+<span class="gp">   ....: </span>        <span class="n">Relatorio</span><span class="o">=</span><span class="n">RELATORIO_RESUMO</span><span class="p">,</span>
+<span class="gp">   ....: </span>    <span class="p">)</span>
+<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">valores_ep</span><span class="o">.</span><span class="n">NomeColuna</span> <span class="o">==</span> <span class="s2">&quot;Carteira de Crédito Classificada&quot;</span><span class="p">)</span>
+<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">orderby</span><span class="p">(</span><span class="n">valores_ep</span><span class="o">.</span><span class="n">Saldo</span><span class="o">.</span><span class="n">desc</span><span class="p">())</span>
+<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<span class="gp">   ....: </span><span class="p">)</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [23]: </span><span class="n">comparativo</span> <span class="o">=</span> <span class="p">(</span>
+<span class="gp">   ....: </span>    <span class="n">credito</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+<span class="gp">   ....: </span>        <span class="n">cadastro_completo</span><span class="p">[[</span><span class="s2">&quot;CodInst&quot;</span><span class="p">,</span> <span class="s2">&quot;NomeInstituicao&quot;</span><span class="p">,</span> <span class="s2">&quot;Tcb&quot;</span><span class="p">,</span> <span class="s2">&quot;Td&quot;</span><span class="p">,</span> <span class="s2">&quot;Sr&quot;</span><span class="p">]],</span>
+<span class="gp">   ....: </span>        <span class="n">on</span><span class="o">=</span><span class="s2">&quot;CodInst&quot;</span><span class="p">,</span>
+<span class="gp">   ....: </span>        <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span>
+<span class="gp">   ....: </span>    <span class="p">)</span>
+<span class="gp">   ....: </span>    <span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+<span class="gp">   ....: </span>        <span class="n">Saldo_bilhoes</span><span class="o">=</span><span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Saldo&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="mf">1e9</span><span class="p">,</span>
+<span class="gp">   ....: </span>        <span class="n">Participacao_top10</span><span class="o">=</span><span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Saldo&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Saldo&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span>
+<span class="gp">   ....: </span>    <span class="p">)</span>
+<span class="gp">   ....: </span>    <span class="p">[</span>
+<span class="gp">   ....: </span>        <span class="p">[</span>
+<span class="gp">   ....: </span>            <span class="s2">&quot;NomeInstituicao&quot;</span><span class="p">,</span>
+<span class="gp">   ....: </span>            <span class="s2">&quot;Saldo_bilhoes&quot;</span><span class="p">,</span>
+<span class="gp">   ....: </span>            <span class="s2">&quot;Participacao_top10&quot;</span><span class="p">,</span>
+<span class="gp">   ....: </span>            <span class="s2">&quot;Tcb&quot;</span><span class="p">,</span>
+<span class="gp">   ....: </span>            <span class="s2">&quot;Td&quot;</span><span class="p">,</span>
+<span class="gp">   ....: </span>            <span class="s2">&quot;Sr&quot;</span><span class="p">,</span>
+<span class="gp">   ....: </span>        <span class="p">]</span>
+<span class="gp">   ....: </span>    <span class="p">]</span>
+<span class="gp">   ....: </span><span class="p">)</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [24]: </span><span class="n">comparativo</span>
+<span class="gh">Out[24]: </span>
+<span class="go">                                     NomeInstituicao  Saldo_bilhoes  ...  Td  Sr</span>
+<span class="go">0                            CAIXA ECONOMICA FEDERAL    1144.247533  ...   I  S1</span>
+<span class="go">1                               BANCO DO BRASIL S.A.     962.121150  ...   I  S1</span>
+<span class="go">2                                BANCO BRADESCO S.A.     524.134927  ...   I  S1</span>
+<span class="go">3                                 ITAÚ UNIBANCO S.A.     424.029001  ...   I  S1</span>
+<span class="go">4                      BANCO SANTANDER (BRASIL) S.A.     364.386374  ...   I  S1</span>
+<span class="go">5  BANCO NACIONAL DE DESENVOLVIMENTO ECONOMICO E ...     281.124087  ...   I  S2</span>
+<span class="go">6                         ITAÚ UNIBANCO HOLDING S.A.     154.194902  ...   I  S1</span>
+<span class="go">7                                   BANCO SAFRA S.A.      71.531846  ...   I  S2</span>
+<span class="go">8                              BANCO VOTORANTIM S.A.      68.560584  ...   I  S2</span>
+<span class="go">9  AYMORÉ CRÉDITO, FINANCIAMENTO E INVESTIMENTO S.A.      62.504463  ...   I  S1</span>
+
+<span class="go">[10 rows x 6 columns]</span>
+</pre></div>
+</div>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [25]: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">comparativo</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;Saldo_bilhoes&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;NomeInstituicao&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;Saldo_bilhoes&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;Saldo / 1e9&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Carteira de crédito classificada - instituições individuais&quot;</span><span class="p">)</span>
+
+<span class="gp">In [26]: </span><span class="n">ax</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="mf">0.42</span><span class="p">)</span>
+
+<span class="gp">In [27]: </span><span class="n">ax</span><span class="p">;</span>
+</pre></div>
+</div>
+<img alt="_images/ifdata_credito_comparativo.png" src="_images/ifdata_credito_comparativo.png" />
+<p>O campo <code class="docutils literal notranslate"><span class="pre">Saldo</span></code> é o valor numérico retornado pela API. A unidade e a
+forma de apresentação podem variar por relatório; antes de publicar
+valores monetários, confira <code class="docutils literal notranslate"><span class="pre">DescricaoColuna</span></code> e a composição/nota do
+relatório na <a class="reference external" href="https://www3.bcb.gov.br/ifdata/">interface IF.data</a>.</p>
+</section>
+<section id="evolucao-temporal">
+<h2>Evolução temporal<a class="headerlink" href="#evolucao-temporal" title="Link permanente para este cabeçalho">¶</a></h2>
+<p>Para analisar evolução temporal, consulte poucas datas-bases e mantenha o
+mesmo <code class="docutils literal notranslate"><span class="pre">TipoInstituicao</span></code> e o mesmo <code class="docutils literal notranslate"><span class="pre">NomeColuna</span></code> ao longo da série. O
+exemplo abaixo acompanha cinco instituições individuais em cinco
+trimestres.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [28]: </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="gp">In [29]: </span><span class="kn">from</span><span class="w"> </span><span class="nn">bcb</span><span class="w"> </span><span class="kn">import</span> <span class="n">IFDATA</span>
+
+<span class="gp">In [30]: </span><span class="n">ifdata</span> <span class="o">=</span> <span class="n">IFDATA</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+
+<span class="gp">In [31]: </span><span class="n">valores_ep</span> <span class="o">=</span> <span class="n">ifdata</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s2">&quot;IfDataValores&quot;</span><span class="p">)</span>
+
+<span class="gp">In [32]: </span><span class="n">cadastro_ep</span> <span class="o">=</span> <span class="n">ifdata</span><span class="o">.</span><span class="n">get_endpoint</span><span class="p">(</span><span class="s2">&quot;IfDataCadastro&quot;</span><span class="p">)</span>
+
+<span class="gp">In [33]: </span><span class="n">filtro_codigos</span> <span class="o">=</span> <span class="p">((</span><span class="n">valores_ep</span><span class="o">.</span><span class="n">CodInst</span> <span class="o">==</span> <span class="s2">&quot;00360305&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">valores_ep</span><span class="o">.</span><span class="n">CodInst</span> <span class="o">==</span> <span class="s2">&quot;00000000&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">valores_ep</span><span class="o">.</span><span class="n">CodInst</span> <span class="o">==</span> <span class="s2">&quot;60701190&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">valores_ep</span><span class="o">.</span><span class="n">CodInst</span> <span class="o">==</span> <span class="s2">&quot;60746948&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">valores_ep</span><span class="o">.</span><span class="n">CodInst</span> <span class="o">==</span> <span class="s2">&quot;90400888&quot;</span><span class="p">))</span>
+
+<span class="gp">In [34]: </span><span class="n">credito_202303</span> <span class="o">=</span> <span class="n">valores_ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">AnoMes</span><span class="o">=</span><span class="mi">202303</span><span class="p">,</span> <span class="n">TipoInstituicao</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">Relatorio</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">valores_ep</span><span class="o">.</span><span class="n">NomeColuna</span> <span class="o">==</span> <span class="s2">&quot;Carteira de Crédito Classificada&quot;</span><span class="p">,</span> <span class="n">filtro_codigos</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">AnoMes</span><span class="o">=</span><span class="mi">202303</span><span class="p">)</span>
+
+<span class="gp">In [35]: </span><span class="n">credito_202306</span> <span class="o">=</span> <span class="n">valores_ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">AnoMes</span><span class="o">=</span><span class="mi">202306</span><span class="p">,</span> <span class="n">TipoInstituicao</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">Relatorio</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">valores_ep</span><span class="o">.</span><span class="n">NomeColuna</span> <span class="o">==</span> <span class="s2">&quot;Carteira de Crédito Classificada&quot;</span><span class="p">,</span> <span class="n">filtro_codigos</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">AnoMes</span><span class="o">=</span><span class="mi">202306</span><span class="p">)</span>
+
+<span class="gp">In [36]: </span><span class="n">credito_202309</span> <span class="o">=</span> <span class="n">valores_ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">AnoMes</span><span class="o">=</span><span class="mi">202309</span><span class="p">,</span> <span class="n">TipoInstituicao</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">Relatorio</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">valores_ep</span><span class="o">.</span><span class="n">NomeColuna</span> <span class="o">==</span> <span class="s2">&quot;Carteira de Crédito Classificada&quot;</span><span class="p">,</span> <span class="n">filtro_codigos</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">AnoMes</span><span class="o">=</span><span class="mi">202309</span><span class="p">)</span>
+
+<span class="gp">In [37]: </span><span class="n">credito_202312</span> <span class="o">=</span> <span class="n">valores_ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">AnoMes</span><span class="o">=</span><span class="mi">202312</span><span class="p">,</span> <span class="n">TipoInstituicao</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">Relatorio</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">valores_ep</span><span class="o">.</span><span class="n">NomeColuna</span> <span class="o">==</span> <span class="s2">&quot;Carteira de Crédito Classificada&quot;</span><span class="p">,</span> <span class="n">filtro_codigos</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">AnoMes</span><span class="o">=</span><span class="mi">202312</span><span class="p">)</span>
+
+<span class="gp">In [38]: </span><span class="n">credito_202403</span> <span class="o">=</span> <span class="n">valores_ep</span><span class="o">.</span><span class="n">query</span><span class="p">()</span><span class="o">.</span><span class="n">parameters</span><span class="p">(</span><span class="n">AnoMes</span><span class="o">=</span><span class="mi">202403</span><span class="p">,</span> <span class="n">TipoInstituicao</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">Relatorio</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">valores_ep</span><span class="o">.</span><span class="n">NomeColuna</span> <span class="o">==</span> <span class="s2">&quot;Carteira de Crédito Classificada&quot;</span><span class="p">,</span> <span class="n">filtro_codigos</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">AnoMes</span><span class="o">=</span><span class="mi">202403</span><span class="p">)</span>
+
+<span class="gp">In [39]: </span><span class="n">historico</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">credito_202303</span><span class="p">,</span> <span class="n">credito_202306</span><span class="p">,</span> <span class="n">credito_202309</span><span class="p">,</span> <span class="n">credito_202312</span><span class="p">,</span> <span class="n">credito_202403</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="gp">In [40]: </span><span class="n">cadastro_202403</span> <span class="o">=</span> <span class="n">cadastro_completo</span>
+
+<span class="gp">In [41]: </span><span class="n">historico</span> <span class="o">=</span> <span class="n">historico</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">cadastro_202403</span><span class="p">[[</span><span class="s2">&quot;CodInst&quot;</span><span class="p">,</span> <span class="s2">&quot;NomeInstituicao&quot;</span><span class="p">]],</span> <span class="n">on</span><span class="o">=</span><span class="s2">&quot;CodInst&quot;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
+
+<span class="gp">In [42]: </span><span class="n">tabela</span> <span class="o">=</span> <span class="n">historico</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;AnoMes&quot;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s2">&quot;NomeInstituicao&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s2">&quot;Saldo&quot;</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="s2">&quot;first&quot;</span><span class="p">)</span>
+
+<span class="gp">In [43]: </span><span class="n">tabela_bilhoes</span> <span class="o">=</span> <span class="n">tabela</span> <span class="o">/</span> <span class="mf">1e9</span>
+
+<span class="gp">In [44]: </span><span class="n">tabela_bilhoes</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">tabela_bilhoes</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">),</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;%Y%m&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m&quot;</span><span class="p">)</span>
+
+<span class="gp">In [45]: </span><span class="n">tabela_bilhoes</span>
+<span class="gh">Out[45]: </span>
+<span class="go">NomeInstituicao  BANCO BRADESCO S.A.  ...  ITAÚ UNIBANCO S.A.</span>
+<span class="go">AnoMes                                ...                    </span>
+<span class="go">2023-03                   531.398829  ...          409.533176</span>
+<span class="go">2023-06                   520.427360  ...          412.609323</span>
+<span class="go">2023-09                   517.835113  ...          419.777465</span>
+<span class="go">2023-12                   520.499627  ...          423.015925</span>
+<span class="go">2024-03                   524.134927  ...          424.029001</span>
+
+<span class="go">[5 rows x 5 columns]</span>
+</pre></div>
+</div>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [46]: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">tabela_bilhoes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;Data-base&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Saldo / 1e9&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Evolução da carteira de crédito classificada&quot;</span><span class="p">)</span>
+
+<span class="gp">In [47]: </span><span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;center left&quot;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="gh">Out[47]: </span><span class="go">&lt;matplotlib.legend.Legend at 0x7f5c87975580&gt;</span>
+
+<span class="gp">In [48]: </span><span class="n">ax</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">right</span><span class="o">=</span><span class="mf">0.62</span><span class="p">)</span>
+
+<span class="gp">In [49]: </span><span class="n">ax</span><span class="p">;</span>
+</pre></div>
+</div>
+<img alt="_images/ifdata_credito_evolucao.png" src="_images/ifdata_credito_evolucao.png" />
+</section>
+<section id="cuidados-de-interpretacao">
+<h2>Cuidados de interpretação<a class="headerlink" href="#cuidados-de-interpretacao" title="Link permanente para este cabeçalho">¶</a></h2>
+<ul class="simple">
+<li><p>Não some resultados de <code class="docutils literal notranslate"><span class="pre">TipoInstituicao</span></code> diferentes. Eles representam
+níveis de consolidação distintos e podem conter sobreposição.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CodInst</span></code> muda de significado conforme o nível de consolidação. Em
+conglomerados, códigos como <code class="docutils literal notranslate"><span class="pre">C008...</span></code> representam entidades
+consolidadas; em instituições individuais, os códigos são de instituições
+separadas por personalidade jurídica.</p></li>
+<li><p>Instituições individuais são apresentadas em nível não consolidado. A
+metodologia do BCB informa que participações societárias e agências no
+exterior são registradas como investimento nesse formato.</p></li>
+<li><p>Conglomerados financeiros consolidam entidades financeiras vinculadas.
+Conglomerados prudenciais são mais amplos e podem incluir, conforme a
+metodologia, administradoras de consórcio, instituições de pagamento e
+outras entidades relevantes para risco prudencial.</p></li>
+<li><p>Um <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> vazio pode significar combinação inexistente de
+<code class="docutils literal notranslate"><span class="pre">AnoMes</span></code>, <code class="docutils literal notranslate"><span class="pre">TipoInstituicao</span></code> e <code class="docutils literal notranslate"><span class="pre">Relatorio</span></code>. Confirme trocando um
+parâmetro por vez e consultando primeiro <code class="docutils literal notranslate"><span class="pre">ListaDeRelatorio</span></code>.</p></li>
+<li><p>As notas dos relatórios do IFData podem trazer regras específicas como
+<code class="docutils literal notranslate"><span class="pre">NI</span></code> para informações não prestadas até a publicação, <code class="docutils literal notranslate"><span class="pre">NA</span></code> para não
+aplicável e republicação de informações quando há reapresentação.</p></li>
+<li><p>O BCB informa que não há informações sobre administradores de consórcios
+na metodologia geral do IFData.</p></li>
+<li><p>Consultas amplas podem ser lentas. Prefira filtros, <code class="docutils literal notranslate"><span class="pre">limit</span></code> e poucos
+períodos por chamada quando estiver explorando em notebook.</p></li>
+</ul>
+</section>
+<section id="fontes-oficiais">
+<h2>Fontes oficiais<a class="headerlink" href="#fontes-oficiais" title="Link permanente para este cabeçalho">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://dadosabertos.bcb.gov.br/dataset/ifdata---dados-selecionados-de-instituies-financeiras">Conjunto IFData no portal de dados abertos</a></p></li>
+<li><p><a class="reference external" href="https://www3.bcb.gov.br/ifdata/">Interface web IF.data</a></p></li>
+<li><p><a class="reference external" href="https://olinda.bcb.gov.br/olinda/servico/IFDATA/versao/v1/odata/">Endpoint OData IFData</a></p></li>
+<li><p><a class="reference external" href="https://www.bcb.gov.br/conteudo/dadosabertos/BCBDesig/IFData%20-%20Esclarecimentos%20e%20Metodologia.pdf">Esclarecimentos e Metodologia do IFData</a></p></li>
+</ul>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="odata.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">OData</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="taxajuros.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Taxas de Juros</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2021, Wilson Freitas
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">IFData</a><ul>
+<li><a class="reference internal" href="#primeiro-acesso">Primeiro acesso</a></li>
+<li><a class="reference internal" href="#listando-relatorios">Listando relatórios</a></li>
+<li><a class="reference internal" href="#parametros-principais">Parâmetros principais</a></li>
+<li><a class="reference internal" href="#consultando-cadastro">Consultando cadastro</a></li>
+<li><a class="reference internal" href="#consultando-valores">Consultando valores</a></li>
+<li><a class="reference internal" href="#diferencas-entre-datasets">Diferenças entre datasets</a></li>
+<li><a class="reference internal" href="#comparando-instituicoes-com-dados-de-credito">Comparando instituições com dados de crédito</a></li>
+<li><a class="reference internal" href="#evolucao-temporal">Evolução temporal</a></li>
+<li><a class="reference internal" href="#cuidados-de-interpretacao">Cuidados de interpretação</a></li>
+<li><a class="reference internal" href="#fontes-oficiais">Fontes oficiais</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/scripts/furo.js"></script>
+    </body>
+</html>

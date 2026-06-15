@@ -73,6 +73,12 @@ APIs implementadas
    API que retorna as taxas de juros de operações de crédito por instituição financeira (médias dos últimos 5 dias).
    A classe :py:class:`bcb.TaxaJuros` implementa essa interface.
    Veja a documentação em :ref:`Taxas de Juros`.
+``IFData``
+   API OData com dados selecionados de instituições financeiras, incluindo
+   relatórios de crédito, informações contábeis, capital, segmentação e
+   cadastro de instituições e conglomerados.
+   A classe :py:class:`bcb.IFDATA` implementa essa interface.
+   Veja a documentação em :ref:`IFData`.
 ``ODataAPI``
    O BCB disponibiliza diversas APIs que seguem a especificação OData.
    Algumas APIs mais utilizadas como as :py:class:`bcb.PTAX` e
@@ -109,6 +115,7 @@ Uso
    currency
    expectativas
    taxajuros
+   ifdata
    odata
    async
    api

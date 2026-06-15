@@ -15,6 +15,8 @@ O ``python-bcb`` tem algumas classes que implementam APIs OData:
 - :py:class:`bcb.odata.api.SPI`: Estatísticas do SPI (Sistema de Pagamentos Instantâneos)
 - Veja todas as APIs implementadas em :ref:`APIs OData`.
 
+Para uma explicação prática das consultas ao IFData, veja :ref:`IFData`.
+
 Estas APIs foram implementadas em classes por serem as mais populares, entretanto,
 qualquer API OData pode ser acessada através da classe :py:class:`bcb.odata.api.ODataAPI` que abstrai o acesso
 a API a partir da URL da API que está disponível no `portal de dados abertos <https://dadosabertos.bcb.gov.br/>`_
