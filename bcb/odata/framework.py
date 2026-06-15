@@ -660,6 +660,9 @@ class ODataQuery:
                 raise ODataError(f"Unknown parameter: {arg}")
         return self
 
+    def _format_parameter(self, parameter: ODataParameter, value: Any) -> str:
+        return parameter.format(value)
+
     def filter(self, *args: ODataFilterExpression) -> Self:
         if len(args):
             self._filter.extend(args)
@@ -731,7 +734,7 @@ class ODataQuery:
                 val = self.function_parameters[p.name or ""]
                 if p.required and val is None:
                     raise ODataError("Parameter not set: " + (p.name or ""))
-                params["@" + (p.name or "")] = p.format(val)
+                params["@" + (p.name or "")] = self._format_parameter(p, val)
         qs = "&".join([f"{quote(k)}={quote(str(v))}" for k, v in params.items()])
         headers = {"OData-Version": "4.0", "OData-MaxVersion": "4.0"}
         url = self.odata_url()
@@ -771,7 +774,7 @@ class ODataQuery:
                 val = self.function_parameters[p.name or ""]
                 if p.required and val is None:
                     raise ODataError("Parameter not set: " + (p.name or ""))
-                params["@" + (p.name or "")] = p.format(val)
+                params["@" + (p.name or "")] = self._format_parameter(p, val)
         qs = "&".join([f"{quote(k)}={quote(str(v))}" for k, v in params.items()])
         headers = {"OData-Version": "4.0", "OData-MaxVersion": "4.0"}
         url = self.odata_url()

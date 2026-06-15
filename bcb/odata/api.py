@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from typing import Any, Literal, Optional, Union, overload
+from typing import Any, Callable, Literal, Optional, Union, overload
 
 from bcb.http import RequestTimeout
+from bcb.utils import Date
 from bcb.odata.framework import (
     ODataEntitySet,
     ODataFilterExpression,
@@ -16,6 +17,22 @@ from bcb.odata.framework import (
 import pandas as pd
 
 OLINDA_BASE_URL = "https://olinda.bcb.gov.br/olinda/servico"
+
+
+def _format_ptax_date_parameter(value: Any) -> Any:
+    try:
+        parsed = Date(value).date
+    except ValueError:
+        return value
+    return f"{parsed.month}/{parsed.day}/{parsed.year}"
+
+
+PTAX_DATE_PARAMETER_FORMATTERS: dict[str, Callable[[Any], Any]] = {
+    "dataCotacao": _format_ptax_date_parameter,
+    "dataInicial": _format_ptax_date_parameter,
+    "dataInicialCotacao": _format_ptax_date_parameter,
+    "dataFinalCotacao": _format_ptax_date_parameter,
+}
 
 
 class EndpointMeta(type):
@@ -51,11 +68,19 @@ class EndpointQuery(ODataQuery):
         entity: Any,
         url: str,
         date_columns: Optional[list[str]] = None,
+        parameter_formatters: Optional[dict[str, Callable[[Any], Any]]] = None,
         *,
         timeout: RequestTimeout = None,
     ) -> None:
         super().__init__(entity, url, timeout=timeout)
         self._date_columns: list[str] = date_columns or []
+        self._parameter_formatters = parameter_formatters or {}
+
+    def _format_parameter(self, parameter: Any, value: Any) -> str:
+        formatter = self._parameter_formatters.get(parameter.name)
+        if formatter is not None:
+            value = formatter(value)
+        return super()._format_parameter(parameter, value)
 
     @overload
     def collect(
@@ -143,6 +168,7 @@ class Endpoint(metaclass=EndpointMeta):
         entity: Any,
         url: str,
         date_columns: Optional[list[str]] = None,
+        parameter_formatters: Optional[dict[str, Callable[[Any], Any]]] = None,
         *,
         timeout: RequestTimeout = None,
     ) -> None:
@@ -163,6 +189,7 @@ class Endpoint(metaclass=EndpointMeta):
         self._entity = entity
         self._url = url
         self._date_columns: list[str] = date_columns or []
+        self._parameter_formatters = parameter_formatters or {}
         self._timeout = timeout
 
     def get(
@@ -207,7 +234,11 @@ class Endpoint(metaclass=EndpointMeta):
             default; returns a raw JSON string when ``output='text'``.
         """
         _query = EndpointQuery(
-            self._entity, self._url, self._date_columns, timeout=self._timeout
+            self._entity,
+            self._url,
+            self._date_columns,
+            self._parameter_formatters,
+            timeout=self._timeout,
         )
 
         # Apply explicit kwargs first
@@ -255,7 +286,11 @@ class Endpoint(metaclass=EndpointMeta):
         bcb.odata.api.EndpointQuery
         """
         return EndpointQuery(
-            self._entity, self._url, self._date_columns, timeout=self._timeout
+            self._entity,
+            self._url,
+            self._date_columns,
+            self._parameter_formatters,
+            timeout=self._timeout,
         )
 
     def async_query(self) -> EndpointQuery:
@@ -268,7 +303,11 @@ class Endpoint(metaclass=EndpointMeta):
             Same as query(); call async_collect() on the result
         """
         return EndpointQuery(
-            self._entity, self._url, self._date_columns, timeout=self._timeout
+            self._entity,
+            self._url,
+            self._date_columns,
+            self._parameter_formatters,
+            timeout=self._timeout,
         )
 
     async def async_get(
@@ -315,7 +354,11 @@ class Endpoint(metaclass=EndpointMeta):
             Resultado da consulta
         """
         _query = EndpointQuery(
-            self._entity, self._url, self._date_columns, timeout=self._timeout
+            self._entity,
+            self._url,
+            self._date_columns,
+            self._parameter_formatters,
+            timeout=self._timeout,
         )
 
         # Apply explicit kwargs first
@@ -364,6 +407,7 @@ class BaseODataAPI:
 
     BASE_URL: str
     DATE_COLUMNS: list[str] = []
+    PARAMETER_FORMATTERS: dict[str, Callable[[Any], Any]] = {}
 
     def __init__(self, *, timeout: RequestTimeout = None) -> None:
         """
@@ -423,6 +467,7 @@ class BaseODataAPI:
             self.service[endpoint],
             self.service.url,
             self.DATE_COLUMNS or None,
+            self.PARAMETER_FORMATTERS or None,
             timeout=self._timeout,
         )
 
@@ -538,6 +583,7 @@ class PTAX(BaseODataAPI):
     """
 
     BASE_URL = f"{OLINDA_BASE_URL}/PTAX/versao/v1/odata/"
+    PARAMETER_FORMATTERS = PTAX_DATE_PARAMETER_FORMATTERS
 
 
 class IFDATA(BaseODataAPI):

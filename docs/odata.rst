@@ -361,9 +361,11 @@ Este *endpoint* tem 3 parâmetros:
 
 Para conhecer como os parâmetros devem ser definidos é necessário ler a documentação da API.
 Eventualmente a definição dos parâmetros não é óbvia.
-Por exemplo, neste *endpoint*, os parâmetros ``dataInicial`` e ``dataFinalCotacao`` são formatados com
-mês-dia-ano (formato americano), ao invés de ano-mês-dia (formato ISO), e como o tipo dos parâmetros é ``str``,
-uma formatação incorreta não retorna um erro, apenas retorna um DataFrame vazio.
+Os parâmetros de data da PTAX aceitam strings ISO (``YYYY-MM-DD``),
+``datetime.date``, ``datetime.datetime`` e ``pandas.Timestamp``. Strings já no
+formato PTAX também continuam aceitas. A biblioteca converte os valores
+generalizados para o formato aceito pelo serviço PTAX: ``M/D/YYYY``
+(mês/dia/ano, sem zero à esquerda).
 
 Vamos realizar uma consulta para obter as cotações de dólar americano entre 2022-01-01 e 2022-01-05.
 
@@ -372,8 +374,8 @@ Vamos realizar uma consulta para obter as cotações de dólar americano entre 2
     ep = ptax.get_endpoint("CotacaoMoedaPeriodo")
     (ep.query()
        .parameters(moeda="USD",
-                   dataInicial="1/1/2022",
-                   dataFinalCotacao="1/5/2022")
+                   dataInicial="2022-01-01",
+                   dataFinalCotacao="2022-01-05")
        .collect())
 
 Note que a primeira data é 2022-01-03, pois os primeiros dias do ano não são úteis.
@@ -384,8 +386,8 @@ Podemos aplicar filtros nessa consulta utilizando o método ``filter``, da mesma
 
     (ep.query()
        .parameters(moeda="USD",
-                   dataInicial="1/1/2022",
-                   dataFinalCotacao="1/5/2022")
+                   dataInicial="2022-01-01",
+                   dataFinalCotacao="2022-01-05")
        .filter(ep.tipoBoletim == "Fechamento")
        .collect())
 
