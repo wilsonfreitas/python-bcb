@@ -39,11 +39,14 @@ O método ``describe`` mostra os *endpoints*, parâmetros e propriedades dispon�
 
     ep = ptax.get_endpoint('CotacaoMoedaDia')
     (ep.query()
-       .parameters(moeda='AUD', dataCotacao='1/31/2022')
+       .parameters(moeda='AUD', dataCotacao='2022-01-31')
        .collect())
 
-É importante notar que as datas estão no formato mês/dia/ano e os números não
-são preenchidos com 0 para ter 2 dígitos.
+Os parâmetros de data da PTAX aceitam strings ISO (``YYYY-MM-DD``),
+``datetime.date``, ``datetime.datetime`` e ``pandas.Timestamp``. Strings já no
+formato PTAX também continuam aceitas. A biblioteca converte os valores
+generalizados para o formato aceito pelo serviço PTAX: ``M/D/YYYY``
+(mês/dia/ano, sem zero à esquerda).
 
 .. ipython:: python
 
@@ -52,8 +55,8 @@ são preenchidos com 0 para ter 2 dígitos.
     ep = ptax.get_endpoint('CotacaoMoedaPeriodo')
     (ep.query()
        .parameters(moeda='AUD',
-                   dataInicial='1/1/2022',
-                   dataFinalCotacao='1/5/2022')
+                   dataInicial='2022-01-01',
+                   dataFinalCotacao='2022-01-05')
        .collect())
 
 Conversor de Moedas

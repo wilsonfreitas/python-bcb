@@ -5,7 +5,7 @@ import httpx
 import pandas as pd
 import pytest
 
-from bcb.odata.api import Expectativas, ODataAPI
+from bcb.odata.api import Expectativas, ODataAPI, PTAX
 from bcb.odata.framework import (
     ODataParameter,
     ODataProperty,
@@ -66,6 +66,53 @@ FUNCTION_METADATA_URL = "https://example.test/odata/$metadata"
 FUNCTION_URL_PATTERN = re.compile(r".*CotacaoMoedaPeriodo.*")
 
 
+PTAX_BASE_URL = "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/"
+PTAX_METADATA_URL = (
+    "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/$metadata"
+)
+PTAX_SERVICE_ROOT_JSON = """{
+  "@odata.context": "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/$metadata",
+  "value": [
+    {"name": "CotacaoMoedaPeriodo", "kind": "FunctionImport", "url": "CotacaoMoedaPeriodo"},
+    {"name": "CotacaoMoedaDia", "kind": "FunctionImport", "url": "CotacaoMoedaDia"}
+  ]
+}"""
+PTAX_METADATA_XML = b"""<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:DataServices>
+    <Schema Namespace="br.gov.bcb.olinda.servico.PTAX" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <EntityType Name="TipoCotacaoMoeda">
+        <Property Name="cotacaoCompra" Type="Edm.Decimal"/>
+        <Property Name="dataHoraCotacao" Type="Edm.String"/>
+      </EntityType>
+      <Function Name="CotacaoMoedaPeriodo">
+        <Parameter Name="moeda" Type="Edm.String" Nullable="false"/>
+        <Parameter Name="dataInicial" Type="Edm.String" Nullable="false"/>
+        <Parameter Name="dataFinalCotacao" Type="Edm.String" Nullable="false"/>
+        <ReturnType Type="Collection(br.gov.bcb.olinda.servico.PTAX.TipoCotacaoMoeda)"/>
+      </Function>
+      <Function Name="CotacaoMoedaDia">
+        <Parameter Name="moeda" Type="Edm.String" Nullable="false"/>
+        <Parameter Name="dataCotacao" Type="Edm.String" Nullable="false"/>
+        <ReturnType Type="Collection(br.gov.bcb.olinda.servico.PTAX.TipoCotacaoMoeda)"/>
+      </Function>
+      <EntityContainer Name="Container">
+        <EntitySet Name="_CotacaoMoedaPeriodo" EntityType="br.gov.bcb.olinda.servico.PTAX.TipoCotacaoMoeda"/>
+        <EntitySet Name="_CotacaoMoedaDia" EntityType="br.gov.bcb.olinda.servico.PTAX.TipoCotacaoMoeda"/>
+        <FunctionImport Name="CotacaoMoedaPeriodo"
+                        Function="br.gov.bcb.olinda.servico.PTAX.CotacaoMoedaPeriodo"
+                        EntitySet="br.gov.bcb.olinda.servico.PTAX._CotacaoMoedaPeriodo"/>
+        <FunctionImport Name="CotacaoMoedaDia"
+                        Function="br.gov.bcb.olinda.servico.PTAX.CotacaoMoedaDia"
+                        EntitySet="br.gov.bcb.olinda.servico.PTAX._CotacaoMoedaDia"/>
+      </EntityContainer>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>"""
+PTAX_PERIODO_URL_PATTERN = re.compile(r".*CotacaoMoedaPeriodo.*")
+PTAX_DIA_URL_PATTERN = re.compile(r".*CotacaoMoedaDia.*")
+
+
 def add_service_mocks(httpx_mock):
     """Add the two requests needed to instantiate any BaseODataAPI subclass."""
     httpx_mock.add_response(
@@ -89,6 +136,19 @@ def add_function_service_mocks(httpx_mock):
     httpx_mock.add_response(
         url=FUNCTION_METADATA_URL,
         content=FUNCTION_METADATA_XML,
+        status_code=200,
+    )
+
+
+def add_ptax_service_mocks(httpx_mock):
+    httpx_mock.add_response(
+        url=PTAX_BASE_URL,
+        text=PTAX_SERVICE_ROOT_JSON,
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        url=PTAX_METADATA_URL,
+        content=PTAX_METADATA_XML,
         status_code=200,
     )
 
@@ -676,6 +736,64 @@ def test_function_import_unknown_parameter_raises(httpx_mock):
 
     with pytest.raises(ODataError, match="Unknown parameter"):
         service.query(service["CotacaoMoedaPeriodo"]).parameters(unknown="x")
+
+
+def test_ptax_period_parameters_accept_standard_date_inputs(httpx_mock):
+    add_ptax_service_mocks(httpx_mock)
+    httpx_mock.add_response(
+        url=PTAX_PERIODO_URL_PATTERN,
+        text=ODATA_QUERY_RESPONSE_JSON,
+        status_code=200,
+    )
+    ptax = PTAX()
+    ep = ptax.get_endpoint("CotacaoMoedaPeriodo")
+
+    ep.query().parameters(
+        moeda="USD",
+        dataInicial="2022-01-01",
+        dataFinalCotacao=date(2022, 1, 5),
+    ).text()
+
+    request = httpx_mock.get_requests()[-1]
+    assert request.url.params["@dataInicial"] == "'1/1/2022'"
+    assert request.url.params["@dataFinalCotacao"] == "'1/5/2022'"
+
+
+def test_ptax_day_parameter_accepts_datetime_and_timestamp(httpx_mock):
+    add_ptax_service_mocks(httpx_mock)
+    httpx_mock.add_response(
+        url=PTAX_DIA_URL_PATTERN,
+        text=ODATA_QUERY_RESPONSE_JSON,
+        status_code=200,
+    )
+    ptax = PTAX()
+    ep = ptax.get_endpoint("CotacaoMoedaDia")
+
+    ep.get(moeda="USD", dataCotacao=pd.Timestamp(datetime(2022, 1, 31)), output="text")
+
+    request = httpx_mock.get_requests()[-1]
+    assert request.url.params["@dataCotacao"] == "'1/31/2022'"
+
+
+def test_ptax_parameters_keep_existing_ptax_date_strings(httpx_mock):
+    add_ptax_service_mocks(httpx_mock)
+    httpx_mock.add_response(
+        url=PTAX_PERIODO_URL_PATTERN,
+        text=ODATA_QUERY_RESPONSE_JSON,
+        status_code=200,
+    )
+    ptax = PTAX()
+    ep = ptax.get_endpoint("CotacaoMoedaPeriodo")
+
+    ep.query().parameters(
+        moeda="USD",
+        dataInicial="1/1/2022",
+        dataFinalCotacao="1/5/2022",
+    ).text()
+
+    request = httpx_mock.get_requests()[-1]
+    assert request.url.params["@dataInicial"] == "'1/1/2022'"
+    assert request.url.params["@dataFinalCotacao"] == "'1/5/2022'"
 
 
 # ---------------------------------------------------------------------------
