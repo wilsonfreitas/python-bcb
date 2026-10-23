@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.1] - 2026-10-23
+
+### Fixed
+- PTAX date parameters (`dataCotacao`, `dataInicial`, `dataInicialCotacao`, `dataFinalCotacao`) are now sent as `MM-DD-YYYY`. The `M/D/YYYY` format introduced in 0.4.0 made the PTAX service return empty results. (#69)
+
+### Changed
+- Updated vulnerable transitive dependencies in `uv.lock`. (#68)
+
 ## [0.4.0] - 2026-06-15
 
 ### Added
@@ -10,7 +18,7 @@
 
 ### Changed
 - Improved OData `describe()` output: detailed endpoint information is now shown by default, while `describe(full=False)` keeps the compact endpoint summary.
-- PTAX date parameters now accept ISO date strings, `datetime.date`, `datetime.datetime`, and `pandas.Timestamp`; generalized inputs are converted to the PTAX service format `MM-DD-YYYY`.
+- PTAX date parameters now accept ISO date strings, `datetime.date`, `datetime.datetime`, and `pandas.Timestamp`; generalized inputs are converted to the PTAX service format `M/D/YYYY`.
 - Strengthened public API validation, OData literal serialization, HTTP error mapping, currency response parsing, and async currency missing-symbol behavior.
 
 ### Fixed
