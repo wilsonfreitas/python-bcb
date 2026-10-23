@@ -10,7 +10,7 @@
 
 ### Changed
 - Improved OData `describe()` output: detailed endpoint information is now shown by default, while `describe(full=False)` keeps the compact endpoint summary.
-- PTAX date parameters now accept ISO date strings, `datetime.date`, `datetime.datetime`, and `pandas.Timestamp`; generalized inputs are converted to the PTAX service format `M/D/YYYY`.
+- PTAX date parameters now accept ISO date strings, `datetime.date`, `datetime.datetime`, and `pandas.Timestamp`; generalized inputs are converted to the PTAX service format `MM-DD-YYYY`.
 - Strengthened public API validation, OData literal serialization, HTTP error mapping, currency response parsing, and async currency missing-symbol behavior.
 
 ### Fixed

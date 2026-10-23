@@ -24,7 +24,7 @@ def _format_ptax_date_parameter(value: Any) -> Any:
         parsed = Date(value).date
     except ValueError:
         return value
-    return f"{parsed.month}/{parsed.day}/{parsed.year}"
+    return parsed.strftime("%m-%d-%Y")
 
 
 PTAX_DATE_PARAMETER_FORMATTERS: dict[str, Callable[[Any], Any]] = {
