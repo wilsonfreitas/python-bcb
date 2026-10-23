@@ -755,8 +755,8 @@ def test_ptax_period_parameters_accept_standard_date_inputs(httpx_mock):
     ).text()
 
     request = httpx_mock.get_requests()[-1]
-    assert request.url.params["@dataInicial"] == "'1/1/2022'"
-    assert request.url.params["@dataFinalCotacao"] == "'1/5/2022'"
+    assert request.url.params["@dataInicial"] == "'01-01-2022'"
+    assert request.url.params["@dataFinalCotacao"] == "'01-05-2022'"
 
 
 def test_ptax_day_parameter_accepts_datetime_and_timestamp(httpx_mock):
@@ -772,7 +772,7 @@ def test_ptax_day_parameter_accepts_datetime_and_timestamp(httpx_mock):
     ep.get(moeda="USD", dataCotacao=pd.Timestamp(datetime(2022, 1, 31)), output="text")
 
     request = httpx_mock.get_requests()[-1]
-    assert request.url.params["@dataCotacao"] == "'1/31/2022'"
+    assert request.url.params["@dataCotacao"] == "'01-31-2022'"
 
 
 def test_ptax_parameters_keep_existing_ptax_date_strings(httpx_mock):
@@ -787,13 +787,13 @@ def test_ptax_parameters_keep_existing_ptax_date_strings(httpx_mock):
 
     ep.query().parameters(
         moeda="USD",
-        dataInicial="1/1/2022",
-        dataFinalCotacao="1/5/2022",
+        dataInicial="01-01-2022",
+        dataFinalCotacao="01-05-2022",
     ).text()
 
     request = httpx_mock.get_requests()[-1]
-    assert request.url.params["@dataInicial"] == "'1/1/2022'"
-    assert request.url.params["@dataFinalCotacao"] == "'1/5/2022'"
+    assert request.url.params["@dataInicial"] == "'01-01-2022'"
+    assert request.url.params["@dataFinalCotacao"] == "'01-05-2022'"
 
 
 # ---------------------------------------------------------------------------
