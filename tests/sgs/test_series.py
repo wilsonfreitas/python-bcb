@@ -252,3 +252,14 @@ def test_get_output_dataframe_is_default(httpx_mock):
     )
     result = sgs.get(1, last=5)
     assert isinstance(result, pd.DataFrame)
+
+
+def test_get_with_end_only(httpx_mock):
+    """get() must work when only `end` is given (no `start`)."""
+    httpx_mock.add_response(url=SGS_CODE_1_URL, text=SGS_JSON_5, status_code=200)
+    df = sgs.get(1, end="2021-01-22")
+    assert isinstance(df, pd.DataFrame)
+    assert len(df) == 5
+    request = httpx_mock.get_requests()[0]
+    assert request.url.params["dataFinal"] == "22/01/2021"
+    assert "dataInicial" not in request.url.params
