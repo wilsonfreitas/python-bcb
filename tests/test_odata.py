@@ -924,3 +924,19 @@ def test_collect_output_dataframe_is_default(httpx_mock):
     ep = api.get_endpoint("ExpectativasMercadoAnuais")
     result = ep.query().limit(1).collect()
     assert isinstance(result, pd.DataFrame)
+
+
+def test_parameter_formatting_escapes_quotes_for_string_type():
+    string_param = ODataParameter(Name="moeda", Type="Edm.String")
+    assert string_param.format("Focus's") == "'Focus''s'"
+
+
+def test_string_parameter_escapes_apostrophes(httpx_mock):
+    add_function_service_mocks(httpx_mock)
+    httpx_mock.add_response(url=FUNCTION_URL_PATTERN, text=ODATA_QUERY_RESPONSE_JSON, status_code=200)
+    service = ODataService(FUNCTION_BASE_URL)
+    (service.query(service["CotacaoMoedaPeriodo"])
+        .parameters(moeda="O'BRIEN", dataInicial="01-01-2020", limite=5)
+        .text())
+    request = httpx_mock.get_requests()[-1]
+    assert request.url.params["@moeda"] == "'O''BRIEN'"
