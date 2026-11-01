@@ -196,7 +196,8 @@ def _get_url_and_payload(
     payload: Dict[str, str] = {"formato": "json"}
     if last == 0:
         if start_date is not None or end_date is not None:
-            payload["dataInicial"] = Date(start_date).date.strftime("%d/%m/%Y")  # type: ignore[arg-type]
+            if start_date is not None:
+                payload["dataInicial"] = Date(start_date).date.strftime("%d/%m/%Y")
             end_date = end_date if end_date else "today"
             payload["dataFinal"] = Date(end_date).date.strftime("%d/%m/%Y")
         url = f"https://api.bcb.gov.br/dados/serie/bcdata.sgs.{code}/dados"
