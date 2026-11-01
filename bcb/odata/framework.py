@@ -237,7 +237,8 @@ class ODataParameter:
         elif self.type == "Edm.Int32":
             return f"{int(value)}"
         elif self.type == "Edm.String":
-            return f"'{str(value)}'"
+            escaped = str(value).replace("'", "''")
+            return f"'{escaped}'"
         else:
             return f"'{str(value)}'"
 
