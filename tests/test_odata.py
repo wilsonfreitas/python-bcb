@@ -796,6 +796,77 @@ def test_ptax_parameters_keep_existing_ptax_date_strings(httpx_mock):
     assert request.url.params["@dataFinalCotacao"] == "'01-05-2022'"
 
 
+def test_odata_api_parameter_formatters_apply_to_that_instance_only(httpx_mock):
+    httpx_mock.add_response(
+        url=FUNCTION_BASE_URL, text=FUNCTION_SERVICE_ROOT_JSON, is_reusable=True
+    )
+    httpx_mock.add_response(url=FUNCTION_METADATA_URL, content=FUNCTION_METADATA_XML)
+    httpx_mock.add_response(
+        url=FUNCTION_URL_PATTERN, text=ODATA_QUERY_RESPONSE_JSON, is_reusable=True
+    )
+    formatters = {"dataInicial": lambda value: value.strftime("%m-%d-%Y")}
+
+    formatted = ODataAPI(FUNCTION_BASE_URL, parameter_formatters=formatters)
+    plain = ODataAPI(FUNCTION_BASE_URL)
+    for api in (formatted, plain):
+        api.get_endpoint("CotacaoMoedaPeriodo").get(
+            moeda="USD",
+            dataInicial=pd.Timestamp("2022-01-31"),
+            limite=5,
+            output="text",
+        )
+
+    formatted_request, plain_request = [
+        request
+        for request in httpx_mock.get_requests()
+        if "CotacaoMoedaPeriodo" in request.url.path
+    ]
+    assert formatted_request.url.params["@dataInicial"] == "'01-31-2022'"
+    assert formatted_request.url.params["@moeda"] == "'USD'"
+    assert formatted_request.url.params["@limite"] == "5"
+    assert plain_request.url.params["@dataInicial"] == "'2022-01-31 00:00:00'"
+    assert ODataAPI.PARAMETER_FORMATTERS == {}
+
+
+def test_ptax_parameter_formatters_extend_and_override_class_defaults(httpx_mock):
+    httpx_mock.add_response(
+        url=PTAX_BASE_URL, text=PTAX_SERVICE_ROOT_JSON, is_reusable=True
+    )
+    httpx_mock.add_response(url=PTAX_METADATA_URL, content=PTAX_METADATA_XML)
+    httpx_mock.add_response(
+        url=PTAX_PERIODO_URL_PATTERN, text=ODATA_QUERY_RESPONSE_JSON, is_reusable=True
+    )
+    class_formatters = dict(PTAX.PARAMETER_FORMATTERS)
+    formatters = {
+        "moeda": str.upper,
+        "dataFinalCotacao": lambda value: value.strftime("%d/%m/%Y"),
+    }
+
+    custom = PTAX(parameter_formatters=formatters)
+    default = PTAX()
+    for api in (custom, default):
+        api.get_endpoint("CotacaoMoedaPeriodo").get(
+            moeda="usd",
+            dataInicial="2022-01-01",
+            dataFinalCotacao=date(2022, 1, 5),
+            output="text",
+        )
+
+    custom_request, default_request = [
+        request
+        for request in httpx_mock.get_requests()
+        if "CotacaoMoedaPeriodo" in request.url.path
+    ]
+    assert custom_request.url.params["@moeda"] == "'USD'"
+    assert custom_request.url.params["@dataInicial"] == "'01-01-2022'"
+    assert custom_request.url.params["@dataFinalCotacao"] == "'05/01/2022'"
+    assert default_request.url.params["@moeda"] == "'usd'"
+    assert default_request.url.params["@dataInicial"] == "'01-01-2022'"
+    assert default_request.url.params["@dataFinalCotacao"] == "'01-05-2022'"
+    assert PTAX.PARAMETER_FORMATTERS == class_formatters
+    assert list(formatters) == ["moeda", "dataFinalCotacao"]
+
+
 # ---------------------------------------------------------------------------
 # DATE_COLUMNS — configurable date detection (Phase 7.1)
 # ---------------------------------------------------------------------------

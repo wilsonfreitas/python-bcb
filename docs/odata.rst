@@ -481,3 +481,30 @@ Essa API pode ser diretamente acessada através da classe :py:class:`bcb.odata.a
     service = ODataAPI(url)
     service.describe()
 
+Formatando parâmetros
+^^^^^^^^^^^^^^^^^^^^^
+
+Alguns *function imports* esperam parâmetros em um formato específico, por
+exemplo datas como ``AAAAMM``. O argumento ``parameter_formatters`` associa o
+nome de um parâmetro a uma função, que recebe o valor informado na consulta e
+retorna o valor usado no literal OData. As aspas dos parâmetros ``Edm.String``
+continuam sendo adicionadas pela biblioteca depois da formatação.
+
+.. code:: python
+
+    import pandas as pd
+    from bcb import ODataAPI
+
+    url = "https://olinda.bcb.gov.br/olinda/servico/IFDATA/versao/v1/odata/"
+    api = ODataAPI(
+        url,
+        parameter_formatters={"AnoMes": lambda v: v.strftime("%Y%m")},
+    )
+    ep = api.get_endpoint("IfDataCadastro")
+    ep.get(AnoMes=pd.Timestamp("2024-03-01"), limit=10)
+
+O mesmo argumento é aceito pelas classes específicas, como
+:py:class:`bcb.odata.api.PTAX`. Os formatadores informados são combinados com
+os definidos na classe (``PARAMETER_FORMATTERS``): é possível adicionar
+formatadores para outros parâmetros ou substituir os padrões sem criar uma
+subclasse e sem afetar outras instâncias.

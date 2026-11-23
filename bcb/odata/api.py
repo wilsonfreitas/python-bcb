@@ -409,11 +409,27 @@ class BaseODataAPI:
     DATE_COLUMNS: list[str] = []
     PARAMETER_FORMATTERS: dict[str, Callable[[Any], Any]] = {}
 
-    def __init__(self, *, timeout: RequestTimeout = None) -> None:
+    def __init__(
+        self,
+        *,
+        timeout: RequestTimeout = None,
+        parameter_formatters: Optional[dict[str, Callable[[Any], Any]]] = None,
+    ) -> None:
         """
         BaseODataAPI construtor
+
+        Parameters
+        ----------
+
+        parameter_formatters : dict[str, Callable], optional
+            Formatadores de parâmetros dos *function imports*, indexados pelo
+            nome do parâmetro. Cada função recebe o valor informado e retorna
+            o valor usado no literal OData. Esses formatadores são aplicados
+            sobre os definidos em ``PARAMETER_FORMATTERS``, podendo
+            complementá-los ou substituí-los.
         """
         self._timeout = timeout
+        self._parameter_formatters = dict(parameter_formatters or {})
         self.service = ODataService(self.BASE_URL, timeout=timeout)
 
     def describe(self, endpoint: Optional[str] = None, *, full: bool = True) -> None:
@@ -463,11 +479,15 @@ class BaseODataAPI:
         ValueError
             Se o *endpoint* fornecido é errado.
         """
+        parameter_formatters = {
+            **self.PARAMETER_FORMATTERS,
+            **self._parameter_formatters,
+        }
         return Endpoint(
             self.service[endpoint],
             self.service.url,
             self.DATE_COLUMNS or None,
-            self.PARAMETER_FORMATTERS or None,
+            parameter_formatters or None,
             timeout=self._timeout,
         )
 
@@ -483,7 +503,13 @@ class ODataAPI(BaseODataAPI):
     não possuem implementação específica.
     """
 
-    def __init__(self, url: str, *, timeout: RequestTimeout = None) -> None:
+    def __init__(
+        self,
+        url: str,
+        *,
+        timeout: RequestTimeout = None,
+        parameter_formatters: Optional[dict[str, Callable[[Any], Any]]] = None,
+    ) -> None:
         """
         Parameters
         ----------
@@ -499,8 +525,13 @@ class ODataAPI(BaseODataAPI):
 
             - Expectativas
             - PTAX
+        parameter_formatters : dict[str, Callable], optional
+            Formatadores de parâmetros dos *function imports*, indexados pelo
+            nome do parâmetro. Cada função recebe o valor informado e retorna
+            o valor usado no literal OData.
         """
         self._timeout = timeout
+        self._parameter_formatters = dict(parameter_formatters or {})
         self.service = ODataService(url, timeout=timeout)
 
 
