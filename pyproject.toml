@@ -4,13 +4,52 @@ version = "0.4.1"
 description = "Interface Python para APIs de dados abertos do Banco Central do Brasil."
 authors = [{ name = "wilsonfreitas", email = "wilson.freitas@gmail.com" }]
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">= 3.10"
+keywords = [
+    "banco central do brasil",
+    "bcb",
+    "dados abertos",
+    "open data",
+    "sgs",
+    "odata",
+    "ptax",
+    "focus",
+    "expectativas",
+    "ifdata",
+    "finance",
+    "economics",
+    "time series",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Intended Audience :: Science/Research",
+    "Natural Language :: Portuguese (Brazilian)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
 dependencies = [
     "httpx >= 0.24.0",
     "lxml >= 4.9.2",
     "pandas >= 2.0.0",
     "tenacity >= 8.0.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/wilsonfreitas/python-bcb"
+Documentation = "https://wilsonfreitas.github.io/python-bcb/"
+Repository = "https://github.com/wilsonfreitas/python-bcb"
+Issues = "https://github.com/wilsonfreitas/python-bcb/issues"
+Changelog = "https://github.com/wilsonfreitas/python-bcb/blob/main/CHANGELOG.md"
 
 [dependency-groups]
 test = [

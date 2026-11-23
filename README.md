@@ -208,6 +208,6 @@ A saída HTML é gerada em `docs/_build/html`. Edite os arquivos fonte em `docs/
 ### P: Onde encontro documentação mais detalhada?
 **R:**
 - [Documentação de API](https://wilsonfreitas.github.io/python-bcb/)
-- [Diretório de Exemplos](./examples/)
+- [Diretório de Exemplos](https://github.com/wilsonfreitas/python-bcb/tree/main/examples)
 - Docstrings inline: `help(bcb.sgs.get)`, `help(bcb.currency.get)`, etc.
 - [Portal de Dados Abertos BCB](https://dadosabertos.bcb.gov.br/)
