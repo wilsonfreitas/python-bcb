@@ -399,16 +399,16 @@ individuais de conglomerados. A coluna <code class="docutils literal notranslate
 <span class="gp">   ...: </span>
 <span class="gh">Out[8]: </span>
 <span class="go">        Data   CodInst  ... CodConglomeradoFinanceiro CodConglomeradoPrudencial</span>
-<span class="go">0 2024-03-01  C0041856  ...                  C0041856                  C0080312</span>
-<span class="go">1 2024-03-01  C0080312  ...                  C0041856                  C0080312</span>
-<span class="go">2 2024-03-01  C0052302  ...                  C0052302                  C0081579</span>
-<span class="go">3 2024-03-01  C0051956  ...                  C0051956                  C0083694</span>
-<span class="go">4 2024-03-01  C0083694  ...                  C0051956                  C0083694</span>
-<span class="go">5 2024-03-01  01542356  ...                       NaN                       NaN</span>
-<span class="go">6 2024-03-01  C0051949  ...                  C0051949                  C0081256</span>
-<span class="go">7 2024-03-01  C0081256  ...                  C0051949                  C0081256</span>
-<span class="go">8 2024-03-01  09978168  ...                       NaN                       NaN</span>
-<span class="go">9 2024-03-01  28195667  ...                  C0041856                  C0080312</span>
+<span class="go">0 2024-03-01  01542356  ...                       NaN                       NaN</span>
+<span class="go">1 2024-03-01  28195667  ...                  C0041856                  C0080312</span>
+<span class="go">2 2024-03-01  33066408  ...                       NaN                       NaN</span>
+<span class="go">3 2024-03-01  03532415  ...                  C0052302                  C0081579</span>
+<span class="go">4 2024-03-01  04814563  ...                       NaN                  C0083539</span>
+<span class="go">5 2024-03-01  10664513  ...                  C0051956                  C0083694</span>
+<span class="go">6 2024-03-01  24986770  ...                       NaN                       NaN</span>
+<span class="go">7 2024-03-01  03323840  ...                  C0010083                  C0080109</span>
+<span class="go">8 2024-03-01  33870163  ...                       NaN                       NaN</span>
+<span class="go">9 2024-03-01  48795256  ...                  C0051949                  C0081256</span>
 
 <span class="go">[10 rows x 6 columns]</span>
 </pre></div>
@@ -449,19 +449,17 @@ independentes na data-base de março de 2024.</p>
 
 <span class="gp">In [13]: </span><span class="n">credito_resumo</span><span class="p">[[</span><span class="s2">&quot;NomeInstituicao&quot;</span><span class="p">,</span> <span class="s2">&quot;AnoMes&quot;</span><span class="p">,</span> <span class="s2">&quot;NomeColuna&quot;</span><span class="p">,</span> <span class="s2">&quot;Saldo&quot;</span><span class="p">]]</span>
 <span class="gh">Out[13]: </span>
-<span class="go">                        NomeInstituicao  ...         Saldo</span>
-<span class="go">0  CAIXA ECONÔMICA FEDERAL - PRUDENCIAL  ...  1.145327e+12</span>
-<span class="go">1                       BB - PRUDENCIAL  ...  1.002459e+12</span>
-<span class="go">2                     ITAU - PRUDENCIAL  ...  9.035385e+11</span>
-<span class="go">3                 BRADESCO - PRUDENCIAL  ...  6.367062e+11</span>
-<span class="go">4                SANTANDER - PRUDENCIAL  ...  5.280337e+11</span>
-<span class="go">5                    BNDES - PRUDENCIAL  ...  3.158338e+11</span>
-<span class="go">6              BTG PACTUAL - PRUDENCIAL  ...  1.326218e+11</span>
-<span class="go">7                    SAFRA - PRUDENCIAL  ...  1.199716e+11</span>
-<span class="go">8            NU PAGAMENTOS - PRUDENCIAL  ...  9.427453e+10</span>
-<span class="go">9               VOTORANTIM - PRUDENCIAL  ...  7.469943e+10</span>
-
-<span class="go">[10 rows x 4 columns]</span>
+<span class="go">  NomeInstituicao  AnoMes                        NomeColuna         Saldo</span>
+<span class="go">0             NaN  202403  Carteira de Crédito Classificada  1.145327e+12</span>
+<span class="go">1             NaN  202403  Carteira de Crédito Classificada  1.002459e+12</span>
+<span class="go">2             NaN  202403  Carteira de Crédito Classificada  9.035385e+11</span>
+<span class="go">3             NaN  202403  Carteira de Crédito Classificada  6.367062e+11</span>
+<span class="go">4             NaN  202403  Carteira de Crédito Classificada  5.280337e+11</span>
+<span class="go">5             NaN  202403  Carteira de Crédito Classificada  3.158338e+11</span>
+<span class="go">6             NaN  202403  Carteira de Crédito Classificada  1.326218e+11</span>
+<span class="go">7             NaN  202403  Carteira de Crédito Classificada  1.199716e+11</span>
+<span class="go">8             NaN  202403  Carteira de Crédito Classificada  9.427453e+10</span>
+<span class="go">9             NaN  202403  Carteira de Crédito Classificada  7.469943e+10</span>
 </pre></div>
 </div>
 </section>
@@ -655,7 +653,7 @@ trimestres.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [46]: </span><span class="n">ax</span> <span class="o">=</span> <span class="n">tabela_bilhoes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;Data-base&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Saldo / 1e9&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Evolução da carteira de crédito classificada&quot;</span><span class="p">)</span>
 
 <span class="gp">In [47]: </span><span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;center left&quot;</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
-<span class="gh">Out[47]: </span><span class="go">&lt;matplotlib.legend.Legend at 0x7f5c87975580&gt;</span>
+<span class="gh">Out[47]: </span><span class="go">&lt;matplotlib.legend.Legend at 0x77593211e450&gt;</span>
 
 <span class="gp">In [48]: </span><span class="n">ax</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">right</span><span class="o">=</span><span class="mf">0.62</span><span class="p">)</span>
 

@@ -364,7 +364,7 @@ O método <code class="docutils literal notranslate"><span class="pre">describe<
 <p>Os parâmetros de data da PTAX aceitam strings ISO (<code class="docutils literal notranslate"><span class="pre">YYYY-MM-DD</span></code>),
 <code class="docutils literal notranslate"><span class="pre">datetime.date</span></code>, <code class="docutils literal notranslate"><span class="pre">datetime.datetime</span></code> e <code class="docutils literal notranslate"><span class="pre">pandas.Timestamp</span></code>. Strings já no
 formato PTAX também continuam aceitas. A biblioteca converte os valores
-generalizados para o formato aceito pelo serviço PTAX: <code class="docutils literal notranslate"><span class="pre">M/D/YYYY</span></code>
+generalizados para o formato aceito pelo serviço PTAX: <code class="docutils literal notranslate"><span class="pre">MM-DD-YYYY</span></code>
 (mês/dia/ano, sem zero à esquerda).</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [10]: </span><span class="n">ptax</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="s1">&#39;CotacaoMoedaPeriodo&#39;</span><span class="p">)</span>
 

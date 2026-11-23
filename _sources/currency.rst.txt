@@ -45,7 +45,7 @@ O método ``describe`` mostra os *endpoints*, parâmetros e propriedades dispon�
 Os parâmetros de data da PTAX aceitam strings ISO (``YYYY-MM-DD``),
 ``datetime.date``, ``datetime.datetime`` e ``pandas.Timestamp``. Strings já no
 formato PTAX também continuam aceitas. A biblioteca converte os valores
-generalizados para o formato aceito pelo serviço PTAX: ``M/D/YYYY``
+generalizados para o formato aceito pelo serviço PTAX: ``MM-DD-YYYY``
 (mês/dia/ano, sem zero à esquerda).
 
 .. ipython:: python
