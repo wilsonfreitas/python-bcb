@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.2] - 2026-11-22
+
+### Added
+- `BaseODataAPI` and `ODataAPI` accept a `parameter_formatters` argument, so `ODataAPI(url)` users can set how function import parameters are formatted without writing a subclass. Instance formatters are merged on top of the class `PARAMETER_FORMATTERS`: `PTAX()` keeps its date formatters, and callers can add to or override them for one instance only. Thanks @jackiectl2. (#70, #74)
+
+### Changed
+- Improved the PyPI project page: added license metadata (`MIT`), keywords, classifiers and project links (documentation, repository, issues, changelog), and made the README examples link absolute so it works on PyPI. (#67)
+
 ## [0.4.1] - 2026-10-23
 
 ### Fixed
