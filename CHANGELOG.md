@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+- SGS series that return a period (e.g. TR 226, TBF 253) no longer produce duplicate `dataFim` string columns. The end date is now a datetime column named `<name>_enddate`, and the index stays the start date (`Date`). With `tidy=True`, an `enddate` column is added when at least one requested series has an end date (`NaT` for the others). Applies to `get` and `async_get`. (#75)
+
 ## [0.4.2] - 2026-11-22
 
 ### Added

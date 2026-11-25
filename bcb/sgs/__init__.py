@@ -247,32 +247,33 @@ async def _async_get_sgs_response(
 
 
 def _format_df(df: pd.DataFrame, code: SGSCode, freq: Optional[str]) -> pd.DataFrame:
-    cns = {"data": "Date", "valor": code.name, "datafim": "enddate"}
+    # Series like TR (226) send a period: "data" (start) and "dataFim" (end).
+    enddate = f"{code.name}_enddate"
+    cns = {"data": "Date", "valor": code.name, "dataFim": enddate}
     df = df.rename(columns=cns)
     if "Date" in df:
         df["Date"] = pd.to_datetime(df["Date"], format="%d/%m/%Y")
-    if "enddate" in df:
-        df["enddate"] = pd.to_datetime(df["enddate"], format="%d/%m/%Y")
+    if enddate in df:
+        df[enddate] = pd.to_datetime(df[enddate], format="%d/%m/%Y")
     df = df.set_index("Date")
     if freq:
         df.index = df.index.to_period(freq)
     return df
 
 
-def _tidy_df(df: pd.DataFrame) -> pd.DataFrame:
+def _tidy_df(dfs: List[pd.DataFrame], codes: List[SGSCode]) -> pd.DataFrame:
+    has_enddate = any(
+        f"{c.name}_enddate" in df for df, c in zip(dfs, codes, strict=True)
+    )
     frames = []
-    for position, series_name in enumerate(df.columns):
-        frames.append(
-            pd.DataFrame(
-                {
-                    "Date": df.index,
-                    "series": series_name,
-                    "value": df.iloc[:, position].to_numpy(),
-                }
-            )
-        )
-    if not frames:
-        return pd.DataFrame(columns=["Date", "series", "value"])
+    for df, code in zip(dfs, codes, strict=True):
+        frame = {"Date": df.index}
+        if has_enddate:
+            enddate = f"{code.name}_enddate"
+            frame["enddate"] = df[enddate].to_numpy() if enddate in df else pd.NaT
+        frame["series"] = code.name
+        frame["value"] = df[code.name].to_numpy()
+        frames.append(pd.DataFrame(frame))
     return pd.concat(frames, ignore_index=True)
 
 
@@ -402,7 +403,7 @@ def get(
         dfs.append(df)
 
     if tidy:
-        return _tidy_df(pd.concat(dfs, axis=1))
+        return _tidy_df(dfs, code_list)
     if len(dfs) == 1:
         return dfs[0]
     else:
@@ -599,7 +600,7 @@ async def async_get(
         for c, t in zip(code_list, texts, strict=True)
     ]
     if tidy:
-        return _tidy_df(pd.concat(dfs, axis=1))
+        return _tidy_df(dfs, code_list)
     if len(dfs) == 1:
         return dfs[0]
     else:
