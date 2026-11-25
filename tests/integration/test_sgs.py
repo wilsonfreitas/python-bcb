@@ -39,12 +39,11 @@ def test_json_return():
 
 @pytest.mark.integration
 def test_json_return_long_series_error():
-    try:
-        sgs.get_json(1, start="2000-01-01", end="2023-01-01")
-    except Exception as e:
-        assert "no máximo" in str(e)
-    else:
-        assert False, "Expected an exception but none was raised."
+    # Ranges over 10 years are split into several queries (#76).
+    df = sgs.get({"SELIC": 11}, start="2000-01-01", end="2023-01-01")
+    assert df.index.is_unique and df.index.is_monotonic_increasing
+    assert df.index[0] == pd.Timestamp("2000-01-03")
+    assert df.index[-1] == pd.Timestamp("2022-12-30")
 
     try:
         sgs.get_json(1, last=50)

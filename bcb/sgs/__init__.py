@@ -208,6 +208,43 @@ def _get_url_and_payload(
     return url, payload
 
 
+def _date_windows(
+    start: Optional[DateInput], end: Optional[DateInput], last: int
+) -> List[Tuple[Optional[DateInput], Optional[DateInput]]]:
+    """Split [start, end] into windows of at most 10 years.
+
+    The SGS API rejects daily series queries longer than 10 years. The
+    frequency is unknown before the query, so long ranges are always split.
+    """
+    if last or start is None:
+        return [(start, end)]
+    win_start = pd.Timestamp(Date(start).date)
+    final = pd.Timestamp(Date(end if end else "today").date)
+    windows: List[Tuple[Optional[DateInput], Optional[DateInput]]] = []
+    while True:
+        # 10 years minus 1 day, so we do not depend on how the API counts.
+        win_end = win_start + pd.DateOffset(years=10) - pd.Timedelta(days=1)
+        if win_end >= final:
+            windows.append((win_start.date(), final.date()))
+            return windows
+        windows.append((win_start.date(), win_end.date()))
+        win_start = win_end + pd.Timedelta(days=1)
+
+
+def _merge_json(texts: List[str]) -> str:
+    """Join the JSON lists of several windows, dropping repeated dates."""
+    if len(texts) == 1:
+        return texts[0]
+    seen = set()
+    rows = []
+    for text in texts:
+        for row in json.loads(text):
+            if row["data"] not in seen:
+                seen.add(row["data"])
+                rows.append(row)
+    return json.dumps(rows)
+
+
 def _raise_sgs_response_error(res: httpx.Response, code: int) -> None:
     if res.status_code == 429:
         raise_for_status(res, context=f"SGS time series code={code}")
@@ -451,21 +488,35 @@ def get_json(
     """
     code_obj = SGSCode.from_code(code)
     _validate_sgs_code(code_obj)
-    url, payload = _get_url_and_payload(code_obj.value, start, end, last)
-    logger.debug(
-        f"Fetching SGS time series code={code_obj.value} from {url.split('/dados')[0]}"
-    )
-    try:
-        res = _get_sgs_response(url, payload, timeout)
-    except httpx.HTTPError as ex:
-        raise_for_request_error(
-            ex, context=f"SGS time series code={code_obj.value}", error_cls=SGSError
+    windows = _date_windows(start, end, last)
+    texts: List[str] = []
+    not_found: List[httpx.Response] = []
+    for win_start, win_end in windows:
+        url, payload = _get_url_and_payload(code_obj.value, win_start, win_end, last)
+        logger.debug(
+            f"Fetching SGS time series code={code_obj.value} "
+            f"from {url.split('/dados')[0]}"
         )
-    logger.debug(f"SGS response: status={res.status_code}, length={len(res.text)}")
+        try:
+            res = _get_sgs_response(url, payload, timeout)
+        except httpx.HTTPError as ex:
+            raise_for_request_error(
+                ex,
+                context=f"SGS time series code={code_obj.value}",
+                error_cls=SGSError,
+            )
+        logger.debug(f"SGS response: status={res.status_code}, length={len(res.text)}")
 
-    if res.status_code != 200:
-        _raise_sgs_response_error(res, code_obj.value)
-    return str(res.text)
+        if res.status_code == 404 and len(windows) > 1:
+            # BCB sends 404 for a window with no data (e.g. before the series starts)
+            not_found.append(res)
+            continue
+        if res.status_code != 200:
+            _raise_sgs_response_error(res, code_obj.value)
+        texts.append(str(res.text))
+    if not texts:
+        _raise_sgs_response_error(not_found[-1], code_obj.value)
+    return _merge_json(texts)
 
 
 async def async_get_json(
@@ -509,24 +560,39 @@ async def async_get_json(
     """
     code_obj = SGSCode.from_code(code)
     _validate_sgs_code(code_obj)
-    url, payload = _get_url_and_payload(code_obj.value, start, end, last)
-    logger.debug(
-        f"Fetching SGS time series (async) code={code_obj.value} "
-        f"from {url.split('/dados')[0]}"
-    )
-    try:
-        res = await _async_get_sgs_response(url, payload, timeout)
-    except httpx.HTTPError as ex:
-        raise_for_request_error(
-            ex, context=f"SGS time series code={code_obj.value}", error_cls=SGSError
+    windows = _date_windows(start, end, last)
+    texts: List[str] = []
+    not_found: List[httpx.Response] = []
+    # shortcut: windows are fetched one by one (gentler on the rate limit);
+    # gather them if long async queries turn out to be slow.
+    for win_start, win_end in windows:
+        url, payload = _get_url_and_payload(code_obj.value, win_start, win_end, last)
+        logger.debug(
+            f"Fetching SGS time series (async) code={code_obj.value} "
+            f"from {url.split('/dados')[0]}"
         )
-    logger.debug(
-        f"SGS (async) response: status={res.status_code}, length={len(res.text)}"
-    )
+        try:
+            res = await _async_get_sgs_response(url, payload, timeout)
+        except httpx.HTTPError as ex:
+            raise_for_request_error(
+                ex,
+                context=f"SGS time series code={code_obj.value}",
+                error_cls=SGSError,
+            )
+        logger.debug(
+            f"SGS (async) response: status={res.status_code}, length={len(res.text)}"
+        )
 
-    if res.status_code != 200:
-        _raise_sgs_response_error(res, code_obj.value)
-    return str(res.text)
+        if res.status_code == 404 and len(windows) > 1:
+            # BCB sends 404 for a window with no data (e.g. before the series starts)
+            not_found.append(res)
+            continue
+        if res.status_code != 200:
+            _raise_sgs_response_error(res, code_obj.value)
+        texts.append(str(res.text))
+    if not texts:
+        _raise_sgs_response_error(not_found[-1], code_obj.value)
+    return _merge_json(texts)
 
 
 async def async_get(

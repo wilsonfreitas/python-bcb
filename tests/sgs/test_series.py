@@ -293,3 +293,57 @@ def test_get_tidy_mixed_enddate(httpx_mock):
     assert tr["enddate"].iloc[0] == pd.Timestamp("2010-02-01")
     assert df.loc[df["series"] == "X", "enddate"].isna().all()
     assert len(df) == 7
+
+
+def test_get_splits_range_over_10_years(httpx_mock):
+    # Last row of window 1 repeats as first row of window 2: must appear once.
+    pages = [
+        '[{"data":"01/01/2000","valor":"1"},{"data":"31/12/2009","valor":"2"}]',
+        '[{"data":"31/12/2009","valor":"2"},{"data":"01/01/2010","valor":"3"}]',
+        '[{"data":"01/01/2020","valor":"4"}]',
+    ]
+    for page in pages:
+        httpx_mock.add_response(url=SGS_CODE_1_URL, text=page)
+
+    df = sgs.get(1, start="2000-01-01", end="2024-12-31")
+
+    windows = [
+        (r.url.params["dataInicial"], r.url.params["dataFinal"])
+        for r in httpx_mock.get_requests()
+    ]
+    assert windows == [
+        ("01/01/2000", "31/12/2009"),
+        ("01/01/2010", "31/12/2019"),
+        ("01/01/2020", "31/12/2024"),
+    ]
+    assert df["1"].tolist() == [1, 2, 3, 4]
+    assert df.index.is_unique
+
+
+def test_get_range_up_to_10_years_single_call(httpx_mock):
+    httpx_mock.add_response(url=SGS_CODE_1_URL, text=SGS_JSON_5)
+
+    sgs.get(1, start="2000-01-01", end="2009-12-31")
+
+    assert len(httpx_mock.get_requests()) == 1
+
+
+SGS_NOT_FOUND = '{"erro": {"statusCode": 404, "detail": "Value(s) not found"}}'
+
+
+def test_get_split_skips_empty_windows(httpx_mock):
+    httpx_mock.add_response(url=SGS_CODE_1_URL, status_code=404, text=SGS_NOT_FOUND)
+    httpx_mock.add_response(url=SGS_CODE_1_URL, text=SGS_JSON_5)
+
+    df = sgs.get(1, start="1990-01-01", end="2009-12-31")
+
+    assert len(df) == 5
+
+
+def test_get_split_all_windows_empty_raises(httpx_mock):
+    httpx_mock.add_response(
+        url=SGS_CODE_1_URL, status_code=404, text=SGS_NOT_FOUND, is_reusable=True
+    )
+
+    with pytest.raises(SGSError, match="not found"):
+        sgs.get(1, start="1990-01-01", end="2009-12-31")
