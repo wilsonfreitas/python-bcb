@@ -1,0 +1,66 @@
+site_name: python-bcb
+site_description: Interface em Python para as APIs de dados abertos do Banco Central do Brasil
+site_url: https://wilsonfreitas.github.io/python-bcb/
+repo_url: https://github.com/wilsonfreitas/python-bcb
+repo_name: wilsonfreitas/python-bcb
+edit_uri: edit/main/docs/
+# Keep the old Sphinx URLs (sgs.html, currency.html, ...).
+use_directory_urls: false
+
+exclude_docs: |
+  _build/
+  _static/images/savefig/
+  project-health-hardening.md
+  *.rst
+  conf.py
+  Makefile
+  make.bat
+
+theme:
+  name: material
+  language: pt-BR
+  features:
+    - content.code.copy
+    - navigation.sections
+    - search.highlight
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle: {icon: material/brightness-7, name: Modo escuro}
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle: {icon: material/brightness-4, name: Modo claro}
+
+nav:
+  - Início: index.ipynb
+  - SGS: sgs.ipynb
+  - Moedas: currency.ipynb
+  - Expectativas: expectativas.ipynb
+  - Taxas de Juros: taxajuros.ipynb
+  - IFData: ifdata.ipynb
+  - OData: odata.ipynb
+  - APIs Assíncronas: async.md
+  - API: api.md
+
+plugins:
+  - search:
+      lang: pt
+  - mkdocs-jupyter:
+      # Notebooks are run locally and saved with output; the build never calls BCB.
+      execute: false
+      include_source: true
+      no_prompt: true  # hide the "In [ ]:" / "Out[ ]:" prompts
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: numpy
+            show_source: false
+            members_order: source
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - toc:
+      permalink: true
