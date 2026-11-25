@@ -459,3 +459,13 @@ async def test_endpoint_async_get(httpx_mock):
     df = await ep.async_get(limit=1)
     assert df is not None
     assert len(df) == 1
+
+
+async def test_async_get_tidy_enddate(httpx_mock):
+    """async_get() shares the dataFim handling with get()."""
+    httpx_mock.add_response(
+        url=SGS_CODE_URL,
+        text='[{"data":"01/01/2010","dataFim":"01/02/2010","valor":"0.0"}]',
+    )
+    df = await sgs.async_get({"TR": 1}, tidy=True)
+    assert list(df.columns) == ["Date", "enddate", "series", "value"]

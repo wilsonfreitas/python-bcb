@@ -252,3 +252,44 @@ def test_get_output_dataframe_is_default(httpx_mock):
     )
     result = sgs.get(1, last=5)
     assert isinstance(result, pd.DataFrame)
+
+
+# Series like TR (226) and TBF (253) return a period (start and end date).
+SGS_JSON_ENDDATE = (
+    '[{"data":"01/01/2010","dataFim":"01/02/2010","valor":"0.0000"},'
+    '{"data":"02/01/2010","dataFim":"02/02/2010","valor":"0.0100"}]'
+)
+
+
+def test_get_enddate_single_code(httpx_mock):
+    httpx_mock.add_response(url=SGS_CODE_1_URL, text=SGS_JSON_ENDDATE)
+
+    df = sgs.get({"TR": 1}, last=2)
+
+    assert list(df.columns) == ["TR_enddate", "TR"]
+    assert df.index.name == "Date"
+    assert pd.api.types.is_datetime64_any_dtype(df["TR_enddate"])
+    assert df["TR_enddate"].iloc[0] == pd.Timestamp("2010-02-01")
+
+
+def test_get_enddate_multiple_codes_no_duplicate_columns(httpx_mock):
+    httpx_mock.add_response(url=SGS_CODE_1_URL, text=SGS_JSON_ENDDATE)
+    httpx_mock.add_response(url=SGS_CODE_2_URL, text=SGS_JSON_ENDDATE)
+
+    df = sgs.get({"TR": 1, "TBF": 2}, last=2)
+
+    assert list(df.columns) == ["TR_enddate", "TR", "TBF_enddate", "TBF"]
+
+
+def test_get_tidy_mixed_enddate(httpx_mock):
+    httpx_mock.add_response(url=SGS_CODE_1_URL, text=SGS_JSON_ENDDATE)
+    httpx_mock.add_response(url=SGS_CODE_2_URL, text=SGS_JSON_5)
+
+    df = sgs.get({"TR": 1, "X": 2}, last=5, tidy=True)
+
+    assert list(df.columns) == ["Date", "enddate", "series", "value"]
+    tr = df[df["series"] == "TR"]
+    assert len(tr) == 2
+    assert tr["enddate"].iloc[0] == pd.Timestamp("2010-02-01")
+    assert df.loc[df["series"] == "X", "enddate"].isna().all()
+    assert len(df) == 7
