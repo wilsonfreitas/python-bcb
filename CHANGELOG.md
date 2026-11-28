@@ -1,6 +1,10 @@
 # Changelog
 
-## [Unreleased]
+## [0.5.0] - 2026-11-28
+
+### Breaking changes
+- SGS series that return a period (TR 226, TBF 253, ...) are now indexed by `(Date, enddate)`, and the raw `dataFim` column is gone. Mixing them with series without an end date in the wide output raises `ValueError`; use `tidy=True` or `multi=False`. (#75, #83)
+- `Endpoint.get()`/`async_get()` raise `TypeError` for a positional argument that is not a filter, orderby or property. Before, it was silently ignored and the whole dataset was returned. (#82)
 
 ### Changed
 - Test coverage raised to 99.9% (every module ≥ 99%) with branch coverage on; CI now fails below 90% (`branch = true`, `fail_under = 90`). Duplicated sync/async code now shares one helper each (`EndpointQuery.collect`/`async_collect`, `Endpoint.get`/`async_get`, OData query string, currency result shaping), and unreachable branches were removed. (#82)

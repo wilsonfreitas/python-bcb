@@ -1,6 +1,6 @@
 [project]
 name = "python-bcb"
-version = "0.4.2"
+version = "0.5.0"
 description = "Interface Python para APIs de dados abertos do Banco Central do Brasil."
 authors = [{ name = "wilsonfreitas", email = "wilson.freitas@gmail.com" }]
 readme = "README.md"
@@ -77,6 +77,11 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["bcb"]
+
+[tool.hatch.build.targets.sdist]
+# Local Claude Code settings and plans are ignored only by a global gitignore,
+# which hatchling does not read; keep them out of the published sdist.
+exclude = [".claude", "**/.claude"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
