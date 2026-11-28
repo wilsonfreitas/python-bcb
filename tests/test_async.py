@@ -469,3 +469,19 @@ async def test_async_get_tidy_enddate(httpx_mock):
     )
     df = await sgs.async_get({"TR": 1}, tidy=True)
     assert list(df.columns) == ["Date", "enddate", "series", "value"]
+
+
+async def test_async_get_split_keeps_rows_with_same_start_date(httpx_mock):
+    """async path uses the same (data, dataFim) merge key (#83)."""
+    httpx_mock.add_response(
+        url=SGS_CODE_URL,
+        text='[{"data":"01/07/2026","dataFim":"31/07/2026","valor":"0.1711"},'
+        '{"data":"01/07/2026","dataFim":"01/08/2026","valor":"0.1729"}]',
+    )
+    httpx_mock.add_response(
+        url=SGS_CODE_URL,
+        text='[{"data":"02/07/2026","dataFim":"02/08/2026","valor":"0.1750"}]',
+    )
+    df = await sgs.async_get({"TR": 1}, start="2016-07-01", end="2026-07-02")
+    assert len(df) == 3
+    assert (df.index.get_level_values("Date") == "2026-07-01").sum() == 2

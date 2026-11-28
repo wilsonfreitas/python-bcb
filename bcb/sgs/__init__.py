@@ -232,15 +232,20 @@ def _date_windows(
 
 
 def _merge_json(texts: List[str]) -> str:
-    """Join the JSON lists of several windows, dropping repeated dates."""
+    """Join the JSON lists of several windows, dropping repeated rows.
+
+    Period series (TR, TBF) can have several rows with the same start date
+    and different end dates, so the key is (data, dataFim).
+    """
     if len(texts) == 1:
         return texts[0]
     seen = set()
     rows = []
     for text in texts:
         for row in json.loads(text):
-            if row["data"] not in seen:
-                seen.add(row["data"])
+            key = (row["data"], row.get("dataFim"))
+            if key not in seen:
+                seen.add(key)
                 rows.append(row)
     return json.dumps(rows)
 
@@ -285,29 +290,40 @@ async def _async_get_sgs_response(
 
 def _format_df(df: pd.DataFrame, code: SGSCode, freq: Optional[str]) -> pd.DataFrame:
     # Series like TR (226) send a period: "data" (start) and "dataFim" (end).
-    enddate = f"{code.name}_enddate"
-    cns = {"data": "Date", "valor": code.name, "dataFim": enddate}
+    # A start date can repeat with different end dates, so both form the index.
+    cns = {"data": "Date", "valor": code.name, "dataFim": "enddate"}
     df = df.rename(columns=cns)
-    if "Date" in df:
-        df["Date"] = pd.to_datetime(df["Date"], format="%d/%m/%Y")
-    if enddate in df:
-        df[enddate] = pd.to_datetime(df[enddate], format="%d/%m/%Y")
-    df = df.set_index("Date")
-    if freq:
-        df.index = df.index.to_period(freq)
-    return df
+    keys = [k for k in ("Date", "enddate") if k in df]
+    for k in keys:
+        df[k] = pd.to_datetime(df[k], format="%d/%m/%Y")
+        if freq:
+            df[k] = df[k].dt.to_period(freq)
+    return df.set_index(keys if len(keys) > 1 else "Date")
+
+
+def _is_period(df: pd.DataFrame) -> bool:
+    return bool(df.index.nlevels == 2)
+
+
+def _wide_df(dfs: List[pd.DataFrame], codes: List[SGSCode]) -> pd.DataFrame:
+    periods = [c.name for df, c in zip(dfs, codes, strict=True) if _is_period(df)]
+    if periods and len(periods) != len(dfs):
+        raise ValueError(
+            f"Series with an end date ({', '.join(periods)}) cannot be aligned "
+            "with series without one; use tidy=True or multi=False"
+        )
+    return pd.concat(dfs, axis=1)
 
 
 def _tidy_df(dfs: List[pd.DataFrame], codes: List[SGSCode]) -> pd.DataFrame:
-    has_enddate = any(
-        f"{c.name}_enddate" in df for df, c in zip(dfs, codes, strict=True)
-    )
+    has_enddate = any(_is_period(df) for df in dfs)
     frames = []
     for df, code in zip(dfs, codes, strict=True):
-        frame = {"Date": df.index}
+        frame = {"Date": df.index.get_level_values("Date")}
         if has_enddate:
-            enddate = f"{code.name}_enddate"
-            frame["enddate"] = df[enddate].to_numpy() if enddate in df else pd.NaT
+            frame["enddate"] = (
+                df.index.get_level_values("enddate") if _is_period(df) else pd.NaT
+            )
         frame["series"] = code.name
         frame["value"] = df[code.name].to_numpy()
         frames.append(pd.DataFrame(frame))
@@ -445,7 +461,7 @@ def get(
         return dfs[0]
     else:
         if multi:
-            return pd.concat(dfs, axis=1)
+            return _wide_df(dfs, code_list)
         else:
             return dfs
 
@@ -671,6 +687,6 @@ async def async_get(
         return dfs[0]
     else:
         if multi:
-            return pd.concat(dfs, axis=1)
+            return _wide_df(dfs, code_list)
         else:
             return dfs
