@@ -42,7 +42,13 @@ uv run ruff format bcb/                  # format with ruff
 
 ### Docs
 ```bash
-cd docs && uv run sphinx-build -b html . _build/html
+uv run mkdocs build --strict           # build to site/ (no BCB API calls)
+uv run mkdocs serve                    # live preview
+```
+
+MkDocs + Material + mkdocstrings + mkdocs-jupyter (`mkdocs.yml`). Pages with examples are notebooks in `docs/*.ipynb`, saved **with output** (`execute: false`), so the build never calls BCB. After changing a notebook, re-run it locally and commit the output:
+```bash
+uv run jupyter nbconvert --to notebook --execute --inplace docs/<page>.ipynb
 ```
 
 ## Architecture

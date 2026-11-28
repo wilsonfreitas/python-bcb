@@ -107,7 +107,7 @@ uv run pytest -m "not integration"
 uv run ruff check bcb/ tests/
 uv run ruff format --check bcb/ tests/
 uv run mypy bcb/
-uv run --group docs sphinx-build -b html docs docs/_build/html
+uv run --group docs mkdocs build --strict
 ```
 
 For integration-test issues, also run:

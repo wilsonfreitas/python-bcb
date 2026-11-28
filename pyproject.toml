@@ -58,13 +58,10 @@ test = [
     "pytest-httpx >= 0.30.0",
 ]
 docs = [
-    "Sphinx >= 6,<7",
-    "pydata-sphinx-theme >= 0.16,<0.17",
     "matplotlib >= 3.5.3",
-    "ipython >= 8.14.0",
-    "furo >= 2024,<2025",
-    "pickleshare >= 0.7.5,<0.8",
-    "pygments >= 2.7",
+    "mkdocs-jupyter>=0.26.3",
+    "mkdocs-material>=9.7.7",
+    "mkdocstrings[python]>=1.0.6",
 ]
 dev = [
     "ruff >= 0.9.0",

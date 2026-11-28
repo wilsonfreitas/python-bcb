@@ -12,7 +12,8 @@ coverage.xml
 build
 dist
 *checkpoint.ipynb
-docs/_build/
+site/
+.cache/
 
 # Environment files with secrets
 .env

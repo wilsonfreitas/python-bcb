@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Changed
+- Documentation moved from Sphinx to MkDocs (Material theme, mkdocstrings for the API reference). Pages with examples are Jupyter notebooks saved with their output, so building the docs no longer calls the BCB APIs and an API outage can no longer break the build. Page URLs (`sgs.html`, `currency.html`, ...) are unchanged. The `docs` dependency group now has `mkdocs-material`, `mkdocstrings[python]` and `mkdocs-jupyter` instead of Sphinx. (#80)
+
 ### Added
 - SGS queries longer than 10 years are now split into windows of up to 10 years and joined, so daily series no longer fail with the API's 10-year limit. Applies to `get`, `get_json`, `async_get` and `async_get_json`; `last=N` is unchanged. Windows with no data (e.g. before the series starts) are skipped. (#76)
 

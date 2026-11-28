@@ -7,7 +7,7 @@ da API de dados abertos do [Banco Central do Brasil](https://www.bcb.gov.br).
 [![image](https://img.shields.io/pypi/v/python-bcb.svg?color=green)](https://pypi.python.org/pypi/python-bcb/)
 ![Test workflow](https://github.com/wilsonfreitas/python-bcb/actions/workflows/test.yml/badge.svg)
 ![Lint workflow](https://github.com/wilsonfreitas/python-bcb/actions/workflows/lint.yml/badge.svg)
-![Sphinx workflow](https://github.com/wilsonfreitas/python-bcb/actions/workflows/sphinx.yml/badge.svg)
+![Docs workflow](https://github.com/wilsonfreitas/python-bcb/actions/workflows/docs.yml/badge.svg)
 
 O projeto de [Dados Abertos do Banco Central do Brasil](https://dadosabertos.bcb.gov.br/)
 disponibiliza diversas APIs provendo acesso direto a dados de:
@@ -200,10 +200,14 @@ logger.setLevel(logging.DEBUG)
 ### P: Como gero a documentação localmente?
 **R:** As dependências de documentação ficam no grupo `docs` do `uv`:
 ```shell
-uv run --group docs sphinx-build -b html docs docs/_build/html
+uv run --group docs mkdocs build --strict
 ```
 
-A saída HTML é gerada em `docs/_build/html`. Edite os arquivos fonte em `docs/`; não edite os arquivos gerados em `docs/_build`.
+A saída HTML é gerada em `site/` (use `uv run --group docs mkdocs serve` para visualizar enquanto edita). As páginas com exemplos são notebooks em `docs/*.ipynb`, salvos com a saída: o build não chama as APIs do BCB. Depois de alterar um notebook, execute-o de novo e faça commit da saída:
+
+```shell
+uv run jupyter nbconvert --to notebook --execute --inplace docs/<pagina>.ipynb
+```
 
 ### P: Onde encontro documentação mais detalhada?
 **R:**
