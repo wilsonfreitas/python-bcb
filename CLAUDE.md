@@ -95,3 +95,7 @@ uv run mypy bcb/                         # no type errors
 - **`ODataAPI` for unlisted services**: Pass any valid OData URL directly to `ODataAPI(url)` to access BCB APIs not yet wrapped.
 - **All network calls** use `httpx` (sync) with `follow_redirects=True`. The OData metadata fetch happens lazily on first `BaseODataAPI` instantiation.
 - **`@mark.flaky`**: flaky tests use the `flaky` library with `max_runs` retries to handle transient API failures.
+
+## Sibling project
+
+`rbcb` (github.com/wilsonfreitas/rbcb, local clone at `~/dev/R/rbcb`) wraps the same BCB APIs in R. When a BCB API changes behaviour (date formats, limits, new fields), check the other package too and cross-link the issues ("Mirrors wilsonfreitas/rbcb#N"). Both repos use the same issue labels (`type: *`, `area: *`, `priority: *`).
