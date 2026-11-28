@@ -541,6 +541,12 @@ def test_property_filters_reject_python_boolean_context():
             "Edm.Decimal",
         ),
         (ODataProperty(Name="Data", Type="Edm.Date"), "2024-01-31", "Edm.Date"),
+        (ODataProperty(Name="Data", Type="Edm.Date"), pd.NaT, "Edm.Date"),
+        (ODataProperty(Name="Mediana", Type="Edm.Decimal"), float("nan"), "Decimal"),
+        (ODataProperty(Name="Mediana", Type="Edm.Decimal"), float("inf"), "Decimal"),
+        (ODataProperty(Name="Ano", Type="Edm.Int32"), "2024a", "Edm.Int32"),
+        (ODataProperty(Name="Ano", Type="Edm.Int64"), None, "Edm.Int64"),
+        (ODataProperty(Name="Ativo", Type="Edm.Boolean"), "true", "Edm.Boolean"),
         (ODataProperty(Name="Codigo", Type="Edm.Guid"), "abc", "Unsupported"),
     ],
 )
@@ -995,3 +1001,231 @@ def test_collect_output_dataframe_is_default(httpx_mock):
     ep = api.get_endpoint("ExpectativasMercadoAnuais")
     result = ep.query().limit(1).collect()
     assert isinstance(result, pd.DataFrame)
+
+
+def test_endpoint_get_keyword_arguments_build_query(httpx_mock):
+    add_service_mocks(httpx_mock)
+    httpx_mock.add_response(url=ENTITY_URL_PATTERN, text=ODATA_QUERY_RESPONSE_JSON)
+    ep = Expectativas().get_endpoint("ExpectativasMercadoAnuais")
+
+    ep.get(
+        filter=ep.Indicador == "IPCA",
+        orderby=ep.Data.desc(),
+        select=ep.Mediana,
+        limit=5,
+        skip=10,
+    )
+
+    params = httpx_mock.get_requests()[-1].url.params
+    assert params["$filter"] == "Indicador eq 'IPCA'"
+    assert params["$orderby"] == "Data desc"
+    assert params["$select"] == "Mediana"
+    assert params["$top"] == "5"
+    assert params["$skip"] == "10"
+
+
+def test_endpoint_get_positional_arguments_build_query(httpx_mock, capsys):
+    add_service_mocks(httpx_mock)
+    httpx_mock.add_response(url=ENTITY_URL_PATTERN, text=ODATA_QUERY_RESPONSE_JSON)
+    ep = Expectativas().get_endpoint("ExpectativasMercadoAnuais")
+
+    ep.get(ep.Mediana > 4, ep.Data.asc(), ep.Indicador, verbose=True)
+
+    params = httpx_mock.get_requests()[-1].url.params
+    assert params["$filter"] == "Mediana gt 4.0"
+    assert params["$orderby"] == "Data asc"
+    assert params["$select"] == "Indicador"
+    assert capsys.readouterr().out  # verbose=True prints the query
+
+
+# ---------------------------------------------------------------------------
+# Framework details: repr, describe/show, edge cases
+# ---------------------------------------------------------------------------
+
+
+def test_framework_objects_repr(httpx_mock):
+    add_function_service_mocks(httpx_mock)
+    service = ODataService(FUNCTION_BASE_URL)
+    fi = service["CotacaoMoedaPeriodo"]
+    moeda = fi.entity_set.entity.properties["Moeda"]
+
+    assert repr(fi) == "<FunctionImport CotacaoMoedaPeriodo>"
+    assert repr(fi.entity_set) == "<EntitySet CotacoesMoedaPeriodo>"
+    assert repr(fi.function) == "<Function CotacaoMoedaPeriodo>"
+    assert repr(fi.entity_set.entity) == "<Entity Cotacao>"
+    assert repr(moeda) == "<Property Moeda<str>>"
+    assert repr(moeda == "USD") == "<filter: Moeda eq 'USD'>"
+    assert repr(moeda.desc()) == "<Moeda desc>"
+    assert [e.name for e in service.entities] == ["Cotacao"]
+    endpoint = service.api_data["value"][0]
+    assert repr(service.endpoints[0]) == f"<EndPoint {endpoint['url']}>"
+
+
+def test_endpoint_item_access():
+    from bcb.odata.framework import ODataEndPoint
+
+    ep = ODataEndPoint(name="X", url="X")
+    ep["kind"] = "EntitySet"
+    assert ep["kind"] == "EntitySet"
+    assert repr(ep) == "<EndPoint X>"
+
+
+def test_property_type_names_and_required_default():
+    assert str_types("Edm.Boolean") == "bool"
+    # Nullable missing means the parameter is required.
+    assert ODataParameter(Name="moeda", Type="Edm.String").required is True
+    assert (
+        ODataParameter(Name="x", Type="Edm.String", Nullable="true").required is False
+    )
+
+
+def test_filter_and_or_with_non_filter_raise_type_error():
+    prop = ODataProperty(Name="Mediana", Type="Edm.Decimal")
+    with pytest.raises(TypeError):
+        (prop > 1) & "x"
+    with pytest.raises(TypeError):
+        (prop > 1) | 1
+
+
+def test_base_filter_expression_statement_not_implemented():
+    from bcb.odata.framework import ODataFilterExpression
+
+    with pytest.raises(NotImplementedError):
+        str(ODataFilterExpression())
+
+
+def test_query_rejects_json_that_is_not_an_object(httpx_mock):
+    add_service_mocks(httpx_mock)
+    httpx_mock.add_response(url=ENTITY_URL_PATTERN, text="[]")
+    ep = Expectativas().get_endpoint("ExpectativasMercadoAnuais")
+
+    with pytest.raises(ODataError, match="expected object"):
+        ep.get(limit=1)
+
+
+def test_metadata_connection_error_raises_odata_error(httpx_mock):
+    httpx_mock.add_response(url=EXPECTATIVAS_BASE_URL, text=ODATA_SERVICE_ROOT_JSON)
+    httpx_mock.add_exception(httpx.ConnectError("down"), url=EXPECTATIVAS_METADATA_URL)
+
+    with pytest.raises(ODataError, match="OData metadata"):
+        Expectativas()
+
+
+def test_function_metadata_ignores_other_child_elements(httpx_mock):
+    xml = FUNCTION_METADATA_XML.replace(
+        b'<Parameter Name="moeda"',
+        b'<Annotation Term="Core.Description" String="x"/>\n'
+        b'        <Parameter Name="moeda"',
+    )
+    httpx_mock.add_response(url=FUNCTION_BASE_URL, text=FUNCTION_SERVICE_ROOT_JSON)
+    httpx_mock.add_response(url=FUNCTION_METADATA_URL, content=xml)
+
+    fi = ODataService(FUNCTION_BASE_URL)["CotacaoMoedaPeriodo"]
+
+    assert [p.name for p in fi.function.parameters] == [
+        "moeda",
+        "dataInicial",
+        "limite",
+    ]
+
+
+def test_service_describe_summary_lists_function_imports(httpx_mock, capsys):
+    add_function_service_mocks(httpx_mock)
+
+    ODataAPI(FUNCTION_BASE_URL).describe(full=False)
+
+    out = capsys.readouterr().out
+    assert "FunctionImports:\n  CotacaoMoedaPeriodo" in out
+    assert "Parameters:" not in out
+
+
+def test_query_methods_without_arguments_change_nothing(httpx_mock):
+    add_service_mocks(httpx_mock)
+    httpx_mock.add_response(url=ENTITY_URL_PATTERN, text=ODATA_QUERY_RESPONSE_JSON)
+    ep = Expectativas().get_endpoint("ExpectativasMercadoAnuais")
+
+    ep.query().filter().orderby().select().limit(1).collect()
+
+    params = httpx_mock.get_requests()[-1].url.params
+    assert "$filter" not in params
+    assert "$orderby" not in params
+    assert "$select" not in params
+
+
+def test_query_raw_keeps_dates_as_strings(httpx_mock):
+    add_service_mocks(httpx_mock)
+    httpx_mock.add_response(url=ENTITY_URL_PATTERN, text=ODATA_QUERY_RESPONSE_JSON)
+    ep = Expectativas().get_endpoint("ExpectativasMercadoAnuais")
+
+    df = ep.query().raw().limit(1).collect()
+
+    assert df["Data"].iloc[0] == "2021-01-04"
+
+
+def test_function_query_show_prints_parameters_and_return(httpx_mock, capsys):
+    add_function_service_mocks(httpx_mock)
+    service = ODataService(FUNCTION_BASE_URL)
+
+    service.query(service["CotacaoMoedaPeriodo"]).parameters(
+        moeda="USD", dataInicial="01-01-2020", limite=5
+    ).show()
+
+    out = capsys.readouterr().out
+    assert "Function Parameters:" in out
+    assert "  moeda<str> (required) = USD" in out
+    assert "  limite<int> (required) = 5" in out
+    assert "Return: Moeda<str>, Data<datetime>, CotacaoCompra<float>" in out
+
+
+def test_endpoint_date_format_override_is_applied(httpx_mock, monkeypatch):
+    """IfDataCadastro sends Data as YYYYMM; the per-endpoint format must be used."""
+    from bcb.odata.api import EndpointQuery
+
+    monkeypatch.setattr(
+        EndpointQuery,
+        "_DATE_COLUMN_NAMES_BY_ENDPOINT",
+        {"ExpectativasMercadoAnuais": {"Data": "%Y%m"}},
+    )
+    add_service_mocks(httpx_mock)
+    httpx_mock.add_response(
+        url=ENTITY_URL_PATTERN,
+        text='{"@odata.context": "x", "value": [{"Data": "202403", "Mediana": 1}]}',
+    )
+    ep = Expectativas().get_endpoint("ExpectativasMercadoAnuais")
+
+    df = ep.get(limit=1)
+
+    assert df["Data"].iloc[0] == pd.Timestamp("2024-03-01")
+
+
+def test_date_columns_missing_from_response_are_skipped(httpx_mock):
+    add_service_mocks(httpx_mock)
+    httpx_mock.add_response(
+        url=ENTITY_URL_PATTERN,
+        text='{"@odata.context": "x", "value": [{"Indicador": "IPCA"}]}',
+    )
+    ep = _SingleDateAPI().get_endpoint("ExpectativasMercadoAnuais")
+
+    df = ep.get(limit=1)
+
+    assert list(df.columns) == ["Indicador"]
+
+
+def test_endpoint_get_positional_combined_filter_is_sent(httpx_mock):
+    """Regression: (a) & (b) passed positionally used to be silently dropped."""
+    add_service_mocks(httpx_mock)
+    httpx_mock.add_response(url=ENTITY_URL_PATTERN, text=ODATA_QUERY_RESPONSE_JSON)
+    ep = Expectativas().get_endpoint("ExpectativasMercadoAnuais")
+
+    ep.get((ep.Mediana > 4) & (ep.Indicador == "IPCA"), limit=1)
+
+    params = httpx_mock.get_requests()[-1].url.params
+    assert params["$filter"] == "(Mediana gt 4.0 and Indicador eq 'IPCA')"
+
+
+def test_endpoint_get_unknown_positional_argument_raises(httpx_mock):
+    add_service_mocks(httpx_mock)
+    ep = Expectativas().get_endpoint("ExpectativasMercadoAnuais")
+
+    with pytest.raises(TypeError, match="got str: \"Indicador eq 'IPCA'\""):
+        ep.get("Indicador eq 'IPCA'")

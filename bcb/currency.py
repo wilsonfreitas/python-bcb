@@ -341,6 +341,8 @@ def _extract_currency_html_error(content: bytes) -> str | None:
         doc = html.parse(BytesIO(content)).getroot()
     except (etree.ParserError, ValueError):
         return None
+    if doc is None:  # empty body: lxml parses it to a tree without a root
+        return None
     xpath = "//div[@class='msgErro']"
     for element in doc.xpath(xpath):
         message = _clean_currency_error_message(str(element.text_content()))
@@ -617,6 +619,25 @@ def _tidy_df(df: pd.DataFrame, side: CurrencySide) -> pd.DataFrame:
     return pd.concat(frames, ignore_index=True)
 
 
+def _shape_rates(
+    dss: List[pd.DataFrame],
+    symbols: List[str],
+    side: CurrencySide,
+    groupby: CurrencyGroupBy,
+    tidy: bool,
+) -> pd.DataFrame:
+    """Join the per-symbol frames and shape them by side/groupby (validated before)."""
+    if not dss:
+        _raise_no_valid_currency_symbols(symbols)
+    df = pd.concat(dss, axis=1)
+    if tidy:
+        return _tidy_df(df, side)
+    by_side = df.reorder_levels([1, 0], axis=1).sort_index(axis=1)
+    if side in ("bid", "ask"):
+        return by_side[side]
+    return df if groupby == "symbol" else by_side
+
+
 def _normalize_currency_symbols(symbols: Union[str, List[str]]) -> List[str]:
     if isinstance(symbols, str):
         symbols = [symbols]
@@ -785,24 +806,7 @@ def get(
             dss.append(df1)
         except CurrencyNotFoundError:
             pass  # Skip missing currencies
-    if len(dss) > 0:
-        df = pd.concat(dss, axis=1)
-        if tidy:
-            return _tidy_df(df, side)
-        if side in ("bid", "ask"):
-            dx = df.reorder_levels([1, 0], axis=1).sort_index(axis=1)
-            return dx[side]
-        elif side == "both":
-            if groupby == "symbol":
-                return df
-            elif groupby == "side":
-                return df.reorder_levels([1, 0], axis=1).sort_index(axis=1)
-            else:
-                raise ValueError("Unknown groupby value, use: symbol, side")
-        else:
-            raise ValueError("Unknown side value, use: bid, ask, both")
-    else:
-        _raise_no_valid_currency_symbols(symbols)
+    return _shape_rates(dss, symbols, side, groupby, tidy)
 
 
 async def _async_currency_id_list(
@@ -1067,21 +1071,4 @@ async def async_get(
             raise df
         valid_dss.append(df)
 
-    if len(valid_dss) > 0:
-        df = pd.concat(valid_dss, axis=1)
-        if tidy:
-            return _tidy_df(df, side)
-        if side in ("bid", "ask"):
-            dx = df.reorder_levels([1, 0], axis=1).sort_index(axis=1)
-            return dx[side]
-        elif side == "both":
-            if groupby == "symbol":
-                return df
-            elif groupby == "side":
-                return df.reorder_levels([1, 0], axis=1).sort_index(axis=1)
-            else:
-                raise ValueError("Unknown groupby value, use: symbol, side")
-        else:
-            raise ValueError("Unknown side value, use: bid, ask, both")
-    else:
-        _raise_no_valid_currency_symbols(symbols)
+    return _shape_rates(valid_dss, symbols, side, groupby, tidy)

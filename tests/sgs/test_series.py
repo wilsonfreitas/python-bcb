@@ -420,3 +420,9 @@ def test_get_tidy_and_list_keep_both_periods_when_mixed(httpx_mock):
     assert len(tr_tidy) == 3
     assert (tr_tidy["Date"] == pd.Timestamp("2026-07-01")).sum() == 2
     assert len(tr) == 3 and len(selic) == 5
+
+
+@pytest.mark.parametrize("codes", [("SELIC",), [("SELIC", 11, "x")]])
+def test_named_code_tuples_need_name_and_code(codes):
+    with pytest.raises(ValueError, match=r"\(name, code\)"):
+        sgs.get(codes)

@@ -55,8 +55,7 @@ def _load_xml_document(content: bytes, *, context: str) -> Any:
 
 
 def _format_odata_string_literal(value: Any) -> str:
-    if value is None:
-        raise ODataError("Edm.String filter values cannot be None")
+    # None is rejected by the caller, _format_odata_literal.
     escaped = str(value).replace("'", "''")
     return f"'{escaped}'"
 
@@ -85,12 +84,10 @@ def _format_odata_literal(edm_type: Optional[str], value: Any) -> str:
 
     if edm_type == "Edm.Date":
         try:
-            formatted = value.strftime("%Y-%m-%d")
-        except AttributeError as ex:
+            # ValueError: pd.NaT has strftime() but cannot format itself.
+            return str(value.strftime("%Y-%m-%d"))
+        except (AttributeError, ValueError) as ex:
             raise ODataError(f"Invalid Edm.Date filter value: {value!r}") from ex
-        if not isinstance(formatted, str):
-            raise ODataError(f"Invalid Edm.Date filter value: {value!r}")
-        return formatted
 
     if edm_type == "Edm.Boolean":
         if not isinstance(value, bool):
@@ -728,14 +725,7 @@ class ODataQuery:
 
     async def async_text(self, *, timeout: RequestTimeout = None) -> str:
         """Async version of text(). Fetches OData response using shared client."""
-        params = self._build_parameters()
-        if self.is_function and len(self.function_parameters):
-            for p in self.entity.function.parameters:  # type: ignore[union-attr]
-                val = self.function_parameters[p.name or ""]
-                if p.required and val is None:
-                    raise ODataError("Parameter not set: " + (p.name or ""))
-                params["@" + (p.name or "")] = self._format_parameter(p, val)
-        qs = "&".join([f"{quote(k)}={quote(str(v))}" for k, v in params.items()])
+        qs = self._query_string()
         headers = {"OData-Version": "4.0", "OData-MaxVersion": "4.0"}
         url = self.odata_url()
         try:
@@ -767,7 +757,8 @@ class ODataQuery:
         _required_field(data, "value", context=f"OData query {url}")
         return data
 
-    def text(self, *, timeout: RequestTimeout = None) -> str:
+    def _query_string(self) -> str:
+        """Query parameters plus function parameters (@name=value), URL-encoded."""
         params = self._build_parameters()
         if self.is_function and len(self.function_parameters):
             for p in self.entity.function.parameters:  # type: ignore[union-attr]
@@ -775,7 +766,10 @@ class ODataQuery:
                 if p.required and val is None:
                     raise ODataError("Parameter not set: " + (p.name or ""))
                 params["@" + (p.name or "")] = self._format_parameter(p, val)
-        qs = "&".join([f"{quote(k)}={quote(str(v))}" for k, v in params.items()])
+        return "&".join([f"{quote(k)}={quote(str(v))}" for k, v in params.items()])
+
+    def text(self, *, timeout: RequestTimeout = None) -> str:
+        qs = self._query_string()
         headers = {"OData-Version": "4.0", "OData-MaxVersion": "4.0"}
         url = self.odata_url()
         logger.debug(f"Fetching OData query from {url}")
@@ -811,11 +805,9 @@ class ODataQuery:
                 v = self.function_parameters[p.name or ""]
                 req = " (required) " if p.required else " "
                 print(f"  {p.name}<{p.ftype}>{req}= {v}")
-        params = self._build_parameters()
-        if len(params):
-            print("Query Parameters:")
-            for k, v in params.items():
-                print(" ", k, "=", v)
+        print("Query Parameters:")  # never empty: $format is always set
+        for k, v in self._build_parameters().items():
+            print(" ", k, "=", v)
         if self.is_function:
             names = [
                 f"{p.name}<{p.ftype}>"

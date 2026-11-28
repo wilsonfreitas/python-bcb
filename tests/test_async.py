@@ -4,7 +4,7 @@ Tests for async_get() functions in sgs, currency, and odata modules.
 """
 
 import re
-from datetime import datetime
+from datetime import date, datetime, timedelta
 
 import httpx
 import pytest
@@ -16,6 +16,7 @@ from bcb.exceptions import (
     BCBRateLimitError,
     CurrencyNotFoundError,
     ODataError,
+    SGSError,
 )
 from tests.conftest import (
     CURRENCY_ID_LIST_HTML,
@@ -485,3 +486,179 @@ async def test_async_get_split_keeps_rows_with_same_start_date(httpx_mock):
     df = await sgs.async_get({"TR": 1}, start="2016-07-01", end="2026-07-02")
     assert len(df) == 3
     assert (df.index.get_level_values("Date") == "2026-07-01").sum() == 2
+
+
+def _add_expectativas_mocks(httpx_mock, response):
+    base = "https://olinda.bcb.gov.br/olinda/servico/Expectativas/versao/v1/odata/"
+    httpx_mock.add_response(url=base, text=ODATA_SERVICE_ROOT_JSON)
+    httpx_mock.add_response(url=base + "$metadata", content=ODATA_METADATA_XML)
+    httpx_mock.add_response(
+        url=re.compile(r".*ExpectativasMercadoAnuais.*"), text=response
+    )
+
+
+async def test_async_get_keyword_arguments_and_text_output(httpx_mock):
+    _add_expectativas_mocks(httpx_mock, ODATA_QUERY_RESPONSE_JSON)
+    ep = Expectativas().get_endpoint("ExpectativasMercadoAnuais")
+
+    text = await ep.async_get(filter=ep.Indicador == "IPCA", limit=1, output="text")
+
+    assert text == ODATA_QUERY_RESPONSE_JSON
+    params = httpx_mock.get_requests()[-1].url.params
+    assert params["$filter"] == "Indicador eq 'IPCA'"
+    assert params["$top"] == "1"
+
+
+async def test_async_query_collects_dataframe(httpx_mock):
+    _add_expectativas_mocks(httpx_mock, ODATA_QUERY_RESPONSE_JSON)
+    ep = Expectativas().get_endpoint("ExpectativasMercadoAnuais")
+
+    df = await ep.async_query().limit(1).async_collect()
+
+    assert isinstance(df["Data"].iloc[0], datetime)
+
+
+# ---------------------------------------------------------------------------
+# Currency async error paths
+# ---------------------------------------------------------------------------
+
+
+async def test_async_currency_id_list_connection_error_raises(httpx_mock):
+    httpx_mock.add_exception(httpx.ConnectError("down"), url=PTAX_ID_LIST_URL)
+
+    with pytest.raises(BCBAPIError, match="Currency ID list"):
+        await currency._async_currency_id_list()
+
+
+async def test_async_currency_list_rolls_back_when_missing(httpx_mock):
+    httpx_mock.add_response(url=PTAX_CSV_DOWNLOAD_URL, status_code=404)
+    httpx_mock.add_response(url=PTAX_CSV_DOWNLOAD_URL, text=CURRENCY_LIST_CSV)
+
+    res = await currency._async_get_valid_currency_list(date.today())
+
+    assert res.status_code == 200
+    yesterday = date.today() - timedelta(1)
+    assert f"M{yesterday:%Y%m%d}.csv" in str(httpx_mock.get_requests()[-1].url)
+
+
+async def test_async_currency_list_retries_then_gives_up(httpx_mock):
+    httpx_mock.add_exception(
+        httpx.ConnectError("down"), url=PTAX_CSV_DOWNLOAD_URL, is_reusable=True
+    )
+
+    with pytest.raises(BCBAPIError, match="Currency list"):
+        await currency._async_get_valid_currency_list(date.today())
+
+    assert len(httpx_mock.get_requests()) == 4  # first try + 3 retries
+
+
+async def test_async_currency_list_server_error_raises(httpx_mock):
+    httpx_mock.add_response(url=PTAX_CSV_DOWNLOAD_URL, status_code=500)
+
+    with pytest.raises(BCBAPIError, match="Currency list"):
+        await currency._async_get_valid_currency_list(date.today())
+
+
+async def test_async_currency_list_stops_after_max_rollback(httpx_mock):
+    with pytest.raises(BCBAPIError, match="last 2 days"):
+        await currency._async_get_valid_currency_list(
+            date.today() - timedelta(3), max_rollback=2
+        )
+    assert httpx_mock.get_requests() == []
+
+
+async def test_async_currency_rate_connection_error_raises(httpx_mock):
+    add_currency_base_mocks(httpx_mock)
+    httpx_mock.add_exception(httpx.ConnectError("down"), url=PTAX_RATE_URL)
+
+    with pytest.raises(BCBAPIError, match="Currency data for USD"):
+        await currency.async_get("USD", START, END)
+
+
+async def test_async_currency_server_error_is_raised_not_skipped(httpx_mock):
+    """Only CurrencyNotFoundError is skipped; other errors reach the caller."""
+    add_currency_base_mocks(httpx_mock)
+    httpx_mock.add_response(url=PTAX_RATE_URL, status_code=500, is_reusable=True)
+
+    with pytest.raises(BCBAPIError):
+        await currency.async_get("USD", START, END)
+    with pytest.raises(BCBAPIError):
+        await currency.async_get("USD", START, END, output="text")
+
+
+async def test_async_currency_text_all_unknown_raises(httpx_mock):
+    add_currency_base_mocks(httpx_mock)
+
+    with pytest.raises(CurrencyNotFoundError, match="ZAR, AUD"):
+        await currency.async_get(["ZAR", "AUD"], START, END, output="text")
+
+
+async def test_async_currency_text_single_symbol_returns_string(httpx_mock):
+    add_currency_base_mocks(httpx_mock)
+    add_currency_rate_mock(httpx_mock)
+
+    text = await currency.async_get("USD", START, END, output="text")
+
+    assert text == CURRENCY_RATE_CSV
+
+
+# ---------------------------------------------------------------------------
+# SGS async: window errors and output variants
+# ---------------------------------------------------------------------------
+
+
+async def test_async_get_json_connection_error_raises_sgs_error(
+    httpx_mock, monkeypatch
+):
+    _disable_async_sgs_retry_sleep(monkeypatch)
+    httpx_mock.add_exception(
+        httpx.ConnectError("down"), url=SGS_CODE_URL, is_reusable=True
+    )
+
+    with pytest.raises(SGSError, match="code=1"):
+        await sgs.async_get_json(1)
+
+
+async def test_async_get_json_skips_empty_window(httpx_mock):
+    not_found = '{"erro": {"statusCode": 404, "detail": "Value(s) not found"}}'
+    httpx_mock.add_response(url=SGS_CODE_URL, status_code=404, text=not_found)
+    httpx_mock.add_response(url=SGS_CODE_URL, text=SGS_JSON_5)
+
+    text = await sgs.async_get_json(1, start="1990-01-01", end="2009-12-31")
+
+    assert text == SGS_JSON_5
+
+
+async def test_async_get_json_all_windows_empty_raises(httpx_mock):
+    not_found = '{"erro": {"statusCode": 404, "detail": "Value(s) not found"}}'
+    httpx_mock.add_response(
+        url=SGS_CODE_URL, status_code=404, text=not_found, is_reusable=True
+    )
+
+    with pytest.raises(SGSError, match="not found"):
+        await sgs.async_get_json(1, start="1990-01-01", end="2009-12-31")
+
+
+async def test_async_get_text_multiple_codes_returns_dict(httpx_mock):
+    httpx_mock.add_response(url=SGS_CODE_URL, text=SGS_JSON_5, is_reusable=True)
+
+    result = await sgs.async_get([1, 2], last=5, output="text")
+
+    assert result == {1: SGS_JSON_5, 2: SGS_JSON_5}
+
+
+async def test_async_get_multi_false_returns_list(httpx_mock):
+    httpx_mock.add_response(url=SGS_CODE_URL, text=SGS_JSON_5, is_reusable=True)
+
+    result = await sgs.async_get({"A": 1, "B": 2}, last=5, multi=False)
+
+    assert [list(df.columns) for df in result] == [["A"], ["B"]]
+
+
+async def test_async_odata_get_verbose_prints_query(httpx_mock, capsys):
+    _add_expectativas_mocks(httpx_mock, ODATA_QUERY_RESPONSE_JSON)
+    ep = Expectativas().get_endpoint("ExpectativasMercadoAnuais")
+
+    await ep.async_get(limit=1, verbose=True)
+
+    assert "ExpectativasMercadoAnuais" in capsys.readouterr().out

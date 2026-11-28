@@ -196,3 +196,14 @@ def test_with_retry_decorator_returns_successful_result() -> None:
 
     assert sample(21) == 42
     assert calls == [21]
+
+
+@pytest.mark.anyio
+async def test_aclose_async_client_twice_is_a_no_op():
+    from bcb import http
+
+    http.get_async_client()
+    await http.aclose_async_client()
+    await http.aclose_async_client()  # already closed: must not raise
+
+    assert http._ASYNC_CLIENT.is_closed
