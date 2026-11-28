@@ -9,7 +9,6 @@ from bcb.odata.framework import (
     ODataFilterExpression,
     ODataFunctionImport,
     ODataQuery,
-    ODataPropertyFilter,
     ODataPropertyOrderBy,
     ODataProperty,
     ODataService,
@@ -82,25 +81,8 @@ class EndpointQuery(ODataQuery):
             value = formatter(value)
         return super()._format_parameter(parameter, value)
 
-    @overload
-    def collect(
-        self,
-        output: Literal["dataframe"] = ...,
-        *,
-        timeout: RequestTimeout = ...,
-    ) -> pd.DataFrame: ...
-
-    @overload
-    def collect(
-        self, output: Literal["text"], *, timeout: RequestTimeout = ...
-    ) -> str: ...
-
-    def collect(
-        self, output: str = "dataframe", *, timeout: RequestTimeout = None
-    ) -> Union[pd.DataFrame, str]:
-        if output == "text":
-            return self.text(timeout=timeout)
-        raw_data = super().collect(timeout=timeout)
+    def _to_dataframe(self, raw_data: Any) -> pd.DataFrame:
+        """Build the DataFrame and convert the date columns."""
         data = pd.DataFrame(raw_data["value"])
         if not self._raw:
             if self._date_columns:
@@ -122,6 +104,27 @@ class EndpointQuery(ODataQuery):
                         data[col] = pd.to_datetime(data[col])
         return data
 
+    @overload
+    def collect(
+        self,
+        output: Literal["dataframe"] = ...,
+        *,
+        timeout: RequestTimeout = ...,
+    ) -> pd.DataFrame: ...
+
+    @overload
+    def collect(
+        self, output: Literal["text"], *, timeout: RequestTimeout = ...
+    ) -> str: ...
+
+    def collect(
+        self, output: str = "dataframe", *, timeout: RequestTimeout = None
+    ) -> Union[pd.DataFrame, str]:
+        if output == "text":
+            return self.text(timeout=timeout)
+        raw_data = super().collect(timeout=timeout)
+        return self._to_dataframe(raw_data)
+
     async def async_collect(
         self, output: str = "dataframe", *, timeout: RequestTimeout = None
     ) -> Union[pd.DataFrame, str]:
@@ -129,24 +132,7 @@ class EndpointQuery(ODataQuery):
         if output == "text":
             return await self.async_text(timeout=timeout)
         raw_data = await super().async_collect(timeout=timeout)
-        data = pd.DataFrame(raw_data["value"])
-        if not self._raw:
-            if self._date_columns:
-                for col in self._date_columns:
-                    if col in data.columns:
-                        data[col] = pd.to_datetime(data[col])
-            else:
-                endpoint_overrides = self._DATE_COLUMN_NAMES_BY_ENDPOINT.get(
-                    self.entity.name, {}
-                )
-                for col in self._DATE_COLUMN_NAMES:
-                    if col in endpoint_overrides:
-                        data[col] = pd.to_datetime(
-                            data[col], format=endpoint_overrides[col]
-                        )
-                    elif col in data.columns:
-                        data[col] = pd.to_datetime(data[col])
-        return data
+        return self._to_dataframe(raw_data)
 
 
 class Endpoint(metaclass=EndpointMeta):
@@ -192,6 +178,53 @@ class Endpoint(metaclass=EndpointMeta):
         self._parameter_formatters = parameter_formatters or {}
         self._timeout = timeout
 
+    def _build_query(
+        self,
+        args: tuple[Any, ...],
+        filter: Optional[ODataFilterExpression],
+        orderby: Optional[ODataPropertyOrderBy],
+        select: Optional[ODataProperty],
+        limit: Optional[int],
+        skip: Optional[int],
+        kwargs: dict[str, Any],
+    ) -> EndpointQuery:
+        """Build the query shared by get() and async_get()."""
+        _query = self.query()
+
+        # Apply explicit kwargs first
+        if filter is not None:
+            _query.filter(filter)
+        if orderby is not None:
+            _query.orderby(orderby)
+        if select is not None:
+            _query.select(select)
+        if limit is not None:
+            _query.limit(limit)
+        if skip is not None:
+            _query.skip(skip)
+
+        # Apply positional args for backwards compatibility
+        for arg in args:
+            # ODataFilterExpression, not ODataPropertyFilter: also accepts a & b, a | b.
+            if isinstance(arg, ODataFilterExpression):
+                _query.filter(arg)
+            elif isinstance(arg, ODataPropertyOrderBy):
+                _query.orderby(arg)
+            elif isinstance(arg, ODataProperty):
+                _query.select(arg)
+            else:
+                raise TypeError(
+                    "Positional arguments must be filters, orderby or properties, "
+                    f"got {type(arg).__name__}: {arg!r}"
+                )
+
+        # Apply any remaining kwargs as query parameters
+        for k, val in kwargs.items():
+            _query.parameters(**{k: val})
+
+        _query.format("application/json")
+        return _query
+
     def get(
         self,
         *args: Any,
@@ -233,40 +266,7 @@ class Endpoint(metaclass=EndpointMeta):
         pd.DataFrame or str: resultado da consulta. Returns a DataFrame by
             default; returns a raw JSON string when ``output='text'``.
         """
-        _query = EndpointQuery(
-            self._entity,
-            self._url,
-            self._date_columns,
-            self._parameter_formatters,
-            timeout=self._timeout,
-        )
-
-        # Apply explicit kwargs first
-        if filter is not None:
-            _query.filter(filter)
-        if orderby is not None:
-            _query.orderby(orderby)
-        if select is not None:
-            _query.select(select)
-        if limit is not None:
-            _query.limit(limit)
-        if skip is not None:
-            _query.skip(skip)
-
-        # Apply positional args for backwards compatibility
-        for arg in args:
-            if isinstance(arg, ODataPropertyFilter):
-                _query.filter(arg)
-            elif isinstance(arg, ODataPropertyOrderBy):
-                _query.orderby(arg)
-            elif isinstance(arg, ODataProperty):
-                _query.select(arg)
-
-        # Apply any remaining kwargs as query parameters
-        for k, val in kwargs.items():
-            _query.parameters(**{k: val})
-
-        _query.format("application/json")
+        _query = self._build_query(args, filter, orderby, select, limit, skip, kwargs)
 
         if verbose:
             _query.show()
@@ -302,13 +302,7 @@ class Endpoint(metaclass=EndpointMeta):
         bcb.odata.api.EndpointQuery
             Same as query(); call async_collect() on the result
         """
-        return EndpointQuery(
-            self._entity,
-            self._url,
-            self._date_columns,
-            self._parameter_formatters,
-            timeout=self._timeout,
-        )
+        return self.query()
 
     async def async_get(
         self,
@@ -353,40 +347,7 @@ class Endpoint(metaclass=EndpointMeta):
         Union[pd.DataFrame, str]
             Resultado da consulta
         """
-        _query = EndpointQuery(
-            self._entity,
-            self._url,
-            self._date_columns,
-            self._parameter_formatters,
-            timeout=self._timeout,
-        )
-
-        # Apply explicit kwargs first
-        if filter is not None:
-            _query.filter(filter)
-        if orderby is not None:
-            _query.orderby(orderby)
-        if select is not None:
-            _query.select(select)
-        if limit is not None:
-            _query.limit(limit)
-        if skip is not None:
-            _query.skip(skip)
-
-        # Apply positional args for backwards compatibility
-        for arg in args:
-            if isinstance(arg, ODataPropertyFilter):
-                _query.filter(arg)
-            elif isinstance(arg, ODataPropertyOrderBy):
-                _query.orderby(arg)
-            elif isinstance(arg, ODataProperty):
-                _query.select(arg)
-
-        # Apply any remaining kwargs as query parameters
-        for k, val in kwargs.items():
-            _query.parameters(**{k: val})
-
-        _query.format("application/json")
+        _query = self._build_query(args, filter, orderby, select, limit, skip, kwargs)
 
         if verbose:
             _query.show()

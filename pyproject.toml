@@ -87,10 +87,11 @@ markers = [
 [tool.coverage.run]
 source = ["bcb"]
 omit = ["tests/*"]
+branch = true
 
 [tool.coverage.report]
 show_missing = true
-fail_under = 80
+fail_under = 90
 
 [tool.mypy]
 python_version = "3.10"

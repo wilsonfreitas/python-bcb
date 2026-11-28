@@ -3,12 +3,17 @@
 ## [Unreleased]
 
 ### Changed
+- Test coverage raised to 99.9% (every module ≥ 99%) with branch coverage on; CI now fails below 90% (`branch = true`, `fail_under = 90`). Duplicated sync/async code now shares one helper each (`EndpointQuery.collect`/`async_collect`, `Endpoint.get`/`async_get`, OData query string, currency result shaping), and unreachable branches were removed. (#82)
+- `Endpoint.get()`/`async_get()` raise `TypeError` for a positional argument that is not a filter, orderby or property, instead of silently ignoring it. (#82)
 - Documentation moved from Sphinx to MkDocs (Material theme, mkdocstrings for the API reference). Pages with examples are Jupyter notebooks saved with their output, so building the docs no longer calls the BCB APIs and an API outage can no longer break the build. Page URLs (`sgs.html`, `currency.html`, ...) are unchanged. The `docs` dependency group now has `mkdocs-material`, `mkdocstrings[python]` and `mkdocs-jupyter` instead of Sphinx. (#80)
 
 ### Added
 - SGS queries longer than 10 years are now split into windows of up to 10 years and joined, so daily series no longer fail with the API's 10-year limit. Applies to `get`, `get_json`, `async_get` and `async_get_json`; `last=N` is unchanged. Windows with no data (e.g. before the series starts) are skipped. (#76)
 
 ### Fixed
+- `Endpoint.get()`/`async_get()` silently dropped a combined filter passed positionally, e.g. `ep.get((ep.A > 1) & (ep.B == 'x'))`, and downloaded the whole dataset. (#82)
+- OData `Edm.Date` filters with `pd.NaT` raised a raw `ValueError`; they now raise `ODataError`. (#82)
+- `currency.get` crashed with `AttributeError` when BCB returned an empty HTML page; it now raises `BCBAPIError`. (#82)
 - SGS series that return a period (e.g. TR 226, TBF 253) no longer produce duplicate `dataFim` string columns. A start date can repeat with different end dates, so these series are now indexed by `(Date, enddate)` (both datetime), and several of them line up on the exact period. Mixing them with series without an end date in the wide output raises `ValueError`; use `tidy=True` (adds an `enddate` column, `NaT` for the others) or `multi=False`. Applies to `get` and `async_get`. (#75, #83)
 - Queries split into 10-year windows no longer drop period-series rows that share a start date: repeated rows are now detected by `(data, dataFim)`. (#83)
 

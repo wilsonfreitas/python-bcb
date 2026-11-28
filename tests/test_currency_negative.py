@@ -4,9 +4,10 @@ Tests for error handling, malformed data, and edge cases.
 """
 
 import re
-from datetime import datetime
+from datetime import date, datetime, timedelta
 
 import httpx
+import pandas as pd
 import pytest
 
 from bcb import currency
@@ -400,3 +401,135 @@ def test_get_mixed_valid_invalid_symbols(httpx_mock):
     assert "USD" in df.columns.get_level_values(0)
     # ZAR should be skipped
     assert "ZAR" not in df.columns.get_level_values(0)
+
+
+# ---------------------------------------------------------------------------
+# Currency list download: roll back, retries and limits
+# ---------------------------------------------------------------------------
+
+
+def _csv_dates(httpx_mock):
+    """Dates (YYYYMMDD) of the currency list files that were requested."""
+    return [
+        re.search(r"M(\d{8})\.csv", str(r.url)).group(1)
+        for r in httpx_mock.get_requests()
+    ]
+
+
+def test_currency_list_rolls_back_to_previous_day_when_missing(httpx_mock):
+    from tests.conftest import CURRENCY_LIST_CSV
+
+    httpx_mock.add_response(url=PTAX_CSV_DOWNLOAD_URL, status_code=404)
+    httpx_mock.add_response(url=PTAX_CSV_DOWNLOAD_URL, text=CURRENCY_LIST_CSV)
+
+    res = currency._get_valid_currency_list(date.today())
+
+    assert res.status_code == 200
+    today, yesterday = date.today(), date.today() - timedelta(1)
+    assert _csv_dates(httpx_mock) == [f"{today:%Y%m%d}", f"{yesterday:%Y%m%d}"]
+
+
+def test_currency_list_retries_same_day_after_connection_error(httpx_mock):
+    from tests.conftest import CURRENCY_LIST_CSV
+
+    httpx_mock.add_exception(httpx.ConnectError("down"), url=PTAX_CSV_DOWNLOAD_URL)
+    httpx_mock.add_response(url=PTAX_CSV_DOWNLOAD_URL, text=CURRENCY_LIST_CSV)
+
+    res = currency._get_valid_currency_list(date.today())
+
+    assert res.status_code == 200
+    assert len(set(_csv_dates(httpx_mock))) == 1  # same date, two attempts
+
+
+def test_currency_list_gives_up_after_repeated_connection_errors(httpx_mock):
+    httpx_mock.add_exception(
+        httpx.ConnectError("down"), url=PTAX_CSV_DOWNLOAD_URL, is_reusable=True
+    )
+
+    with pytest.raises(BCBAPIError, match="Currency list"):
+        currency._get_valid_currency_list(date.today())
+
+    assert len(httpx_mock.get_requests()) == 4  # first try + 3 retries
+
+
+def test_currency_list_server_error_raises_without_rollback(httpx_mock):
+    httpx_mock.add_response(url=PTAX_CSV_DOWNLOAD_URL, status_code=503)
+
+    with pytest.raises(BCBAPIError, match="Currency list"):
+        currency._get_valid_currency_list(date.today())
+
+    assert len(httpx_mock.get_requests()) == 1
+
+
+def test_currency_list_stops_after_max_rollback(httpx_mock):
+    with pytest.raises(BCBAPIError, match="last 2 days") as exc:
+        currency._get_valid_currency_list(date.today() - timedelta(3), max_rollback=2)
+
+    assert exc.value.status_code == 503
+    assert httpx_mock.get_requests() == []
+
+
+# ---------------------------------------------------------------------------
+# HTML error pages and CSV parsing
+# ---------------------------------------------------------------------------
+
+
+def test_extract_html_error_returns_none_for_unparseable_content():
+    assert currency._extract_currency_html_error(b"") is None
+
+
+def test_extract_html_error_skips_empty_error_divs():
+    content = (
+        b"<html><body><div class='msgErro'> - </div>"
+        b"<div class='msgErro'>Moeda inexistente.</div></body></html>"
+    )
+    assert currency._extract_currency_html_error(content) == "Moeda inexistente"
+
+
+def test_validate_csv_parser_error_raises():
+    # An unclosed quote makes the CSV parser fail.
+    with pytest.raises(BCBAPIError, match="Failed to parse currency CSV"):
+        currency._validate_currency_csv('"01122020;220;A;USD;5,1\n')
+
+
+def test_tidy_df_with_no_matching_side_returns_empty_frame():
+    df = pd.DataFrame(
+        {("USD", "bid"): [5.0]},
+        index=pd.DatetimeIndex(["2020-12-01"], name="Date"),
+    )
+    df.columns = pd.MultiIndex.from_tuples(df.columns)
+
+    tidy = currency._tidy_df(df, "ask")
+
+    assert tidy.empty
+    assert list(tidy.columns) == ["Date", "symbol", "side", "value"]
+
+
+def test_cache_key_repr():
+    assert repr(currency._CacheKey(type="currency_list")) == (
+        "CacheKey(type='currency_list')"
+    )
+
+
+def test_fetch_symbol_empty_html_page_raises_api_error(httpx_mock):
+    """An empty text/html response is a clear BCBAPIError, not an AttributeError."""
+    from tests.conftest import CURRENCY_ID_LIST_HTML, CURRENCY_LIST_CSV
+
+    httpx_mock.add_response(url=PTAX_ID_LIST_URL, content=CURRENCY_ID_LIST_HTML)
+    httpx_mock.add_response(url=PTAX_CSV_DOWNLOAD_URL, text=CURRENCY_LIST_CSV)
+    httpx_mock.add_response(
+        url=PTAX_RATE_URL, content=b"", headers={"Content-Type": "text/html"}
+    )
+
+    with pytest.raises(BCBAPIError, match="USD"):
+        currency.get("USD", START, END)
+
+
+def test_extract_html_error_returns_none_when_parser_fails(monkeypatch):
+    from lxml import etree
+
+    def broken_parse(_):
+        raise etree.ParserError("broken")
+
+    monkeypatch.setattr(currency.html, "parse", broken_parse)
+    assert currency._extract_currency_html_error(b"<html></html>") is None
