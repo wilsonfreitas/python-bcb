@@ -1,3 +1,4 @@
+import json
 import re
 
 import pandas as pd
@@ -266,19 +267,28 @@ def test_get_enddate_single_code(httpx_mock):
 
     df = sgs.get({"TR": 1}, last=2)
 
-    assert list(df.columns) == ["TR_enddate", "TR"]
-    assert df.index.name == "Date"
-    assert pd.api.types.is_datetime64_any_dtype(df["TR_enddate"])
-    assert df["TR_enddate"].iloc[0] == pd.Timestamp("2010-02-01")
+    assert list(df.columns) == ["TR"]
+    assert df.index.names == ["Date", "enddate"]
+    assert df.index[0] == (pd.Timestamp("2010-01-01"), pd.Timestamp("2010-02-01"))
 
 
-def test_get_enddate_multiple_codes_no_duplicate_columns(httpx_mock):
+def test_get_enddate_multiple_codes_align_on_period(httpx_mock):
     httpx_mock.add_response(url=SGS_CODE_1_URL, text=SGS_JSON_ENDDATE)
     httpx_mock.add_response(url=SGS_CODE_2_URL, text=SGS_JSON_ENDDATE)
 
     df = sgs.get({"TR": 1, "TBF": 2}, last=2)
 
-    assert list(df.columns) == ["TR_enddate", "TR", "TBF_enddate", "TBF"]
+    assert list(df.columns) == ["TR", "TBF"]
+    assert df.index.names == ["Date", "enddate"]
+    assert len(df) == 2
+
+
+def test_get_enddate_freq_applies_to_both_levels(httpx_mock):
+    httpx_mock.add_response(url=SGS_CODE_1_URL, text=SGS_JSON_ENDDATE)
+
+    df = sgs.get({"TR": 1}, last=2, freq="D")
+
+    assert all(isinstance(lvl, pd.PeriodIndex) for lvl in df.index.levels)
 
 
 def test_get_tidy_mixed_enddate(httpx_mock):
@@ -347,3 +357,66 @@ def test_get_split_all_windows_empty_raises(httpx_mock):
 
     with pytest.raises(SGSError, match="not found"):
         sgs.get(1, start="1990-01-01", end="2009-12-31")
+
+
+# Real TR (226) rows: same start date, two different end dates (#83).
+TR_SAME_START = (
+    '[{"data":"30/06/2026","dataFim":"30/07/2026","valor":"0.1700"},'
+    '{"data":"01/07/2026","dataFim":"31/07/2026","valor":"0.1711"},'
+    '{"data":"01/07/2026","dataFim":"01/08/2026","valor":"0.1729"}]'
+)
+TR_NEXT_WINDOW = (
+    '[{"data":"01/07/2026","dataFim":"01/08/2026","valor":"0.1729"},'
+    '{"data":"02/07/2026","dataFim":"02/08/2026","valor":"0.1750"}]'
+)
+
+
+def test_get_split_keeps_rows_with_same_start_date(httpx_mock):
+    httpx_mock.add_response(url=SGS_CODE_1_URL, text=TR_SAME_START)
+    httpx_mock.add_response(url=SGS_CODE_1_URL, text=TR_NEXT_WINDOW)
+
+    df = sgs.get({"TR": 1}, start="2016-07-01", end="2026-07-02")
+
+    jul1 = df.xs(pd.Timestamp("2026-07-01"), level="Date")["TR"]
+    assert jul1.to_dict() == {
+        pd.Timestamp("2026-07-31"): 0.1711,
+        pd.Timestamp("2026-08-01"): 0.1729,
+    }
+    # The repeated row at the window border appears once.
+    assert len(df) == 4
+    assert df.index.is_unique
+
+
+def test_get_json_merge_without_enddate_unchanged(httpx_mock):
+    httpx_mock.add_response(
+        url=SGS_CODE_1_URL, text='[{"data":"01/01/2010","valor":"1"}]'
+    )
+    httpx_mock.add_response(
+        url=SGS_CODE_1_URL, text='[{"data":"01/01/2010","valor":"1"}]'
+    )
+
+    text = sgs.get_json(1, start="2000-01-01", end="2010-12-31")
+
+    assert json.loads(text) == [{"data": "01/01/2010", "valor": "1"}]
+
+
+def test_get_wide_mixing_period_and_plain_series_raises(httpx_mock):
+    httpx_mock.add_response(url=SGS_CODE_1_URL, text=TR_SAME_START)
+    httpx_mock.add_response(url=SGS_CODE_2_URL, text=SGS_JSON_5)
+
+    with pytest.raises(ValueError, match="TR.*tidy=True or multi=False"):
+        sgs.get({"TR": 1, "SELIC": 2}, last=3)
+
+
+def test_get_tidy_and_list_keep_both_periods_when_mixed(httpx_mock):
+    for _ in range(2):
+        httpx_mock.add_response(url=SGS_CODE_1_URL, text=TR_SAME_START)
+        httpx_mock.add_response(url=SGS_CODE_2_URL, text=SGS_JSON_5)
+
+    tidy = sgs.get({"TR": 1, "SELIC": 2}, last=3, tidy=True)
+    tr, selic = sgs.get({"TR": 1, "SELIC": 2}, last=3, multi=False)
+
+    tr_tidy = tidy[tidy["series"] == "TR"]
+    assert len(tr_tidy) == 3
+    assert (tr_tidy["Date"] == pd.Timestamp("2026-07-01")).sum() == 2
+    assert len(tr) == 3 and len(selic) == 5

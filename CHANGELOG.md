@@ -9,7 +9,8 @@
 - SGS queries longer than 10 years are now split into windows of up to 10 years and joined, so daily series no longer fail with the API's 10-year limit. Applies to `get`, `get_json`, `async_get` and `async_get_json`; `last=N` is unchanged. Windows with no data (e.g. before the series starts) are skipped. (#76)
 
 ### Fixed
-- SGS series that return a period (e.g. TR 226, TBF 253) no longer produce duplicate `dataFim` string columns. The end date is now a datetime column named `<name>_enddate`, and the index stays the start date (`Date`). With `tidy=True`, an `enddate` column is added when at least one requested series has an end date (`NaT` for the others). Applies to `get` and `async_get`. (#75)
+- SGS series that return a period (e.g. TR 226, TBF 253) no longer produce duplicate `dataFim` string columns. A start date can repeat with different end dates, so these series are now indexed by `(Date, enddate)` (both datetime), and several of them line up on the exact period. Mixing them with series without an end date in the wide output raises `ValueError`; use `tidy=True` (adds an `enddate` column, `NaT` for the others) or `multi=False`. Applies to `get` and `async_get`. (#75, #83)
+- Queries split into 10-year windows no longer drop period-series rows that share a start date: repeated rows are now detected by `(data, dataFim)`. (#83)
 
 ## [0.4.2] - 2026-11-22
 
